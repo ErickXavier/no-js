@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No.JS — HTML-First Reactive Framework</title>
+  <link rel="icon" href="favicon.ico">
+  <meta name="description" content="Build dynamic, reactive web applications using nothing but HTML attributes. No build step. No virtual DOM. No transpiler.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ═══ PageHeader: 70px, white bg, border-bottom #E2E8F0, padding 0 80px ═══ -->
+  <header class="header">
+    <a route="/" class="header-logo"><img src="logo.svg" alt="No.JS" class="logo-img"><span class="logo-title">No<span class="logo-dot">.</span>JS</span></a>
+    <nav class="header-nav">
+      <a route="/features">Features</a>
+      <a route="/examples">Examples</a>
+      <a route="/docs">Docs</a>
+      <a href="https://github.com/ErickXavier/no-js" target="_blank" class="github-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+      <a route="/docs" class="nav-cta">Get Started</a>
+    </nav>
+  </header>
+
+  <!-- ═══ Main Content (route outlet) ═══ -->
+  <main route-view class="content"></main>
+
+  <!-- ═══ PageFooter: #0F172A bg, border-top #1E293B ═══ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-row">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg version="1.2" class="logo-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" width="150" height="150">
+    <defs>
+        <mask id="bolt-border">
+            <rect x="0" y="0" width="150" height="150" fill="white"/>
+            <path d="m119.5 16h-54l-26 51h18l-27 67 73-67h-18z" fill="black" stroke="black" stroke-width="15" stroke-linejoin="miter"/>
+        </mask>
+    </defs>
+    <style>.a{fill:none;stroke:#FFF;stroke-width:14}.b{fill:#0ea5e9}</style>
+
+    <g mask="url(#bolt-border)">
+        <path fill-rule="evenodd" class="a" d="m45 40l-35 35 35 35"/>
+        <path fill-rule="evenodd" class="a" d="m105 40l35 35-35 35"/>
+    </g>
+
+    <path class="b" d="m119.5 16h-54l-26 51h18l-27 67 73-67h-18z"/>
+</svg><span class="logo-title">No<span class="logo-dot">.</span>JS</span></div>
+          <p class="footer-desc">The HTML-first reactive framework</p>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <a route="/docs">Documentation</a>
+            <a route="/examples">Examples</a>
+            <a route="/docs#cheatsheet">API Reference</a>
+          </div>
+          <div class="footer-col">
+            <h4>Community</h4>
+            <a href="https://github.com/ErickXavier/no-js" target="_blank">GitHub</a>
+            <a href="https://github.com/ErickXavier/no-js/discussions" target="_blank">Discord</a>
+            <a href="https://twitter.com" target="_blank">Twitter</a>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="#">License</a>
+            <a href="#">Privacy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <span>2026 No.JS — MIT License</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ Route Templates ═══ -->
+  <template route="/"                   src="templates/landing.tpl"></template>
+  <template route="/features"           src="templates/features.tpl"></template>
+  <template route="/examples"           src="templates/examples.tpl"></template>
+  <template route="/docs"               src="templates/docs.tpl"></template>
+
+  <!-- ═══ Scripts ═══ -->
+  <script src="https://unpkg.com/@erickxavier/no-js@latest/dist/iife/no.js"></script>
+  <script>
+    // ── Global NoJS configuration ──
+    NoJS.config({
+        debug: true,
+        router: { base: '/no-js', mode: 'hash' },
+    });
+
+    // ── i18n setup (for i18n demo page) ──
+    NoJS.i18n({
+      locales: {
+        en: {
+          welcome: 'Welcome to No.JS',
+          greeting: 'Hello, {name}!',
+          items: '{count} item | {count} items',
+          nav: { home: 'Home', docs: 'Documentation', examples: 'Examples' },
+          actions: { save: 'Save', cancel: 'Cancel', delete: 'Delete' },
+          fruits: { apple: 'Apple', banana: 'Banana', cherry: 'Cherry' },
+          messages: {
+            success: 'Operation completed successfully!',
+            error: 'Something went wrong.',
+            empty: 'No items found.',
+            confirm: 'Are you sure you want to {action}?'
+          }
+        },
+        es: {
+          welcome: 'Bienvenido a No.JS',
+          greeting: '¡Hola, {name}!',
+          items: '{count} elemento | {count} elementos',
+          nav: { home: 'Inicio', docs: 'Documentación', examples: 'Ejemplos' },
+          actions: { save: 'Guardar', cancel: 'Cancelar', delete: 'Eliminar' },
+          fruits: { apple: 'Manzana', banana: 'Plátano', cherry: 'Cereza' },
+          messages: {
+            success: '¡Operación completada con éxito!',
+            error: 'Algo salió mal.',
+            empty: 'No se encontraron elementos.',
+            confirm: '¿Estás seguro de que quieres {action}?'
+          }
+        },
+        fr: {
+          welcome: 'Bienvenue sur No.JS',
+          greeting: 'Bonjour, {name} !',
+          items: '{count} élément | {count} éléments',
+          nav: { home: 'Accueil', docs: 'Documentation', examples: 'Exemples' },
+          actions: { save: 'Sauvegarder', cancel: 'Annuler', delete: 'Supprimer' },
+          fruits: { apple: 'Pomme', banana: 'Banane', cherry: 'Cerise' },
+          messages: {
+            success: 'Opération terminée avec succès !',
+            error: 'Quelque chose a mal tourné.',
+            empty: 'Aucun élément trouvé.',
+            confirm: 'Êtes-vous sûr de vouloir {action} ?'
+          }
+        }
+      },
+      defaultLocale: 'en'
+    });
+
+    // ── Custom filters (for filter demos) ──
+    NoJS.filter('highlight', function(text, term) {
+      if (!term) return text;
+      var re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return text.replace(re, '<mark>$1</mark>');
+    });
+    NoJS.filter('initials', function(name) {
+      if (!name) return '';
+      return name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase();
+    });
+    NoJS.filter('timeAgo', function(date) {
+      var seconds = Math.floor((new Date() - new Date(date)) / 1000);
+      if (seconds < 60) return seconds + 's ago';
+      if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+      if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+      return Math.floor(seconds / 86400) + 'd ago';
+    });
+
+    // ── Custom validators (for validation demos) ──
+    NoJS.validator('phone', function(value) {
+      return /^\+?[\d\s\-()]{7,15}$/.test(value);
+    });
+    NoJS.validator('strongPassword', function(value) {
+      return value && value.length >= 8 && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value);
+    });
+    NoJS.validator('url', function(value) {
+      try { new URL(value); return true; } catch(e) { return false; }
+    });
+
+    // ── Custom directives (for directive demos) ──
+    NoJS.directive('tooltip', {
+      init: function(el, attrName, value) {
+        var ctx = NoJS.findContext(el);
+        if (ctx) {
+          ctx.__watchers.push(function() { el.title = NoJS.evaluate(value, ctx); });
+        } else { el.title = value; }
+        el.style.cursor = 'help';
+        el.style.borderBottom = '1px dashed currentColor';
+      }
+    });
+    NoJS.directive('auto-focus', {
+      init: function(el) { setTimeout(function() { el.focus(); }, 100); }
+    });
+    NoJS.directive('char-count', {
+      init: function(el, attrName, maxStr) {
+        var max = parseInt(maxStr) || 100;
+        var counter = document.createElement('div');
+        counter.style.cssText = 'font-size:0.75rem;color:var(--text-dim);text-align:right;margin-top:0.25rem;';
+        el.parentNode.insertBefore(counter, el.nextSibling);
+        function update() {
+          var remaining = max - el.value.length;
+          counter.textContent = remaining + ' / ' + max + ' characters remaining';
+          counter.style.color = remaining < 10 ? 'var(--error)' : remaining < 30 ? 'var(--warning)' : 'var(--text-dim)';
+        }
+        el.addEventListener('input', update);
+        update();
+      }
+    });
+  </script>
+</body>
+</html>

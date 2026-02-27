@@ -1,0 +1,64 @@
+{
+  "name": "@erickxavier/no-js",
+  "version": "1.0.0",
+  "description": "The HTML-first reactive framework — build dynamic web apps with just HTML attributes, no JavaScript required",
+  "main": "dist/cjs/no.js",
+  "module": "dist/esm/no.js",
+  "browser": "dist/iife/no.js",
+  "unpkg": "dist/iife/no.js",
+  "jsdelivr": "dist/iife/no.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/no.js",
+      "require": "./dist/cjs/no.js",
+      "default": "./dist/cjs/no.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "start": "npx serve .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "javascript",
+    "declarative",
+    "reactive",
+    "nojs",
+    "html-first",
+    "no-build",
+    "framework",
+    "frontend",
+    "zero-js",
+    "data-binding"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErickXavier/no-js.git"
+  },
+  "homepage": "https://github.com/ErickXavier/no-js#readme",
+  "bugs": {
+    "url": "https://github.com/ErickXavier/no-js/issues"
+  },
+  "author": "exs.dev",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "babel-jest": "^30.2.0",
+    "esbuild": "^0.27.3",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jsdom": "^28.1.0"
+  }
+}

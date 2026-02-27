@@ -1,0 +1,21 @@
+# Source & dev files (src/ and dist/ are included via package.json "files")
+.gitignore
+.DS_Store
+.vscode/
+.idea/
+
+# Tests
+*.test.js
+jest.config.js
+coverage/
+
+# Build tooling
+build.js
+
+# Demo
+index.html
+
+# Original monolithic file (superseded by src/ + dist/)
+No.js
+NoJS.js
+NoJS.test.js
