@@ -36,6 +36,9 @@
       base: '/',
       scrollBehavior: 'top'   // 'top' | 'preserve' | 'smooth'
     },
+    // Note: In hash mode, standard anchor links (href="#id")
+    // are automatically intercepted — they scroll to the target
+    // element without triggering route navigation.
 
     // i18n
     i18n: {

@@ -44,6 +44,9 @@
       <span class="hl-attr">base</span>: <span class="hl-str">'/'</span>,
       <span class="hl-attr">scrollBehavior</span>: <span class="hl-str">'top'</span>   <span class="hl-cmt">// 'top' | 'preserve' | 'smooth'</span>
     },
+    <span class="hl-cmt">// In hash mode, standard anchor links (href="#id")</span>
+    <span class="hl-cmt">// are automatically intercepted — they scroll to the</span>
+    <span class="hl-cmt">// target element without triggering route navigation.</span>
 
     <span class="hl-cmt">// i18n</span>
     <span class="hl-attr">i18n</span>: {

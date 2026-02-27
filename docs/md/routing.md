@@ -182,6 +182,47 @@ Route templates support a `lazy` attribute to control when their remote file is 
 
 ---
 
+## Anchor Links in Hash Mode
+
+When using `mode: 'hash'`, the URL hash (`#`) is used for routing (e.g. `#/docs`). This normally conflicts with standard anchor links like `<a href="#section">` — but No.JS handles it automatically.
+
+Anchor links that point to an element `id` on the page are intercepted by the router: the target element is scrolled into view smoothly, and the clicked link receives an `active` class. The route itself is **not** affected.
+
+```html
+<!-- These work in hash mode — no special attributes needed -->
+<nav>
+  <a href="#introduction">Introduction</a>
+  <a href="#getting-started">Getting Started</a>
+  <a href="#api">API Reference</a>
+</nav>
+
+<div id="introduction">
+  <h2>Introduction</h2>
+  <p>...</p>
+</div>
+
+<div id="getting-started">
+  <h2>Getting Started</h2>
+  <p>...</p>
+</div>
+
+<div id="api">
+  <h2>API Reference</h2>
+  <p>...</p>
+</div>
+```
+
+**How it works:**
+
+- Clicking `<a href="#introduction">` scrolls to `<div id="introduction">` with smooth behavior
+- The `.active` class is toggled on the clicked link (and removed from siblings)
+- The current route path is preserved — no navigation occurs
+- Links with a `route` attribute are always treated as route navigation, not anchors
+
+> **Tip:** Style the active anchor link with `.active` in your CSS — the router manages the class for you.
+
+---
+
 ## Named Outlets
 
 Multiple `route-view` outlets can coexist in the same layout. Give each outlet a name (the attribute value), then point route templates at specific outlets using the `outlet` attribute.

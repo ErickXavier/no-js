@@ -170,6 +170,41 @@
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/heavy-page"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/heavy.tpl"</span> <span class="hl-attr">lazy</span>=<span class="hl-str">"ondemand"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
   </div>
 
+  <!-- Anchor Links in Hash Mode -->
+  <div class="doc-section">
+    <h2 class="doc-title">Anchor Links in Hash Mode</h2>
+    <p class="doc-text">When using <code>mode: 'hash'</code>, the URL hash (<code>#</code>) is used for routing (e.g. <code>#/docs</code>). This normally conflicts with standard anchor links like <code>&lt;a href="#section"&gt;</code> &mdash; but No.JS handles it automatically.</p>
+    <p class="doc-text">Anchor links that point to an element <code>id</code> on the page are intercepted by the router: the target element is scrolled into view smoothly, and the clicked link receives an <code>active</code> class. The route itself is <strong>not</strong> affected.</p>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- These work in hash mode &mdash; no special attributes needed --&gt;</span>
+<span class="hl-tag">&lt;nav&gt;</span>
+  <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-str">"#introduction"</span><span class="hl-tag">&gt;</span>Introduction<span class="hl-tag">&lt;/a&gt;</span>
+  <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-str">"#getting-started"</span><span class="hl-tag">&gt;</span>Getting Started<span class="hl-tag">&lt;/a&gt;</span>
+  <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-str">"#api"</span><span class="hl-tag">&gt;</span>API Reference<span class="hl-tag">&lt;/a&gt;</span>
+<span class="hl-tag">&lt;/nav&gt;</span>
+
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"introduction"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h2&gt;</span>Introduction<span class="hl-tag">&lt;/h2&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span>
+
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"getting-started"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h2&gt;</span>Getting Started<span class="hl-tag">&lt;/h2&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span>
+
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"api"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h2&gt;</span>API Reference<span class="hl-tag">&lt;/h2&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+    <p class="doc-text"><strong>How it works:</strong></p>
+    <ul class="doc-list">
+      <li>Clicking <code>&lt;a href="#introduction"&gt;</code> scrolls to <code>&lt;div id="introduction"&gt;</code> with smooth behavior</li>
+      <li>The <code>.active</code> class is toggled on the clicked link (and removed from siblings)</li>
+      <li>The current route path is preserved &mdash; no navigation occurs</li>
+      <li>Links with a <code>route</code> attribute are always treated as route navigation, not anchors</li>
+    </ul>
+    <div class="callout">
+      <p><strong>Tip:</strong> Style the active anchor link with <code>.active</code> in your CSS &mdash; the router manages the class for you.</p>
+    </div>
+  </div>
+
   <!-- Named Outlets (route-view) -->
   <div class="doc-section">
     <h2 class="doc-title">Named Outlets (route-view)</h2>
