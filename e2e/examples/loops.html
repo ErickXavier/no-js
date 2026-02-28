@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loops — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    input[type="text"] { padding: 0.25rem 0.5rem; border: 1px solid #aaa; border-radius: 3px; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Simple each loop -->
+  <section state="{ fruits: ['Apple', 'Banana', 'Cherry'] }">
+    <p class="test-label">Test 1: Simple each loop</p>
+    <ul data-test="fruit-list" each="fruit in fruits" template="fruit-tpl"></ul>
+    <template id="fruit-tpl"><li data-test="fruit-item" bind="fruit"></li></template>
+  </section>
+
+  <!-- 2. Loop variables -->
+  <section state="{ colors: ['Red', 'Green', 'Blue'] }">
+    <p class="test-label">Test 2: Loop variables ($index, $first, $last, $even, $odd)</p>
+    <ul data-test="loop-var-list" each="color in colors" template="loop-var-tpl"></ul>
+    <template id="loop-var-tpl">
+      <li data-test="loop-var-item">
+        <span bind="$index"></span>. <span bind="color"></span>
+        (first: <span bind="$first"></span>, last: <span bind="$last"></span>)
+      </li>
+    </template>
+  </section>
+
+  <!-- 3. Dynamic add/remove -->
+  <section state="{ tasks: ['Task 1', 'Task 2'], newTask: '' }">
+    <p class="test-label">Test 3: Dynamic add/remove</p>
+    <input type="text" data-test="task-input" model="newTask" placeholder="New task" />
+    <button data-test="task-add" on:click="tasks = [...tasks, newTask]; newTask = ''">Add</button>
+    <ul data-test="task-list" each="task in tasks" template="task-tpl"></ul>
+    <template id="task-tpl">
+      <li data-test="task-item">
+        <span bind="task"></span>
+        <button data-test="task-remove" on:click="tasks = tasks.filter((t, i) => i !== $index)">✕</button>
+      </li>
+    </template>
+  </section>
+
+  <!-- 4. foreach with sort and limit -->
+  <section state="{ people: [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}, {name: 'Charlie', age: 35}] }">
+    <p class="test-label">Test 4: foreach with sort and limit</p>
+    <div data-test="sorted-list" foreach="person" from="people" sort="name" limit="2" template="person-tpl"></div>
+    <template id="person-tpl"><div data-test="sorted-item" bind="person.name"></div></template>
+  </section>
+
+  <!-- 5. Empty state -->
+  <section state="{ empty: [] }">
+    <p class="test-label">Test 5: Empty state with else template</p>
+    <ul data-test="empty-list" each="item in empty" template="empty-item-tpl" else="no-items-tpl"></ul>
+    <template id="empty-item-tpl"><li data-test="empty-item" bind="item"></li></template>
+    <template id="no-items-tpl"><p data-test="empty-msg">No items found</p></template>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

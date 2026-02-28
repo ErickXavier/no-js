@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Routing — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+    nav a { margin-right: 1rem; text-decoration: none; color: #333; }
+    nav a.active { color: #2196f3; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <section>
+    <p class="test-label">Test 1–5: Route navigation</p>
+    <nav data-test="nav">
+      <a route="/" route-active-exact="active" data-test="nav-home">Home</a>
+      <a route="/about" route-active="active" data-test="nav-about">About</a>
+      <a route="/users/42" route-active="active" data-test="nav-user">User 42</a>
+      <a route="/search?q=hello" data-test="nav-search">Search</a>
+      <a route="/protected" data-test="nav-protected">Protected</a>
+    </nav>
+  </section>
+
+  <!-- Route templates -->
+
+  <!-- Test 1: Home route -->
+  <template route="/">
+    <div data-test="page-home">
+      <h2>Home Page</h2>
+      <p>Welcome to the home page</p>
+    </div>
+  </template>
+
+  <!-- Test 2: About route -->
+  <template route="/about">
+    <div data-test="page-about">
+      <h2>About Page</h2>
+    </div>
+  </template>
+
+  <!-- Test 3: Route params -->
+  <template route="/users/:id">
+    <div data-test="page-user">
+      <h2>User Profile</h2>
+      <p>User ID: <span data-test="user-id" bind="$route.params.id"></span></p>
+    </div>
+  </template>
+
+  <!-- Test 4: Query string -->
+  <template route="/search">
+    <div data-test="page-search">
+      <h2>Search</h2>
+      <p>Query: <span data-test="search-query" bind="$route.query.q"></span></p>
+    </div>
+  </template>
+
+  <!-- Test 5: Route guard → redirect to /login -->
+  <template route="/login">
+    <div data-test="page-login">
+      <h2>Login Page</h2>
+    </div>
+  </template>
+
+  <template route="/protected" guard="false" redirect="/login">
+    <div data-test="page-protected">
+      <h2>Protected Content</h2>
+    </div>
+  </template>
+
+  <!-- Test 6–7: Route outlet -->
+  <section>
+    <p class="test-label">Test 6: Route outlet</p>
+    <div route-view data-test="outlet"></div>
+  </section>
+
+  <!-- Test 8: Anchor links in hash mode -->
+  <section>
+    <p class="test-label">Test 8: Anchor links in hash mode</p>
+    <a href="#anchor-target" data-test="anchor-link">Go to anchor</a>
+    <div style="height: 50px;"></div>
+    <div id="anchor-target" data-test="anchor-target">Anchor Target Section</div>
+  </section>
+
+  <!-- Test 9: Programmatic navigation -->
+  <section state="{}">
+    <p class="test-label">Test 9: Programmatic navigation</p>
+    <button data-test="prog-nav" on:click="$router.push('/about')">Go to About</button>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.config({ router: { mode: 'hash' } });
+    NoJS.init();
+  </script>
+</body>
+</html>

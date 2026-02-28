@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refs &amp; Actions — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    input[type="text"] { padding: 0.25rem 0.5rem; border: 1px solid #aaa; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Element ref -->
+  <section state="{}">
+    <p class="test-label">Test 1: Element ref</p>
+    <input ref="myInput" data-test="ref-input" placeholder="Focus me" />
+    <button data-test="ref-focus-btn" on:click="$refs.myInput.focus()">Focus input</button>
+  </section>
+
+  <!-- 2. Call directive -->
+  <section state="{}">
+    <p class="test-label">Test 2: Call directive</p>
+    <button call="/api/action" method="post" as="result" success="action-success" data-test="call-btn">Run Action</button>
+    <template id="action-success"><div data-test="call-result"><span bind="result.message"></span></div></template>
+  </section>
+
+  <!-- 3. Error boundary -->
+  <section error-boundary="fallback-tpl">
+    <p class="test-label">Test 3: Error boundary</p>
+    <div data-test="error-content">
+      <p>Content before error</p>
+      <button data-test="error-trigger" on:click="undefinedFunction()">Trigger Error</button>
+    </div>
+  </section>
+  <template id="fallback-tpl">
+    <div data-test="error-fallback">
+      <p>Something went wrong. Error caught by boundary.</p>
+    </div>
+  </template>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

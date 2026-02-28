@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forms &amp; Validation — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+    .error { color: #f44336; font-size: 0.85rem; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; margin-bottom: 0.25rem; font-weight: 500; }
+    .field input { padding: 0.35rem 0.5rem; border: 1px solid #aaa; border-radius: 3px; width: 100%; }
+  </style>
+</head>
+<body>
+
+  <section state="{}">
+    <form validate on:submit.prevent="">
+
+      <!-- 1. Required email field -->
+      <div class="field">
+        <p class="test-label">Test 1: Required email field</p>
+        <label>Email</label>
+        <input name="email" validate="required|email" data-test="email-input" />
+        <span class="error" data-test="email-error" bind="$form.errors.email"></span>
+      </div>
+
+      <!-- 2. Min/Max field -->
+      <div class="field">
+        <p class="test-label">Test 2: Min/Max field</p>
+        <label>Age</label>
+        <input name="age" type="number" validate="min:18|max:99" data-test="age-input" />
+        <span class="error" data-test="age-error" bind="$form.errors.age"></span>
+      </div>
+
+      <!-- 3. Password match -->
+      <div class="field">
+        <p class="test-label">Test 3: Password match</p>
+        <label>Password</label>
+        <input name="password" type="password" data-test="password-input" />
+      </div>
+      <div class="field">
+        <label>Confirm Password</label>
+        <input name="confirm" type="password" validate="match:password" data-test="confirm-input" />
+        <span class="error" data-test="confirm-error" bind="$form.errors.confirm"></span>
+      </div>
+
+      <!-- 4. Submit button disabled when invalid -->
+      <div class="field">
+        <p class="test-label">Test 4: Submit button (disabled when invalid)</p>
+        <button data-test="submit-btn" bind-disabled="!$form.valid">Submit</button>
+      </div>
+
+      <!-- 5. Dirty display -->
+      <div class="field">
+        <p class="test-label">Test 5: Dirty display</p>
+        <span class="value" data-test="dirty-display" bind="$form.dirty"></span>
+      </div>
+
+      <!-- 6. Reset button -->
+      <div class="field">
+        <p class="test-label">Test 6: Reset button</p>
+        <button type="button" on:click="$form.reset()" data-test="reset-btn">Reset</button>
+      </div>
+
+    </form>
+  </section>
+
+  <!-- 7. Custom validator (separate form) -->
+  <section state="{}">
+    <form validate>
+      <p class="test-label">Test 7: Custom validator</p>
+      <div class="field">
+        <label>Secure Password</label>
+        <input name="securePass" validate="custom:strongPassword" data-test="custom-input" />
+        <span class="error" data-test="custom-error" bind="$form.errors.securePass"></span>
+      </div>
+    </form>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.validator('strongPassword', (value) => {
+      if (!value || value.length < 8) return 'Password must be at least 8 characters';
+      if (!/[A-Z]/.test(value)) return 'Must contain uppercase letter';
+      if (!/[0-9]/.test(value)) return 'Must contain a number';
+      return true;
+    });
+  </script>
+  <script>NoJS.init();</script>
+</body>
+</html>

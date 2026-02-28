@@ -1,9 +1,9 @@
-<!-- Landing Page — from design.pen V7 "The Full Story" (bAp6a) -->
+<!-- Landing Page - from design.pen V7 "The Full Story" (bAp6a) -->
 
-<!-- ═══ Section 1: Code Comparison — #F8FAFC bg, padding 80, gap 40 ═══ -->
+<!-- ═══ Section 1: Code Comparison - #F8FAFC bg, padding 80, gap 40 ═══ -->
 <section class="v7-code-compare">
   <h2 class="v7-code-compare-title">The same app.<br>The real difference.</h2>
-  <p class="v7-code-compare-sub">A reactive search box — the most common real-world pattern.</p>
+  <p class="v7-code-compare-sub">A reactive search box - the most common real-world pattern.</p>
   <div class="v7-panels">
     <div class="v7-panel">
       <div class="v7-panel-topbar">
@@ -50,7 +50,7 @@
   </div>
 </section>
 
-<!-- ═══ Section 2: Bundle Stats — white bg, padding 100/80, gap 24, centered ═══ -->
+<!-- ═══ Section 2: Bundle Stats - white bg, padding 100/80, gap 24, centered ═══ -->
 <section class="v7-bundle">
   <span class="v7-bundle-badge">The outcome.</span>
   <h2 class="v7-bundle-h1">Your bundle is 2.3 MB.</h2>
@@ -62,7 +62,7 @@
   </div>
 </section>
 
-<!-- ═══ Section 3: Philosophy Hero — #0F172A bg, padding 120/80/100/80, gap 32 ═══ -->
+<!-- ═══ Section 3: Philosophy Hero - #0F172A bg, padding 120/80/100/80, gap 32 ═══ -->
 <section class="v7-manifesto">
   <span class="v7-kicker">A MANIFESTO</span>
   <h1 class="v7-manifesto-h1">The web was already reactive.</h1>
@@ -70,7 +70,7 @@
   <div class="v7-divider"></div>
 </section>
 
-<!-- ═══ Section 4: Problem Editorial — #0F172A bg, padding 80, gap 60 ═══ -->
+<!-- ═══ Section 4: Problem Editorial - #0F172A bg, padding 80, gap 60 ═══ -->
 <section class="v7-problem">
   <span class="v7-kicker">THE PROBLEM WITH MODERN JAVASCRIPT</span>
   <div class="v7-columns">
@@ -79,17 +79,17 @@
       <p>We built abstraction upon abstraction until a simple form required three files, a build pipeline, and a framework runtime.</p>
     </div>
     <div class="v7-column">
-      <p>No.JS is the opposite bet. The browser is not the enemy — it's the platform. HTML is not limited — it's underutilized. Attributes are not primitive — they're a DSL waiting to happen.</p>
+      <p>No.JS is the opposite bet. The browser is not the enemy, it's the platform. HTML is not limited, it's underutilized. Attributes are not primitive, they're a DSL waiting to happen.</p>
       <p>We built No.JS on one conviction: if you can express it in HTML, you should.</p>
     </div>
     <div class="v7-column">
-      <p>The result is a framework you can learn in an afternoon and ship in 30 seconds. Not because we made it simple — but because the browser was already capable. We just got out of the way.</p>
+      <p>The result is a framework you can learn in an afternoon and ship in 30 seconds. Not because we made it simple, but because the browser was already capable. We just got out of the way.</p>
       <p>This is not anti-JavaScript. It's pro-HTML.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══ Section 5: Principles — #0A1020 bg, padding 80, gap 48 ═══ -->
+<!-- ═══ Section 5: Principles - #0A1020 bg, padding 80, gap 48 ═══ -->
 <section class="v7-principles">
   <span class="v7-kicker">OUR PRINCIPLES</span>
   <div class="v7-principles-grid">
@@ -116,12 +116,12 @@
   </div>
 </section>
 
-<!-- ═══ Section 6: Pull Quote — #F8FAFC bg, padding 80/160, centered ═══ -->
+<!-- ═══ Section 6: Pull Quote - #F8FAFC bg, padding 80/160, centered ═══ -->
 <section class="v7-quote">
   <blockquote class="v7-quote-text">"The best JavaScript<br>is the JavaScript you don't write."</blockquote>
 </section>
 
-<!-- ═══ Section 7: CTA — #0F172A bg, padding 80, gap 20, centered ═══ -->
+<!-- ═══ Section 7: CTA - #0F172A bg, padding 80, gap 20, centered ═══ -->
 <section class="landing-cta">
   <h2 class="landing-cta-headline">Ready to Build?</h2>
   <p class="landing-cta-sub">Start using No.JS today.</p>

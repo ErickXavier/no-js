@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animations — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .fadeIn { animation: fadeIn 0.3s ease forwards; }
+    .fadeOut { animation: fadeOut 0.3s ease forwards; }
+    .slideIn { animation: slideIn 0.3s ease forwards; }
+
+    .fade-enter { opacity: 0; }
+    .fade-enter-active { transition: opacity 0.3s; opacity: 1; }
+    .fade-leave { opacity: 1; }
+    .fade-leave-active { transition: opacity 0.3s; opacity: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Animate on if -->
+  <section state="{ show: false }">
+    <p class="test-label">Test 1: Animate on if</p>
+    <button data-test="fade-toggle" on:click="show = !show">Toggle fade</button>
+    <div if="show" animate="fadeIn" data-test="fade-target">Faded in!</div>
+  </section>
+
+  <!-- 2. Animate enter/leave -->
+  <section state="{ visible: false }">
+    <p class="test-label">Test 2: Animate enter/leave</p>
+    <button data-test="enterleave-toggle" on:click="visible = !visible">Toggle enter/leave</button>
+    <div if="visible" animate-enter="slideIn" animate-leave="fadeOut" data-test="enterleave-target">Animated</div>
+  </section>
+
+  <!-- 3. Stagger on loop -->
+  <section state="{ staggerItems: ['A', 'B', 'C', 'D'] }">
+    <p class="test-label">Test 3: Stagger on loop</p>
+    <ul data-test="stagger-list" each="item in staggerItems" template="stagger-tpl" animate-stagger="100" animate="slideIn"></ul>
+    <template id="stagger-tpl"><li class="stagger-item" data-test="stagger-item" bind="item"></li></template>
+  </section>
+
+  <!-- 4. Transition class sequence -->
+  <section state="{ trans: false }">
+    <p class="test-label">Test 4: Transition class sequence</p>
+    <button data-test="transition-toggle" on:click="trans = !trans">Toggle transition</button>
+    <div if="trans" transition="fade" data-test="transition-target">Transitioning</div>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>
