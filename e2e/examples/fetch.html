@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fetch — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    input[type="text"], input[type="number"] { padding: 0.25rem 0.5rem; border: 1px solid #aaa; border-radius: 3px; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. GET request -->
+  <section>
+    <p class="test-label">Test 1: GET request</p>
+    <div get="/api/users" as="users">
+      <ul data-test="user-list" each="user in users" template="user-tpl"></ul>
+    </div>
+    <template id="user-tpl"><li data-test="user-item" bind="user.name"></li></template>
+  </section>
+
+  <!-- 2. Loading state -->
+  <section>
+    <p class="test-label">Test 2: Loading state</p>
+    <div get="/api/slow" as="data" loading="loading-tpl">
+      <span bind="data.message" data-test="loaded-data"></span>
+    </div>
+    <template id="loading-tpl"><div data-test="loading-msg">Loading...</div></template>
+  </section>
+
+  <!-- 3. Error state -->
+  <section>
+    <p class="test-label">Test 3: Error state</p>
+    <div get="/api/error" as="errData" error="error-tpl">
+      <span bind="errData.value"></span>
+    </div>
+    <template id="error-tpl"><div data-test="error-msg">Something went wrong</div></template>
+  </section>
+
+  <!-- 4. Empty state -->
+  <section>
+    <p class="test-label">Test 4: Empty state</p>
+    <div get="/api/empty" as="items" empty="empty-tpl">
+      <ul each="item in items" template="item-tpl"></ul>
+    </div>
+    <template id="item-tpl"><li bind="item.name"></li></template>
+    <template id="empty-tpl"><div data-test="empty-msg">No data available</div></template>
+  </section>
+
+  <!-- 5. Reactive URL -->
+  <section state="{ userId: 1 }">
+    <p class="test-label">Test 5: Reactive URL</p>
+    <input type="number" model="userId" data-test="user-id-input" />
+    <div get="/api/users/{userId}" as="user">
+      <span bind="user.name" data-test="reactive-user"></span>
+    </div>
+  </section>
+
+  <!-- 6. Form POST -->
+  <section>
+    <p class="test-label">Test 6: Form POST</p>
+    <form post="/api/users" success="post-success-tpl">
+      <input type="text" name="name" data-test="form-name" placeholder="Name" />
+      <button type="submit" data-test="form-submit">Submit</button>
+    </form>
+    <template id="post-success-tpl"><div data-test="post-result">User created!</div></template>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

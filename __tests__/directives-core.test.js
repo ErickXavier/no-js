@@ -2122,7 +2122,7 @@ describe('watch — no change and no handler (L94-96)', () => {
 
 
 describe('bind — null/undefined skips textContent (L16)', () => {
-  test('bind with null value preserves original text', () => {
+  test('bind with null value clears text', () => {
     const parent = document.createElement('div');
     parent.setAttribute('state', '{ text: null }');
     const el = document.createElement('span');
@@ -2131,11 +2131,11 @@ describe('bind — null/undefined skips textContent (L16)', () => {
     parent.appendChild(el);
     document.body.appendChild(parent);
     processTree(parent);
-    expect(el.textContent).toBe('original');
+    expect(el.textContent).toBe('');
     document.body.removeChild(parent);
   });
 
-  test('bind with undefined value preserves original text', () => {
+  test('bind with undefined value clears text', () => {
     const parent = document.createElement('div');
     parent.setAttribute('state', '{}');
     const el = document.createElement('span');
@@ -2144,7 +2144,7 @@ describe('bind — null/undefined skips textContent (L16)', () => {
     parent.appendChild(el);
     document.body.appendChild(parent);
     processTree(parent);
-    expect(el.textContent).toBe('placeholder');
+    expect(el.textContent).toBe('');
     document.body.removeChild(parent);
   });
 });
@@ -2355,8 +2355,8 @@ describe('foreach with animation attributes', () => {
 
     
     const wrappersArr = [...wrappers];
-    expect(wrappersArr[0].style.animationDelay).toBe('0ms');
-    expect(wrappersArr[1].style.animationDelay).toBe('100ms');
-    expect(wrappersArr[2].style.animationDelay).toBe('200ms');
+    expect(wrappersArr[0].firstElementChild.style.animationDelay).toBe('0ms');
+    expect(wrappersArr[1].firstElementChild.style.animationDelay).toBe('100ms');
+    expect(wrappersArr[2].firstElementChild.style.animationDelay).toBe('200ms');
   });
 });

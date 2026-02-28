@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filters — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. uppercase -->
+  <section state="{ name: 'hello world' }">
+    <p class="test-label">Test 1: uppercase</p>
+    <span bind="name | uppercase" data-test="upper-output"></span>
+  </section>
+
+  <!-- 2. currency -->
+  <section state="{ price: 19.99 }">
+    <p class="test-label">Test 2: currency</p>
+    <span bind="price | currency:'USD'" data-test="currency-output"></span>
+  </section>
+
+  <!-- 3. count (array) -->
+  <section state="{ items: ['a', 'b', 'c', 'd', 'e'] }">
+    <p class="test-label">Test 3: count</p>
+    <span bind="items | count" data-test="count-output"></span>
+  </section>
+
+  <!-- 4. sortBy | first (chain) -->
+  <section state="{ people: [{name:'Charlie'}, {name:'Alice'}, {name:'Bob'}] }">
+    <p class="test-label">Test 4: sortBy | first (chain)</p>
+    <span bind="people | sortBy:'name' | first | json" data-test="chain-output"></span>
+  </section>
+
+  <!-- 5. truncate -->
+  <section state="{ bio: 'This is a very long biography that should be truncated at some point to keep things clean.' }">
+    <p class="test-label">Test 5: truncate</p>
+    <span bind="bio | truncate:30" data-test="truncate-output"></span>
+  </section>
+
+  <!-- 6. capitalize -->
+  <section state="{ text: 'john doe smith' }">
+    <p class="test-label">Test 6: capitalize</p>
+    <span bind="text | capitalize" data-test="capitalize-output"></span>
+  </section>
+
+  <!-- 7. Custom filter (initials) -->
+  <section state="{ fullName: 'John Doe' }">
+    <p class="test-label">Test 7: custom filter</p>
+    <span bind="fullName | initials" data-test="custom-output"></span>
+  </section>
+
+  <!-- 8. join -->
+  <section state="{ tags: ['javascript', 'html', 'css'] }">
+    <p class="test-label">Test 8: join</p>
+    <span bind="tags | join" data-test="join-output"></span>
+  </section>
+
+  <!-- 9. default -->
+  <section state="{ maybeNull: null }">
+    <p class="test-label">Test 9: default</p>
+    <span bind="maybeNull | default:'N/A'" data-test="default-output"></span>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.filter('initials', (v) => v.split(' ').map(w => w[0]).join('').toUpperCase());
+    NoJS.init();
+  </script>
+</body>
+</html>

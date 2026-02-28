@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NoJS – i18n</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    section { border: 1px solid #ddd; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+    .test-label { font-size: .85rem; color: #888; margin: 0 0 .25rem; }
+    .value { font-weight: 600; }
+    button { margin: .25rem .25rem .25rem 0; padding: .35rem .75rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h1>i18n</h1>
+
+  <!-- 1. Basic translation -->
+  <section>
+    <p class="test-label">Basic translation</p>
+    <span class="value" t="welcome" data-test="welcome-text"></span>
+  </section>
+
+  <!-- 2. Parameterized translation -->
+  <section state="{ userName: 'Alice' }">
+    <p class="test-label">Parameterized translation</p>
+    <span class="value" t="greeting" t-name="userName" data-test="greeting-text"></span>
+  </section>
+
+  <!-- 3. Pluralization -->
+  <section state="{ itemCount: 1 }">
+    <p class="test-label">Pluralization</p>
+    <span class="value" t="items" t-count="itemCount" data-test="plural-text"></span>
+    <div>
+      <button data-test="set-one" on:click="itemCount = 1">Set 1</button>
+      <button data-test="set-five" on:click="itemCount = 5">Set 5</button>
+    </div>
+  </section>
+
+  <!-- 4. Locale switch -->
+  <section>
+    <p class="test-label">Locale switch</p>
+    <span class="value" t="farewell" data-test="farewell-text"></span>
+    <div>
+      <button data-test="lang-es" on:click="$i18n.locale = 'es'">Español</button>
+    </div>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.config({ i18n: { defaultLocale: 'en', fallbackLocale: 'en' } });
+    NoJS.i18n({
+      locales: {
+        en: {
+          welcome: 'Welcome to our app',
+          greeting: 'Hello, {name}!',
+          items: 'one item | {count} items',
+          farewell: 'Goodbye'
+        },
+        es: {
+          welcome: 'Bienvenido a nuestra app',
+          greeting: 'Hola, {name}!',
+          items: 'un elemento | {count} elementos',
+          farewell: 'Adiós'
+        }
+      }
+    });
+    NoJS.init();
+  </script>
+</body>
+</html>

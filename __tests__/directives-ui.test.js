@@ -979,9 +979,9 @@ describe('stagger and enter animation', () => {
     const wrappers = el.children;
     expect(wrappers.length).toBe(3);
 
-    expect(wrappers[0].style.animationDelay).toBe('0ms');
-    expect(wrappers[1].style.animationDelay).toBe('100ms');
-    expect(wrappers[2].style.animationDelay).toBe('200ms');
+    expect(wrappers[0].firstElementChild.style.animationDelay).toBe('0ms');
+    expect(wrappers[1].firstElementChild.style.animationDelay).toBe('100ms');
+    expect(wrappers[2].firstElementChild.style.animationDelay).toBe('200ms');
 
     const firstChild0 = wrappers[0].firstElementChild;
     expect(firstChild0.classList.contains('fadeIn')).toBe(true);

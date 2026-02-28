@@ -19,6 +19,10 @@ function _validateField(value, rules, allValues) {
     } else {
       // Built-in validators
       switch (name) {
+        case "required":
+          if (value == null || String(value).trim() === "")
+            return "Required";
+          break;
         case "email":
           if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
             return "Invalid email";
@@ -90,6 +94,8 @@ registerDirective("validate", {
         errors: {},
         values: {},
         reset: () => {
+          formCtx.dirty = false;
+          formCtx.touched = false;
           el.reset();
           checkValidity();
         },
@@ -194,22 +200,32 @@ registerDirective("error-boundary", {
   init(el, name, fallbackTpl) {
     const ctx = findContext(el);
 
+    function showFallback(message) {
+      const clone = _cloneTemplate(fallbackTpl);
+      if (clone) {
+        const childCtx = createContext(
+          { err: { message } },
+          ctx,
+        );
+        el.innerHTML = "";
+        const wrapper = document.createElement("div");
+        wrapper.style.display = "contents";
+        wrapper.__ctx = childCtx;
+        wrapper.appendChild(clone);
+        el.appendChild(wrapper);
+        processTree(wrapper);
+      }
+    }
+
+    // Listen for NoJS expression errors dispatched from event handlers
+    el.addEventListener("nojs:error", (e) => {
+      showFallback(e.detail?.message || "An error occurred");
+    });
+
+    // Listen for window-level errors (resource load failures, etc.)
     window.addEventListener("error", (e) => {
       if (el.contains(e.target) || el === e.target) {
-        const clone = _cloneTemplate(fallbackTpl);
-        if (clone) {
-          const childCtx = createContext(
-            { err: { message: e.message } },
-            ctx,
-          );
-          el.innerHTML = "";
-          const wrapper = document.createElement("div");
-          wrapper.style.display = "contents";
-          wrapper.__ctx = childCtx;
-          wrapper.appendChild(clone);
-          el.appendChild(wrapper);
-          processTree(wrapper);
-        }
+        showFallback(e.message || "An error occurred");
       }
     });
   },

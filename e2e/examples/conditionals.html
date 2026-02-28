@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conditionals — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. If toggle -->
+  <section state="{ loggedIn: false }">
+    <p class="test-label">Test 1: If toggle</p>
+    <button data-test="login-toggle" on:click="loggedIn = !loggedIn">Toggle login</button>
+    <div data-test="welcome-msg" if="loggedIn">Welcome!</div>
+  </section>
+
+  <!-- 2. If / else-if / else chain -->
+  <section state="{ role: 'guest' }">
+    <p class="test-label">Test 2: If / else-if / else chain</p>
+    <select data-test="role-select" model="role">
+      <option value="admin">admin</option>
+      <option value="editor">editor</option>
+      <option value="guest">guest</option>
+    </select>
+    <div data-test="panel-admin" if="role === 'admin'">Admin Panel</div>
+    <div data-test="panel-editor" else-if="role === 'editor'">Editor Panel</div>
+    <div data-test="panel-guest" else>Guest Panel</div>
+  </section>
+
+  <!-- 3. Show / hide (display toggle, stays in DOM) -->
+  <section state="{ visible: true }">
+    <p class="test-label">Test 3: Show directive</p>
+    <button data-test="show-toggle" on:click="visible = !visible">Toggle visibility</button>
+    <div data-test="show-target" show="visible">I am shown</div>
+  </section>
+
+  <!-- 4. Hide directive -->
+  <section state="{ hidden: false }">
+    <p class="test-label">Test 4: Hide directive</p>
+    <button data-test="hide-toggle" on:click="hidden = !hidden">Toggle hidden</button>
+    <div data-test="hide-target" hide="hidden">I should hide</div>
+  </section>
+
+  <!-- 5. Switch / case -->
+  <section state="{ status: 'pending' }">
+    <p class="test-label">Test 5: Switch / case</p>
+    <select data-test="status-select" model="status">
+      <option value="pending">pending</option>
+      <option value="active">active</option>
+      <option value="other">other</option>
+    </select>
+    <div switch="status">
+      <div data-test="case-pending" case="'pending'">Pending…</div>
+      <div data-test="case-active" case="'active'">Active!</div>
+      <div data-test="case-default" default>Unknown status</div>
+    </div>
+  </section>
+
+  <!-- 6. Template branches -->
+  <section state="{ premium: false }">
+    <p class="test-label">Test 6: Template branches</p>
+    <button data-test="premium-toggle" on:click="premium = !premium">Toggle premium</button>
+    <div data-test="branch-output" if="premium" then="premium-tpl" else="free-tpl"></div>
+    <template id="premium-tpl"><span>Premium content</span></template>
+    <template id="free-tpl"><span>Free content</span></template>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

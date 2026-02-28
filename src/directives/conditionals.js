@@ -82,6 +82,7 @@ registerDirective("else-if", {
     // Works like `if` but checks previous sibling's condition
     const ctx = findContext(el);
     const thenId = el.getAttribute("then");
+    const originalChildren = [...el.childNodes].map((n) => n.cloneNode(true));
 
     function update() {
       // Check if any preceding if/else-if was true
@@ -108,6 +109,10 @@ registerDirective("else-if", {
             el.innerHTML = "";
             el.appendChild(clone);
           }
+        } else {
+          el.innerHTML = "";
+          for (const child of originalChildren)
+            el.appendChild(child.cloneNode(true));
         }
         _clearDeclared(el);
         processTree(el);

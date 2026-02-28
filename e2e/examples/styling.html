@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Styling — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+    .active { background: #4caf50; color: white; padding: 0.5rem; }
+    .bold { font-weight: bold; }
+    .italic { font-style: italic; }
+    .underline { text-decoration: underline; }
+    .base { padding: 0.5rem; border: 1px solid #ccc; }
+    .primary { background: #2196f3; color: white; }
+    .danger { background: #f44336; color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Class toggle -->
+  <section state="{ isActive: false }">
+    <p class="test-label">Test 1: Class toggle</p>
+    <button data-test="class-toggle" on:click="isActive = !isActive">Toggle active</button>
+    <div class-active="isActive" data-test="class-target">Box</div>
+  </section>
+
+  <!-- 2. Class map -->
+  <section state="{ isBold: false, isItalic: false }">
+    <p class="test-label">Test 2: Class map</p>
+    <label><input type="checkbox" data-test="bold-check" model="isBold" /> Bold</label>
+    <label><input type="checkbox" data-test="italic-check" model="isItalic" /> Italic</label>
+    <p class-map="{ bold: isBold, italic: isItalic }" data-test="classmap-target">Styled text</p>
+  </section>
+
+  <!-- 3. Class list -->
+  <section state="{ variant: 'primary' }">
+    <p class="test-label">Test 3: Class list</p>
+    <select data-test="variant-select" model="variant">
+      <option value="primary">primary</option>
+      <option value="danger">danger</option>
+    </select>
+    <div class-list="['base', variant]" data-test="classlist-target">Box</div>
+  </section>
+
+  <!-- 4. Style binding -->
+  <section state="{ color: '#ff0000' }">
+    <p class="test-label">Test 4: Style binding</p>
+    <input type="color" data-test="color-input" model="color" />
+    <span style-color="color" data-test="style-target">Colored text</span>
+  </section>
+
+  <!-- 5. Style map -->
+  <section state="{ size: 16, bg: '#eeeeee' }">
+    <p class="test-label">Test 5: Style map</p>
+    <input type="range" data-test="size-input" model="size" min="10" max="48" />
+    <div style-map="{ fontSize: size + 'px', backgroundColor: bg }" data-test="stylemap-target">Styled</div>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

@@ -4,9 +4,25 @@
 
 import { _config } from "./globals.js";
 
+const _i18nListeners = new Set();
+
+export function _watchI18n(fn) {
+  _i18nListeners.add(fn);
+  return () => _i18nListeners.delete(fn);
+}
+
 export const _i18n = {
-  locale: "en",
+  _locale: "en",
   locales: {},
+  get locale() {
+    return this._locale;
+  },
+  set locale(v) {
+    if (this._locale !== v) {
+      this._locale = v;
+      _i18nListeners.forEach((fn) => fn());
+    }
+  },
   t(key, params = {}) {
     const messages =
       _i18n.locales[_i18n.locale] ||

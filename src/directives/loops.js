@@ -86,13 +86,15 @@ registerDirective("each", {
         el.appendChild(wrapper);
         processTree(wrapper);
 
-        // Stagger animation
-        if (animEnter && stagger) {
-          wrapper.style.animationDelay = i * stagger + "ms";
-        }
         if (animEnter) {
           const firstChild = wrapper.firstElementChild;
-          if (firstChild) firstChild.classList.add(animEnter);
+          if (firstChild) {
+            firstChild.classList.add(animEnter);
+            // Stagger animation — delay must be on the child, not the wrapper
+            if (stagger) {
+              firstChild.style.animationDelay = i * stagger + "ms";
+            }
+          }
         }
       });
     }
@@ -198,13 +200,15 @@ registerDirective("foreach", {
           el.appendChild(wrapper);
           processTree(wrapper);
 
-          // Stagger animation
-          if (animEnter && stagger) {
-            wrapper.style.animationDelay = (i * stagger) + "ms";
-          }
           if (animEnter) {
             const firstChild = wrapper.firstElementChild;
-            if (firstChild) firstChild.classList.add(animEnter);
+            if (firstChild) {
+              firstChild.classList.add(animEnter);
+              // Stagger animation — delay must be on the child, not the wrapper
+              if (stagger) {
+                firstChild.style.animationDelay = (i * stagger) + "ms";
+              }
+            }
           }
         });
       }

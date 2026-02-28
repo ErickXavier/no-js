@@ -13,7 +13,7 @@ registerDirective("bind", {
     const ctx = findContext(el);
     function update() {
       const val = evaluate(expr, ctx);
-      if (val !== undefined && val !== null) el.textContent = String(val);
+      el.textContent = (val !== undefined && val !== null) ? String(val) : '';
     }
     _watchExpr(expr, ctx, update);
     update();

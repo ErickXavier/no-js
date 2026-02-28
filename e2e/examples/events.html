@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    input[type="text"] { padding: 0.25rem 0.5rem; border: 1px solid #aaa; border-radius: 3px; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Basic click -->
+  <section state="{ clickCount: 0 }">
+    <p class="test-label">Test 1: Basic click</p>
+    <button data-test="click-btn" on:click="clickCount = clickCount + 1">Click me</button>
+    <span class="value" data-test="click-count" bind="clickCount"></span>
+  </section>
+
+  <!-- 2. Prevent modifier -->
+  <section state="{ prevented: false }">
+    <p class="test-label">Test 2: Prevent modifier</p>
+    <a href="https://example.com" data-test="prevent-link" on:click.prevent="prevented = true">Prevent link</a>
+    <span class="value" data-test="prevent-output" bind="prevented"></span>
+  </section>
+
+  <!-- 3. Once modifier -->
+  <section state="{ onceCount: 0 }">
+    <p class="test-label">Test 3: Once modifier</p>
+    <button data-test="once-btn" on:click.once="onceCount = onceCount + 1">Click once</button>
+    <span class="value" data-test="once-count" bind="onceCount"></span>
+  </section>
+
+  <!-- 4. Debounce -->
+  <section state="{ debounced: '' }">
+    <p class="test-label">Test 4: Debounce</p>
+    <input type="text" data-test="debounce-input" on:input.debounce.300="debounced = $event.target.value" placeholder="Type here" />
+    <span class="value" data-test="debounce-output" bind="debounced"></span>
+  </section>
+
+  <!-- 5. Keydown enter -->
+  <section state="{ submitted: '' }">
+    <p class="test-label">Test 5: Keydown enter</p>
+    <input type="text" data-test="key-input" on:keydown.enter="submitted = 'yes'" placeholder="Press Enter" />
+    <span class="value" data-test="key-output" bind="submitted"></span>
+  </section>
+
+  <!-- 6. on:mounted lifecycle -->
+  <section state="{ status: 'waiting' }">
+    <p class="test-label">Test 6: Mounted lifecycle</p>
+    <div on:mounted="status = 'mounted'">
+      <span class="value" data-test="mounted-output" bind="status"></span>
+    </div>
+  </section>
+
+  <!-- 7. Custom event trigger -->
+  <section state="{ received: '' }" on:my-event="received = $event.detail.msg">
+    <p class="test-label">Test 7: Custom event trigger</p>
+    <button data-test="trigger-btn" trigger="my-event" trigger-data="{ msg: 'hello' }">Trigger</button>
+    <span class="value" data-test="trigger-output" bind="received"></span>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

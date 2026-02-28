@@ -2,7 +2,7 @@
 //  EXPRESSION EVALUATOR
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _stores, _routerInstance, _filters, _warn, _config } from "./globals.js";
+import { _stores, _routerInstance, _filters, _warn, _config, _notifyStoreWatchers } from "./globals.js";
 import { _i18n } from "./i18n.js";
 import { _collectKeys } from "./context.js";
 
@@ -272,6 +272,7 @@ export function _execStatement(expr, ctx, extraVars = {}) {
       _wCtx = _wCtx.$parent;
     }
     const setters = [...chainKeys]
+      .filter((k) => !k.startsWith("$"))
       .map(
         (k) =>
           `{let _c=__ctx;while(_c&&_c.__isProxy){if('${k}'in _c.__raw){_c.$set('${k}',typeof ${k}!=='undefined'?${k}:_c.__raw['${k}']);break;}_c=_c.$parent;}}`,
@@ -280,8 +281,19 @@ export function _execStatement(expr, ctx, extraVars = {}) {
 
     const fn = new Function("__ctx", ...keyArr, `${expr};\n${setters}`);
     fn(ctx, ...valArr);
+
+    // Notify global store watchers when expression touches $store
+    if (typeof expr === "string" && expr.includes("$store")) {
+      _notifyStoreWatchers();
+    }
   } catch (e) {
     _warn("Expression error:", expr, e.message);
+    // Dispatch a custom DOM event so error-boundary directives can catch it
+    if (extraVars.$el) {
+      extraVars.$el.dispatchEvent(
+        new CustomEvent("nojs:error", { bubbles: true, detail: { message: e.message, error: e } })
+      );
+    }
   }
 }
 

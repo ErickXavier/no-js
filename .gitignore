@@ -21,3 +21,5 @@ coverage/
 
 # Build output
 dist/
+playwright-report
+test-results

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>State &amp; Binding — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    button { padding: 0.25rem 0.75rem; margin-right: 0.25rem; cursor: pointer; }
+    input[type="text"] { padding: 0.25rem 0.5rem; border: 1px solid #aaa; border-radius: 3px; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Counter with state and bind -->
+  <section state="{ count: 0 }">
+    <p class="test-label">Test 1: Counter with state and bind</p>
+    <button data-test="counter-dec" on:click="count = count - 1">−</button>
+    <span class="value" data-test="counter-value" bind="count"></span>
+    <button data-test="counter-inc" on:click="count = count + 1">+</button>
+
+    <!-- 3. Computed property (shares counter state) -->
+    <div computed="doubled" expr="count * 2" style="margin-top: 0.75rem;">
+      <p class="test-label" style="margin-top: 0;">Test 3: Computed property (doubled)</p>
+      Doubled: <span class="value" data-test="computed-value" bind="doubled"></span>
+    </div>
+
+    <!-- 4. Watcher -->
+    <div watch="count" on:change="log = 'changed to ' + $new" style="margin-top: 0.75rem;">
+      <p class="test-label" style="margin-top: 0;">Test 4: Watcher on count</p>
+      Watch output: <span class="value" data-test="watch-output" bind="log"></span>
+    </div>
+  </section>
+
+  <!-- 2. Text input with model -->
+  <section state="{ name: '' }">
+    <p class="test-label">Test 2: Text input with two-way binding</p>
+    <input type="text" data-test="name-input" model="name" placeholder="Type your name" />
+    <span class="value" data-test="name-display" bind="name"></span>
+  </section>
+
+  <!-- 5. Persistent state -->
+  <section state="{ saved: '' }" persist="localStorage" persist-key="e2e-test">
+    <p class="test-label">Test 5: Persistent state (localStorage)</p>
+    <input type="text" data-test="persist-input" model="saved" placeholder="Persisted value" />
+    <span class="value" data-test="persist-display" bind="saved"></span>
+  </section>
+
+  <!-- 6. Global store -->
+  <div store="app" value="{ theme: 'light' }"></div>
+  <section state="{}">
+    <p class="test-label">Test 6: Global store</p>
+    <span class="value" data-test="store-display" bind="$store.app.theme"></span>
+    <button data-test="store-toggle"
+            on:click="$store.app.theme = $store.app.theme === 'light' ? 'dark' : 'light'">
+      Toggle theme
+    </button>
+  </section>
+
+  <!-- 7. HTML binding -->
+  <section state="{ html: '<strong>bold</strong> and <em>italic</em>' }">
+    <p class="test-label">Test 7: HTML binding</p>
+    <div data-test="html-output" bind-html="html"></div>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>

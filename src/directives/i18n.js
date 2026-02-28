@@ -2,7 +2,7 @@
 //  DIRECTIVE: t (i18n translations)
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _i18n } from "../i18n.js";
+import { _i18n, _watchI18n } from "../i18n.js";
 import { evaluate } from "../evaluate.js";
 import { findContext } from "../dom.js";
 import { registerDirective } from "../registry.js";
@@ -24,6 +24,7 @@ registerDirective("t", {
     }
 
     ctx.$watch(update);
+    _watchI18n(update);
     update();
   },
 });

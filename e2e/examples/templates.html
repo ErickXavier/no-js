@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Templates — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+  </style>
+</head>
+<body>
+
+  <!-- Inline template definitions -->
+  <template id="badge-tpl"><span data-test="badge" style="background:#2196f3;color:white;padding:0.15rem 0.5rem;border-radius:3px;">Badge</span></template>
+
+  <template id="card">
+    <div data-test="card" style="border: 1px solid #ccc; padding: 1rem; border-radius: 4px;">
+      <h3 data-test="card-title" bind="title"></h3>
+      <slot name="body"><p>Default card body</p></slot>
+      <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #888;">
+        <slot name="footer"><span data-test="card-default-footer">Default footer</span></slot>
+      </div>
+    </div>
+  </template>
+
+  <!-- 1. Remote template (src) -->
+  <section>
+    <p class="test-label">Test 1: Remote template (src)</p>
+    <template src="./partials/header.tpl"></template>
+  </section>
+
+  <!-- 2. Inline include -->
+  <section>
+    <p class="test-label">Test 2: Inline include</p>
+    <template include="badge-tpl"></template>
+  </section>
+
+  <!-- 3. Component with variable passing -->
+  <section>
+    <p class="test-label">Test 3: Component with variable passing</p>
+    <div use="card" var-title="'My Card Title'">
+      <div slot="body"><p data-test="card-body">Custom body content</p></div>
+    </div>
+  </section>
+
+  <!-- 4. Slots with content projection -->
+  <section>
+    <p class="test-label">Test 4: Slots with content projection</p>
+    <div use="card" var-title="'Slot Test'">
+      <div slot="body"><p data-test="slot-body">Projected body</p></div>
+      <div slot="footer"><span data-test="slot-footer">Custom footer</span></div>
+    </div>
+  </section>
+
+  <!-- 5. Default slot content -->
+  <section>
+    <p class="test-label">Test 5: Default slot content</p>
+    <div use="card" var-title="'Default Slot'">
+      <div slot="body"><p>Just body</p></div>
+    </div>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>NoJS.init();</script>
+</body>
+</html>
