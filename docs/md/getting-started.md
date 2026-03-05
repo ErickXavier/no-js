@@ -28,7 +28,7 @@ await NoJS.init();
 
 ### Self-hosted
 
-Download `dist/iife/no.js` and include it with a `<script>` tag. It's a single file, ~14 KB gzipped.
+Download `dist/iife/no.js` and include it with a `<script>` tag. It's a single file, ~20 KB gzipped.
 
 ---
 

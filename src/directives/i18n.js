@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { _i18n, _watchI18n, _loadI18nNamespace, _notifyI18n } from "../i18n.js";
+import { _watchExpr } from "../globals.js";
 import { evaluate } from "../evaluate.js";
 import { findContext } from "../dom.js";
 import { registerDirective, processTree } from "../registry.js";
@@ -30,7 +31,7 @@ registerDirective("t", {
       }
     }
 
-    ctx.$watch(update);
+    _watchExpr(key, ctx, update);
     _watchI18n(update);
     update();
   },
@@ -39,6 +40,9 @@ registerDirective("t", {
 registerDirective("i18n-ns", {
   priority: 1,
   init(el, name, ns) {
+    // Empty ns = marker attribute (e.g. route-view); skip loading
+    if (!ns) return;
+
     // Save children to prevent premature t resolution
     const saved = document.createDocumentFragment();
     while (el.firstChild) saved.appendChild(el.firstChild);

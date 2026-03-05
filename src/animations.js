@@ -77,15 +77,15 @@ export function _animateOut(el, animName, transitionName, callback, durationMs) 
     const target = el.firstElementChild || el;
     target.classList.add(animName);
     if (durationMs) target.style.animationDuration = durationMs + "ms";
-    target.addEventListener(
-      "animationend",
-      () => {
-        target.classList.remove(animName);
-        callback();
-      },
-      { once: true },
-    );
-    setTimeout(callback, fallback); // Fallback
+    let called = false;
+    const done = () => {
+      if (called) return;
+      called = true;
+      target.classList.remove(animName);
+      callback();
+    };
+    target.addEventListener("animationend", done, { once: true });
+    setTimeout(done, fallback); // Fallback
     return;
   }
   if (transitionName) {
@@ -97,7 +97,10 @@ export function _animateOut(el, animName, transitionName, callback, durationMs) 
     requestAnimationFrame(() => {
       target.classList.remove(transitionName + "-leave");
       target.classList.add(transitionName + "-leave-to");
+      let called = false;
       const done = () => {
+        if (called) return;
+        called = true;
         target.classList.remove(
           transitionName + "-leave-active",
           transitionName + "-leave-to",

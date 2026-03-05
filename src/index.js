@@ -37,6 +37,7 @@ import "./directives/events.js";
 import "./directives/refs.js";
 import "./directives/validation.js";
 import "./directives/i18n.js";
+import "./directives/dnd.js";
 
 // ═══════════════════════════════════════════════════════════════════════
 //  PUBLIC API
@@ -215,7 +216,7 @@ const NoJS = {
   resolve,
 
   // Version
-  version: "1.1.0",
+  version: "1.2.0",
 };
 
 export default NoJS;

@@ -28,7 +28,7 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 - **i18n** — `t` directive with pluralization
 - **Filters** — `uppercase`, `currency`, `date`, `truncate`, 30+ built-in pipes
 - **Custom Directives** — Extend with `NoJS.directive()`
-- **~14 KB gzipped** — Zero dependencies
+- **~20 KB gzipped** — Zero dependencies
 
 ---
 
@@ -148,5 +148,5 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 <p align="center">
   <strong>No.JS</strong> — Because the best JavaScript is the JavaScript you don't write.<br>
-  <code>~14 KB gzipped</code> · <code>Zero dependencies</code> · <code>MIT License</code>
+  <code>~20 KB gzipped</code> · <code>Zero dependencies</code> · <code>MIT License</code>
 </p>

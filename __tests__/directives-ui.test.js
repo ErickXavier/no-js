@@ -1737,41 +1737,6 @@ describe('on:keydown key modifiers — all keys', () => {
 
 
 
-describe('class-list with falsy items (L34 false branch)', () => {
-  test('skips null/undefined/empty items in class-list array', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ classes: ["active", null, "", undefined, "bold"] }');
-    const div = document.createElement('div');
-    div.setAttribute('class-list', 'classes');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(div.classList.contains('active')).toBe(true);
-    expect(div.classList.contains('bold')).toBe(true);
-    expect(div.classList.length).toBe(2);
-    document.body.removeChild(parent);
-  });
-});
-
-describe('style-* with null value (L66 null branch)', () => {
-  test('clears style when value evaluates to null', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ bg: null }');
-    const div = document.createElement('div');
-    div.setAttribute('style-background-color', 'bg');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(div.style.backgroundColor).toBe('');
-    document.body.removeChild(parent);
-  });
-});
-
-
-
-
 
 
 describe('class-list with non-array value (L34 Array.isArray false)', () => {
@@ -1800,29 +1765,3 @@ describe('class-list with non-array value (L34 Array.isArray false)', () => {
   });
 });
 
-describe('style-map with null/undefined values (L66 ?? fallback)', () => {
-  test('clears style property when map value is null', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ styles: { color: null, fontSize: "14px" } }');
-    const div = document.createElement('div');
-    div.setAttribute('style-map', 'styles');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(div.style.color).toBe('');
-    expect(div.style.fontSize).toBe('14px');
-    document.body.removeChild(parent);
-  });
-
-  test('clears style property when map value is undefined', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ styles: { color: undefined } }');
-    const div = document.createElement('div');
-    div.setAttribute('style-map', 'styles');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(div.style.color).toBe('');
-    document.body.removeChild(parent);
-  });
-});

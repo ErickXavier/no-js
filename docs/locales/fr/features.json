@@ -1,67 +1,69 @@
 {
-  "hero": {
-    "badge": "Pourquoi No.JS ?",
-    "title": "Conçu pour le développement web moderne",
-    "subtitle": "Chaque fonctionnalité est pensée pour rendre le développement HTML-first puissant, rapide et agréable."
-  },
-  "showcase1": {
-    "badge": "Fonctionnalité clé",
-    "title": "Gestion réactive de l'état",
-    "desc": "Déclarez l'état directement en HTML avec state. Les changements se propagent automatiquement à tous les éléments liés — pas de store à configurer, pas de reducers, pas de boilerplate.",
-    "h1": "Suivi automatique des dépendances",
-    "h2": "Support des objets imbriqués",
-    "h3": "Propriétés calculées",
-    "h4": "Partage d'état entre composants"
-  },
-  "showcase2": {
-    "badge": "Rendu",
-    "title": "Rendu déclaratif",
-    "desc": "Utilisez if, each, show et bind pour contrôler le rendu. Pas de JSX, pas de template literals — juste des attributs HTML.",
-    "h1": "Rendu conditionnel avec if",
-    "h2": "Rendu de listes avec each",
-    "h3": "Interpolation de texte avec bind",
-    "h4": "Basculement de visibilité avec show"
-  },
-  "showcase3": {
-    "badge": "Interactivité",
-    "title": "Gestion intuitive des événements",
-    "desc": "Liez les événements avec la syntaxe on:event. Accédez à l'état directement dans les handlers sans this ni callbacks.",
-    "h1": "Click, submit, input et bien plus",
-    "h2": "Accès direct à l'état dans les handlers",
-    "h3": "Support des modificateurs d'événements",
-    "h4": "Aucune fonction wrapper nécessaire"
-  },
-  "grid": {
-    "title": "Plus de fonctionnalités",
-    "subtitle": "Tout ce dont vous avez besoin, rien de superflu",
-    "routing": {
-      "title": "Routage côté client",
-      "desc": "Routage SPA complet avec route et route-view. Mode hash et history, paramètres dynamiques, routes imbriquées et guards."
+  "features": {
+    "hero": {
+      "badge": "Pourquoi No.JS ?",
+      "title": "Conçu pour le développement web moderne",
+      "subtitle": "Chaque fonctionnalité est pensée pour rendre le développement HTML-first puissant, rapide et agréable."
     },
-    "forms": {
-      "title": "Gestion des formulaires",
-      "desc": "Liaison bidirectionnelle avec model, validation intégrée, messages d'erreur et gestion de la soumission."
+    "showcase1": {
+      "badge": "Fonctionnalité clé",
+      "title": "Gestion réactive de l'état",
+      "desc": "Déclarez l'état directement en HTML avec state. Les changements se propagent automatiquement à tous les éléments liés — pas de store à configurer, pas de reducers, pas de boilerplate.",
+      "h1": "Suivi automatique des dépendances",
+      "h2": "Support des objets imbriqués",
+      "h3": "Propriétés calculées",
+      "h4": "Partage d'état entre composants"
     },
-    "fetch": {
-      "title": "Fetch & API",
-      "desc": "Récupération de données déclarative avec get et post. États de chargement, gestion des erreurs et mise en cache intégrés."
+    "showcase2": {
+      "badge": "Rendu",
+      "title": "Rendu déclaratif",
+      "desc": "Utilisez if, each, show et bind pour contrôler le rendu. Pas de JSX, pas de template literals — juste des attributs HTML.",
+      "h1": "Rendu conditionnel avec if",
+      "h2": "Rendu de listes avec each",
+      "h3": "Interpolation de texte avec bind",
+      "h4": "Basculement de visibilité avec show"
     },
-    "css": {
-      "title": "Liaisons CSS",
-      "desc": "Styles dynamiques avec class-* et style-*. Liez les classes CSS et les styles inline de manière réactive à l'état."
+    "showcase3": {
+      "badge": "Interactivité",
+      "title": "Gestion intuitive des événements",
+      "desc": "Liez les événements avec la syntaxe on:event. Accédez à l'état directement dans les handlers sans this ni callbacks.",
+      "h1": "Click, submit, input et bien plus",
+      "h2": "Accès direct à l'état dans les handlers",
+      "h3": "Support des modificateurs d'événements",
+      "h4": "Aucune fonction wrapper nécessaire"
     },
-    "lifecycle": {
-      "title": "Hooks de cycle de vie",
-      "desc": "Accédez aux phases mount, update et destroy. Exécutez la logique d'initialisation et de nettoyage avec un contrôle précis."
+    "grid": {
+      "title": "Plus de fonctionnalités",
+      "subtitle": "Tout ce dont vous avez besoin, rien de superflu",
+      "routing": {
+        "title": "Routage côté client",
+        "desc": "Routage SPA complet avec route et route-view. Mode hash et history, paramètres dynamiques, routes imbriquées et guards."
+      },
+      "forms": {
+        "title": "Gestion des formulaires",
+        "desc": "Liaison bidirectionnelle avec model, validation intégrée, messages d'erreur et gestion de la soumission."
+      },
+      "fetch": {
+        "title": "Fetch & API",
+        "desc": "Récupération de données déclarative avec get et post. États de chargement, gestion des erreurs et mise en cache intégrés."
+      },
+      "css": {
+        "title": "Liaisons CSS",
+        "desc": "Styles dynamiques avec class-* et style-*. Liez les classes CSS et les styles inline de manière réactive à l'état."
+      },
+      "lifecycle": {
+        "title": "Hooks de cycle de vie",
+        "desc": "Accédez aux phases mount, update et destroy. Exécutez la logique d'initialisation et de nettoyage avec un contrôle précis."
+      },
+      "zero": {
+        "title": "Zéro dépendance",
+        "desc": "Pas d'outils de build, pas de bundlers, pas de npm install. Ajoutez simplement une balise script et commencez à construire instantanément."
+      }
     },
-    "zero": {
-      "title": "Zéro dépendance",
-      "desc": "Pas d'outils de build, pas de bundlers, pas de npm install. Ajoutez simplement une balise script et commencez à construire instantanément."
+    "cta": {
+      "title": "Prêt à construire ?",
+      "subtitle": "Commencez à utiliser No.JS en moins de 30 secondes.",
+      "button": "Commencer maintenant"
     }
-  },
-  "cta": {
-    "title": "Prêt à construire ?",
-    "subtitle": "Commencez à utiliser No.JS en moins de 30 secondes.",
-    "button": "Commencer maintenant"
   }
 }

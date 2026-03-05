@@ -13,7 +13,7 @@
     <h2 class="doc-title" t="docs.gettingStarted.introduction.title">Introduction</h2>
     <p class="doc-text">No.JS is an HTML-first reactive framework. Build dynamic, data-driven web applications using nothing but HTML attributes — no build step, no virtual DOM, no JSX.</p>
     <div class="callout">
-      <p><strong>~14KB gzipped</strong> · Zero dependencies · Works in all modern browsers · No build step required</p>
+      <p><strong>~20KB gzipped</strong> · Zero dependencies · Works in all modern browsers · No build step required</p>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
     </div>
 
     <h3 class="doc-subtitle">Self-hosted</h3>
-    <p class="doc-text">Download <code>dist/iife/no.js</code> and include it with a <code>&lt;script&gt;</code> tag. It's a single file, ~14 KB gzipped.</p>
+    <p class="doc-text">Download <code>dist/iife/no.js</code> and include it with a <code>&lt;script&gt;</code> tag. It's a single file, ~20 KB gzipped.</p>
   </div>
 
   <!-- Quick Start -->

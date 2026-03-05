@@ -54,7 +54,7 @@
 <section class="v7-bundle">
   <span class="v7-bundle-badge" t="landing.bundle.badge">The outcome.</span>
   <h2 class="v7-bundle-h1" t="landing.bundle.h1">Your bundle is 2.3 MB.</h2>
-  <h2 class="v7-bundle-h2" t="landing.bundle.h2">Ours is 14 KB.</h2>
+  <h2 class="v7-bundle-h2" t="landing.bundle.h2">Ours is 20 KB.</h2>
   <p class="v7-bundle-sub" t="landing.bundle.subtitle">No build step. No bundler. No excuses.</p>
   <div class="v7-bundle-btns">
     <a route="/docs" class="btn btn-primary" t="landing.bundle.getStarted">Get Started</a>

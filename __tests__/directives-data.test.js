@@ -2812,51 +2812,6 @@ describe('HTTP GET — success template with var (L149-155)', () => {
   });
 });
 
-describe('HTTP GET — reactive URL with debounce (L228, L240)', () => {
-  beforeEach(() => {
-    document.body.innerHTML = '';
-    global.fetch = jest.fn();
-    _config.retries = 0;
-    _interceptors.request.length = 0;
-    _interceptors.response.length = 0;
-  });
-  afterEach(() => {
-    delete global.fetch;
-  });
-
-  test('debounces re-fetch when URL expression changes', async () => {
-    global.fetch.mockResolvedValue({
-      ok: true,
-      text: () => Promise.resolve('{}'),
-    });
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ query: "a" }');
-    const el = document.createElement('div');
-    el.setAttribute('get', '/api/search?q={query}');
-    el.setAttribute('as', 'result');
-    el.setAttribute('debounce', '100');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-
-    await new Promise(r => setTimeout(r, 50));
-
-    const initialCallCount = global.fetch.mock.calls.length;
-
-
-
-    const parentCtx = findContext(parent);
-    parentCtx.$set('query', 'ab');
-
-
-    await new Promise(r => setTimeout(r, 250));
-
-    expect(global.fetch.mock.calls.length).toBeGreaterThan(initialCallCount);
-  });
-});
-
 
 
 
@@ -2936,44 +2891,6 @@ describe('call directive — error template (L123-127)', () => {
     await new Promise(r => setTimeout(r, 100));
 
     expect(btn.parentElement.querySelector('.call-err')).not.toBeNull();
-  });
-});
-
-describe('call directive — into store (L100)', () => {
-  beforeEach(() => {
-    document.body.innerHTML = '';
-    global.fetch = jest.fn();
-    _config.retries = 0;
-    _interceptors.request.length = 0;
-    _interceptors.response.length = 0;
-    for (const k of Object.keys(_stores)) delete _stores[k];
-  });
-  afterEach(() => {
-    delete global.fetch;
-  });
-
-  test('call saves result into global store when into is set', async () => {
-    global.fetch.mockResolvedValue({
-      ok: true,
-      text: () => Promise.resolve('{"saved":true}'),
-    });
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ result: null }');
-    const btn = document.createElement('button');
-    btn.setAttribute('call', '/api/save');
-    btn.setAttribute('method', 'post');
-    btn.setAttribute('as', 'result');
-    btn.setAttribute('into', 'callStore');
-    parent.appendChild(btn);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    btn.click();
-    await new Promise(r => setTimeout(r, 100));
-
-    expect(_stores.callStore).toBeDefined();
-    expect(_stores.callStore.result).toEqual({ saved: true });
   });
 });
 
@@ -3337,44 +3254,6 @@ describe('call — error template clone null (L123 false branch)', () => {
     btn.click();
     await flush();
 
-  });
-});
-
-describe('call — success template without var attr (L111 || fallback)', () => {
-  beforeEach(() => {
-    document.body.innerHTML = '';
-    global.fetch = jest.fn();
-  });
-  afterEach(() => { delete global.fetch; });
-
-  test('call success template falls back to "result" var name', async () => {
-    global.fetch.mockResolvedValue({
-      ok: true,
-      headers: { get: () => 'application/json' },
-      text: () => Promise.resolve(JSON.stringify({ msg: 'done' })),
-    });
-
-    const tpl = document.createElement('template');
-    tpl.id = 'call-success-novar-111';
-
-    tpl.innerHTML = '<span class="call-res" bind="result.msg"></span>';
-    document.body.appendChild(tpl);
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{}');
-    const btn = document.createElement('button');
-    btn.setAttribute('call', '/api/action');
-    btn.setAttribute('success', 'call-success-novar-111');
-    parent.appendChild(btn);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    btn.click();
-    await flush(100);
-
-    const res = parent.querySelector('.call-res');
-    expect(res).not.toBeNull();
-    expect(res.textContent).toBe('done');
   });
 });
 

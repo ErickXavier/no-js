@@ -1,67 +1,69 @@
 {
-  "hero": {
-    "badge": "Perché No.JS?",
-    "title": "Progettato per lo Sviluppo Web Moderno",
-    "subtitle": "Ogni funzionalità è pensata per rendere lo sviluppo HTML-first potente, veloce e piacevole."
-  },
-  "showcase1": {
-    "badge": "Funzionalità Principale",
-    "title": "Gestione dello Stato Reattivo",
-    "desc": "Dichiara lo stato direttamente in HTML con state. Le modifiche si propagano automaticamente a tutti gli elementi collegati — nessun setup dello store, nessun reducer, nessun boilerplate.",
-    "h1": "Tracciamento automatico delle dipendenze",
-    "h2": "Supporto per oggetti annidati",
-    "h3": "Proprietà calcolate",
-    "h4": "Condivisione dello stato tra componenti"
-  },
-  "showcase2": {
-    "badge": "Rendering",
-    "title": "Rendering Dichiarativo",
-    "desc": "Usa if, each, show e bind per controllare cosa viene renderizzato. Nessun JSX, nessun template literal — solo attributi HTML.",
-    "h1": "Rendering condizionale con if",
-    "h2": "Rendering di liste con each",
-    "h3": "Interpolazione del testo con bind",
-    "h4": "Visibilità con show"
-  },
-  "showcase3": {
-    "badge": "Interattività",
-    "title": "Gestione Eventi Intuitiva",
-    "desc": "Collega gli eventi con la sintassi on:event. Accedi allo stato direttamente nei gestori senza this o callback.",
-    "h1": "Click, submit, input e altro",
-    "h2": "Accesso diretto allo stato nei gestori",
-    "h3": "Supporto per modificatori di eventi",
-    "h4": "Nessuna funzione wrapper necessaria"
-  },
-  "grid": {
-    "title": "Altre Funzionalità",
-    "subtitle": "Tutto ciò di cui hai bisogno, niente di superfluo",
-    "routing": {
-      "title": "Routing Lato Client",
-      "desc": "Routing SPA completo con route e route-view. Modalità hash e history, parametri dinamici, route annidate e guardie."
+  "features": {
+    "hero": {
+      "badge": "Perché No.JS?",
+      "title": "Progettato per lo Sviluppo Web Moderno",
+      "subtitle": "Ogni funzionalità è pensata per rendere lo sviluppo HTML-first potente, veloce e piacevole."
     },
-    "forms": {
-      "title": "Gestione dei Form",
-      "desc": "Binding bidirezionale con model, validazione integrata, messaggi di errore e gestione dell'invio dei form."
+    "showcase1": {
+      "badge": "Funzionalità Principale",
+      "title": "Gestione dello Stato Reattivo",
+      "desc": "Dichiara lo stato direttamente in HTML con state. Le modifiche si propagano automaticamente a tutti gli elementi collegati — nessun setup dello store, nessun reducer, nessun boilerplate.",
+      "h1": "Tracciamento automatico delle dipendenze",
+      "h2": "Supporto per oggetti annidati",
+      "h3": "Proprietà calcolate",
+      "h4": "Condivisione dello stato tra componenti"
     },
-    "fetch": {
-      "title": "Fetch & API",
-      "desc": "Recupero dati dichiarativo con get e post. Stati di caricamento, gestione errori e caching integrati."
+    "showcase2": {
+      "badge": "Rendering",
+      "title": "Rendering Dichiarativo",
+      "desc": "Usa if, each, show e bind per controllare cosa viene renderizzato. Nessun JSX, nessun template literal — solo attributi HTML.",
+      "h1": "Rendering condizionale con if",
+      "h2": "Rendering di liste con each",
+      "h3": "Interpolazione del testo con bind",
+      "h4": "Visibilità con show"
     },
-    "css": {
-      "title": "Binding CSS",
-      "desc": "Stile dinamico con class-* e style-*. Collega classi CSS e stili inline in modo reattivo allo stato."
+    "showcase3": {
+      "badge": "Interattività",
+      "title": "Gestione Eventi Intuitiva",
+      "desc": "Collega gli eventi con la sintassi on:event. Accedi allo stato direttamente nei gestori senza this o callback.",
+      "h1": "Click, submit, input e altro",
+      "h2": "Accesso diretto allo stato nei gestori",
+      "h3": "Supporto per modificatori di eventi",
+      "h4": "Nessuna funzione wrapper necessaria"
     },
-    "lifecycle": {
-      "title": "Hook del Ciclo di Vita",
-      "desc": "Aggancia mount, update e destroy. Esegui logica di setup e cleanup con un controllo preciso."
+    "grid": {
+      "title": "Altre Funzionalità",
+      "subtitle": "Tutto ciò di cui hai bisogno, niente di superfluo",
+      "routing": {
+        "title": "Routing Lato Client",
+        "desc": "Routing SPA completo con route e route-view. Modalità hash e history, parametri dinamici, route annidate e guardie."
+      },
+      "forms": {
+        "title": "Gestione dei Form",
+        "desc": "Binding bidirezionale con model, validazione integrata, messaggi di errore e gestione dell'invio dei form."
+      },
+      "fetch": {
+        "title": "Fetch & API",
+        "desc": "Recupero dati dichiarativo con get e post. Stati di caricamento, gestione errori e caching integrati."
+      },
+      "css": {
+        "title": "Binding CSS",
+        "desc": "Stile dinamico con class-* e style-*. Collega classi CSS e stili inline in modo reattivo allo stato."
+      },
+      "lifecycle": {
+        "title": "Hook del Ciclo di Vita",
+        "desc": "Aggancia mount, update e destroy. Esegui logica di setup e cleanup con un controllo preciso."
+      },
+      "zero": {
+        "title": "Zero Dipendenze",
+        "desc": "Nessun tool di build, nessun bundler, nessun npm install. Aggiungi semplicemente un tag script e inizia subito a sviluppare."
+      }
     },
-    "zero": {
-      "title": "Zero Dipendenze",
-      "desc": "Nessun tool di build, nessun bundler, nessun npm install. Aggiungi semplicemente un tag script e inizia subito a sviluppare."
+    "cta": {
+      "title": "Pronto a Costruire?",
+      "subtitle": "Inizia a usare No.JS in meno di 30 secondi.",
+      "button": "Inizia Ora"
     }
-  },
-  "cta": {
-    "title": "Pronto a Costruire?",
-    "subtitle": "Inizia a usare No.JS in meno di 30 secondi.",
-    "button": "Inizia Ora"
   }
 }

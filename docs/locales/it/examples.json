@@ -1,64 +1,66 @@
 {
-  "hero": {
-    "badge": "Impara con gli Esempi",
-    "title": "Esempi",
-    "subtitle": "Pattern reali che userai davvero in produzione — in puro HTML."
-  },
-  "login": {
-    "badge": "Intermedio",
-    "title": "Login con JWT",
-    "desc": "Un flusso di login completo: validazione del form, POST verso l'endpoint di autenticazione, salvataggio del JWT in uno store globale e invio automatico del token ad ogni richiesta successiva tramite un interceptor di richiesta.",
-    "signIn": "Accedi",
-    "signingIn": "Accesso in corso...",
-    "previewHint": "Compila entrambi i campi per provare l'anteprima interattiva",
-    "signedIn": "Accesso effettuato!",
-    "signOut": "Esci"
-  },
-  "dashboard": {
-    "badge": "Intermedio",
-    "title": "Route Protetta & Validazione del Token",
-    "desc": "Una route protetta dallo store di autenticazione, abbinata a un <strong>interceptor di risposta</strong> che funge da script di controllo: ad ogni chiamata API, se il server restituisce <code>401</code> o <code>403</code>, il token viene invalidato e l'utente viene reindirizzato automaticamente al login — nessun codice aggiuntivo necessario nella route stessa.",
-    "welcome": "Bentornata, Jane",
-    "activeSession": "● Sessione attiva",
-    "requestsToday": "Richieste oggi",
-    "errorRate": "Tasso di errori",
-    "uptime": "Uptime",
-    "activeUsers": "Utenti attivi",
-    "interceptorNote": "Se una richiesta restituisce <code>401</code> o <code>403</code>, l'interceptor cancella il token e reindirizza automaticamente a <code>/login</code>."
-  },
-  "search": {
-    "badge": "Principiante",
-    "title": "Ricerca in Tempo Reale",
-    "desc": "Un input di ricerca istantanea che esegue una richiesta GET con debounce ad ogni digitazione, renderizzando i risultati in modo reattivo. Nessun <code>addEventListener</code>, nessun <code>setTimeout</code>, nessuna manipolazione del DOM.",
-    "placeholder": "Cerca prodotti...",
-    "noResults": "Nessun risultato"
-  },
-  "cart": {
-    "badge": "Intermedio",
-    "title": "Carrello della Spesa",
-    "desc": "Uno store globale condiviso tra una lista prodotti e un badge del carrello — in parti diverse della pagina. Quando un prodotto viene aggiunto, il badge e il riepilogo del carrello si aggiornano simultaneamente, senza event bus o componenti condivisi.",
-    "products": "Prodotti",
-    "cartLabel": "Carrello",
-    "total": "Totale",
-    "addHint": "Aggiungi un prodotto per vedere il carrello"
-  },
-  "polling": {
-    "badge": "Principiante",
-    "title": "Polling in Tempo Reale",
-    "desc": "Una dashboard sullo stato del server che si aggiorna automaticamente ogni 5 secondi usando l'attributo <code>poll</code>. Lo stile condizionale reagisce istantaneamente allo stato di salute corrente — nessun <code>setInterval</code>, nessun ciclo <code>fetch</code>.",
-    "serverStatus": "Stato del Server",
-    "online": "Online",
-    "cpu": "CPU",
-    "reqPerSec": "Req/s",
-    "errors": "Errori",
-    "lastResponse": "Ultimo tempo di risposta",
-    "nextPoll": "Prossimo polling tra",
-    "refreshNote": "Si aggiorna automaticamente tramite <code>poll=\"5000\"</code>"
-  },
-  "cta": {
-    "title": "Vuoi Altri Esempi?",
-    "subtitle": "Consulta la documentazione completa per pattern avanzati.",
-    "viewDocs": "Consulta la Documentazione",
-    "github": "Repository GitHub"
+  "examples": {
+    "hero": {
+      "badge": "Impara con gli Esempi",
+      "title": "Esempi",
+      "subtitle": "Pattern reali che userai davvero in produzione — in puro HTML."
+    },
+    "login": {
+      "badge": "Intermedio",
+      "title": "Login con JWT",
+      "desc": "Un flusso di login completo: validazione del form, POST verso l'endpoint di autenticazione, salvataggio del JWT in uno store globale e invio automatico del token ad ogni richiesta successiva tramite un interceptor di richiesta.",
+      "signIn": "Accedi",
+      "signingIn": "Accesso in corso...",
+      "previewHint": "Compila entrambi i campi per provare l'anteprima interattiva",
+      "signedIn": "Accesso effettuato!",
+      "signOut": "Esci"
+    },
+    "dashboard": {
+      "badge": "Intermedio",
+      "title": "Route Protetta & Validazione del Token",
+      "desc": "Una route protetta dallo store di autenticazione, abbinata a un <strong>interceptor di risposta</strong> che funge da script di controllo: ad ogni chiamata API, se il server restituisce <code>401</code> o <code>403</code>, il token viene invalidato e l'utente viene reindirizzato automaticamente al login — nessun codice aggiuntivo necessario nella route stessa.",
+      "welcome": "Bentornata, Jane",
+      "activeSession": "● Sessione attiva",
+      "requestsToday": "Richieste oggi",
+      "errorRate": "Tasso di errori",
+      "uptime": "Uptime",
+      "activeUsers": "Utenti attivi",
+      "interceptorNote": "Se una richiesta restituisce <code>401</code> o <code>403</code>, l'interceptor cancella il token e reindirizza automaticamente a <code>/login</code>."
+    },
+    "search": {
+      "badge": "Principiante",
+      "title": "Ricerca in Tempo Reale",
+      "desc": "Un input di ricerca istantanea che esegue una richiesta GET con debounce ad ogni digitazione, renderizzando i risultati in modo reattivo. Nessun <code>addEventListener</code>, nessun <code>setTimeout</code>, nessuna manipolazione del DOM.",
+      "placeholder": "Cerca prodotti...",
+      "noResults": "Nessun risultato"
+    },
+    "cart": {
+      "badge": "Intermedio",
+      "title": "Carrello della Spesa",
+      "desc": "Uno store globale condiviso tra una lista prodotti e un badge del carrello — in parti diverse della pagina. Quando un prodotto viene aggiunto, il badge e il riepilogo del carrello si aggiornano simultaneamente, senza event bus o componenti condivisi.",
+      "products": "Prodotti",
+      "cartLabel": "Carrello",
+      "total": "Totale",
+      "addHint": "Aggiungi un prodotto per vedere il carrello"
+    },
+    "polling": {
+      "badge": "Principiante",
+      "title": "Polling in Tempo Reale",
+      "desc": "Una dashboard sullo stato del server che si aggiorna automaticamente ogni 5 secondi usando l'attributo <code>poll</code>. Lo stile condizionale reagisce istantaneamente allo stato di salute corrente — nessun <code>setInterval</code>, nessun ciclo <code>fetch</code>.",
+      "serverStatus": "Stato del Server",
+      "online": "Online",
+      "cpu": "CPU",
+      "reqPerSec": "Req/s",
+      "errors": "Errori",
+      "lastResponse": "Ultimo tempo di risposta",
+      "nextPoll": "Prossimo polling tra",
+      "refreshNote": "Si aggiorna automaticamente tramite <code>poll=\"5000\"</code>"
+    },
+    "cta": {
+      "title": "Vuoi Altri Esempi?",
+      "subtitle": "Consulta la documentazione completa per pattern avanzati.",
+      "viewDocs": "Consulta la Documentazione",
+      "github": "Repository GitHub"
+    }
   }
 }

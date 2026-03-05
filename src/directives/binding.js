@@ -112,7 +112,7 @@ registerDirective("model", {
       _execStatement(`${expr} = __val`, ctx, { __val: val });
     });
 
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });

@@ -188,6 +188,41 @@
     </table>
   </div>
 
+  <!-- Drag and Drop -->
+  <div class="doc-section">
+    <h2 class="doc-title" t="docs.cheatsheet.dnd.title">Drag and Drop</h2>
+    <table class="doc-table">
+      <thead><tr><th>Directive</th><th>Example</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>drag</code></td><td><code>drag</code></td><td>Make element draggable</td></tr>
+        <tr><td><code>drag-type</code></td><td><code>drag-type="task"</code></td><td>Data type identifier</td></tr>
+        <tr><td><code>drag-effect</code></td><td><code>drag-effect="move"</code></td><td>Allowed effect (move/copy/link/all)</td></tr>
+        <tr><td><code>drag-handle</code></td><td><code>drag-handle=".handle"</code></td><td>Restrict drag to handle selector</td></tr>
+        <tr><td><code>drag-disabled</code></td><td><code>drag-disabled="locked"</code></td><td>Disable drag conditionally</td></tr>
+        <tr><td><code>drag-class</code></td><td><code>drag-class="dragging"</code></td><td>Class added while dragging</td></tr>
+        <tr><td><code>drag-group</code></td><td><code>drag-group="board"</code></td><td>Scope drag to a named group</td></tr>
+        <tr><td><code>drop</code></td><td><code>drop</code></td><td>Make element a drop zone</td></tr>
+        <tr><td><code>drop-accept</code></td><td><code>drop-accept="task"</code></td><td>Accepted drag type(s)</td></tr>
+        <tr><td><code>drop-effect</code></td><td><code>drop-effect="move"</code></td><td>Visual feedback effect</td></tr>
+        <tr><td><code>drop-class</code></td><td><code>drop-class="over"</code></td><td>Class added on drag-over</td></tr>
+        <tr><td><code>drop-reject-class</code></td><td><code>drop-reject-class="nope"</code></td><td>Class added on rejected drag-over</td></tr>
+        <tr><td><code>drop-disabled</code></td><td><code>drop-disabled="full"</code></td><td>Disable drop conditionally</td></tr>
+        <tr><td><code>drop-max</code></td><td><code>drop-max="5"</code></td><td>Maximum items in drop zone</td></tr>
+        <tr><td><code>drop-sort</code></td><td><code>drop-sort</code></td><td>Enable positional sorting</td></tr>
+        <tr><td><code>drop-placeholder</code></td><td><code>drop-placeholder="#ph"</code></td><td>Placeholder template during drag-over</td></tr>
+        <tr><td><code>drop-settle-class</code></td><td><code>drop-settle-class="my-settle"</code></td><td>Custom CSS class for settle animation</td></tr>
+        <tr><td><code>drop-empty-class</code></td><td><code>drop-empty-class="empty"</code></td><td>Custom CSS class for empty state on drag-list</td></tr>
+        <tr><td><code>drag-list</code></td><td><code>drag-list="items"</code></td><td>Sortable list bound to state array</td></tr>
+        <tr><td><code>drag-list-key</code></td><td><code>drag-list-key="id"</code></td><td>Unique key for each item</td></tr>
+        <tr><td><code>drag-list-item</code></td><td><code>drag-list-item="task"</code></td><td>Loop variable name in template</td></tr>
+        <tr><td><code>drag-list-copy</code></td><td><code>drag-list-copy</code></td><td>Copy instead of move on transfer</td></tr>
+        <tr><td><code>drag-list-remove</code></td><td><code>drag-list-remove</code></td><td>Remove items from source on transfer</td></tr>
+        <tr><td><code>drag-multiple</code></td><td><code>drag-multiple</code></td><td>Lasso / multi-select on children</td></tr>
+        <tr><td><code>drag-multiple-class</code></td><td><code>drag-multiple-class="selected"</code></td><td>Class added to selected items</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- i18n -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.cheatsheet.i18n.title">i18n</h2>

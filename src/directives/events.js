@@ -55,7 +55,8 @@ registerDirective("on:*", {
         }
       });
       if (el.parentElement)
-        observer.observe(el.parentElement, { childList: true });
+        observer.observe(el.parentElement, { childList: true, subtree: true });
+      _onDispose(() => observer.disconnect());
       return;
     }
 

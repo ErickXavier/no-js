@@ -265,22 +265,28 @@ export function _execStatement(expr, ctx, extraVars = {}) {
     // For each key in any ancestor context, find the owning context at runtime
     // and call $set on it — so mutations inside `each` loops correctly
     // propagate back to parent state (e.g. cart updated from a loop's on:click).
+    // Only write back values that actually changed locally, to avoid
+    // overwriting proxy mutations made by called functions.
     const chainKeys = new Set();
     let _wCtx = ctx;
     while (_wCtx && _wCtx.__isProxy) {
       for (const k of Object.keys(_wCtx.__raw)) chainKeys.add(k);
       _wCtx = _wCtx.$parent;
     }
+    const origObj = {};
+    for (const k of chainKeys) {
+      if (!k.startsWith("$") && k in vals) origObj[k] = vals[k];
+    }
     const setters = [...chainKeys]
       .filter((k) => !k.startsWith("$"))
       .map(
         (k) =>
-          `{let _c=__ctx;while(_c&&_c.__isProxy){if('${k}'in _c.__raw){_c.$set('${k}',typeof ${k}!=='undefined'?${k}:_c.__raw['${k}']);break;}_c=_c.$parent;}}`,
+          `{let _c=__ctx;while(_c&&_c.__isProxy){if('${k}'in _c.__raw){if(typeof ${k}!=='undefined'){if(${k}!==__orig['${k}'])_c.$set('${k}',${k});else if(typeof ${k}==='object'&&${k}!==null)_c.$notify();}break;}_c=_c.$parent;}}`,
       )
       .join("\n");
 
-    const fn = new Function("__ctx", ...keyArr, `${expr};\n${setters}`);
-    fn(ctx, ...valArr);
+    const fn = new Function("__ctx", "__orig", ...keyArr, `${expr};\n${setters}`);
+    fn(ctx, origObj, ...valArr);
 
     // Notify global store watchers when expression touches $store
     if (typeof expr === "string" && expr.includes("$store")) {

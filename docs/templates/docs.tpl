@@ -37,6 +37,7 @@
         <div id="routing"><template src="./routing.tpl" loading="#doc-skeleton"></template></div>
         <div id="forms-validation"><template src="./forms-validation.tpl" loading="#doc-skeleton"></template></div>
         <div id="styling"><template src="./styling.tpl" loading="#doc-skeleton"></template></div>
+        <div id="drag-and-drop"><template src="./drag-and-drop.tpl" loading="#doc-skeleton"></template></div>
         <div id="animations"><template src="./animations.tpl" loading="#doc-skeleton"></template></div>
         <div id="filters"><template src="./filters.tpl" loading="#doc-skeleton"></template></div>
         <div id="i18n"><template src="./i18n.tpl" loading="#doc-skeleton"></template></div>

@@ -4,7 +4,6 @@
 
 import {
   _config,
-  _log,
   _warn,
   _stores,
   _notifyStoreWatchers,
@@ -124,16 +123,20 @@ for (const method of HTTP_METHODS) {
           const savedRetryDelay = _config.retryDelay;
           _config.retries = retryCount;
           _config.retryDelay = retryDelay;
-          const data = await _doFetch(
-            resolvedUrl,
-            method,
-            reqBody,
-            extraHeaders,
-            el,
-            _activeAbort.signal,
-          );
-          _config.retries = savedRetries;
-          _config.retryDelay = savedRetryDelay;
+          let data;
+          try {
+            data = await _doFetch(
+              resolvedUrl,
+              method,
+              reqBody,
+              extraHeaders,
+              el,
+              _activeAbort.signal,
+            );
+          } finally {
+            _config.retries = savedRetries;
+            _config.retryDelay = savedRetryDelay;
+          }
 
           // Cache response
           if (method === "get") _cacheSet(cacheKey, data, cacheStrategy);

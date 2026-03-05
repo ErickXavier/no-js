@@ -1,51 +1,53 @@
 {
-  "codeCompare": {
-    "title": "La misma app.<br>La diferencia real.",
-    "subtitle": "Un campo de búsqueda reactivo — el patrón más común en el mundo real.",
-    "reactLabel": "React",
-    "reactMeta": "25 líneas  ·  react, react-dom, useState, useEffect",
-    "nojsLabel": "No.JS",
-    "nojsMeta": "4 líneas  ·  0 imports",
-    "nojsNote": "✓ Reactivo  ·  ✓ Auto-fetch  ·  ✓ Sin paso de compilación"
-  },
-  "bundle": {
-    "badge": "El resultado.",
-    "h1": "Tu bundle pesa 2.3 MB.",
-    "h2": "El nuestro pesa 14 KB.",
-    "subtitle": "Sin paso de compilación. Sin bundler. Sin excusas.",
-    "getStarted": "Comenzar",
-    "seeFeatures": "Ver las Características"
-  },
-  "manifesto": {
-    "kicker": "UN MANIFIESTO",
-    "h1": "La web ya era reactiva.",
-    "h2": "Solo le dimos a HTML los atributos para demostrarlo."
-  },
-  "problem": {
-    "kicker": "EL PROBLEMA CON EL JAVASCRIPT MODERNO",
-    "col1p1": "En algún punto entre el \"pensamiento en componentes\" y el \"diffing del DOM virtual\", olvidamos que el navegador ya entiende HTML. Ya sabe cómo actualizar el DOM. Ya maneja eventos.",
-    "col1p2": "Construimos abstracción sobre abstracción hasta que un simple formulario requería tres archivos, un pipeline de compilación y un runtime de framework.",
-    "col2p1": "No.JS es la apuesta opuesta. El navegador no es el enemigo, es la plataforma. HTML no es limitado, está subutilizado. Los atributos no son primitivos, son un DSL esperando a ser creado.",
-    "col2p2": "Construimos No.JS con una convicción: si puedes expresarlo en HTML, deberías hacerlo.",
-    "col3p1": "El resultado es un framework que puedes aprender en una tarde y publicar en 30 segundos. No porque lo hayamos hecho simple, sino porque el navegador ya era capaz. Solo nos quitamos del camino.",
-    "col3p2": "Esto no es anti-JavaScript. Es pro-HTML."
-  },
-  "principles": {
-    "kicker": "NUESTROS PRINCIPIOS",
-    "p1Title": "El navegador es la plataforma",
-    "p1Desc": "No abstraemos el navegador. Extendemos HTML para usarlo completamente.",
-    "p2Title": "La complejidad es el enemigo",
-    "p2Desc": "Si una característica requiere un paso de compilación para existir, no pertenece a No.JS.",
-    "p3Title": "HTML-first, siempre",
-    "p3Desc": "Cada directiva es un atributo HTML. Sus plantillas son HTML válido que cualquier navegador puede leer.",
-    "p4Title": "Publica desde el día uno",
-    "p4Desc": "El mejor framework es el que puedes usar ahora mismo, sin pedir permiso a una terminal."
-  },
-  "quote": "\"El mejor JavaScript<br>es el JavaScript que no escribes.\"",
-  "cta": {
-    "headline": "¿Listo para Construir?",
-    "subtitle": "Empieza a usar No.JS hoy.",
-    "getStarted": "Comenzar",
-    "learnMore": "Más Información"
+  "landing": {
+    "codeCompare": {
+      "title": "La misma app.<br>La diferencia real.",
+      "subtitle": "Un campo de búsqueda reactivo — el patrón más común en el mundo real.",
+      "reactLabel": "React",
+      "reactMeta": "25 líneas  ·  react, react-dom, useState, useEffect",
+      "nojsLabel": "No.JS",
+      "nojsMeta": "4 líneas  ·  0 imports",
+      "nojsNote": "✓ Reactivo  ·  ✓ Auto-fetch  ·  ✓ Sin paso de compilación"
+    },
+    "bundle": {
+      "badge": "El resultado.",
+      "h1": "Tu bundle pesa 2.3 MB.",
+      "h2": "El nuestro pesa 20 KB.",
+      "subtitle": "Sin paso de compilación. Sin bundler. Sin excusas.",
+      "getStarted": "Comenzar",
+      "seeFeatures": "Ver las Características"
+    },
+    "manifesto": {
+      "kicker": "UN MANIFIESTO",
+      "h1": "La web ya era reactiva.",
+      "h2": "Solo le dimos a HTML los atributos para demostrarlo."
+    },
+    "problem": {
+      "kicker": "EL PROBLEMA CON EL JAVASCRIPT MODERNO",
+      "col1p1": "En algún punto entre el \"pensamiento en componentes\" y el \"diffing del DOM virtual\", olvidamos que el navegador ya entiende HTML. Ya sabe cómo actualizar el DOM. Ya maneja eventos.",
+      "col1p2": "Construimos abstracción sobre abstracción hasta que un simple formulario requería tres archivos, un pipeline de compilación y un runtime de framework.",
+      "col2p1": "No.JS es la apuesta opuesta. El navegador no es el enemigo, es la plataforma. HTML no es limitado, está subutilizado. Los atributos no son primitivos, son un DSL esperando a ser creado.",
+      "col2p2": "Construimos No.JS con una convicción: si puedes expresarlo en HTML, deberías hacerlo.",
+      "col3p1": "El resultado es un framework que puedes aprender en una tarde y publicar en 30 segundos. No porque lo hayamos hecho simple, sino porque el navegador ya era capaz. Solo nos quitamos del camino.",
+      "col3p2": "Esto no es anti-JavaScript. Es pro-HTML."
+    },
+    "principles": {
+      "kicker": "NUESTROS PRINCIPIOS",
+      "p1Title": "El navegador es la plataforma",
+      "p1Desc": "No abstraemos el navegador. Extendemos HTML para usarlo completamente.",
+      "p2Title": "La complejidad es el enemigo",
+      "p2Desc": "Si una característica requiere un paso de compilación para existir, no pertenece a No.JS.",
+      "p3Title": "HTML-first, siempre",
+      "p3Desc": "Cada directiva es un atributo HTML. Sus plantillas son HTML válido que cualquier navegador puede leer.",
+      "p4Title": "Publica desde el día uno",
+      "p4Desc": "El mejor framework es el que puedes usar ahora mismo, sin pedir permiso a una terminal."
+    },
+    "quote": "\"El mejor JavaScript<br>es el JavaScript que no escribes.\"",
+    "cta": {
+      "headline": "¿Listo para Construir?",
+      "subtitle": "Empieza a usar No.JS hoy.",
+      "getStarted": "Comenzar",
+      "learnMore": "Más Información"
+    }
   }
 }

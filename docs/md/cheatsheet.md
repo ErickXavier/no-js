@@ -122,6 +122,36 @@ Complete reference of every No.JS directive.
 | `animate-stagger` | `animate-stagger="50"` | Stagger delay |
 | `transition` | `transition="fade"` | CSS transition |
 
+## Drag and Drop
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `drag` | `drag` | Make element draggable |
+| `drag-type` | `drag-type="task"` | Data type identifier |
+| `drag-effect` | `drag-effect="move"` | Allowed effect (move/copy/link/all) |
+| `drag-handle` | `drag-handle=".handle"` | Restrict drag to handle selector |
+| `drag-disabled` | `drag-disabled="locked"` | Disable drag conditionally |
+| `drag-class` | `drag-class="dragging"` | Class added while dragging |
+| `drag-group` | `drag-group="board"` | Scope drag to a named group |
+| `drop` | `drop` | Make element a drop zone |
+| `drop-accept` | `drop-accept="task"` | Accepted drag type(s) |
+| `drop-effect` | `drop-effect="move"` | Visual feedback effect |
+| `drop-class` | `drop-class="over"` | Class added on drag-over |
+| `drop-reject-class` | `drop-reject-class="nope"` | Class added on rejected drag-over |
+| `drop-disabled` | `drop-disabled="full"` | Disable drop conditionally |
+| `drop-max` | `drop-max="5"` | Maximum items in drop zone |
+| `drop-sort` | `drop-sort` | Enable positional sorting |
+| `drop-placeholder` | `drop-placeholder="#ph"` | Placeholder template during drag-over |
+| `drop-settle-class` | `drop-settle-class="my-settle"` | Custom CSS class for settle animation |
+| `drop-empty-class` | `drop-empty-class="empty"` | Custom CSS class for empty state on drag-list |
+| `drag-list` | `drag-list="items"` | Sortable list bound to state array |
+| `drag-list-key` | `drag-list-key="id"` | Unique key for each item |
+| `drag-list-item` | `drag-list-item="task"` | Loop variable name in template |
+| `drag-list-copy` | `drag-list-copy` | Copy instead of move on transfer |
+| `drag-list-remove` | `drag-list-remove` | Remove items from source on transfer |
+| `drag-multiple` | `drag-multiple` | Lasso / multi-select on children |
+| `drag-multiple-class` | `drag-multiple-class="selected"` | Class added to selected items |
+
 ## i18n
 
 | Directive | Example | Description |

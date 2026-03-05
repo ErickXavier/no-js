@@ -1,64 +1,66 @@
 {
-  "hero": {
-    "badge": "Learn by Example",
-    "title": "Examples",
-    "subtitle": "Real-world patterns you'll actually use in production — in pure HTML."
-  },
-  "login": {
-    "badge": "Intermediate",
-    "title": "Login with JWT",
-    "desc": "A complete login flow: form validation, POST to auth endpoint, save the JWT to a global store, and automatically attach the token to every subsequent request via a request interceptor.",
-    "signIn": "Sign in",
-    "signingIn": "Signing in...",
-    "previewHint": "Fill both fields to try the interactive preview",
-    "signedIn": "Signed in!",
-    "signOut": "Sign out"
-  },
-  "dashboard": {
-    "badge": "Intermediate",
-    "title": "Protected Route & Token Validation",
-    "desc": "A route guarded by the auth store, paired with a <strong>response interceptor</strong> that acts as a control script: on every API call, if the server returns <code>401</code> or <code>403</code>, the token is invalidated and the user is redirected to login automatically — no extra code needed in the route itself.",
-    "welcome": "Welcome back, Jane",
-    "activeSession": "● Active session",
-    "requestsToday": "Requests today",
-    "errorRate": "Error rate",
-    "uptime": "Uptime",
-    "activeUsers": "Active users",
-    "interceptorNote": "If any request returns <code>401</code> or <code>403</code>, the interceptor clears the token and redirects to <code>/login</code> automatically."
-  },
-  "search": {
-    "badge": "Beginner",
-    "title": "Live Search",
-    "desc": "An instant search input that fires a debounced GET request on every keystroke, rendering results reactively. No <code>addEventListener</code>, no <code>setTimeout</code>, no DOM manipulation.",
-    "placeholder": "Search products...",
-    "noResults": "No results"
-  },
-  "cart": {
-    "badge": "Intermediate",
-    "title": "Shopping Cart",
-    "desc": "A global store shared between a product list and a cart badge — in different parts of the page. When a product is added, the badge and the cart summary update simultaneously, with no event bus or shared component needed.",
-    "products": "Products",
-    "cartLabel": "Cart",
-    "total": "Total",
-    "addHint": "Add a product to see the cart"
-  },
-  "polling": {
-    "badge": "Beginner",
-    "title": "Live Polling",
-    "desc": "A server-status dashboard that refreshes automatically every 5 seconds using the <code>poll</code> attribute. Conditional styling reacts instantly to the current health state — no <code>setInterval</code>, no <code>fetch</code> loop.",
-    "serverStatus": "Server Status",
-    "online": "Online",
-    "cpu": "CPU",
-    "reqPerSec": "Req/s",
-    "errors": "Errors",
-    "lastResponse": "Last response time",
-    "nextPoll": "Next poll in",
-    "refreshNote": "Refreshes automatically via <code>poll=\"5000\"</code>"
-  },
-  "cta": {
-    "title": "Want More Examples?",
-    "subtitle": "Check out the full documentation for advanced patterns.",
-    "viewDocs": "View Documentation",
-    "github": "GitHub Repository"
+  "examples": {
+    "hero": {
+      "badge": "Learn by Example",
+      "title": "Examples",
+      "subtitle": "Real-world patterns you'll actually use in production — in pure HTML."
+    },
+    "login": {
+      "badge": "Intermediate",
+      "title": "Login with JWT",
+      "desc": "A complete login flow: form validation, POST to auth endpoint, save the JWT to a global store, and automatically attach the token to every subsequent request via a request interceptor.",
+      "signIn": "Sign in",
+      "signingIn": "Signing in...",
+      "previewHint": "Fill both fields to try the interactive preview",
+      "signedIn": "Signed in!",
+      "signOut": "Sign out"
+    },
+    "dashboard": {
+      "badge": "Intermediate",
+      "title": "Protected Route & Token Validation",
+      "desc": "A route guarded by the auth store, paired with a <strong>response interceptor</strong> that acts as a control script: on every API call, if the server returns <code>401</code> or <code>403</code>, the token is invalidated and the user is redirected to login automatically — no extra code needed in the route itself.",
+      "welcome": "Welcome back, Jane",
+      "activeSession": "● Active session",
+      "requestsToday": "Requests today",
+      "errorRate": "Error rate",
+      "uptime": "Uptime",
+      "activeUsers": "Active users",
+      "interceptorNote": "If any request returns <code>401</code> or <code>403</code>, the interceptor clears the token and redirects to <code>/login</code> automatically."
+    },
+    "search": {
+      "badge": "Beginner",
+      "title": "Live Search",
+      "desc": "An instant search input that fires a debounced GET request on every keystroke, rendering results reactively. No <code>addEventListener</code>, no <code>setTimeout</code>, no DOM manipulation.",
+      "placeholder": "Search products...",
+      "noResults": "No results"
+    },
+    "cart": {
+      "badge": "Intermediate",
+      "title": "Shopping Cart",
+      "desc": "A global store shared between a product list and a cart badge — in different parts of the page. When a product is added, the badge and the cart summary update simultaneously, with no event bus or shared component needed.",
+      "products": "Products",
+      "cartLabel": "Cart",
+      "total": "Total",
+      "addHint": "Add a product to see the cart"
+    },
+    "polling": {
+      "badge": "Beginner",
+      "title": "Live Polling",
+      "desc": "A server-status dashboard that refreshes automatically every 5 seconds using the <code>poll</code> attribute. Conditional styling reacts instantly to the current health state — no <code>setInterval</code>, no <code>fetch</code> loop.",
+      "serverStatus": "Server Status",
+      "online": "Online",
+      "cpu": "CPU",
+      "reqPerSec": "Req/s",
+      "errors": "Errors",
+      "lastResponse": "Last response time",
+      "nextPoll": "Next poll in",
+      "refreshNote": "Refreshes automatically via <code>poll=\"5000\"</code>"
+    },
+    "cta": {
+      "title": "Want More Examples?",
+      "subtitle": "Check out the full documentation for advanced patterns.",
+      "viewDocs": "View Documentation",
+      "github": "GitHub Repository"
+    }
   }
 }

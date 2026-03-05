@@ -2,7 +2,7 @@
 //  DIRECTIVES: state, store, computed, watch
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _stores, _log } from "../globals.js";
+import { _stores, _log, _watchExpr } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext } from "../dom.js";
@@ -78,7 +78,7 @@ registerDirective("computed", {
       const val = evaluate(expr, ctx);
       ctx.$set(computedName, val);
     }
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });
@@ -89,7 +89,7 @@ registerDirective("watch", {
     const ctx = findContext(el);
     const onChange = el.getAttribute("on:change");
     let lastVal = evaluate(watchExpr, ctx);
-    ctx.$watch(() => {
+    _watchExpr(watchExpr, ctx, () => {
       const newVal = evaluate(watchExpr, ctx);
       if (newVal !== lastVal) {
         const oldVal = lastVal;

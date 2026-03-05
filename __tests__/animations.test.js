@@ -360,3 +360,69 @@ describe('animate-duration', () => {
     expect(child.style.animationDuration).toBe('');
   });
 });
+
+describe('_animateOut double-callback guard', () => {
+  test('animation path: callback called exactly once when both animationend and timeout fire', () => {
+    jest.useFakeTimers();
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const callback = jest.fn();
+    _animateOut(el, 'fadeOut', null, callback);
+
+    // Fire animationend
+    child.dispatchEvent(new Event('animationend'));
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    // Advance past fallback timeout
+    jest.advanceTimersByTime(3000);
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    jest.useRealTimers();
+  });
+
+  test('animation path: callback called exactly once when only timeout fires', () => {
+    jest.useFakeTimers();
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const callback = jest.fn();
+    _animateOut(el, 'fadeOut', null, callback);
+
+    expect(callback).not.toHaveBeenCalled();
+
+    // Only timeout fires (no animationend)
+    jest.advanceTimersByTime(3000);
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    jest.useRealTimers();
+  });
+
+  test('transition path: callback called exactly once when both transitionend and timeout fire', async () => {
+    jest.useFakeTimers();
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const callback = jest.fn();
+    _animateOut(el, null, 'fade', callback);
+
+    // Process rAF (jsdom fake timers need 16ms for rAF)
+    jest.advanceTimersByTime(16);
+
+    // Fire transitionend
+    child.dispatchEvent(new Event('transitionend'));
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    // Advance past fallback timeout
+    jest.advanceTimersByTime(3000);
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    jest.useRealTimers();
+  });
+});

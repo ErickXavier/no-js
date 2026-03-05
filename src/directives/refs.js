@@ -6,6 +6,7 @@ import {
   _refs,
   _stores,
   _notifyStoreWatchers,
+  _onDispose,
 } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement, _interpolate } from "../evaluate.js";
@@ -17,6 +18,9 @@ registerDirective("ref", {
   priority: 5,
   init(el, name, refName) {
     _refs[refName] = el;
+    _onDispose(() => {
+      if (_refs[refName] === el) delete _refs[refName];
+    });
   },
 });
 

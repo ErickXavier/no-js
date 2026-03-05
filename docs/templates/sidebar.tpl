@@ -28,6 +28,7 @@
       <a href="#routing" class="sidebar-link" t="shell.sidebar.routing">Routing</a>
       <a href="#forms-validation" class="sidebar-link" t="shell.sidebar.forms">Forms</a>
       <a href="#styling" class="sidebar-link" t="shell.sidebar.styling">Styling</a>
+      <a href="#drag-and-drop" class="sidebar-link" t="shell.sidebar.dragAndDrop">Drag &amp; Drop</a>
       <a href="#animations" class="sidebar-link" t="shell.sidebar.animations">Animations</a>
       <a href="#filters" class="sidebar-link" t="shell.sidebar.filters">Filters</a>
       <a href="#i18n" class="sidebar-link" t="shell.sidebar.i18n">i18n</a>

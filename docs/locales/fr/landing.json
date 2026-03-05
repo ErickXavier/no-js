@@ -1,51 +1,53 @@
 {
-  "codeCompare": {
-    "title": "La même app.<br>La vraie différence.",
-    "subtitle": "Un champ de recherche réactif — le pattern le plus courant en conditions réelles.",
-    "reactLabel": "React",
-    "reactMeta": "25 lignes  ·  react, react-dom, useState, useEffect",
-    "nojsLabel": "No.JS",
-    "nojsMeta": "4 lignes  ·  0 imports",
-    "nojsNote": "✓ Réactif  ·  ✓ Auto-fetch  ·  ✓ Aucune étape de build"
-  },
-  "bundle": {
-    "badge": "Le résultat.",
-    "h1": "Votre bundle fait 2.3 Mo.",
-    "h2": "Le nôtre fait 14 Ko.",
-    "subtitle": "Pas de build. Pas de bundler. Pas d'excuses.",
-    "getStarted": "Commencer",
-    "seeFeatures": "Voir les fonctionnalités"
-  },
-  "manifesto": {
-    "kicker": "UN MANIFESTE",
-    "h1": "Le web était déjà réactif.",
-    "h2": "Nous avons simplement donné au HTML les attributs pour le prouver."
-  },
-  "problem": {
-    "kicker": "LE PROBLÈME DU JAVASCRIPT MODERNE",
-    "col1p1": "Quelque part entre la « pensée composant » et le « diffing du DOM virtuel », nous avons oublié que le navigateur comprend déjà le HTML. Il sait déjà mettre à jour le DOM. Il gère déjà les événements.",
-    "col1p2": "Nous avons empilé abstraction sur abstraction jusqu'à ce qu'un simple formulaire nécessite trois fichiers, un pipeline de build et un runtime de framework.",
-    "col2p1": "No.JS fait le pari inverse. Le navigateur n'est pas l'ennemi, c'est la plateforme. Le HTML n'est pas limité, il est sous-exploité. Les attributs ne sont pas primitifs, ils sont un DSL qui n'attend qu'à émerger.",
-    "col2p2": "Nous avons construit No.JS avec une conviction : si vous pouvez l'exprimer en HTML, vous devriez le faire.",
-    "col3p1": "Le résultat est un framework que vous pouvez apprendre en un après-midi et déployer en 30 secondes. Non pas parce que nous l'avons rendu simple, mais parce que le navigateur était déjà capable. Nous nous sommes juste écartés du chemin.",
-    "col3p2": "Ce n'est pas anti-JavaScript. C'est pro-HTML."
-  },
-  "principles": {
-    "kicker": "NOS PRINCIPES",
-    "p1Title": "Le navigateur est la plateforme",
-    "p1Desc": "Nous n'abstraions pas le navigateur. Nous étendons le HTML pour l'exploiter pleinement.",
-    "p2Title": "La complexité est l'ennemi",
-    "p2Desc": "Si une fonctionnalité nécessite une étape de build pour exister, elle n'a pas sa place dans No.JS.",
-    "p3Title": "HTML-first, pour toujours",
-    "p3Desc": "Chaque directive est un attribut HTML. Vos templates sont du HTML valide que n'importe quel navigateur peut lire.",
-    "p4Title": "Livrez dès le premier jour",
-    "p4Desc": "Le meilleur framework est celui que vous pouvez utiliser tout de suite, sans demander la permission à un terminal."
-  },
-  "quote": "« Le meilleur JavaScript,<br>c'est celui que vous n'écrivez pas. »",
-  "cta": {
-    "headline": "Prêt à construire ?",
-    "subtitle": "Commencez à utiliser No.JS dès aujourd'hui.",
-    "getStarted": "Commencer",
-    "learnMore": "En savoir plus"
+  "landing": {
+    "codeCompare": {
+      "title": "La même app.<br>La vraie différence.",
+      "subtitle": "Un champ de recherche réactif — le pattern le plus courant en conditions réelles.",
+      "reactLabel": "React",
+      "reactMeta": "25 lignes  ·  react, react-dom, useState, useEffect",
+      "nojsLabel": "No.JS",
+      "nojsMeta": "4 lignes  ·  0 imports",
+      "nojsNote": "✓ Réactif  ·  ✓ Auto-fetch  ·  ✓ Aucune étape de build"
+    },
+    "bundle": {
+      "badge": "Le résultat.",
+      "h1": "Votre bundle fait 2.3 Mo.",
+      "h2": "Le nôtre fait 20 Ko.",
+      "subtitle": "Pas de build. Pas de bundler. Pas d'excuses.",
+      "getStarted": "Commencer",
+      "seeFeatures": "Voir les fonctionnalités"
+    },
+    "manifesto": {
+      "kicker": "UN MANIFESTE",
+      "h1": "Le web était déjà réactif.",
+      "h2": "Nous avons simplement donné au HTML les attributs pour le prouver."
+    },
+    "problem": {
+      "kicker": "LE PROBLÈME DU JAVASCRIPT MODERNE",
+      "col1p1": "Quelque part entre la « pensée composant » et le « diffing du DOM virtuel », nous avons oublié que le navigateur comprend déjà le HTML. Il sait déjà mettre à jour le DOM. Il gère déjà les événements.",
+      "col1p2": "Nous avons empilé abstraction sur abstraction jusqu'à ce qu'un simple formulaire nécessite trois fichiers, un pipeline de build et un runtime de framework.",
+      "col2p1": "No.JS fait le pari inverse. Le navigateur n'est pas l'ennemi, c'est la plateforme. Le HTML n'est pas limité, il est sous-exploité. Les attributs ne sont pas primitifs, ils sont un DSL qui n'attend qu'à émerger.",
+      "col2p2": "Nous avons construit No.JS avec une conviction : si vous pouvez l'exprimer en HTML, vous devriez le faire.",
+      "col3p1": "Le résultat est un framework que vous pouvez apprendre en un après-midi et déployer en 30 secondes. Non pas parce que nous l'avons rendu simple, mais parce que le navigateur était déjà capable. Nous nous sommes juste écartés du chemin.",
+      "col3p2": "Ce n'est pas anti-JavaScript. C'est pro-HTML."
+    },
+    "principles": {
+      "kicker": "NOS PRINCIPES",
+      "p1Title": "Le navigateur est la plateforme",
+      "p1Desc": "Nous n'abstraions pas le navigateur. Nous étendons le HTML pour l'exploiter pleinement.",
+      "p2Title": "La complexité est l'ennemi",
+      "p2Desc": "Si une fonctionnalité nécessite une étape de build pour exister, elle n'a pas sa place dans No.JS.",
+      "p3Title": "HTML-first, pour toujours",
+      "p3Desc": "Chaque directive est un attribut HTML. Vos templates sont du HTML valide que n'importe quel navigateur peut lire.",
+      "p4Title": "Livrez dès le premier jour",
+      "p4Desc": "Le meilleur framework est celui que vous pouvez utiliser tout de suite, sans demander la permission à un terminal."
+    },
+    "quote": "« Le meilleur JavaScript,<br>c'est celui que vous n'écrivez pas. »",
+    "cta": {
+      "headline": "Prêt à construire ?",
+      "subtitle": "Commencez à utiliser No.JS dès aujourd'hui.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    }
   }
 }

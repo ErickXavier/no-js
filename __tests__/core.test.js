@@ -853,3 +853,51 @@ describe('Config — CSP', () => {
     _config.csp = original;
   });
 });
+
+describe('$set dot-path traversal', () => {
+  test('sets a deeply nested value via dot-path', () => {
+    const ctx = createContext({ user: { profile: { name: 'Alice' } } });
+    ctx.$set('user.profile.name', 'Bob');
+    expect(ctx.user.profile.name).toBe('Bob');
+  });
+
+  test('notifies watchers when dot-path value changes', () => {
+    const ctx = createContext({ a: { b: { c: 1 } } });
+    const watcher = jest.fn();
+    ctx.$watch(watcher);
+    ctx.$set('a.b.c', 2);
+    expect(watcher).toHaveBeenCalledTimes(1);
+  });
+
+  test('does NOT notify watchers when dot-path value is unchanged', () => {
+    const ctx = createContext({ a: { b: { c: 1 } } });
+    const watcher = jest.fn();
+    ctx.$watch(watcher);
+    ctx.$set('a.b.c', 1);
+    expect(watcher).not.toHaveBeenCalled();
+  });
+
+  test('handles intermediate null gracefully', () => {
+    const ctx = createContext({ a: null });
+    // Should not throw
+    ctx.$set('a.b.c', 42);
+    expect(ctx.a).toBeNull();
+  });
+
+  test('single-key $set still works through proxy', () => {
+    const ctx = createContext({ x: 10 });
+    const watcher = jest.fn();
+    ctx.$watch(watcher);
+    ctx.$set('x', 20);
+    expect(ctx.x).toBe(20);
+    expect(watcher).toHaveBeenCalledTimes(1);
+  });
+
+  test('single-key $set does NOT notify when unchanged', () => {
+    const ctx = createContext({ x: 10 });
+    const watcher = jest.fn();
+    ctx.$watch(watcher);
+    ctx.$set('x', 10);
+    expect(watcher).not.toHaveBeenCalled();
+  });
+});

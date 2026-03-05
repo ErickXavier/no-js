@@ -71,7 +71,7 @@ registerDirective("if", {
       }
     }
 
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });
@@ -120,7 +120,7 @@ registerDirective("else-if", {
         el.innerHTML = "";
       }
     }
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });
@@ -166,7 +166,7 @@ registerDirective("else", {
       _clearDeclared(el);
       processTree(el);
     }
-    ctx.$watch(update);
+    _watchExpr("", ctx, update);
     update();
   },
 });
@@ -282,7 +282,7 @@ registerDirective("switch", {
       }
     }
 
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });

@@ -2,6 +2,7 @@
 //  DIRECTIVES: class-*, style-*
 // ═══════════════════════════════════════════════════════════════════════
 
+import { _watchExpr } from "../globals.js";
 import { evaluate } from "../evaluate.js";
 import { findContext } from "../dom.js";
 import { registerDirective } from "../registry.js";
@@ -14,16 +15,18 @@ registerDirective("class-*", {
     const ctx = findContext(el);
 
     // class-map="{ active: x, bold: y }"
+    // Supports space-separated keys: class-map="{ 'bg-sky-500 text-white': x }"
     if (suffix === "map") {
       function update() {
         const obj = evaluate(expr, ctx);
         if (obj && typeof obj === "object") {
           for (const [cls, cond] of Object.entries(obj)) {
-            el.classList.toggle(cls, !!cond);
+            const parts = cls.split(/\s+/).filter(Boolean);
+            parts.forEach((c) => el.classList.toggle(c, !!cond));
           }
         }
       }
-      ctx.$watch(update);
+      _watchExpr(expr, ctx, update);
       update();
       return;
     }
@@ -42,7 +45,7 @@ registerDirective("class-*", {
           prevClasses = next;
         }
       }
-      ctx.$watch(update);
+      _watchExpr(expr, ctx, update);
       update();
       return;
     }
@@ -51,8 +54,8 @@ registerDirective("class-*", {
     function update() {
       el.classList.toggle(suffix, !!evaluate(expr, ctx));
     }
-    ctx.$watch(update);
-    if (expr.includes("NoJS.locale")) _watchI18n(update);
+    _watchExpr(expr, ctx, update);
+    if (expr.includes("$i18n") || expr.includes("NoJS.locale")) _watchI18n(update);
     update();
   },
 });
@@ -73,7 +76,7 @@ registerDirective("style-*", {
           }
         }
       }
-      ctx.$watch(update);
+      _watchExpr(expr, ctx, update);
       update();
       return;
     }
@@ -84,7 +87,7 @@ registerDirective("style-*", {
       const val = evaluate(expr, ctx);
       el.style[cssProp] = val != null ? String(val) : "";
     }
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });

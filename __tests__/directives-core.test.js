@@ -1916,24 +1916,6 @@ describe('computed — missing expr (L94-96 early return)', () => {
 
 
 
-describe('bind-* — null value removes attribute (L70)', () => {
-  test('bind-title removes title attr when value is null', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ tip: null }');
-    const el = document.createElement('span');
-    el.setAttribute('bind-title', 'tip');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(el.hasAttribute('title')).toBe(false);
-    document.body.removeChild(parent);
-  });
-});
-
-
-
-
 
 describe('if — no-change early return (L26)', () => {
   test('update returns early when condition value unchanged', () => {

@@ -315,6 +315,9 @@ export function _createRouter() {
             }
             return;
           }
+          // Skip if path unchanged (prevents double-processing from programmatic hash set)
+          const [p] = raw.split("?");
+          if (p === current.path) return;
           navigate(raw, true);
         });
         // Initial route

@@ -5,4 +5,5 @@ module.exports = {
     '^.+\\.js$': 'babel-jest',
   },
   testMatch: ['**/__tests__/**/*.test.js'],
+  collectCoverageFrom: ['src/**/*.js'],
 };

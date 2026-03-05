@@ -25,7 +25,7 @@ test.describe('i18n — inline', () => {
     await expect(page.getByTestId('farewell-text')).toHaveText('Goodbye');
 
     await page.evaluate(() => {
-      (window as any).NoJS.i18n({ defaultLocale: 'es' });
+      (window as any).NoJS.locale = 'es';
     });
 
     await expect(page.getByTestId('farewell-text')).toHaveText('Adiós');

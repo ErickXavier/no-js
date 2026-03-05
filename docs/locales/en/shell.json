@@ -1,66 +1,83 @@
 {
-  "flag": "🇺🇸",
-  "header": {
-    "home": "Home",
-    "features": "Features",
-    "examples": "Examples",
-    "docs": "Docs",
-    "getStarted": "Get Started"
-  },
-  "footer": {
-    "desc": "The HTML-first reactive framework",
-    "resources": "Resources",
-    "documentation": "Documentation",
-    "examples": "Examples",
-    "apiReference": "API Reference",
-    "github": "GitHub",
-    "license": "2026 No.JS - MIT License"
-  },
-  "sidebar": {
-    "gettingStarted": "Getting Started",
-    "introduction": "Introduction",
-    "quickStart": "Quick Start",
-    "coreConcepts": "Core Concepts",
-    "apiReference": "API Reference",
-    "directives": "Directives",
-    "actionsRefs": "Actions & Refs",
-    "customDirectives": "Custom Directives",
-    "errorHandling": "Error Handling",
-    "configuration": "Configuration",
-    "guides": "Guides",
-    "stateManagement": "State Management",
-    "eventHandling": "Event Handling",
-    "dataBinding": "Data Binding",
-    "conditionals": "Conditionals",
-    "loops": "Loops",
-    "templates": "Templates",
-    "fetchApi": "Fetch & API",
-    "routing": "Routing",
-    "forms": "Forms",
-    "styling": "Styling",
-    "animations": "Animations",
-    "filters": "Filters",
-    "i18n": "i18n"
-  },
-  "langSwitcher": {
-    "en": "EN",
-    "es": "ES",
-    "pt": "PT",
-    "it": "IT",
-    "fr": "FR"
-  },
-  "demo": {
-    "welcome": "Welcome to No.JS",
-    "greeting": "Hello, {name}!",
-    "items": "{count} item | {count} items",
-    "nav": { "home": "Home", "docs": "Documentation", "examples": "Examples" },
-    "actions": { "save": "Save", "cancel": "Cancel", "delete": "Delete" },
-    "fruits": { "apple": "Apple", "banana": "Banana", "cherry": "Cherry" },
-    "messages": {
-      "success": "Operation completed successfully!",
-      "error": "Something went wrong.",
-      "empty": "No items found.",
-      "confirm": "Are you sure you want to {action}?"
+  "shell": {
+    "flag": "🇺🇸",
+    "header": {
+      "home": "Home",
+      "features": "Features",
+      "examples": "Examples",
+      "docs": "Docs",
+      "getStarted": "Get Started",
+      "playground": "Playground"
+    },
+    "footer": {
+      "desc": "The HTML-first reactive framework",
+      "resources": "Resources",
+      "documentation": "Documentation",
+      "examples": "Examples",
+      "apiReference": "API Reference",
+      "playground": "Playground",
+      "github": "GitHub",
+      "license": "2026 No.JS - MIT License"
+    },
+    "sidebar": {
+      "gettingStarted": "Getting Started",
+      "introduction": "Introduction",
+      "quickStart": "Quick Start",
+      "coreConcepts": "Core Concepts",
+      "apiReference": "API Reference",
+      "directives": "Directives",
+      "actionsRefs": "Actions & Refs",
+      "customDirectives": "Custom Directives",
+      "errorHandling": "Error Handling",
+      "configuration": "Configuration",
+      "guides": "Guides",
+      "stateManagement": "State Management",
+      "eventHandling": "Event Handling",
+      "dataBinding": "Data Binding",
+      "conditionals": "Conditionals",
+      "loops": "Loops",
+      "templates": "Templates",
+      "fetchApi": "Fetch & API",
+      "routing": "Routing",
+      "forms": "Forms",
+      "styling": "Styling",
+      "dragAndDrop": "Drag & Drop",
+      "animations": "Animations",
+      "filters": "Filters",
+      "i18n": "i18n"
+    },
+    "langSwitcher": {
+      "en": "EN",
+      "es": "ES",
+      "pt": "PT",
+      "it": "IT",
+      "fr": "FR"
+    },
+    "demo": {
+      "welcome": "Welcome to No.JS",
+      "greeting": "Hello, {name}!",
+      "items": "{count} item | {count} items",
+      "nav": {
+        "home": "Home",
+        "docs": "Documentation",
+        "examples": "Examples"
+      },
+      "actions": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "fruits": {
+        "apple": "Apple",
+        "banana": "Banana",
+        "cherry": "Cherry"
+      },
+      "messages": {
+        "success": "Operation completed successfully!",
+        "error": "Something went wrong.",
+        "empty": "No items found.",
+        "confirm": "Are you sure you want to {action}?"
+      }
     }
   }
 }

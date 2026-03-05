@@ -1,51 +1,53 @@
 {
-  "codeCompare": {
-    "title": "The same app.<br>The real difference.",
-    "subtitle": "A reactive search box - the most common real-world pattern.",
-    "reactLabel": "React",
-    "reactMeta": "25 lines  ·  react, react-dom, useState, useEffect",
-    "nojsLabel": "No.JS",
-    "nojsMeta": "4 lines  ·  0 imports",
-    "nojsNote": "✓ Reactive  ·  ✓ Auto-fetches  ·  ✓ No build step"
-  },
-  "bundle": {
-    "badge": "The outcome.",
-    "h1": "Your bundle is 2.3 MB.",
-    "h2": "Ours is 14 KB.",
-    "subtitle": "No build step. No bundler. No excuses.",
-    "getStarted": "Get Started",
-    "seeFeatures": "See the Features"
-  },
-  "manifesto": {
-    "kicker": "A MANIFESTO",
-    "h1": "The web was already reactive.",
-    "h2": "We just gave HTML the attributes to prove it."
-  },
-  "problem": {
-    "kicker": "THE PROBLEM WITH MODERN JAVASCRIPT",
-    "col1p1": "Somewhere between \"component thinking\" and \"virtual DOM diffing\", we forgot that the browser already understands HTML. It already knows how to update the DOM. It already handles events.",
-    "col1p2": "We built abstraction upon abstraction until a simple form required three files, a build pipeline, and a framework runtime.",
-    "col2p1": "No.JS is the opposite bet. The browser is not the enemy, it's the platform. HTML is not limited, it's underutilized. Attributes are not primitive, they're a DSL waiting to happen.",
-    "col2p2": "We built No.JS on one conviction: if you can express it in HTML, you should.",
-    "col3p1": "The result is a framework you can learn in an afternoon and ship in 30 seconds. Not because we made it simple, but because the browser was already capable. We just got out of the way.",
-    "col3p2": "This is not anti-JavaScript. It's pro-HTML."
-  },
-  "principles": {
-    "kicker": "OUR PRINCIPLES",
-    "p1Title": "The browser is the platform",
-    "p1Desc": "We don't abstract the browser. We extend HTML to use it fully.",
-    "p2Title": "Complexity is the enemy",
-    "p2Desc": "If a feature requires a build step to exist, it doesn't belong in No.JS.",
-    "p3Title": "HTML-first, forever",
-    "p3Desc": "Every directive is an HTML attribute. Your templates are valid HTML that any browser can read.",
-    "p4Title": "Ship on day one",
-    "p4Desc": "The best framework is the one you can use right now, without asking permission from a terminal."
-  },
-  "quote": "\"The best JavaScript<br>is the JavaScript you don't write.\"",
-  "cta": {
-    "headline": "Ready to Build?",
-    "subtitle": "Start using No.JS today.",
-    "getStarted": "Get Started",
-    "learnMore": "Learn More"
+  "landing": {
+    "codeCompare": {
+      "title": "The same app.<br>The real difference.",
+      "subtitle": "A reactive search box - the most common real-world pattern.",
+      "reactLabel": "React",
+      "reactMeta": "25 lines  ·  react, react-dom, useState, useEffect",
+      "nojsLabel": "No.JS",
+      "nojsMeta": "4 lines  ·  0 imports",
+      "nojsNote": "✓ Reactive  ·  ✓ Auto-fetches  ·  ✓ No build step"
+    },
+    "bundle": {
+      "badge": "The outcome.",
+      "h1": "Your bundle is 2.3 MB.",
+      "h2": "Ours is 20 KB.",
+      "subtitle": "No build step. No bundler. No excuses.",
+      "getStarted": "Get Started",
+      "seeFeatures": "See the Features"
+    },
+    "manifesto": {
+      "kicker": "A MANIFESTO",
+      "h1": "The web was already reactive.",
+      "h2": "We just gave HTML the attributes to prove it."
+    },
+    "problem": {
+      "kicker": "THE PROBLEM WITH MODERN JAVASCRIPT",
+      "col1p1": "Somewhere between \"component thinking\" and \"virtual DOM diffing\", we forgot that the browser already understands HTML. It already knows how to update the DOM. It already handles events.",
+      "col1p2": "We built abstraction upon abstraction until a simple form required three files, a build pipeline, and a framework runtime.",
+      "col2p1": "No.JS is the opposite bet. The browser is not the enemy, it's the platform. HTML is not limited, it's underutilized. Attributes are not primitive, they're a DSL waiting to happen.",
+      "col2p2": "We built No.JS on one conviction: if you can express it in HTML, you should.",
+      "col3p1": "The result is a framework you can learn in an afternoon and ship in 30 seconds. Not because we made it simple, but because the browser was already capable. We just got out of the way.",
+      "col3p2": "This is not anti-JavaScript. It's pro-HTML."
+    },
+    "principles": {
+      "kicker": "OUR PRINCIPLES",
+      "p1Title": "The browser is the platform",
+      "p1Desc": "We don't abstract the browser. We extend HTML to use it fully.",
+      "p2Title": "Complexity is the enemy",
+      "p2Desc": "If a feature requires a build step to exist, it doesn't belong in No.JS.",
+      "p3Title": "HTML-first, forever",
+      "p3Desc": "Every directive is an HTML attribute. Your templates are valid HTML that any browser can read.",
+      "p4Title": "Ship on day one",
+      "p4Desc": "The best framework is the one you can use right now, without asking permission from a terminal."
+    },
+    "quote": "\"The best JavaScript<br>is the JavaScript you don't write.\"",
+    "cta": {
+      "headline": "Ready to Build?",
+      "subtitle": "Start using No.JS today.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    }
   }
 }

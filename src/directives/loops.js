@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createContext } from "../context.js";
+import { _watchExpr } from "../globals.js";
 import { evaluate, resolve } from "../evaluate.js";
 import { findContext, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree } from "../registry.js";
@@ -23,10 +24,25 @@ registerDirective("each", {
     const animLeave = el.getAttribute("animate-leave");
     const stagger = parseInt(el.getAttribute("animate-stagger")) || 0;
     const animDuration = parseInt(el.getAttribute("animate-duration")) || 0;
+    let prevList = null;
 
     function update() {
-      let list = resolve(listPath, ctx);
+      let list = /[\[\]()\s+\-*\/!?:&|]/.test(listPath)
+        ? evaluate(listPath, ctx)
+        : resolve(listPath, ctx);
       if (!Array.isArray(list)) return;
+
+      // If same list reference and items are rendered, skip re-render
+      // and just propagate the notification to child contexts so their
+      // watchers (bind, show, model, etc.) can react to parent changes
+      // without destroying/recreating the DOM (preserves input focus).
+      if (list === prevList && list.length > 0 && el.children.length > 0) {
+        for (const child of el.children) {
+          if (child.__ctx && child.__ctx.$notify) child.__ctx.$notify();
+        }
+        return;
+      }
+      prevList = list;
 
       // Empty state
       if (list.length === 0 && elseTpl) {
@@ -90,6 +106,7 @@ registerDirective("each", {
           const firstChild = wrapper.firstElementChild;
           if (firstChild) {
             firstChild.classList.add(animEnter);
+            firstChild.addEventListener("animationend", () => firstChild.classList.remove(animEnter), { once: true });
             // Stagger animation — delay must be on the child, not the wrapper
             if (stagger) {
               firstChild.style.animationDelay = i * stagger + "ms";
@@ -99,7 +116,7 @@ registerDirective("each", {
       });
     }
 
-    ctx.$watch(update);
+    _watchExpr(expr, ctx, update);
     update();
   },
 });
@@ -204,6 +221,7 @@ registerDirective("foreach", {
             const firstChild = wrapper.firstElementChild;
             if (firstChild) {
               firstChild.classList.add(animEnter);
+              firstChild.addEventListener("animationend", () => firstChild.classList.remove(animEnter), { once: true });
               // Stagger animation — delay must be on the child, not the wrapper
               if (stagger) {
                 firstChild.style.animationDelay = (i * stagger) + "ms";
@@ -233,7 +251,7 @@ registerDirective("foreach", {
       }
     }
 
-    ctx.$watch(update);
+    _watchExpr(fromPath, ctx, update);
     update();
   },
 });

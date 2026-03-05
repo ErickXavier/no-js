@@ -64,7 +64,20 @@ export function createContext(data = {}, parent = null) {
       if (key === "$notify") return notify;
       if (key === "$set")
         return (k, v) => {
-          proxy[k] = v;
+          const parts = k.split(".");
+          if (parts.length === 1) {
+            proxy[k] = v;
+          } else {
+            let obj = proxy;
+            for (let i = 0; i < parts.length - 1; i++) {
+              obj = obj[parts[i]];
+              if (obj == null) return;
+            }
+            const lastKey = parts[parts.length - 1];
+            const old = obj[lastKey];
+            obj[lastKey] = v;
+            if (old !== v) notify();
+          }
         };
       if (key === "$parent") return parent;
       if (key === "$refs") return _refs;

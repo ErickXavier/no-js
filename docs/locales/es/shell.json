@@ -1,66 +1,83 @@
 {
-  "flag": "🇪🇸",
-  "header": {
-    "home": "Inicio",
-    "features": "Características",
-    "examples": "Ejemplos",
-    "docs": "Docs",
-    "getStarted": "Comenzar"
-  },
-  "footer": {
-    "desc": "El framework reactivo HTML-first",
-    "resources": "Recursos",
-    "documentation": "Documentación",
-    "examples": "Ejemplos",
-    "apiReference": "Referencia de API",
-    "github": "GitHub",
-    "license": "2026 No.JS - Licencia MIT"
-  },
-  "sidebar": {
-    "gettingStarted": "Primeros Pasos",
-    "introduction": "Introducción",
-    "quickStart": "Inicio Rápido",
-    "coreConcepts": "Conceptos Clave",
-    "apiReference": "Referencia de API",
-    "directives": "Directivas",
-    "actionsRefs": "Acciones y Refs",
-    "customDirectives": "Directivas Personalizadas",
-    "errorHandling": "Manejo de Errores",
-    "configuration": "Configuración",
-    "guides": "Guías",
-    "stateManagement": "Gestión de Estado",
-    "eventHandling": "Manejo de Eventos",
-    "dataBinding": "Enlace de Datos",
-    "conditionals": "Condicionales",
-    "loops": "Bucles",
-    "templates": "Plantillas",
-    "fetchApi": "Fetch y API",
-    "routing": "Enrutamiento",
-    "forms": "Formularios",
-    "styling": "Estilos",
-    "animations": "Animaciones",
-    "filters": "Filtros",
-    "i18n": "i18n"
-  },
-  "langSwitcher": {
-    "en": "EN",
-    "es": "ES",
-    "pt": "PT",
-    "it": "IT",
-    "fr": "FR"
-  },
-  "demo": {
-    "welcome": "Bienvenido a No.JS",
-    "greeting": "¡Hola, {name}!",
-    "items": "{count} elemento | {count} elementos",
-    "nav": { "home": "Inicio", "docs": "Documentación", "examples": "Ejemplos" },
-    "actions": { "save": "Guardar", "cancel": "Cancelar", "delete": "Eliminar" },
-    "fruits": { "apple": "Manzana", "banana": "Plátano", "cherry": "Cereza" },
-    "messages": {
-      "success": "¡Operación completada con éxito!",
-      "error": "Algo salió mal.",
-      "empty": "No se encontraron elementos.",
-      "confirm": "¿Estás seguro de que quieres {action}?"
+  "shell": {
+    "flag": "🇪🇸",
+    "header": {
+      "home": "Inicio",
+      "features": "Características",
+      "examples": "Ejemplos",
+      "docs": "Docs",
+      "getStarted": "Comenzar",
+      "playground": "Playground"
+    },
+    "footer": {
+      "desc": "El framework reactivo HTML-first",
+      "resources": "Recursos",
+      "documentation": "Documentación",
+      "examples": "Ejemplos",
+      "apiReference": "Referencia de API",
+      "playground": "Playground",
+      "github": "GitHub",
+      "license": "2026 No.JS - Licencia MIT"
+    },
+    "sidebar": {
+      "gettingStarted": "Primeros Pasos",
+      "introduction": "Introducción",
+      "quickStart": "Inicio Rápido",
+      "coreConcepts": "Conceptos Clave",
+      "apiReference": "Referencia de API",
+      "directives": "Directivas",
+      "actionsRefs": "Acciones y Refs",
+      "customDirectives": "Directivas Personalizadas",
+      "errorHandling": "Manejo de Errores",
+      "configuration": "Configuración",
+      "guides": "Guías",
+      "stateManagement": "Gestión de Estado",
+      "eventHandling": "Manejo de Eventos",
+      "dataBinding": "Enlace de Datos",
+      "conditionals": "Condicionales",
+      "loops": "Bucles",
+      "templates": "Plantillas",
+      "fetchApi": "Fetch y API",
+      "routing": "Enrutamiento",
+      "forms": "Formularios",
+      "styling": "Estilos",
+      "dragAndDrop": "Drag & Drop",
+      "animations": "Animaciones",
+      "filters": "Filtros",
+      "i18n": "i18n"
+    },
+    "langSwitcher": {
+      "en": "EN",
+      "es": "ES",
+      "pt": "PT",
+      "it": "IT",
+      "fr": "FR"
+    },
+    "demo": {
+      "welcome": "Bienvenido a No.JS",
+      "greeting": "¡Hola, {name}!",
+      "items": "{count} elemento | {count} elementos",
+      "nav": {
+        "home": "Inicio",
+        "docs": "Documentación",
+        "examples": "Ejemplos"
+      },
+      "actions": {
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "delete": "Eliminar"
+      },
+      "fruits": {
+        "apple": "Manzana",
+        "banana": "Plátano",
+        "cherry": "Cereza"
+      },
+      "messages": {
+        "success": "¡Operación completada con éxito!",
+        "error": "Algo salió mal.",
+        "empty": "No se encontraron elementos.",
+        "confirm": "¿Estás seguro de que quieres {action}?"
+      }
     }
   }
 }

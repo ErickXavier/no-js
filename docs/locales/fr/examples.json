@@ -1,64 +1,66 @@
 {
-  "hero": {
-    "badge": "Apprendre par l'exemple",
-    "title": "Exemples",
-    "subtitle": "Des patterns concrets que vous utiliserez réellement en production — en HTML pur."
-  },
-  "login": {
-    "badge": "Intermédiaire",
-    "title": "Connexion avec JWT",
-    "desc": "Un flux de connexion complet : validation du formulaire, POST vers un endpoint d'authentification, sauvegarde du JWT dans un store global, et ajout automatique du token à chaque requête suivante via un intercepteur de requêtes.",
-    "signIn": "Se connecter",
-    "signingIn": "Connexion en cours...",
-    "previewHint": "Remplissez les deux champs pour essayer l'aperçu interactif",
-    "signedIn": "Connecté !",
-    "signOut": "Se déconnecter"
-  },
-  "dashboard": {
-    "badge": "Intermédiaire",
-    "title": "Route protégée & validation de token",
-    "desc": "Une route protégée par le store d'authentification, associée à un <strong>intercepteur de réponse</strong> qui agit comme un script de contrôle : à chaque appel API, si le serveur renvoie <code>401</code> ou <code>403</code>, le token est invalidé et l'utilisateur est redirigé vers la page de connexion automatiquement — aucun code supplémentaire nécessaire dans la route elle-même.",
-    "welcome": "Bon retour, Jane",
-    "activeSession": "● Session active",
-    "requestsToday": "Requêtes aujourd'hui",
-    "errorRate": "Taux d'erreur",
-    "uptime": "Disponibilité",
-    "activeUsers": "Utilisateurs actifs",
-    "interceptorNote": "Si une requête renvoie <code>401</code> ou <code>403</code>, l'intercepteur efface le token et redirige vers <code>/login</code> automatiquement."
-  },
-  "search": {
-    "badge": "Débutant",
-    "title": "Recherche en direct",
-    "desc": "Un champ de recherche instantané qui déclenche une requête GET avec debounce à chaque frappe, affichant les résultats de manière réactive. Pas de <code>addEventListener</code>, pas de <code>setTimeout</code>, pas de manipulation du DOM.",
-    "placeholder": "Rechercher des produits...",
-    "noResults": "Aucun résultat"
-  },
-  "cart": {
-    "badge": "Intermédiaire",
-    "title": "Panier d'achat",
-    "desc": "Un store global partagé entre une liste de produits et un badge de panier — dans différentes parties de la page. Quand un produit est ajouté, le badge et le récapitulatif du panier se mettent à jour simultanément, sans bus d'événements ni composant partagé.",
-    "products": "Produits",
-    "cartLabel": "Panier",
-    "total": "Total",
-    "addHint": "Ajoutez un produit pour voir le panier"
-  },
-  "polling": {
-    "badge": "Débutant",
-    "title": "Polling en direct",
-    "desc": "Un tableau de bord de statut serveur qui se rafraîchit automatiquement toutes les 5 secondes grâce à l'attribut <code>poll</code>. Le style conditionnel réagit instantanément à l'état de santé actuel — pas de <code>setInterval</code>, pas de boucle <code>fetch</code>.",
-    "serverStatus": "Statut du serveur",
-    "online": "En ligne",
-    "cpu": "CPU",
-    "reqPerSec": "Req/s",
-    "errors": "Erreurs",
-    "lastResponse": "Dernier temps de réponse",
-    "nextPoll": "Prochain poll dans",
-    "refreshNote": "Se rafraîchit automatiquement via <code>poll=\"5000\"</code>"
-  },
-  "cta": {
-    "title": "Envie de plus d'exemples ?",
-    "subtitle": "Consultez la documentation complète pour des patterns avancés.",
-    "viewDocs": "Voir la documentation",
-    "github": "Dépôt GitHub"
+  "examples": {
+    "hero": {
+      "badge": "Apprendre par l'exemple",
+      "title": "Exemples",
+      "subtitle": "Des patterns concrets que vous utiliserez réellement en production — en HTML pur."
+    },
+    "login": {
+      "badge": "Intermédiaire",
+      "title": "Connexion avec JWT",
+      "desc": "Un flux de connexion complet : validation du formulaire, POST vers un endpoint d'authentification, sauvegarde du JWT dans un store global, et ajout automatique du token à chaque requête suivante via un intercepteur de requêtes.",
+      "signIn": "Se connecter",
+      "signingIn": "Connexion en cours...",
+      "previewHint": "Remplissez les deux champs pour essayer l'aperçu interactif",
+      "signedIn": "Connecté !",
+      "signOut": "Se déconnecter"
+    },
+    "dashboard": {
+      "badge": "Intermédiaire",
+      "title": "Route protégée & validation de token",
+      "desc": "Une route protégée par le store d'authentification, associée à un <strong>intercepteur de réponse</strong> qui agit comme un script de contrôle : à chaque appel API, si le serveur renvoie <code>401</code> ou <code>403</code>, le token est invalidé et l'utilisateur est redirigé vers la page de connexion automatiquement — aucun code supplémentaire nécessaire dans la route elle-même.",
+      "welcome": "Bon retour, Jane",
+      "activeSession": "● Session active",
+      "requestsToday": "Requêtes aujourd'hui",
+      "errorRate": "Taux d'erreur",
+      "uptime": "Disponibilité",
+      "activeUsers": "Utilisateurs actifs",
+      "interceptorNote": "Si une requête renvoie <code>401</code> ou <code>403</code>, l'intercepteur efface le token et redirige vers <code>/login</code> automatiquement."
+    },
+    "search": {
+      "badge": "Débutant",
+      "title": "Recherche en direct",
+      "desc": "Un champ de recherche instantané qui déclenche une requête GET avec debounce à chaque frappe, affichant les résultats de manière réactive. Pas de <code>addEventListener</code>, pas de <code>setTimeout</code>, pas de manipulation du DOM.",
+      "placeholder": "Rechercher des produits...",
+      "noResults": "Aucun résultat"
+    },
+    "cart": {
+      "badge": "Intermédiaire",
+      "title": "Panier d'achat",
+      "desc": "Un store global partagé entre une liste de produits et un badge de panier — dans différentes parties de la page. Quand un produit est ajouté, le badge et le récapitulatif du panier se mettent à jour simultanément, sans bus d'événements ni composant partagé.",
+      "products": "Produits",
+      "cartLabel": "Panier",
+      "total": "Total",
+      "addHint": "Ajoutez un produit pour voir le panier"
+    },
+    "polling": {
+      "badge": "Débutant",
+      "title": "Polling en direct",
+      "desc": "Un tableau de bord de statut serveur qui se rafraîchit automatiquement toutes les 5 secondes grâce à l'attribut <code>poll</code>. Le style conditionnel réagit instantanément à l'état de santé actuel — pas de <code>setInterval</code>, pas de boucle <code>fetch</code>.",
+      "serverStatus": "Statut du serveur",
+      "online": "En ligne",
+      "cpu": "CPU",
+      "reqPerSec": "Req/s",
+      "errors": "Erreurs",
+      "lastResponse": "Dernier temps de réponse",
+      "nextPoll": "Prochain poll dans",
+      "refreshNote": "Se rafraîchit automatiquement via <code>poll=\"5000\"</code>"
+    },
+    "cta": {
+      "title": "Envie de plus d'exemples ?",
+      "subtitle": "Consultez la documentation complète pour des patterns avancés.",
+      "viewDocs": "Voir la documentation",
+      "github": "Dépôt GitHub"
+    }
   }
 }

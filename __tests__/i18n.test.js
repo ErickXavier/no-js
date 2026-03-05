@@ -470,7 +470,7 @@ describe('_loadI18nNamespace', () => {
     _i18n.locales.es = { greeting: 'Hola' };
     await _loadI18nNamespace('dashboard');
     expect(_i18n.locales.es.greeting).toBe('Hola');
-    expect(_i18n.locales.es.dashboard).toEqual({ title: 'Title' });
+    expect(_i18n.locales.es.title).toBe('Title');
   });
 });
 

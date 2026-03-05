@@ -47,13 +47,14 @@ export async function _loadLocale(locale, ns) {
 
   let url = _config.i18n.loadPath.replace("{locale}", locale);
   if (ns) url = url.replace("{ns}", ns);
+  else if (url.includes("{ns}")) return; // no namespace to substitute
+
 
   try {
     const res = await fetch(url);
     if (!res.ok) { _warn(`i18n: failed to load ${url} (${res.status})`); return; }
     const data = await res.json();
-    const toMerge = ns ? { [ns]: data } : data;
-    _i18n.locales[locale] = _deepMerge(_i18n.locales[locale] || {}, toMerge);
+    _i18n.locales[locale] = _deepMerge(_i18n.locales[locale] || {}, data);
     if (_config.i18n.cache) _i18nCache.set(cacheKey, data);
   } catch (e) {
     _warn(`i18n: error loading ${url}`, e);

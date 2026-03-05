@@ -1,0 +1,33 @@
+{
+  "playground": {
+    "hero": {
+      "badge": "Interactivo",
+      "title": "Playground",
+      "subtitle": "Experimenta con No.JS en tiempo real — edita código, ve resultados al instante"
+    },
+    "toolbar": {
+      "reset": "Reiniciar",
+      "share": "Compartir",
+      "download": "Descargar",
+      "newFile": "Nuevo Archivo"
+    },
+    "console": {
+      "title": "Consola",
+      "clear": "Limpiar"
+    },
+    "editor": {
+      "placeholder": "Selecciona un archivo para empezar a editar..."
+    },
+    "share": {
+      "copied": "¡Enlace copiado al portapapeles!",
+      "error": "No se pudo copiar el enlace"
+    },
+    "download": {
+      "success": "¡Proyecto descargado!",
+      "filename": "nojs-playground"
+    },
+    "reset": {
+      "confirm": "¿Reiniciar al original? Tus cambios se perderán."
+    }
+  }
+}

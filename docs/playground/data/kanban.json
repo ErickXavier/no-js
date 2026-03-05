@@ -1,0 +1,29 @@
+{
+  "columns": [
+    {
+      "id": "todo",
+      "title": "To Do",
+      "cards": [
+        { "id": 1, "title": "Optimize middle-out compression ratio", "tags": ["feat", "high"], "date": "2025-03-01" },
+        { "id": 2, "title": "Write Weissman Score benchmarks", "tags": ["docs"], "date": "2025-03-02" },
+        { "id": 3, "title": "Fix Dinesh's tab-spacing merge conflict", "tags": ["bug", "high"], "date": "2025-03-01" }
+      ]
+    },
+    {
+      "id": "progress",
+      "title": "In Progress",
+      "cards": [
+        { "id": 4, "title": "Build decentralized internet platform", "tags": ["feat", "high"], "date": "2025-02-28" },
+        { "id": 5, "title": "Gilfoyle: migrate servers to Anton", "tags": ["feat"], "date": "2025-02-27" }
+      ]
+    },
+    {
+      "id": "done",
+      "title": "Done",
+      "cards": [
+        { "id": 6, "title": "TechCrunch Disrupt pitch deck", "tags": ["feat", "docs"], "date": "2025-02-25" }
+      ]
+    }
+  ],
+  "nextId": 7
+}

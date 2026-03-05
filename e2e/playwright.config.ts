@@ -9,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3737',
+    baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     testIdAttribute: 'data-test',
   },
@@ -20,8 +20,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'python3 -m http.server 3737',
-    port: 3737,
+    command: 'node test-server.js',
+    port: 3000,
     cwd: path.resolve(__dirname, '..'),
     reuseExistingServer: !process.env.CI,
   },
