@@ -75,52 +75,52 @@
   <div class="doc-section">
     <h2 class="doc-title" t="docs.configuration.configOptions.title">Config Option Details</h2>
 
-    <h3 class="doc-title"><code>sanitize</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>true</code></p>
-    <p class="doc-text">Controls whether HTML content rendered via <code>bind-html</code> is sanitized through a DOMPurify-compatible sanitizer. When enabled, all potentially dangerous tags and attributes (e.g., <code>&lt;script&gt;</code>, <code>onerror</code>) are stripped before insertion into the DOM.</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.sanitizeTitle"><code>sanitize</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.sanitizeType"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>true</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.sanitizeText">Controls whether HTML content rendered via <code>bind-html</code> is sanitized through a DOMPurify-compatible sanitizer. When enabled, all potentially dangerous tags and attributes (e.g., <code>&lt;script&gt;</code>, <code>onerror</code>) are stripped before insertion into the DOM.</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">sanitize</span>: <span class="hl-kw">false</span> }); <span class="hl-cmt">// ⚠ Disable at your own risk — allows raw HTML</span></pre></div>
 
-    <h3 class="doc-title"><code>devtools</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>false</code></p>
-    <p class="doc-text">Enables the No.JS devtools panel, accessible via <code>window.__NOJS_DEVTOOLS__</code>. When active, it exposes reactive state, registered directives, active routes, and component trees for inspection in the browser console.</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.devtoolsTitle"><code>devtools</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.devtoolsType"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>false</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.devtoolsText">Enables the No.JS devtools panel, accessible via <code>window.__NOJS_DEVTOOLS__</code>. When active, it exposes reactive state, registered directives, active routes, and component trees for inspection in the browser console.</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">devtools</span>: <span class="hl-kw">true</span> });
 <span class="hl-cmt">// Then inspect in console:</span>
 <span class="hl-cmt">// window.__NOJS_DEVTOOLS__.state</span>
 <span class="hl-cmt">// window.__NOJS_DEVTOOLS__.routes</span></pre></div>
 
-    <h3 class="doc-title"><code>csp</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>string | null</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>null</code></p>
-    <p class="doc-text">Set to <code>'strict'</code> to disable the use of <code>new Function()</code> for expression evaluation. This is required for environments with a Content Security Policy that blocks <code>unsafe-eval</code>. In strict mode, expressions are limited to dot-path property access and simple comparisons — arbitrary JavaScript is not allowed.</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.cspTitle"><code>csp</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.cspType"><strong>Type:</strong> <code>string | null</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>null</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.cspText">Set to <code>'strict'</code> to disable the use of <code>new Function()</code> for expression evaluation. This is required for environments with a Content Security Policy that blocks <code>unsafe-eval</code>. In strict mode, expressions are limited to dot-path property access and simple comparisons — arbitrary JavaScript is not allowed.</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">csp</span>: <span class="hl-str">'strict'</span> }); <span class="hl-cmt">// Safe for strict CSP environments</span></pre></div>
-    <h3 class="doc-title"><code>templates.cache</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>true</code></p>
-    <p class="doc-text">Controls whether the HTML content of remotely-fetched <code>.tpl</code> files is stored in an in-memory <code>Map</code> after the first request. On repeated navigations to the same route, the cached HTML is used directly and no HTTP request is made. The cache lives for the duration of the page session (no TTL — template assets are static).</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.templatesCacheTitle"><code>templates.cache</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.templatesCacheType"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>true</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.templatesCacheText1">Controls whether the HTML content of remotely-fetched <code>.tpl</code> files is stored in an in-memory <code>Map</code> after the first request. On repeated navigations to the same route, the cached HTML is used directly and no HTTP request is made. The cache lives for the duration of the page session (no TTL — template assets are static).</p>
     <div class="code-block"><pre><span class="hl-cmt">// Disable template caching (always re-fetch .tpl files)</span>
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">templates</span>: { <span class="hl-attr">cache</span>: <span class="hl-kw">false</span> } });
 
 <span class="hl-cmt">// Default — caching is on, no configuration needed</span>
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">templates</span>: { <span class="hl-attr">cache</span>: <span class="hl-kw">true</span> } });</pre></div>
-    <p class="doc-text">Set to <code>false</code> during local development if you want changes to <code>.tpl</code> files to be reflected without a hard page reload.</p>
+    <p class="doc-text" t="docs.configuration.configOptions.templatesCacheText2">Set to <code>false</code> during local development if you want changes to <code>.tpl</code> files to be reflected without a hard page reload.</p>
 
-    <h3 class="doc-title"><code>i18n.loadPath</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>string | null</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>null</code></p>
-    <p class="doc-text">URL template for loading locale JSON files via <code>fetch</code>. Use <code>{locale}</code> and optionally <code>{ns}</code> as placeholders. When <code>null</code>, translations must be provided inline via <code>NoJS.i18n({ locales })</code>.</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.loadPathTitle"><code>i18n.loadPath</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.loadPathType"><strong>Type:</strong> <code>string | null</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>null</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.loadPathText">URL template for loading locale JSON files via <code>fetch</code>. Use <code>{locale}</code> and optionally <code>{ns}</code> as placeholders. When <code>null</code>, translations must be provided inline via <code>NoJS.i18n({ locales })</code>.</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({
   <span class="hl-attr">loadPath</span>: <span class="hl-str">'/locales/{locale}.json'</span>          <span class="hl-cmt">// Flat mode</span>
   <span class="hl-attr">loadPath</span>: <span class="hl-str">'/locales/{locale}/{ns}.json'</span>   <span class="hl-cmt">// Namespace mode</span>
 });</pre></div>
 
-    <h3 class="doc-title"><code>i18n.ns</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>string[]</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>[]</code></p>
-    <p class="doc-text">Array of namespace identifiers to preload at <code>init()</code>. Each namespace corresponds to a separate JSON file per locale. Additional namespaces can be loaded on-demand via the <code>i18n-ns</code> directive or route attribute.</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.nsTitle"><code>i18n.ns</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.nsType"><strong>Type:</strong> <code>string[]</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>[]</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.nsText">Array of namespace identifiers to preload at <code>init()</code>. Each namespace corresponds to a separate JSON file per locale. Additional namespaces can be loaded on-demand via the <code>i18n-ns</code> directive or route attribute.</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({
   <span class="hl-attr">loadPath</span>: <span class="hl-str">'/locales/{locale}/{ns}.json'</span>,
   <span class="hl-attr">ns</span>: [<span class="hl-str">'common'</span>, <span class="hl-str">'auth'</span>]
 });</pre></div>
 
-    <h3 class="doc-title"><code>i18n.cache</code></h3>
-    <p class="doc-text"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>true</code></p>
-    <p class="doc-text">Controls whether fetched locale JSON files are stored in an in-memory <code>Map</code> after the first request. Set to <code>false</code> during development for hot-reload of translation files.</p>
+    <h3 class="doc-title" t="docs.configuration.configOptions.cacheTitle"><code>i18n.cache</code></h3>
+    <p class="doc-text" t="docs.configuration.configOptions.cacheType"><strong>Type:</strong> <code>boolean</code> &nbsp;|&nbsp; <strong>Default:</strong> <code>true</code></p>
+    <p class="doc-text" t="docs.configuration.configOptions.cacheText">Controls whether fetched locale JSON files are stored in an in-memory <code>Map</code> after the first request. Set to <code>false</code> during development for hot-reload of translation files.</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({ <span class="hl-attr">cache</span>: <span class="hl-kw">false</span> }); <span class="hl-cmt">// Always re-fetch locale files</span></pre></div>
   </div>
 
@@ -128,8 +128,8 @@
   <div class="doc-section">
     <h2 class="doc-title" t="docs.configuration.apiProperties.title">API Properties</h2>
 
-    <h3 class="doc-title"><code>NoJS.baseApiUrl</code></h3>
-    <p class="doc-text">Getter/setter for the base API URL used by all <code>fetch</code> directives and <code>NoJS.http</code> calls. Can be read or reassigned at runtime.</p>
+    <h3 class="doc-title" t="docs.configuration.apiProperties.baseApiUrlTitle"><code>NoJS.baseApiUrl</code></h3>
+    <p class="doc-text" t="docs.configuration.apiProperties.baseApiUrlText">Getter/setter for the base API URL used by all <code>fetch</code> directives and <code>NoJS.http</code> calls. Can be read or reassigned at runtime.</p>
     <div class="code-block"><pre><span class="hl-cmt">// Set at init</span>
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">baseApiUrl</span>: <span class="hl-str">'https://api.myapp.com/v1'</span> });
 
@@ -139,8 +139,8 @@ console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.baseApiUr
 <span class="hl-cmt">// Update at runtime</span>
 <span class="hl-fn">NoJS</span>.baseApiUrl <span class="hl-op">=</span> <span class="hl-str">'https://staging-api.myapp.com/v1'</span>;</pre></div>
 
-    <h3 class="doc-title"><code>NoJS.version</code></h3>
-    <p class="doc-text">Read-only property that returns the current No.JS framework version string.</p>
+    <h3 class="doc-title" t="docs.configuration.apiProperties.versionTitle"><code>NoJS.version</code></h3>
+    <p class="doc-text" t="docs.configuration.apiProperties.versionText">Read-only property that returns the current No.JS framework version string.</p>
     <div class="code-block"><pre>console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.version); <span class="hl-cmt">// e.g. '1.4.0'</span></pre></div>
   </div>
 
@@ -170,14 +170,14 @@ console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.baseApiUr
   <div class="doc-section">
     <h2 class="doc-title" t="docs.configuration.security.title">Security</h2>
 
-    <h3 class="doc-title">XSS Protection</h3>
+    <h3 class="doc-title" t="docs.configuration.security.xssTitle">XSS Protection</h3>
     <ul class="doc-text">
-      <li><code>bind</code> always sets <code>textContent</code>, never <code>innerHTML</code> — safe by default.</li>
-      <li><code>bind-html</code> sanitizes content using a built-in regex-based sanitizer (strips <code>&lt;script&gt;</code> tags, blocks <code>on*</code> event handlers, removes <code>javascript:</code> URIs).</li>
-      <li>Template expressions are evaluated in a sandboxed <code>Function()</code> scope — no access to <code>window</code>, <code>document</code>, or globals unless explicitly exposed.</li>
+      <li t="docs.configuration.security.xssList1"><code>bind</code> always sets <code>textContent</code>, never <code>innerHTML</code> — safe by default.</li>
+      <li t="docs.configuration.security.xssList2"><code>bind-html</code> sanitizes content using a built-in regex-based sanitizer (strips <code>&lt;script&gt;</code> tags, blocks <code>on*</code> event handlers, removes <code>javascript:</code> URIs).</li>
+      <li t="docs.configuration.security.xssList3">Template expressions are evaluated in a sandboxed <code>Function()</code> scope — no access to <code>window</code>, <code>document</code>, or globals unless explicitly exposed.</li>
     </ul>
 
-    <h3 class="doc-title">CSRF Protection</h3>
+    <h3 class="doc-title" t="docs.configuration.security.csrfTitle">CSRF Protection</h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
     <span class="hl-attr">csrf</span>: {
@@ -187,10 +187,10 @@ console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.baseApiUr
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title">Content Security Policy</h3>
-    <p class="doc-text">No.JS uses <code>new Function()</code> for expression evaluation. If your CSP blocks <code>unsafe-eval</code>, use the precompiled mode:</p>
+    <h3 class="doc-title" t="docs.configuration.security.cspSecTitle">Content Security Policy</h3>
+    <p class="doc-text" t="docs.configuration.security.cspSecText1">No.JS uses <code>new Function()</code> for expression evaluation. If your CSP blocks <code>unsafe-eval</code>, use the precompiled mode:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-str">"dist/iife/no.js"</span> <span class="hl-attr">data-csp</span>=<span class="hl-str">"strict"</span><span class="hl-tag">&gt;&lt;/script&gt;</span></pre></div>
-    <p class="doc-text">In strict mode, expressions are limited to dot-path access and simple comparisons (no arbitrary JS).</p>
+    <p class="doc-text" t="docs.configuration.security.cspSecText2">In strict mode, expressions are limited to dot-path access and simple comparisons (no arbitrary JS).</p>
   </div>
 
 </div>

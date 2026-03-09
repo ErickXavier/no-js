@@ -596,7 +596,28 @@
         "text2": "Nested remote templates (a remote template that itself contains more <template src>) are recursively loaded."
       },
       "fileBased": {
-        "title": "File-Based Routing"
+        "title": "File-Based Routing",
+        "text": "Instead of declaring each route template manually, point your <code>route-view</code> outlet at a folder. No.JS will automatically resolve route paths to template files inside that folder.",
+        "howItWorks": "How it works",
+        "list1": "Add <code>route-view</code> to your outlet element — file-based routing is enabled by default (config <code>router.templates: \"pages\"</code>). Override per-outlet with <code>src=\"folder/\"</code>.",
+        "list2": "When a user navigates to <code>/analytics</code>, No.JS resolves it to <code>pages/analytics.tpl</code>",
+        "list3": "The template is fetched, cached, and rendered — automatically",
+        "attributesTitle": "Attributes",
+        "colAttr": "Attribute",
+        "colDefault": "Default",
+        "colDesc": "Description",
+        "srcDesc": "Base folder for template resolution (per-outlet override; config: <code>router.templates</code>)",
+        "routeIndexDesc": "Filename for the root route <code>/</code>",
+        "extDesc": "File extension appended to route segments (fallback: <code>\".html\"</code>)",
+        "i18nNsDesc": "When present, auto-derives i18n namespace from filename",
+        "callout": "<strong>Config default:</strong> The default <code>router.templates</code> is <code>\"pages\"</code>, so file-based routing works out of the box — just add <code>route-view</code> to your outlet. Override with <code>NoJS.config({ router: { templates: 'views' } })</code> or per-outlet via <code>src=\"./custom/\"</code>.",
+        "exampleTitle": "Example — SaaS Dashboard",
+        "exampleText": "That's it — <strong>two lines</strong> for a full SPA with six routes.",
+        "mixingTitle": "Mixing Explicit & File-Based Routes",
+        "mixingText": "Explicit <code>&lt;template route=\"...\"&gt;</code> declarations <strong>always take priority</strong>. This lets you combine both approaches — use file-based routing for simple pages and explicit templates for routes that need guards, params, or named outlets:",
+        "autoI18nTitle": "Auto i18n Namespace",
+        "autoI18nText": "When the <code>route-view</code> element has an <code>i18n-ns</code> attribute (even without a value), No.JS automatically loads the i18n namespace matching the filename:",
+        "autoI18nText2": "This replaces the need to add <code>i18n-ns=\"...\"</code> on each route template individually."
       },
       "lazyLoading": {
         "title": "Lazy Template Loading",

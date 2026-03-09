@@ -596,7 +596,28 @@
         "text2": "Las plantillas remotas anidadas (una plantilla remota que a su vez contiene más <template src>) se cargan recursivamente."
       },
       "fileBased": {
-        "title": "Enrutamiento Basado en Archivos"
+        "title": "Enrutamiento Basado en Archivos",
+        "text": "En lugar de declarar cada plantilla de ruta manualmente, apunta tu salida <code>route-view</code> a una carpeta. No.JS resolverá automáticamente las rutas a archivos de plantilla dentro de esa carpeta.",
+        "howItWorks": "Cómo funciona",
+        "list1": "Añade <code>route-view</code> a tu elemento de salida — el enrutamiento basado en archivos está habilitado por defecto (config <code>router.templates: \"pages\"</code>). Sobrescribe por salida con <code>src=\"folder/\"</code>.",
+        "list2": "Cuando un usuario navega a <code>/analytics</code>, No.JS lo resuelve a <code>pages/analytics.tpl</code>",
+        "list3": "La plantilla se obtiene, almacena en caché y renderiza — automáticamente",
+        "attributesTitle": "Atributos",
+        "colAttr": "Atributo",
+        "colDefault": "Predeterminado",
+        "colDesc": "Descripción",
+        "srcDesc": "Carpeta base para la resolución de plantillas (sobrescritura por salida; config: <code>router.templates</code>)",
+        "routeIndexDesc": "Nombre de archivo para la ruta raíz <code>/</code>",
+        "extDesc": "Extensión de archivo añadida a los segmentos de ruta (respaldo: <code>\".html\"</code>)",
+        "i18nNsDesc": "Cuando está presente, auto-deriva el namespace i18n del nombre de archivo",
+        "callout": "<strong>Config por defecto:</strong> El valor predeterminado de <code>router.templates</code> es <code>\"pages\"</code>, así que el enrutamiento basado en archivos funciona de inmediato — solo añade <code>route-view</code> a tu salida. Sobrescribe con <code>NoJS.config({ router: { templates: 'views' } })</code> o por salida vía <code>src=\"./custom/\"</code>.",
+        "exampleTitle": "Ejemplo — Dashboard SaaS",
+        "exampleText": "Eso es todo — <strong>dos líneas</strong> para una SPA completa con seis rutas.",
+        "mixingTitle": "Mezclando Rutas Explícitas y Basadas en Archivos",
+        "mixingText": "Las declaraciones explícitas <code>&lt;template route=\"...\"&gt;</code> <strong>siempre tienen prioridad</strong>. Esto te permite combinar ambos enfoques — usa enrutamiento basado en archivos para páginas simples y plantillas explícitas para rutas que necesitan guards, parámetros o salidas con nombre:",
+        "autoI18nTitle": "Namespace i18n Automático",
+        "autoI18nText": "Cuando el elemento <code>route-view</code> tiene un atributo <code>i18n-ns</code> (incluso sin valor), No.JS carga automáticamente el namespace i18n que coincide con el nombre del archivo:",
+        "autoI18nText2": "Esto reemplaza la necesidad de añadir <code>i18n-ns=\"...\"</code> en cada plantilla de ruta individualmente."
       },
       "lazyLoading": {
         "title": "Carga Diferida de Plantillas",

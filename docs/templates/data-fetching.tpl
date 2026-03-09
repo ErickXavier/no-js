@@ -11,18 +11,18 @@
   <!-- Base URL -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.dataFetching.baseUrl.title">Base URL</h2>
-    <p class="doc-text">Set once on any ancestor element. All descendant <code>get</code>, <code>post</code>, etc. resolve relative URLs against it.</p>
+    <p class="doc-text" t="docs.dataFetching.baseUrl.text1">Set once on any ancestor element. All descendant <code>get</code>, <code>post</code>, etc. resolve relative URLs against it.</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;body</span> <span class="hl-attr">base</span>=<span class="hl-str">"https://api.myapp.com/v1"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/users"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span>        <span class="hl-cmt">&lt;!-- → https://api.myapp.com/v1/users --&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/posts"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span>        <span class="hl-cmt">&lt;!-- → https://api.myapp.com/v1/posts --&gt;</span>
 <span class="hl-tag">&lt;/body&gt;</span></pre></div>
 
-    <p class="doc-text">Override for specific sections:</p>
+    <p class="doc-text" t="docs.dataFetching.baseUrl.text2">Override for specific sections:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">base</span>=<span class="hl-str">"https://cms.myapp.com/api"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/articles"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <p class="doc-text">Absolute URLs skip base resolution:</p>
+    <p class="doc-text" t="docs.dataFetching.baseUrl.text3">Absolute URLs skip base resolution:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"https://other-api.com/data"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span></pre></div>
   </div>
 
@@ -59,21 +59,21 @@
   <span class="hl-cmt">&lt;!-- `users` is now available in this scope --&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title">Attributes</h3>
+    <h3 class="doc-title" t="docs.dataFetching.get.attributesTitle">Attributes</h3>
     <table class="doc-table">
-      <thead><tr><th>Attribute</th><th>Type</th><th>Description</th></tr></thead>
+      <thead><tr><th t="docs.dataFetching.get.col1">Attribute</th><th t="docs.dataFetching.get.col2">Type</th><th t="docs.dataFetching.get.col3">Description</th></tr></thead>
       <tbody>
-        <tr><td><code>get</code></td><td>string</td><td>URL to fetch (GET request)</td></tr>
-        <tr><td><code>as</code></td><td>string</td><td>Name to assign the response in the context. Default: <code>"data"</code></td></tr>
-        <tr><td><code>loading</code></td><td>string</td><td>Template ID to show while loading (e.g. <code>"#skeleton"</code>)</td></tr>
-        <tr><td><code>error</code></td><td>string</td><td>Template ID to show on fetch error</td></tr>
-        <tr><td><code>empty</code></td><td>string</td><td>Template ID to show when response is empty array/null</td></tr>
-        <tr><td><code>refresh</code></td><td>number</td><td>Auto-refresh interval in ms (polling)</td></tr>
-        <tr><td><code>cached</code></td><td>boolean|string</td><td>Cache responses. <code>cached</code> = memory, <code>cached="local"</code> = localStorage, <code>cached="session"</code> = sessionStorage</td></tr>
-        <tr><td><code>into</code></td><td>string</td><td>Write response to a named global store</td></tr>
-        <tr><td><code>debounce</code></td><td>number</td><td>Debounce in ms (useful with reactive URLs)</td></tr>
-        <tr><td><code>headers</code></td><td>string</td><td>JSON string of additional headers</td></tr>
-        <tr><td><code>params</code></td><td>string</td><td>Expression that resolves to query params object</td></tr>
+        <tr><td><code>get</code></td><td>string</td><td t="docs.dataFetching.get.get">URL to fetch (GET request)</td></tr>
+        <tr><td><code>as</code></td><td>string</td><td t="docs.dataFetching.get.as">Name to assign the response in the context. Default: <code>"data"</code></td></tr>
+        <tr><td><code>loading</code></td><td>string</td><td t="docs.dataFetching.get.loading">Template ID to show while loading (e.g. <code>"#skeleton"</code>)</td></tr>
+        <tr><td><code>error</code></td><td>string</td><td t="docs.dataFetching.get.error">Template ID to show on fetch error</td></tr>
+        <tr><td><code>empty</code></td><td>string</td><td t="docs.dataFetching.get.empty">Template ID to show when response is empty array/null</td></tr>
+        <tr><td><code>refresh</code></td><td>number</td><td t="docs.dataFetching.get.refresh">Auto-refresh interval in ms (polling)</td></tr>
+        <tr><td><code>cached</code></td><td>boolean|string</td><td t="docs.dataFetching.get.cached">Cache responses. <code>cached</code> = memory, <code>cached="local"</code> = localStorage, <code>cached="session"</code> = sessionStorage</td></tr>
+        <tr><td><code>into</code></td><td>string</td><td t="docs.dataFetching.get.into">Write response to a named global store</td></tr>
+        <tr><td><code>debounce</code></td><td>number</td><td t="docs.dataFetching.get.debounce">Debounce in ms (useful with reactive URLs)</td></tr>
+        <tr><td><code>headers</code></td><td>string</td><td t="docs.dataFetching.get.headers">JSON string of additional headers</td></tr>
+        <tr><td><code>params</code></td><td>string</td><td t="docs.dataFetching.get.params">Expression that resolves to query params object</td></tr>
       </tbody>
     </table>
   </div>
@@ -109,7 +109,7 @@
   <!-- Reactive URLs -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.dataFetching.reactiveUrls.title">Reactive URLs</h2>
-    <p class="doc-text">URLs that reference state variables re-fetch automatically when those values change.</p>
+    <p class="doc-text" t="docs.dataFetching.reactiveUrls.text">URLs that reference state variables re-fetch automatically when those values change.</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ page: 1, search: '' }"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-str">"text"</span> <span class="hl-attr">bind-value</span>=<span class="hl-str">"search"</span>
          <span class="hl-attr">on:input</span>=<span class="hl-str">"search = $event.target.value"</span> <span class="hl-tag">/&gt;</span>
@@ -125,9 +125,9 @@
   <!-- POST / PUT / PATCH / DELETE -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.dataFetching.mutations.title">post, put, patch, delete — Mutating Requests</h2>
-    <p class="doc-text">Used on forms or triggered via <code>call</code>.</p>
+    <p class="doc-text" t="docs.dataFetching.mutations.text">Used on forms or triggered via <code>call</code>.</p>
 
-    <h3 class="doc-title">Form Submission</h3>
+    <h3 class="doc-title" t="docs.dataFetching.mutations.formSubmissionTitle">Form Submission</h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;form</span> <span class="hl-attr">post</span>=<span class="hl-str">"/login"</span>
       <span class="hl-attr">success</span>=<span class="hl-str">"#loginSuccess"</span>
       <span class="hl-attr">error</span>=<span class="hl-str">"#loginError"</span>
@@ -145,7 +145,7 @@
   <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-str">"error"</span> <span class="hl-attr">bind</span>=<span class="hl-str">"err.message"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
 <span class="hl-tag">&lt;/template&gt;</span></pre></div>
 
-    <h3 class="doc-title">PUT / PATCH / DELETE</h3>
+    <h3 class="doc-title" t="docs.dataFetching.mutations.putPatchDeleteTitle">PUT / PATCH / DELETE</h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;form</span> <span class="hl-attr">put</span>=<span class="hl-str">"/users/{user.id}"</span>
       <span class="hl-attr">body</span>=<span class="hl-str">'{"name": "{user.name}", "role": "{selectedRole}"}'</span>
       <span class="hl-attr">success</span>=<span class="hl-str">"#updateSuccess"</span><span class="hl-tag">&gt;</span>
@@ -165,18 +165,18 @@
   <div class="doc-section">
     <h3 class="doc-title" t="docs.dataFetching.mutationAttrs.title">Mutation Attributes</h3>
     <table class="doc-table">
-      <thead><tr><th>Attribute</th><th>Description</th></tr></thead>
+      <thead><tr><th t="docs.dataFetching.mutationAttrs.col1">Attribute</th><th t="docs.dataFetching.mutationAttrs.col2">Description</th></tr></thead>
       <tbody>
-        <tr><td><code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code></td><td>URL for the request</td></tr>
-        <tr><td><code>body</code></td><td>Request body (JSON string with interpolation). For forms, auto-serializes fields</td></tr>
-        <tr><td><code>success</code></td><td>Template ID to render on success. Receives response as <code>var</code></td></tr>
-        <tr><td><code>error</code></td><td>Template ID to render on error. Receives error as <code>var</code></td></tr>
-        <tr><td><code>loading</code></td><td>Template ID to show during request</td></tr>
-        <tr><td><code>confirm</code></td><td>Show browser <code>confirm()</code> dialog before sending</td></tr>
-        <tr><td><code>redirect</code></td><td>URL to navigate to on success (SPA route)</td></tr>
-        <tr><td><code>then</code></td><td>Expression to execute on success (e.g. <code>"users.push(result)"</code>)</td></tr>
-        <tr><td><code>into</code></td><td>Write response to a named global store</td></tr>
-        <tr><td><code>cached</code></td><td>Cache responses (memory/local/session). <em>Note: caching only applies to GET requests.</em></td></tr>
+        <tr><td><code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code></td><td t="docs.dataFetching.mutationAttrs.method">URL for the request</td></tr>
+        <tr><td><code>body</code></td><td t="docs.dataFetching.mutationAttrs.body">Request body (JSON string with interpolation). For forms, auto-serializes fields</td></tr>
+        <tr><td><code>success</code></td><td t="docs.dataFetching.mutationAttrs.success">Template ID to render on success. Receives response as <code>var</code></td></tr>
+        <tr><td><code>error</code></td><td t="docs.dataFetching.mutationAttrs.error">Template ID to render on error. Receives error as <code>var</code></td></tr>
+        <tr><td><code>loading</code></td><td t="docs.dataFetching.mutationAttrs.loading">Template ID to show during request</td></tr>
+        <tr><td><code>confirm</code></td><td t="docs.dataFetching.mutationAttrs.confirm">Show browser <code>confirm()</code> dialog before sending</td></tr>
+        <tr><td><code>redirect</code></td><td t="docs.dataFetching.mutationAttrs.redirect">URL to navigate to on success (SPA route)</td></tr>
+        <tr><td><code>then</code></td><td t="docs.dataFetching.mutationAttrs.then">Expression to execute on success (e.g. <code>"users.push(result)"</code>)</td></tr>
+        <tr><td><code>into</code></td><td t="docs.dataFetching.mutationAttrs.into">Write response to a named global store</td></tr>
+        <tr><td><code>cached</code></td><td t="docs.dataFetching.mutationAttrs.cached">Cache responses (memory/local/session). <em>Note: caching only applies to GET requests.</em></td></tr>
       </tbody>
     </table>
   </div>
@@ -205,7 +205,7 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
-        <span class="demo-result-label">Result</span>
+        <span class="demo-result-label" t="docs.dataFetching.liveDemo.label">Result</span>
         <div get="https://jsonplaceholder.typicode.com/users?_limit=3" as="users">
           <div each="user in users" style="padding: 8px 0; border-bottom: 1px solid var(--border);">
             <strong bind="user.name"></strong><br>

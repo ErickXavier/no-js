@@ -17,10 +17,10 @@
      <span class="hl-attr">class-highlighted</span>=<span class="hl-str">"score > 90"</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title">Multiple Classes from Object</h3>
+    <h3 class="doc-title" t="docs.styling.classToggle.multiObject">Multiple Classes from Object</h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">class-map</span>=<span class="hl-str">"{ active: isActive, 'text-bold': isBold, error: hasError }"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title">From Array</h3>
+    <h3 class="doc-title" t="docs.styling.classToggle.fromArray">From Array</h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">class-list</span>=<span class="hl-str">"['base-class', isAdmin ? 'admin' : 'user']"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
   </div>
 
@@ -33,7 +33,7 @@
      <span class="hl-attr">style-background</span>=<span class="hl-str">"'linear-gradient(135deg, ' + color1 + ', ' + color2 + ')'"</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title">From Object</h3>
+    <h3 class="doc-title" t="docs.styling.inlineStyles.fromObject">From Object</h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">style-map</span>=<span class="hl-str">"{
   color: textColor,
   fontSize: size + 'px',
@@ -55,9 +55,9 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
-        <span class="demo-result-label">Result</span>
+        <span class="demo-result-label" t="docs.styling.liveDemo.label">Result</span>
         <div state="{ active: false, color: '#0EA5E9' }">
-          <button class="btn btn-primary btn-sm" on:click="active = !active" style="margin-bottom: 12px;">Toggle Active</button>
+          <button class="btn btn-primary btn-sm" on:click="active = !active" style="margin-bottom: 12px;" t="docs.styling.liveDemo.toggleButton">Toggle Active</button>
           <div class-active="active"
                style-color="color"
                style="padding: 16px; border-radius: 8px; border: 2px solid var(--border); transition: all 0.2s;">

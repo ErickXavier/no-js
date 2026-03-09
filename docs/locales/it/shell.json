@@ -2,7 +2,7 @@
   "shell": {
     "flag": "🇮🇹",
     "header": {
-      "home": "Home",
+      "home": "Pagina iniziale",
       "features": "Funzionalità",
       "examples": "Esempi",
       "docs": "Documentazione",
@@ -58,7 +58,7 @@
       "greeting": "Ciao, {name}!",
       "items": "{count} elemento | {count} elementi",
       "nav": {
-        "home": "Home",
+        "home": "Pagina iniziale",
         "docs": "Documentazione",
         "examples": "Esempi"
       },

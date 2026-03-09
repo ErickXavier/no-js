@@ -47,10 +47,10 @@
   <!-- External Locale Files -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.i18n.externalFiles.title">External Locale Files</h2>
-    <p class="doc-text">Instead of inlining all translations in JavaScript, you can load them from external JSON files. This is ideal for large apps with many locales or when translations are managed by a separate tool.</p>
+    <p class="doc-text" t="docs.i18n.externalFiles.text">Instead of inlining all translations in JavaScript, you can load them from external JSON files. This is ideal for large apps with many locales or when translations are managed by a separate tool.</p>
 
-    <h3 class="doc-title">Flat Mode (one file per locale)</h3>
-    <p class="doc-text">Structure:</p>
+    <h3 class="doc-title" t="docs.i18n.externalFiles.flatSubtitle">Flat Mode (one file per locale)</h3>
+    <p class="doc-text" t="docs.i18n.externalFiles.flatText">Structure:</p>
     <div class="code-block"><pre>/locales/en.json
 /locales/es.json
 /locales/pt.json</pre></div>
@@ -69,8 +69,8 @@
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title">Namespace Mode (split by feature)</h3>
-    <p class="doc-text">Split translations by feature for code-splitting and on-demand loading:</p>
+    <h3 class="doc-title" t="docs.i18n.externalFiles.nsSubtitle">Namespace Mode (split by feature)</h3>
+    <p class="doc-text" t="docs.i18n.externalFiles.nsText">Split translations by feature for code-splitting and on-demand loading:</p>
     <div class="code-block"><pre>/locales/en/common.json
 /locales/en/dashboard.json
 /locales/es/common.json
@@ -84,19 +84,19 @@
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title">Namespace per Route</h3>
-    <p class="doc-text">Use <code>i18n-ns</code> on a route template to load a namespace on-demand when the route is navigated to:</p>
+    <h3 class="doc-title" t="docs.i18n.externalFiles.nsRouteSubtitle">Namespace per Route</h3>
+    <p class="doc-text" t="docs.i18n.externalFiles.nsRouteText">Use <code>i18n-ns</code> on a route template to load a namespace on-demand when the route is navigated to:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/dashboard"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/dashboard.tpl"</span> <span class="hl-attr">i18n-ns</span>=<span class="hl-str">"dashboard"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
 
-    <h3 class="doc-title">Namespace on Any Element</h3>
-    <p class="doc-text">Use <code>i18n-ns</code> on any element to load a namespace before its children are processed:</p>
+    <h3 class="doc-title" t="docs.i18n.externalFiles.nsElementSubtitle">Namespace on Any Element</h3>
+    <p class="doc-text" t="docs.i18n.externalFiles.nsElementText">Use <code>i18n-ns</code> on any element to load a namespace before its children are processed:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">i18n-ns</span>=<span class="hl-str">"settings"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;h2</span> <span class="hl-attr">t</span>=<span class="hl-str">"settings.title"</span><span class="hl-tag">&gt;&lt;/h2&gt;</span>
   <span class="hl-tag">&lt;p</span> <span class="hl-attr">t</span>=<span class="hl-str">"settings.desc"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title">Caching</h3>
-    <p class="doc-text">Fetched JSON files are cached in memory by default. Set <code>cache: false</code> during development:</p>
+    <h3 class="doc-title" t="docs.i18n.externalFiles.cachingSubtitle">Caching</h3>
+    <p class="doc-text" t="docs.i18n.externalFiles.cachingText">Fetched JSON files are cached in memory by default. Set <code>cache: false</code> during development:</p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({ <span class="hl-attr">loadPath</span>: <span class="hl-str">'/locales/{locale}.json'</span>, <span class="hl-attr">cache</span>: <span class="hl-kw">false</span> });</pre></div>
   </div>
 
@@ -160,7 +160,7 @@
 <span class="hl-tag">&lt;p</span> <span class="hl-attr">t</span>=<span class="hl-str">"greeting"</span> <span class="hl-attr">t-name</span>=<span class="hl-str">"'World'"</span><span class="hl-tag">&gt;&lt;/p&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
-        <span class="demo-result-label">Result</span>
+        <span class="demo-result-label" t="docs.i18n.liveDemo.label">Result</span>
         <div>
           <div style="display: flex; gap: 8px; margin-bottom: 12px;">
             <button class="btn btn-sm" class-btn-primary="NoJS.locale === 'en'" class-btn-secondary="NoJS.locale !== 'en'" on:click="$i18n.locale = 'en'">EN</button>
@@ -171,7 +171,7 @@
           </div>
           <h3 t="shell.demo.welcome" style="margin-bottom: 8px;"></h3>
           <p t="shell.demo.greeting" t-name="'World'" style="color: var(--text-muted);"></p>
-          <p style="margin-top: 8px; font-size: 0.8rem; color: var(--text-dim);">Locale: <span bind="NoJS.locale"></span></p>
+          <p style="margin-top: 8px; font-size: 0.8rem; color: var(--text-dim);"><span t="docs.i18n.liveDemo.localeLabel">Locale:</span> <span bind="NoJS.locale"></span></p>
         </div>
       </div>
     </div>

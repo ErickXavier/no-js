@@ -59,17 +59,17 @@
   <!-- $form Context -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.formsValidation.formContext.title">$form — Form Context</h2>
-    <p class="doc-text">Inside any <code>&lt;form&gt;</code> with the <code>validate</code> attribute, <code>$form</code> provides:</p>
+    <p class="doc-text" t="docs.formsValidation.formContext.text">Inside any <code>&lt;form&gt;</code> with the <code>validate</code> attribute, <code>$form</code> provides:</p>
     <table class="doc-table">
-      <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+      <thead><tr><th t="docs.formsValidation.formContext.col1">Property</th><th t="docs.formsValidation.formContext.col2">Type</th><th t="docs.formsValidation.formContext.col3">Description</th></tr></thead>
       <tbody>
-        <tr><td><code>$form.valid</code></td><td>boolean</td><td><code>true</code> if all fields pass validation</td></tr>
-        <tr><td><code>$form.dirty</code></td><td>boolean</td><td><code>true</code> if any field has been modified</td></tr>
-        <tr><td><code>$form.touched</code></td><td>boolean</td><td><code>true</code> if any field has been focused and blurred</td></tr>
-        <tr><td><code>$form.submitting</code></td><td>boolean</td><td><code>true</code> while the request is in flight</td></tr>
-        <tr><td><code>$form.errors</code></td><td>object</td><td>Map of field names → error messages</td></tr>
-        <tr><td><code>$form.values</code></td><td>object</td><td>Current form values</td></tr>
-        <tr><td><code>$form.reset()</code></td><td>function</td><td>Reset form to initial values</td></tr>
+        <tr><td><code>$form.valid</code></td><td>boolean</td><td t="docs.formsValidation.formContext.valid"><code>true</code> if all fields pass validation</td></tr>
+        <tr><td><code>$form.dirty</code></td><td>boolean</td><td t="docs.formsValidation.formContext.dirty"><code>true</code> if any field has been modified</td></tr>
+        <tr><td><code>$form.touched</code></td><td>boolean</td><td t="docs.formsValidation.formContext.touched"><code>true</code> if any field has been focused and blurred</td></tr>
+        <tr><td><code>$form.submitting</code></td><td>boolean</td><td t="docs.formsValidation.formContext.submitting"><code>true</code> while the request is in flight</td></tr>
+        <tr><td><code>$form.errors</code></td><td>object</td><td t="docs.formsValidation.formContext.errors">Map of field names → error messages</td></tr>
+        <tr><td><code>$form.values</code></td><td>object</td><td t="docs.formsValidation.formContext.values">Current form values</td></tr>
+        <tr><td><code>$form.reset()</code></td><td>function</td><td t="docs.formsValidation.formContext.reset">Reset form to initial values</td></tr>
       </tbody>
     </table>
 
@@ -117,15 +117,15 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
-        <span class="demo-result-label">Result</span>
+        <span class="demo-result-label" t="docs.formsValidation.liveDemo.label">Result</span>
         <div state="{ name: '', email: '', sent: false }">
           <div class="form-group">
-            <input class="input" model="name" placeholder="Your name" />
+            <input class="input" model="name" placeholder="Your name" t-placeholder="docs.formsValidation.liveDemo.namePlaceholder" />
           </div>
           <div class="form-group">
-            <input class="input" model="email" placeholder="Your email" />
+            <input class="input" model="email" placeholder="Your email" t-placeholder="docs.formsValidation.liveDemo.emailPlaceholder" />
           </div>
-          <button class="btn btn-primary btn-sm" on:click="sent = true">Send</button>
+          <button class="btn btn-primary btn-sm" on:click="sent = true" t="docs.formsValidation.liveDemo.sendButton">Send</button>
           <p show="sent" style="margin-top: 12px; color: var(--success);">Thanks, <span bind="name"></span>!</p>
         </div>
       </div>

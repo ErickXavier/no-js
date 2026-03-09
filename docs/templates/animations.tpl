@@ -26,19 +26,19 @@
   <!-- transition -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.animations.transition.title">transition — CSS Transition Classes</h2>
-    <p class="doc-text">Follows a convention similar to Vue's transition system.</p>
+    <p class="doc-text" t="docs.animations.transition.text1">Follows a convention similar to Vue's transition system.</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">if</span>=<span class="hl-str">"show"</span> <span class="hl-attr">transition</span>=<span class="hl-str">"fade"</span><span class="hl-tag">&gt;</span>Content<span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <p class="doc-text">No.JS adds/removes classes during the transition:</p>
+    <p class="doc-text" t="docs.animations.transition.text2">No.JS adds/removes classes during the transition:</p>
     <table class="doc-table">
-      <thead><tr><th>Class</th><th>When</th></tr></thead>
+      <thead><tr><th t="docs.animations.transition.col1">Class</th><th t="docs.animations.transition.col2">When</th></tr></thead>
       <tbody>
-        <tr><td><code>fade-enter</code></td><td>Start state of enter</td></tr>
-        <tr><td><code>fade-enter-active</code></td><td>Active state of enter</td></tr>
-        <tr><td><code>fade-enter-to</code></td><td>End state of enter</td></tr>
-        <tr><td><code>fade-leave</code></td><td>Start state of leave</td></tr>
-        <tr><td><code>fade-leave-active</code></td><td>Active state of leave</td></tr>
-        <tr><td><code>fade-leave-to</code></td><td>End state of leave</td></tr>
+        <tr><td><code>fade-enter</code></td><td t="docs.animations.transition.row1">Start state of enter</td></tr>
+        <tr><td><code>fade-enter-active</code></td><td t="docs.animations.transition.row2">Active state of enter</td></tr>
+        <tr><td><code>fade-enter-to</code></td><td t="docs.animations.transition.row3">End state of enter</td></tr>
+        <tr><td><code>fade-leave</code></td><td t="docs.animations.transition.row4">Start state of leave</td></tr>
+        <tr><td><code>fade-leave-active</code></td><td t="docs.animations.transition.row5">Active state of leave</td></tr>
+        <tr><td><code>fade-leave-to</code></td><td t="docs.animations.transition.row6">End state of leave</td></tr>
       </tbody>
     </table>
 
@@ -53,7 +53,7 @@
   <!-- Loop Animations -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.animations.loopAnimations.title">Loop Animations</h2>
-    <p class="doc-text">Both <code>each</code> and <code>foreach</code> loops support enter/leave animations and stagger.</p>
+    <p class="doc-text" t="docs.animations.loopAnimations.text">Both <code>each</code> and <code>foreach</code> loops support enter/leave animations and stagger.</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">each</span>=<span class="hl-str">"item in items"</span>
      <span class="hl-attr">template</span>=<span class="hl-str">"itemTpl"</span>
      <span class="hl-attr">animate-enter</span>=<span class="hl-str">"fadeInUp"</span>
@@ -65,7 +65,7 @@
   <!-- Built-in Animation Names -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.animations.builtIn.title">Built-in Animation Names</h2>
-    <p class="doc-text">No.JS ships with these CSS animations:</p>
+    <p class="doc-text" t="docs.animations.builtIn.text">No.JS ships with these CSS animations:</p>
     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
       <span class="badge">fadeIn</span>
       <span class="badge">fadeOut</span>
@@ -99,11 +99,11 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
-        <span class="demo-result-label">Result</span>
+        <span class="demo-result-label" t="docs.animations.liveDemo.label">Result</span>
         <div state="{ show: true }">
-          <button class="btn btn-primary btn-sm" on:click="show = !show" style="margin-bottom: 12px;">Toggle</button>
+          <button class="btn btn-primary btn-sm" on:click="show = !show" style="margin-bottom: 12px;" t="docs.animations.liveDemo.toggleButton">Toggle</button>
           <div if="show" animate-enter="fadeIn" animate-leave="fadeOut" style="padding: 16px; background: var(--primary-surface); border-radius: 8px; color: var(--primary);">
-            Hello, Animated World! ✨
+            <span t="docs.animations.liveDemo.demoText">Hello, Animated World! ✨</span>
           </div>
         </div>
       </div>

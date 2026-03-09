@@ -596,7 +596,28 @@
         "text2": "Templates remotos aninhados (um template remoto que contém mais <template src>) são carregados recursivamente."
       },
       "fileBased": {
-        "title": "Roteamento Baseado em Arquivos"
+        "title": "Roteamento Baseado em Arquivos",
+        "text": "Em vez de declarar cada template de rota manualmente, aponte sua saída <code>route-view</code> para uma pasta. O No.JS resolverá automaticamente os caminhos de rota para arquivos de template dentro dessa pasta.",
+        "howItWorks": "Como funciona",
+        "list1": "Adicione <code>route-view</code> ao seu elemento de saída — o roteamento baseado em arquivos está habilitado por padrão (config <code>router.templates: \"pages\"</code>). Sobrescreva por saída com <code>src=\"folder/\"</code>.",
+        "list2": "Quando um usuário navega para <code>/analytics</code>, o No.JS resolve para <code>pages/analytics.tpl</code>",
+        "list3": "O template é buscado, armazenado em cache e renderizado — automaticamente",
+        "attributesTitle": "Atributos",
+        "colAttr": "Atributo",
+        "colDefault": "Padrão",
+        "colDesc": "Descrição",
+        "srcDesc": "Pasta base para resolução de templates (sobrescrita por saída; config: <code>router.templates</code>)",
+        "routeIndexDesc": "Nome do arquivo para a rota raiz <code>/</code>",
+        "extDesc": "Extensão de arquivo adicionada aos segmentos de rota (fallback: <code>\".html\"</code>)",
+        "i18nNsDesc": "Quando presente, auto-deriva o namespace i18n do nome do arquivo",
+        "callout": "<strong>Config padrão:</strong> O valor padrão de <code>router.templates</code> é <code>\"pages\"</code>, então o roteamento baseado em arquivos funciona imediatamente — basta adicionar <code>route-view</code> à sua saída. Sobrescreva com <code>NoJS.config({ router: { templates: 'views' } })</code> ou por saída via <code>src=\"./custom/\"</code>.",
+        "exampleTitle": "Exemplo — Dashboard SaaS",
+        "exampleText": "É isso — <strong>duas linhas</strong> para uma SPA completa com seis rotas.",
+        "mixingTitle": "Misturando Rotas Explícitas e Baseadas em Arquivos",
+        "mixingText": "Declarações explícitas <code>&lt;template route=\"...\"&gt;</code> <strong>sempre têm prioridade</strong>. Isso permite combinar ambas as abordagens — use roteamento baseado em arquivos para páginas simples e templates explícitos para rotas que precisam de guards, parâmetros ou saídas nomeadas:",
+        "autoI18nTitle": "Namespace i18n Automático",
+        "autoI18nText": "Quando o elemento <code>route-view</code> tem um atributo <code>i18n-ns</code> (mesmo sem valor), o No.JS carrega automaticamente o namespace i18n correspondente ao nome do arquivo:",
+        "autoI18nText2": "Isso substitui a necessidade de adicionar <code>i18n-ns=\"...\"</code> em cada template de rota individualmente."
       },
       "lazyLoading": {
         "title": "Carregamento Lazy de Templates",

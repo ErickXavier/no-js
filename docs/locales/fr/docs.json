@@ -596,7 +596,28 @@
         "text2": "Les templates distants imbriqués (un template distant qui contient lui-même d'autres <template src>) sont chargés de manière récursive."
       },
       "fileBased": {
-        "title": "Routage basé sur les fichiers"
+        "title": "Routage basé sur les fichiers",
+        "text": "Au lieu de déclarer chaque template de route manuellement, pointez votre sortie <code>route-view</code> vers un dossier. No.JS résoudra automatiquement les chemins de route vers les fichiers templates dans ce dossier.",
+        "howItWorks": "Comment ça fonctionne",
+        "list1": "Ajoutez <code>route-view</code> à votre élément de sortie — le routage basé sur les fichiers est activé par défaut (config <code>router.templates: \"pages\"</code>). Remplacez par sortie avec <code>src=\"folder/\"</code>.",
+        "list2": "Quand un utilisateur navigue vers <code>/analytics</code>, No.JS le résout en <code>pages/analytics.tpl</code>",
+        "list3": "Le template est récupéré, mis en cache et rendu — automatiquement",
+        "attributesTitle": "Attributs",
+        "colAttr": "Attribut",
+        "colDefault": "Par défaut",
+        "colDesc": "Description",
+        "srcDesc": "Dossier de base pour la résolution des templates (remplacement par sortie ; config : <code>router.templates</code>)",
+        "routeIndexDesc": "Nom de fichier pour la route racine <code>/</code>",
+        "extDesc": "Extension de fichier ajoutée aux segments de route (fallback : <code>\".html\"</code>)",
+        "i18nNsDesc": "Lorsque présent, dérive automatiquement le namespace i18n du nom de fichier",
+        "callout": "<strong>Config par défaut :</strong> La valeur par défaut de <code>router.templates</code> est <code>\"pages\"</code>, donc le routage basé sur les fichiers fonctionne immédiatement — ajoutez simplement <code>route-view</code> à votre sortie. Remplacez avec <code>NoJS.config({ router: { templates: 'views' } })</code> ou par sortie via <code>src=\"./custom/\"</code>.",
+        "exampleTitle": "Exemple — Dashboard SaaS",
+        "exampleText": "C'est tout — <strong>deux lignes</strong> pour une SPA complète avec six routes.",
+        "mixingTitle": "Mélanger Routes Explicites et Basées sur les Fichiers",
+        "mixingText": "Les déclarations explicites <code>&lt;template route=\"...\"&gt;</code> <strong>ont toujours la priorité</strong>. Cela vous permet de combiner les deux approches — utilisez le routage basé sur les fichiers pour les pages simples et les templates explicites pour les routes qui nécessitent des guards, des paramètres ou des sorties nommées :",
+        "autoI18nTitle": "Namespace i18n Automatique",
+        "autoI18nText": "Lorsque l'élément <code>route-view</code> a un attribut <code>i18n-ns</code> (même sans valeur), No.JS charge automatiquement le namespace i18n correspondant au nom du fichier :",
+        "autoI18nText2": "Cela remplace le besoin d'ajouter <code>i18n-ns=\"...\"</code> sur chaque template de route individuellement."
       },
       "lazyLoading": {
         "title": "Chargement différé de templates",

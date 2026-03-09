@@ -61,7 +61,7 @@
   <!-- ref -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.actionsRefs.ref.title">ref — Named References</h2>
-    <p class="doc-text">Access DOM elements without <code>querySelector</code>:</p>
+    <p class="doc-text" t="docs.actionsRefs.ref.text">Access DOM elements without <code>querySelector</code>:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ }"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">ref</span>=<span class="hl-str">"searchInput"</span> <span class="hl-attr">type</span>=<span class="hl-str">"text"</span> <span class="hl-tag">/&gt;</span>
   <span class="hl-tag">&lt;canvas</span> <span class="hl-attr">ref</span>=<span class="hl-str">"chart"</span><span class="hl-tag">&gt;&lt;/canvas&gt;</span>
@@ -72,7 +72,7 @@
   <!-- $refs -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.actionsRefs.refsMap.title">$refs — Ref Map</h2>
-    <p class="doc-text">All elements with <code>ref</code> are accessible via <code>$refs</code> in the current scope:</p>
+    <p class="doc-text" t="docs.actionsRefs.refsMap.text">All elements with <code>ref</code> are accessible via <code>$refs</code> in the current scope:</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;video</span> <span class="hl-attr">ref</span>=<span class="hl-str">"player"</span> <span class="hl-attr">src</span>=<span class="hl-str">"video.mp4"</span><span class="hl-tag">&gt;&lt;/video&gt;</span>
 <span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$refs.player.play()"</span><span class="hl-tag">&gt;</span>▶ Play<span class="hl-tag">&lt;/button&gt;</span>
 <span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$refs.player.pause()"</span><span class="hl-tag">&gt;</span>⏸ Pause<span class="hl-tag">&lt;/button&gt;</span></pre></div>

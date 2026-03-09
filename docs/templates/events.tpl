@@ -11,7 +11,7 @@
   <!-- on:* -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.events.handlers.title">on:* — Event Handlers</h2>
-    <p class="doc-text">Bind any DOM event directly in HTML. Access state and context variables directly in the handler expression.</p>
+    <p class="doc-text" t="docs.events.handlers.text">Bind any DOM event directly in HTML. Access state and context variables directly in the handler expression.</p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-cmt">&lt;!-- Click --&gt;</span>
 <span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"count++"</span><span class="hl-tag">&gt;</span>Increment<span class="hl-tag">&lt;/button&gt;</span>
@@ -27,7 +27,7 @@
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">on:mouseenter</span>=<span class="hl-str">"hovered = true"</span>
      <span class="hl-attr">on:mouseleave</span>=<span class="hl-str">"hovered = false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div&gt;</span></pre></div>
       <div class="demo-preview" state="{ count: 0, msg: '' }">
-        <div class="demo-result-label">Preview</div>
+        <div class="demo-result-label" t="docs.events.handlers.preview">Preview</div>
         <p>Count: <strong bind="count"></strong></p>
         <div class="flex gap-2 mb-3">
           <button class="btn btn-primary btn-sm" on:click="count++">+1</button>
@@ -35,7 +35,7 @@
           <button class="btn btn-outline btn-sm" on:click="count = 0">Reset</button>
         </div>
         <input class="input" model="msg" placeholder="Type something..." />
-        <p class="text-sm text-muted mt-2">You typed: <span bind="msg"></span></p>
+        <p class="text-sm text-muted mt-2"><span t="docs.events.handlers.youTyped">You typed:</span> <span bind="msg"></span></p>
       </div>
     </div>
   </div>
@@ -43,7 +43,7 @@
   <!-- modifiers -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.events.modifiers.title">Event Modifiers</h2>
-    <p class="doc-text">Modifiers let you control event behavior directly in the attribute:</p>
+    <p class="doc-text" t="docs.events.modifiers.text">Modifiers let you control event behavior directly in the attribute:</p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- .prevent — calls preventDefault() --&gt;</span>
 <span class="hl-tag">&lt;form</span> <span class="hl-attr">on:submit.prevent</span>=<span class="hl-str">"handleSubmit()"</span><span class="hl-tag">&gt;</span>
 
@@ -68,7 +68,7 @@
   <!-- $event & $el -->
   <div class="doc-section">
     <h2 class="doc-title" t-html="docs.events.eventAndEl.title">$event &amp; $el</h2>
-    <p class="doc-text"><code>$event</code> is the native DOM event. <code>$el</code> refers to the current element.</p>
+    <p class="doc-text" t="docs.events.eventAndEl.text"><code>$event</code> is the native DOM event. <code>$el</code> refers to the current element.</p>
     <div class="code-block"><pre><span class="hl-tag">&lt;input</span> <span class="hl-attr">on:input</span>=<span class="hl-str">"name = $event.target.value"</span> <span class="hl-tag">/&gt;</span>
 <span class="hl-tag">&lt;input</span> <span class="hl-attr">on:focus</span>=<span class="hl-str">"$el.select()"</span> <span class="hl-tag">/&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$el.classList.toggle('expanded')"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
@@ -79,14 +79,14 @@
     <h2 class="doc-title" t="docs.events.lifecycle.title">Lifecycle Hooks</h2>
     <table class="doc-table">
       <thead>
-        <tr><th>Hook</th><th>When</th></tr>
+        <tr><th t="docs.events.lifecycle.col1">Hook</th><th t="docs.events.lifecycle.col2">When</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>on:init</code></td><td>Directive first processed</td></tr>
-        <tr><td><code>on:mounted</code></td><td>Element inserted into visible DOM</td></tr>
-        <tr><td><code>on:updated</code></td><td>Any reactive dependency changed</td></tr>
-        <tr><td><code>on:unmounted</code></td><td>Element removed from DOM</td></tr>
-        <tr><td><code>on:error</code></td><td>Error in this element's subtree</td></tr>
+        <tr><td><code>on:init</code></td><td t="docs.events.lifecycle.onInit">Directive first processed</td></tr>
+        <tr><td><code>on:mounted</code></td><td t="docs.events.lifecycle.onMounted">Element inserted into visible DOM</td></tr>
+        <tr><td><code>on:updated</code></td><td t="docs.events.lifecycle.onUpdated">Any reactive dependency changed</td></tr>
+        <tr><td><code>on:unmounted</code></td><td t="docs.events.lifecycle.onUnmounted">Element removed from DOM</td></tr>
+        <tr><td><code>on:error</code></td><td t="docs.events.lifecycle.onError">Error in this element's subtree</td></tr>
       </tbody>
     </table>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">on:mounted</span>=<span class="hl-str">"initChart($el)"</span><span class="hl-tag">&gt;</span>

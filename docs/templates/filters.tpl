@@ -110,13 +110,13 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
-        <span class="demo-result-label">Result</span>
+        <span class="demo-result-label" t="docs.filters.liveDemo.label">Result</span>
         <div state="{ name: 'John Doe' }">
           <div class="form-group">
             <input class="input" model="name" />
           </div>
-          <p>Uppercase: <strong bind="name | uppercase"></strong></p>
-          <p>Initials: <strong bind="name | initials"></strong></p>
+          <p><span t="docs.filters.liveDemo.uppercaseLabel">Uppercase:</span> <strong bind="name | uppercase"></strong></p>
+          <p><span t="docs.filters.liveDemo.initialsLabel">Initials:</span> <strong bind="name | initials"></strong></p>
         </div>
       </div>
     </div>

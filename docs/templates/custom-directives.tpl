@@ -64,7 +64,7 @@
   <!-- Web Components -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.customDirectives.webComponents.title">Web Components Compatibility</h2>
-    <p class="doc-text">No.JS directives work on custom elements:</p>
+    <p class="doc-text" t="docs.customDirectives.webComponents.text">No.JS directives work on custom elements:</p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Pass reactive data to web components --&gt;</span>
 <span class="hl-tag">&lt;user-avatar</span> <span class="hl-attr">bind-prop-name</span>=<span class="hl-str">"user.name"</span>
              <span class="hl-attr">bind-prop-size</span>=<span class="hl-str">"avatarSize"</span>
