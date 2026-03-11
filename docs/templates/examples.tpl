@@ -1,5 +1,209 @@
 <div class="page-wrapper">
-<link rel="preload" href="assets/examples.css" as="style" onload="this.rel='stylesheet'">
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   EXAMPLES PAGE
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Example section: padding 60/80, gap 32 */
+.example-section {
+  padding: 60px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.example-section.alt {
+  background: var(--surface);
+}
+.example-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.example-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--text);
+}
+.example-desc {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-muted);
+}
+.example-panels {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+.example-code-panel {
+  flex: 1;
+  background: var(--code-bg);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+}
+.example-code-panel .code-tab {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.example-code-panel pre {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.8;
+  color: #E2E8F0;
+  margin: 0;
+}
+.example-preview-panel {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Preview panel item styles */
+.preview-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  height: 100%;
+}
+.preview-counter-value {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--text);
+}
+.preview-todo-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.preview-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-dim);
+  outline: none;
+}
+.preview-input:focus {
+  border-color: var(--primary);
+}
+.preview-btn-add {
+  background: var(--primary);
+  color: var(--white);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+}
+.preview-todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text);
+}
+.preview-todo-item:last-child {
+  border-bottom: none;
+}
+.preview-todo-check {
+  color: var(--primary);
+  font-size: 18px;
+}
+.preview-todo-check.unchecked {
+  color: var(--border);
+}
+.preview-user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+}
+.preview-user-card + .preview-user-card {
+  border-top: 1px solid var(--border);
+}
+.preview-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.preview-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.preview-user-info-name {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.preview-user-info-email {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.preview-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.preview-nav-link {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.preview-nav-link.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+.preview-route-content {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.preview-route-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text);
+}
+.preview-route-text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .example-section { padding: 40px 24px; }
+  .example-panels { flex-direction: column; }
+}
+</style>
 <!-- Examples Page — real-life patterns -->
 
 <!-- ═══ Hero ═══ -->

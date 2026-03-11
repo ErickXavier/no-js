@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1](https://github.com/ErickXavier/no-js/compare/v1.5.0...v1.5.1) — 2026-03-11
+
+### Added
+
+- Floating scroll-to-top button on mobile
+- Doc tables horizontal scroll on mobile
+
+### Changed
+
+- Mobile nav popover alignment now uses header height CSS variable
+- Language selector uses CSS grid 3-column layout
+- GitHub/Discord links displayed side-by-side in mobile popover
+- Code panel scrollability improvements (`overflow: auto`)
+- CSS globalization: sidebar/doc-layout CSS moved from per-page files to global `style.css`
+- CSS-to-template migration: moved per-page CSS from external files into template `<style>` blocks
+
+### Removed
+
+- "Get Started" CTA from mobile popover (low contrast issue)
+
+### Fixed
+
+- Mobile nav popover alignment
+
 ## [1.5.0](https://github.com/ErickXavier/no-js/compare/v1.4.3...v1.5.0) — 2026-03-11
 
 ### Added
