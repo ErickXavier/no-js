@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Routing 404 Wildcard — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    nav a { margin-right: 1rem; text-decoration: none; color: #333; }
+    nav a.active { color: #2196f3; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <section>
+    <p class="test-label">Test 1–3: Wildcard 404 navigation</p>
+    <nav>
+      <a route="/" route-active-exact="active" data-test="nav-home">Home</a>
+      <a route="/about" route-active="active" data-test="nav-about">About</a>
+      <a route="/does-not-exist" data-test="nav-404">Non-existent</a>
+    </nav>
+  </section>
+
+  <!-- Route outlet -->
+  <section>
+    <p class="test-label">Route outlet</p>
+    <div route-view data-test="outlet"></div>
+  </section>
+
+  <!-- Route templates -->
+
+  <!-- Home route -->
+  <template route="/">
+    <div data-test="page-home">
+      <h2>Home Page</h2>
+      <p>Welcome home</p>
+    </div>
+  </template>
+
+  <!-- About route -->
+  <template route="/about">
+    <div data-test="page-about">
+      <h2>About Page</h2>
+      <p>About us</p>
+    </div>
+  </template>
+
+  <!-- Wildcard 404 catch-all -->
+  <template route="*">
+    <div data-test="page-404">
+      <h1>404 — Page Not Found</h1>
+      <p>The page <code data-test="404-path" bind="$route.path"></code> does not exist.</p>
+      <a route="/" data-test="404-home-link">Go Home</a>
+    </div>
+  </template>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.config({ router: { mode: 'hash' } });
+    NoJS.init();
+  </script>
+</body>
+</html>

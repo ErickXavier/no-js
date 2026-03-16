@@ -10,8 +10,11 @@ import { processTree, _disposeTree } from "./registry.js";
 import { _animateIn } from "./animations.js";
 import { _devtoolsEmit } from "./devtools.js";
 
+const _BUILTIN_404_HTML = '<div style="text-align:center;padding:3rem 1rem;font-family:system-ui,sans-serif"><h1 style="font-size:4rem;margin:0;opacity:.3">404</h1><p style="font-size:1.25rem;color:#666">Page not found</p></div>';
+
 export function _createRouter() {
   const routes = [];
+  const _wildcards = new Map();
   let current = { path: "", params: {}, query: {}, hash: "" };
   const listeners = new Set();
   const _autoTemplateCache = new Map();
@@ -68,6 +71,7 @@ export function _createRouter() {
 
     const matched = matchRoute(cleanPath);
     if (matched) {
+      current.matched = true;
       current.params = matched.params;
 
       // Guard check
@@ -83,6 +87,25 @@ export function _createRouter() {
         if (!allowed && redirectPath) {
           await navigate(redirectPath, true);
           return;
+        }
+      }
+    } else {
+      current.matched = false;
+
+      // Guard check on wildcard template (default outlet)
+      const wildcardTpl = _wildcards.get("default");
+      if (wildcardTpl) {
+        const guardExpr = wildcardTpl.getAttribute("guard");
+        const redirectPath = wildcardTpl.getAttribute("redirect");
+        if (guardExpr) {
+          const ctx = createContext({}, null);
+          ctx.__raw.$store = _stores;
+          ctx.__raw.$route = current;
+          const allowed = evaluate(guardExpr, ctx);
+          if (!allowed && redirectPath) {
+            await navigate(redirectPath, true);
+            return;
+          }
         }
       }
     }
@@ -157,15 +180,46 @@ export function _createRouter() {
         }
       }
 
+      // ── Wildcard / 404 fallback when no template matched ──
+      if (!tpl || tpl.__loadFailed) {
+        // Only apply wildcard fallback when no explicit route matched
+        // or when a file-based template failed to load.
+        // When an explicit route matched but doesn't cover this outlet, just clear it.
+        if (!matched || tpl?.__loadFailed) {
+          const wildcardTpl = _wildcards.get(outletName)
+            || (outletName !== "default" ? _wildcards.get("default") : null);
+          if (wildcardTpl) {
+            tpl = wildcardTpl;
+          }
+        }
+      }
+
       // Always clear first — dispose watchers/listeners before wiping DOM
       _disposeTree(outletEl);
       outletEl.innerHTML = "";
 
-      if (tpl) {
+      if (tpl && !tpl.__loadFailed) {
         // Load template on-demand if not yet fetched
         if (tpl.getAttribute("src") && !tpl.__srcLoaded) {
           _log("Loading route template on demand:", tpl.getAttribute("src"));
           await _loadTemplateElement(tpl);
+        }
+
+        // If template load failed, try wildcard fallback
+        if (tpl.__loadFailed) {
+          const wildcardTpl = _wildcards.get(outletName)
+            || (outletName !== "default" ? _wildcards.get("default") : null);
+          if (wildcardTpl && !wildcardTpl.__loadFailed) {
+            tpl = wildcardTpl;
+            if (tpl.getAttribute("src") && !tpl.__srcLoaded) {
+              await _loadTemplateElement(tpl);
+            }
+          }
+          // If still failed (no usable wildcard, or wildcard itself failed), use built-in
+          if (!tpl || tpl.__loadFailed) {
+            outletEl.innerHTML = _BUILTIN_404_HTML;
+            continue;
+          }
         }
 
         // i18n namespace loading for route template
@@ -209,6 +263,9 @@ export function _createRouter() {
 
         _clearDeclared(wrapper);
         processTree(wrapper);
+      } else if (!matched || tpl?.__loadFailed) {
+        // No route matched and no wildcard — inject built-in 404
+        outletEl.innerHTML = _BUILTIN_404_HTML;
       }
     }
 
@@ -278,7 +335,7 @@ export function _createRouter() {
       const backgroundFetches = [];
 
       for (const [path, lazy] of routeLazy) {
-        if (lazy === "ondemand" || path === current.path) continue;
+        if (lazy === "ondemand" || path === current.path || path === "*") continue;
         const segment = path === "/" ? indexName : path.replace(/^\//, "");
         const fullSrc = baseSrc + segment + ext;
         const cacheKey = outletName + ":" + fullSrc;
@@ -328,6 +385,10 @@ export function _createRouter() {
       return () => listeners.delete(fn);
     },
     register(path, templateEl, outlet = "default") {
+      if (path === "*") {
+        _wildcards.set(outlet, templateEl);
+        return;
+      }
       const entry = _getOrCreateEntry(path);
       entry.outlets[outlet] = templateEl;
     },
@@ -336,6 +397,10 @@ export function _createRouter() {
       document.querySelectorAll("template[route]").forEach((tpl) => {
         const path = tpl.getAttribute("route");
         const outlet = tpl.getAttribute("outlet") || "default";
+        if (path === "*") {
+          _wildcards.set(outlet, tpl);
+          return;
+        }
         const entry = _getOrCreateEntry(path);
         entry.outlets[outlet] = tpl;
       });

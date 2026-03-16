@@ -67,6 +67,7 @@
         <tr><td><code>$route.params</code></td><td t="docs.routing.context.params"></td></tr>
         <tr><td><code>$route.query</code></td><td t="docs.routing.context.query"></td></tr>
         <tr><td><code>$route.hash</code></td><td t="docs.routing.context.hash"></td></tr>
+        <tr><td><code>$route.matched</code></td><td t="docs.routing.context.matched"></td></tr>
       </tbody>
     </table>
   </div>
@@ -294,6 +295,63 @@
     <div class="callout">
       <p t="docs.routing.namedOutlets.callout"></p>
     </div>
+  </div>
+
+  <!-- 404 / Catch-All Routes -->
+  <div class="doc-section">
+    <h2 class="doc-title" t="docs.routing.catchAll.title"></h2>
+    <p class="doc-text" t="docs.routing.catchAll.text" t-html></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"*"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h1&gt;</span>404 &mdash; Page Not Found<span class="hl-tag">&lt;/h1&gt;</span>
+  <span class="hl-tag">&lt;p&gt;</span>The page <span class="hl-tag">&lt;code</span> <span class="hl-attr">bind</span>=<span class="hl-str">"$route.path"</span><span class="hl-tag">&gt;&lt;/code&gt;</span> does not exist.<span class="hl-tag">&lt;/p&gt;</span>
+  <span class="hl-tag">&lt;a</span> <span class="hl-attr">route</span>=<span class="hl-str">"/"</span><span class="hl-tag">&gt;</span>Go Home<span class="hl-tag">&lt;/a&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span></pre></div>
+    <p class="doc-text" t="docs.routing.catchAll.text2" t-html></p>
+
+    <!-- Automatic 404 Fallback -->
+    <h3 class="doc-subtitle" t="docs.routing.catchAll.fallbackTitle"></h3>
+    <p class="doc-text" t="docs.routing.catchAll.fallbackText" t-html></p>
+    <div class="callout">
+      <p t="docs.routing.catchAll.fallbackTip" t-html></p>
+    </div>
+
+    <!-- Named Outlet Wildcards -->
+    <h3 class="doc-subtitle" t="docs.routing.catchAll.namedTitle"></h3>
+    <p class="doc-text" t="docs.routing.catchAll.namedText"></p>
+    <ol class="doc-list">
+      <li t="docs.routing.catchAll.namedList1" t-html></li>
+      <li t="docs.routing.catchAll.namedList2" t-html></li>
+      <li t="docs.routing.catchAll.namedList3" t-html></li>
+    </ol>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Global wildcard (default outlet) --&gt;</span>
+<span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"*"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h1&gt;</span>404<span class="hl-tag">&lt;/h1&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Sidebar-specific wildcard --&gt;</span>
+<span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"*"</span> <span class="hl-attr">outlet</span>=<span class="hl-str">"sidebar"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;p&gt;</span>No sidebar for this page<span class="hl-tag">&lt;/p&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span></pre></div>
+    <p class="doc-text" t="docs.routing.catchAll.namedText2" t-html></p>
+
+    <!-- $route.matched -->
+    <h3 class="doc-subtitle" t="docs.routing.catchAll.matchedTitle"></h3>
+    <p class="doc-text" t="docs.routing.catchAll.matchedText" t-html></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">show</span>=<span class="hl-str">"!$route.matched"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;p&gt;</span>You seem lost!<span class="hl-tag">&lt;/p&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+    <p class="doc-text" t="docs.routing.catchAll.matchedText2" t-html></p>
+
+    <!-- Remote 404 Template -->
+    <h3 class="doc-subtitle" t="docs.routing.catchAll.remoteTitle"></h3>
+    <p class="doc-text" t="docs.routing.catchAll.remoteText" t-html></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"*"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/404.tpl"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
+    <p class="doc-text" t="docs.routing.catchAll.remoteText2" t-html></p>
+
+    <!-- File-Based Routing 404 -->
+    <h3 class="doc-subtitle" t="docs.routing.catchAll.fileBasedTitle"></h3>
+    <p class="doc-text" t="docs.routing.catchAll.fileBasedText" t-html></p>
+    <p class="doc-text" t="docs.routing.catchAll.fileBasedText2" t-html></p>
   </div>
 
 </div>

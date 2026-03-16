@@ -184,7 +184,9 @@
         "lazyOnDemand": "Recupera il template della route solo alla prima visita (solo template di route)",
         "routerForward": "Naviga avanti nella cronologia",
         "routerOn": "Sottoscrivi ai cambiamenti di route",
+        "routeWildcard": "Route wildcard catch-all 404",
         "routerCurrent": "Oggetto della route corrente",
+        "routeMatched": "<code>true</code> se una route esplicita ha corrisposto, <code>false</code> per wildcard/fallback",
         "i18nNs": "Auto-derivazione del namespace i18n dal nome del file di rotta",
         "routeViewSrc": "Outlet di routing basato su file",
         "routeIndex": "Nome del file per la radice <code>/</code> (predefinito <code>\"index\"</code>)",
@@ -592,7 +594,8 @@
         "path": "Percorso corrente (es. \"/users/42\")",
         "params": "Parametri della route (es. { id: \"42\" })",
         "query": "Parametri della query string (es. { q: \"hello\" })",
-        "hash": "Hash dell'URL (es. \"#section\")"
+        "hash": "Hash dell'URL (es. \"#section\")",
+        "matched": "Se una route esplicita ha corrisposto (true) o se un wildcard/fallback è in fase di rendering (false)"
       },
       "activeStyle": {
         "title": "Stile della Route Attiva"
@@ -665,6 +668,29 @@
         "title": "Outlet con Nome (route-view)",
         "text": "Più outlet route-view possono coesistere nella stessa pagina. Dai a ogni outlet un nome tramite il valore dell'attributo, e punta i template di route verso outlet specifici usando l'attributo outlet.",
         "callout": "Gli outlet senza un template corrispondente per la route corrente vengono sempre svuotati alla navigazione."
+      },
+      "catchAll": {
+        "title": "404 / Route Catch-All",
+        "text": "Usa <code>route=\"*\"</code> per definire un template <strong>wildcard catch-all</strong> che viene renderizzato quando nessuna route esplicita corrisponde al percorso corrente. Il wildcard viene sempre valutato per ultimo, indipendentemente dall'ordine nel DOM.",
+        "text2": "Le route esplicite <strong>hanno sempre la priorità</strong> — il wildcard si attiva solo quando <code>matchRoute()</code> non restituisce alcuna corrispondenza.",
+        "fallbackTitle": "Fallback 404 Automatico",
+        "fallbackText": "Se non definisci un template <code>route=\"*\"</code>, No.JS mostra automaticamente una pagina 404 minimale integrata quando nessuna route corrisponde. Questo garantisce che gli utenti vedano sempre qualcosa di significativo invece di un outlet vuoto.",
+        "fallbackTip": "Il fallback integrato è volutamente minimale e senza stili. Definisci il tuo template <code>route=\"*\"</code> per le applicazioni in produzione.",
+        "namedTitle": "Wildcard negli Outlet con Nome",
+        "namedText": "Ogni outlet con nome può avere il proprio fallback wildcard. Quando nessuna route corrisponde per un outlet, il framework risolve i fallback in questo ordine:",
+        "namedList1": "<strong>Wildcard locale</strong> — <code>&lt;template route=\"*\" outlet=\"{name}\"&gt;</code> per quell'outlet specifico",
+        "namedList2": "<strong>Wildcard globale</strong> — <code>&lt;template route=\"*\"&gt;</code> (il wildcard dell'outlet predefinito), usato solo per gli outlet non predefiniti",
+        "namedList3": "<strong>404 integrato</strong> — la pagina di fallback minimale del framework",
+        "namedText2": "Se la barra laterale non ha un wildcard locale, ricorre al <code>route=\"*\"</code> globale. Se nessuno esiste, viene usato il 404 integrato.",
+        "matchedTitle": "$route.matched",
+        "matchedText": "Il booleano <code>$route.matched</code> indica se il percorso corrente ha trovato una route esplicita (<code>true</code>) o un wildcard/fallback (<code>false</code>). Usalo per il rendering condizionale nei tuoi template:",
+        "matchedText2": "<code>$route.matched</code> viene impostato <strong>prima</strong> del rendering del template, quindi è sempre disponibile durante l'elaborazione.",
+        "remoteTitle": "Template 404 Remoto",
+        "remoteText": "Le route wildcard supportano tutti gli stessi attributi dei template di route regolari, incluso <code>src</code> per il caricamento remoto:",
+        "remoteText2": "Il template remoto viene recuperato, memorizzato nella cache e renderizzato come qualsiasi altro template di route — e ha accesso completo a <code>$route.path</code>, <code>$route.matched</code> e tutte le altre funzionalità del framework.",
+        "fileBasedTitle": "404 nel Routing Basato su File",
+        "fileBasedText": "Quando si usa il routing basato su file, navigare verso un percorso il cui file <code>.tpl</code> non esiste sul server (HTTP 404 o altro errore) attiva automaticamente la catena di fallback wildcard.",
+        "fileBasedText2": "La risposta HTTP fallita <strong>non</strong> viene memorizzata nella cache — le navigazioni successive verso altri percorsi non vengono influenzate."
       }
     },
     "formsValidation": {

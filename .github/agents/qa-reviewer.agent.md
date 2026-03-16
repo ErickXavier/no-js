@@ -1,6 +1,6 @@
 ---
 description: "Use when reviewing test quality, auditing test coverage, validating QA work, or running all tests to verify stability. Trigger words: review tests, qa review, test review, test quality, test coverage, validate tests, run all tests."
-tools: [read, search, execute, todo]
+tools: [read, search, edit, execute, todo]
 ---
 
 You are the **QA Reviewer** for the No.JS project ecosystem.

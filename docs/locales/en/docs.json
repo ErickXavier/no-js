@@ -184,7 +184,9 @@
         "lazyOnDemand": "Fetch route template only when first visited (route templates only)",
         "routerForward": "Navigate forward in history",
         "routerOn": "Subscribe to route changes",
+        "routeWildcard": "Catch-all 404 wildcard route",
         "routerCurrent": "Current route object",
+        "routeMatched": "<code>true</code> if an explicit route matched, <code>false</code> for wildcard/fallback",
         "i18nNs": "Auto-derive i18n namespace from route filename",
         "routeViewSrc": "File-based routing outlet",
         "routeIndex": "Filename for root <code>/</code> (default <code>\"index\"</code>)",
@@ -592,7 +594,8 @@
         "path": "Current path (e.g. \"/users/42\")",
         "params": "Route parameters (e.g. { id: \"42\" })",
         "query": "Query string params (e.g. { q: \"hello\" })",
-        "hash": "URL hash (e.g. \"#section\")"
+        "hash": "URL hash (e.g. \"#section\")",
+        "matched": "Whether an explicit route matched (true) or a wildcard/fallback is rendering (false)"
       },
       "activeStyle": {
         "title": "Active Route Styling"
@@ -665,6 +668,29 @@
         "title": "Named Outlets (route-view)",
         "text": "Multiple route-view outlets can coexist in the same page. Give each outlet a name via the attribute value, and point route templates at specific outlets using the outlet attribute.",
         "callout": "Outlets with no matching template for the current route are always cleared on navigation."
+      },
+      "catchAll": {
+        "title": "404 / Catch-All Routes",
+        "text": "Use <code>route=\"*\"</code> to define a <strong>wildcard catch-all</strong> template that renders when no explicit route matches the current path. The wildcard is always evaluated last, regardless of DOM order.",
+        "text2": "Explicit routes <strong>always take priority</strong> — the wildcard only fires when <code>matchRoute()</code> returns no match.",
+        "fallbackTitle": "Automatic 404 Fallback",
+        "fallbackText": "If you don't define a <code>route=\"*\"</code> template, No.JS automatically shows a minimal built-in 404 page when no route matches. This ensures users always see something meaningful instead of a blank outlet.",
+        "fallbackTip": "The built-in fallback is intentionally minimal and unstyled. Define your own <code>route=\"*\"</code> template for production apps.",
+        "namedTitle": "Named Outlet Wildcards",
+        "namedText": "Each named outlet can have its own wildcard fallback. When no route matches for an outlet, the framework resolves fallbacks in this order:",
+        "namedList1": "<strong>Local wildcard</strong> — <code>&lt;template route=\"*\" outlet=\"{name}\"&gt;</code> for that specific outlet",
+        "namedList2": "<strong>Global wildcard</strong> — <code>&lt;template route=\"*\"&gt;</code> (the default outlet's wildcard), used only for non-default outlets",
+        "namedList3": "<strong>Built-in 404</strong> — the framework's minimal fallback page",
+        "namedText2": "If the sidebar has no local wildcard, it falls back to the global <code>route=\"*\"</code>. If neither exists, the built-in 404 is used.",
+        "matchedTitle": "$route.matched",
+        "matchedText": "The <code>$route.matched</code> boolean tells you whether the current path hit an explicit route (<code>true</code>) or a wildcard/fallback (<code>false</code>). Use it for conditional rendering inside your templates:",
+        "matchedText2": "<code>$route.matched</code> is set <strong>before</strong> the template renders, so it's always available during processing.",
+        "remoteTitle": "Remote 404 Template",
+        "remoteText": "Wildcard routes support all the same attributes as regular route templates, including <code>src</code> for remote loading:",
+        "remoteText2": "The remote template is fetched, cached, and rendered just like any other route template — and it has full access to <code>$route.path</code>, <code>$route.matched</code>, and all other framework features.",
+        "fileBasedTitle": "File-Based Routing 404",
+        "fileBasedText": "When using file-based routing, navigating to a path whose <code>.tpl</code> file doesn't exist on the server (HTTP 404 or other error) automatically triggers the wildcard fallback chain.",
+        "fileBasedText2": "The failed HTTP response is <strong>not</strong> cached — subsequent navigations to other paths are unaffected."
       }
     },
     "formsValidation": {

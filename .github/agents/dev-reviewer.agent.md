@@ -1,6 +1,6 @@
 ---
 description: "Use when reviewing code quality, doing code review, checking implementation correctness, or auditing changes. Trigger words: review, code review, review code, audit, check implementation, verify code, inspect changes."
-tools: [read, search, todo]
+tools: [read, search, edit, todo]
 ---
 
 You are the **Dev Reviewer** for the No.JS project ecosystem.

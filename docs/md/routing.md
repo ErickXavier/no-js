@@ -67,6 +67,7 @@ Full client-side routing with no page reloads.
 | `$route.params` | Route parameters (e.g. `{ id: "42" }`) |
 | `$route.query` | Query string params (e.g. `{ q: "hello" }`) |
 | `$route.hash` | URL hash (e.g. `"#section"`) |
+| `$route.matched` | Whether an explicit route matched (`true`) or a wildcard/fallback is rendering (`false`) |
 
 ---
 
@@ -340,6 +341,141 @@ Multiple `route-view` outlets can coexist in the same layout. Give each outlet a
 router.register('/home', mainTpl);                // → "default" outlet
 router.register('/home', sidebarTpl, 'sidebar');  // → "sidebar" outlet
 ```
+
+---
+
+## 404 / Catch-All Routes
+
+Use `route="*"` to define a **wildcard catch-all** template that renders when no explicit route matches the current path. The wildcard is always evaluated last, regardless of DOM order.
+
+```html
+<nav>
+  <a route="/">Home</a>
+  <a route="/about">About</a>
+</nav>
+
+<main route-view></main>
+
+<template route="/">
+  <h1>Home</h1>
+</template>
+
+<template route="/about">
+  <h1>About Us</h1>
+</template>
+
+<!-- Catch-all 404 -->
+<template route="*">
+  <h1>404 — Page Not Found</h1>
+  <p>Sorry, <code bind="$route.path"></code> doesn't exist.</p>
+  <a route="/">Back to Home</a>
+</template>
+```
+
+Explicit routes **always take priority** — the wildcard only fires when `matchRoute()` returns no match.
+
+---
+
+### Automatic 404 Fallback
+
+If you don't define a `route="*"` template, No.JS automatically shows a minimal built-in 404 page when no route matches. This ensures users always see something meaningful instead of a blank outlet.
+
+```html
+<!-- No route="*" defined here -->
+<main route-view></main>
+
+<template route="/">
+  <h1>Home</h1>
+</template>
+
+<!-- Navigating to /xyz shows a built-in "404 — Page not found" message -->
+```
+
+> **Tip:** The built-in fallback is intentionally minimal and unstyled. Define your own `route="*"` template for production apps.
+
+---
+
+### Named Outlet Wildcards
+
+Each named outlet can have its own wildcard fallback. When no route matches for an outlet, the framework resolves fallbacks in this order:
+
+1. **Local wildcard** — `<template route="*" outlet="{name}">` for that specific outlet
+2. **Global wildcard** — `<template route="*">` (the default outlet's wildcard), used only for non-default outlets
+3. **Built-in 404** — the framework's minimal fallback page
+
+```html
+<main route-view></main>
+<aside route-view="sidebar"></aside>
+
+<template route="/">
+  <h1>Home</h1>
+</template>
+
+<template route="/" outlet="sidebar">
+  <nav>Home sidebar</nav>
+</template>
+
+<!-- Global wildcard (default outlet) -->
+<template route="*">
+  <h1>Page not found</h1>
+</template>
+
+<!-- Sidebar-specific wildcard -->
+<template route="*" outlet="sidebar">
+  <p>No sidebar content for this page</p>
+</template>
+```
+
+If the sidebar has no local wildcard, it falls back to the global `route="*"`. If neither exists, the built-in 404 is used.
+
+---
+
+### `$route.matched`
+
+The `$route.matched` boolean tells you whether the current path hit an explicit route (`true`) or a wildcard/fallback (`false`). Use it for conditional rendering inside your templates:
+
+```html
+<template route="*">
+  <div show="!$route.matched">
+    <h1>404</h1>
+    <p>Path <code bind="$route.path"></code> was not found.</p>
+    <a route="/">Go Home</a>
+  </div>
+</template>
+```
+
+`$route.matched` is set **before** the template renders, so it's always available during processing.
+
+---
+
+### Remote 404 Template
+
+Wildcard routes support all the same attributes as regular route templates, including `src` for remote loading:
+
+```html
+<template route="*" src="./pages/404.tpl"></template>
+```
+
+The remote template is fetched, cached, and rendered just like any other route template — and it has full access to `$route.path`, `$route.matched`, and all other framework features.
+
+---
+
+### File-Based Routing 404
+
+When using [file-based routing](#file-based-routing), navigating to a path whose `.tpl` file doesn't exist on the server (HTTP 404 or other error) automatically triggers the wildcard fallback chain.
+
+```html
+<!-- File-based routing -->
+<main route-view src="./pages/"></main>
+
+<!-- If ./pages/xyz.tpl returns HTTP 404, this catches it -->
+<template route="*">
+  <h1>404 — Page Not Found</h1>
+  <p><code bind="$route.path"></code> could not be loaded.</p>
+</template>
+```
+
+The failed HTTP response is **not** cached — subsequent navigations to other paths are unaffected.
 
 ---
 

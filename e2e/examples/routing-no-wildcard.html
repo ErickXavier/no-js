@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Routing No Wildcard — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    nav a { margin-right: 1rem; text-decoration: none; color: #333; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <section>
+    <p class="test-label">Test 4: Built-in 404 fallback (no wildcard)</p>
+    <nav>
+      <a route="/" data-test="nav-home">Home</a>
+      <a route="/nowhere" data-test="nav-nowhere">Non-existent</a>
+    </nav>
+  </section>
+
+  <!-- Route outlet -->
+  <section>
+    <p class="test-label">Route outlet</p>
+    <div route-view data-test="outlet"></div>
+  </section>
+
+  <!-- Route templates (no wildcard) -->
+
+  <template route="/">
+    <div data-test="page-home">
+      <h2>Home Page</h2>
+      <p>Welcome home</p>
+    </div>
+  </template>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.config({ router: { mode: 'hash' } });
+    NoJS.init();
+  </script>
+</body>
+</html>

@@ -23,3 +23,4 @@ coverage/
 dist/
 playwright-report
 test-results
+.github/specs

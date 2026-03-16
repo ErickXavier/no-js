@@ -1,6 +1,6 @@
 ---
 description: "Use when auditing release practices, reviewing versioning strategy, analyzing release flow health, or getting recommendations for release improvements. Trigger words: release strategy, release audit, versioning review, release health, semver audit, release report, release analysis."
-tools: [read, search, todo]
+tools: [read, search, edit, todo]
 ---
 
 You are the **Release Strategist** for the No.JS project ecosystem.

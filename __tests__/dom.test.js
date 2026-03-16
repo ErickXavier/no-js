@@ -427,6 +427,7 @@ describe('_loadTemplateElement', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>content</p>'),
     });
   });
@@ -457,7 +458,7 @@ describe('_loadTemplateElement', () => {
     let flagDuringFetch = false;
     global.fetch = jest.fn().mockImplementation(() => {
       flagDuringFetch = tpl.__srcLoaded;
-      return Promise.resolve({ text: () => Promise.resolve('<p>content</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p>content</p>') });
     });
 
     await _loadTemplateElement(tpl);
@@ -480,6 +481,7 @@ describe('_loadTemplateElement', () => {
 
   test('injects non-route template content into DOM', async () => {
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>Injected</p>'),
     });
 
@@ -498,6 +500,7 @@ describe('_loadTemplateElement', () => {
 
   test('does not inject route templates', async () => {
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>About</p>'),
     });
 
@@ -517,7 +520,7 @@ describe('_loadTemplateElement', () => {
   test('loading: inserts placeholder synchronously before fetch and removes it after', async () => {
     let resolveText;
     global.fetch = jest.fn().mockReturnValue(
-      new Promise(resolve => { resolveText = () => resolve({ text: () => Promise.resolve('<p>Real</p>') }); })
+      new Promise(resolve => { resolveText = () => resolve({ ok: true, text: () => Promise.resolve('<p>Real</p>') }); })
     );
 
     const skeleton = document.createElement('template');
@@ -565,6 +568,7 @@ describe('_loadTemplateElement', () => {
 
   test('loading: no-op when referenced template does not exist', async () => {
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>ok</p>'),
     });
 
@@ -584,6 +588,7 @@ describe('_loadTemplateElement', () => {
     
     global.fetch = jest.fn()
       .mockResolvedValue({
+        ok: true,
         text: () => Promise.resolve('<template src="./section.tpl"></template>'),
       });
 
@@ -608,6 +613,7 @@ describe('_loadTemplateElement', () => {
     
     
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>Cached</p>'),
     });
 
@@ -638,6 +644,7 @@ describe('_loadTemplateElement', () => {
   test('re-fetches when _config.templates.cache is false', async () => {
     _config.templates.cache = false;
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>Fresh</p>'),
     });
 
@@ -774,6 +781,7 @@ describe('_loadRemoteTemplatesPhase1', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>content</p>'),
     });
   });
@@ -847,6 +855,7 @@ describe('_loadRemoteTemplatesPhase2', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p>content</p>'),
     });
   });
@@ -911,16 +920,17 @@ describe('_loadTemplateElement — subtemplate cache warming', () => {
     global.fetch = jest.fn((url) => {
       if (url === 'templates/docs.html') {
         return Promise.resolve({
+          ok: true,
           text: () => Promise.resolve('<template src="./docs/sidebar.tpl"></template><template src="./docs/getting-started.tpl"></template>'),
         });
       }
       if (url === 'templates/docs/sidebar.tpl') {
-        return Promise.resolve({ text: () => Promise.resolve('<nav>Sidebar</nav>') });
+        return Promise.resolve({ ok: true, text: () => Promise.resolve('<nav>Sidebar</nav>') });
       }
       if (url === 'templates/docs/getting-started.tpl') {
-        return Promise.resolve({ text: () => Promise.resolve('<section>Getting Started</section>') });
+        return Promise.resolve({ ok: true, text: () => Promise.resolve('<section>Getting Started</section>') });
       }
-      return Promise.resolve({ text: () => Promise.resolve('') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('') });
     });
 
     const tpl = document.createElement('template');
@@ -943,10 +953,11 @@ describe('_loadTemplateElement — subtemplate cache warming', () => {
     global.fetch = jest.fn((url) => {
       if (url === 'templates/docs.html') {
         return Promise.resolve({
+          ok: true,
           text: () => Promise.resolve('<template src="./docs/sidebar.tpl"></template>'),
         });
       }
-      return Promise.resolve({ text: () => Promise.resolve('') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('') });
     });
 
     const tpl = document.createElement('template');
@@ -965,6 +976,7 @@ describe('_loadTemplateElement — subtemplate cache warming', () => {
 
   test('non-route templates do not trigger cache warming (they use _loadRemoteTemplates)', async () => {
     global.fetch = jest.fn(() => Promise.resolve({
+      ok: true,
       text: () => Promise.resolve('<p>content</p>'),
     }));
 
@@ -980,5 +992,145 @@ describe('_loadTemplateElement — subtemplate cache warming', () => {
 
     // Should have been fetched and processed via _loadRemoteTemplates, not cache warming
     expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('_loadTemplateElement — HTTP error handling', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    _templateHtmlCache.clear();
+  });
+
+  afterEach(() => {
+    delete global.fetch;
+    document.body.innerHTML = '';
+    _templateHtmlCache.clear();
+  });
+
+  test('should set __loadFailed and leave innerHTML empty on HTTP 404', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      text: () => Promise.resolve('Not Found'),
+    });
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', '/missing.tpl');
+    tpl.setAttribute('route', '/missing');
+    document.body.appendChild(tpl);
+
+    await _loadTemplateElement(tpl);
+
+    expect(tpl.innerHTML).toBe('');
+    expect(tpl.__loadFailed).toBe(true);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]', 'Failed to load template:', '/missing.tpl', 'HTTP', 404
+    );
+
+    warnSpy.mockRestore();
+  });
+
+  test('should set __loadFailed and leave innerHTML empty on HTTP 500', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      text: () => Promise.resolve('Internal Server Error'),
+    });
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', '/error.tpl');
+    tpl.setAttribute('route', '/error');
+    document.body.appendChild(tpl);
+
+    await _loadTemplateElement(tpl);
+
+    expect(tpl.innerHTML).toBe('');
+    expect(tpl.__loadFailed).toBe(true);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]', 'Failed to load template:', '/error.tpl', 'HTTP', 500
+    );
+
+    warnSpy.mockRestore();
+  });
+
+  test('should not cache failed HTTP responses', async () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      text: () => Promise.resolve('Not Found'),
+    });
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', '/not-cached.tpl');
+    tpl.setAttribute('route', '/not-cached');
+    document.body.appendChild(tpl);
+
+    await _loadTemplateElement(tpl);
+
+    expect(_templateHtmlCache.has('/not-cached.tpl')).toBe(false);
+
+    console.warn.mockRestore();
+  });
+
+  test('should load and cache content normally on HTTP 200', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('<p>OK</p>'),
+    });
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', '/success.tpl');
+    tpl.setAttribute('route', '/success');
+    document.body.appendChild(tpl);
+
+    await _loadTemplateElement(tpl);
+
+    expect(tpl.innerHTML).toBe('<p>OK</p>');
+    expect(tpl.__loadFailed).toBeUndefined();
+    expect(_templateHtmlCache.has('/success.tpl')).toBe(true);
+    expect(_templateHtmlCache.get('/success.tpl')).toBe('<p>OK</p>');
+  });
+});
+
+describe('_loadRemoteTemplates — HTTP error handling', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    _templateHtmlCache.clear();
+  });
+
+  afterEach(() => {
+    delete global.fetch;
+    document.body.innerHTML = '';
+    _templateHtmlCache.clear();
+  });
+
+  test('should not cache template and should warn on HTTP error', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 403,
+      text: () => Promise.resolve('Forbidden'),
+    });
+
+    const wrapper = document.createElement('div');
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', '/forbidden.tpl');
+    wrapper.appendChild(tpl);
+    document.body.appendChild(wrapper);
+
+    await _loadRemoteTemplates();
+
+    expect(_templateHtmlCache.has('/forbidden.tpl')).toBe(false);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]', 'Failed to load template:', '/forbidden.tpl', 'HTTP', 403
+    );
+    // Template was not inlined — wrapper should still have the template element
+    // (or be empty since the template content was never set)
+    expect(wrapper.textContent).toBe('');
+
+    warnSpy.mockRestore();
   });
 });

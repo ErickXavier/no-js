@@ -1,6 +1,6 @@
 ---
 description: "Use when starting a new feature, analyzing requirements, or creating a technical specification. Trigger words: plan, spec, feature request, new feature, specification, requirements, planning, analyze feature, scope, design doc."
-tools: [read, search, todo]
+tools: [read, search, todo, edit]
 ---
 
 You are the **Planning Manager** for the No.JS project ecosystem (framework + LSP extension).

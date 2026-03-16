@@ -184,7 +184,9 @@
         "lazyOnDemand": "Obtener plantilla de ruta solo en la primera visita (solo plantillas de ruta)",
         "routerForward": "Navegar hacia adelante en el historial",
         "routerOn": "Suscribirse a cambios de ruta",
+        "routeWildcard": "Ruta wildcard catch-all 404",
         "routerCurrent": "Objeto de ruta actual",
+        "routeMatched": "<code>true</code> si una ruta explícita coincidió, <code>false</code> para wildcard/fallback",
         "i18nNs": "Auto-derivar namespace i18n del nombre de archivo de ruta",
         "routeViewSrc": "Outlet de enrutamiento basado en archivos",
         "routeIndex": "Nombre de archivo para la raíz <code>/</code> (por defecto <code>\"index\"</code>)",
@@ -592,7 +594,8 @@
         "path": "Ruta actual (ej. \"/users/42\")",
         "params": "Parámetros de ruta (ej. { id: \"42\" })",
         "query": "Parámetros de cadena de consulta (ej. { q: \"hello\" })",
-        "hash": "Hash de la URL (ej. \"#section\")"
+        "hash": "Hash de la URL (ej. \"#section\")",
+        "matched": "Si una ruta explícita coincidió (true) o si se está renderizando un wildcard/fallback (false)"
       },
       "activeStyle": {
         "title": "Estilo de Ruta Activa"
@@ -665,6 +668,29 @@
         "title": "Salidas Nombradas (route-view)",
         "text": "Múltiples salidas route-view pueden coexistir en la misma página. Dale a cada salida un nombre mediante el valor del atributo, y apunta las plantillas de ruta a salidas específicas usando el atributo outlet.",
         "callout": "Las salidas sin plantilla coincidente para la ruta actual siempre se limpian al navegar."
+      },
+      "catchAll": {
+        "title": "404 / Rutas Catch-All",
+        "text": "Usa <code>route=\"*\"</code> para definir una plantilla <strong>wildcard catch-all</strong> que se renderiza cuando ninguna ruta explícita coincide con la ruta actual. El wildcard siempre se evalúa al final, sin importar el orden en el DOM.",
+        "text2": "Las rutas explícitas <strong>siempre tienen prioridad</strong> — el wildcard solo se activa cuando <code>matchRoute()</code> no encuentra coincidencia.",
+        "fallbackTitle": "Fallback 404 Automático",
+        "fallbackText": "Si no defines una plantilla <code>route=\"*\"</code>, No.JS muestra automáticamente una página 404 mínima integrada cuando ninguna ruta coincide. Esto asegura que los usuarios siempre vean algo significativo en lugar de una salida vacía.",
+        "fallbackTip": "El fallback integrado es intencionalmente mínimo y sin estilos. Define tu propia plantilla <code>route=\"*\"</code> para aplicaciones en producción.",
+        "namedTitle": "Wildcards en Salidas Nombradas",
+        "namedText": "Cada salida nombrada puede tener su propio fallback wildcard. Cuando ninguna ruta coincide para una salida, el framework resuelve los fallbacks en este orden:",
+        "namedList1": "<strong>Wildcard local</strong> — <code>&lt;template route=\"*\" outlet=\"{name}\"&gt;</code> para esa salida específica",
+        "namedList2": "<strong>Wildcard global</strong> — <code>&lt;template route=\"*\"&gt;</code> (el wildcard de la salida por defecto), usado solo para salidas no predeterminadas",
+        "namedList3": "<strong>404 integrado</strong> — la página de fallback mínima del framework",
+        "namedText2": "Si la barra lateral no tiene wildcard local, recurre al <code>route=\"*\"</code> global. Si ninguno existe, se usa el 404 integrado.",
+        "matchedTitle": "$route.matched",
+        "matchedText": "El booleano <code>$route.matched</code> te indica si la ruta actual encontró una ruta explícita (<code>true</code>) o un wildcard/fallback (<code>false</code>). Úsalo para renderizado condicional dentro de tus plantillas:",
+        "matchedText2": "<code>$route.matched</code> se establece <strong>antes</strong> de que la plantilla se renderice, por lo que siempre está disponible durante el procesamiento.",
+        "remoteTitle": "Plantilla 404 Remota",
+        "remoteText": "Las rutas wildcard soportan todos los mismos atributos que las plantillas de ruta regulares, incluyendo <code>src</code> para carga remota:",
+        "remoteText2": "La plantilla remota se obtiene, almacena en caché y renderiza igual que cualquier otra plantilla de ruta — y tiene acceso completo a <code>$route.path</code>, <code>$route.matched</code>, y todas las demás funcionalidades del framework.",
+        "fileBasedTitle": "404 en Enrutamiento Basado en Archivos",
+        "fileBasedText": "Al usar enrutamiento basado en archivos, navegar a una ruta cuyo archivo <code>.tpl</code> no existe en el servidor (HTTP 404 u otro error) activa automáticamente la cadena de fallback wildcard.",
+        "fileBasedText2": "La respuesta HTTP fallida <strong>no</strong> se almacena en caché — las navegaciones posteriores a otras rutas no se ven afectadas."
       }
     },
     "formsValidation": {

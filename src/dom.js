@@ -84,6 +84,11 @@ export async function _loadRemoteTemplates(root) {
         _log("[LRT] CACHE HIT:", resolvedUrl);
       } else {
         const res = await fetch(resolvedUrl);
+        if (!res.ok) {
+          _warn("Failed to load template:", src, "HTTP", res.status);
+          tpl.__loadFailed = true;
+          return;
+        }
         html = await res.text();
         if (useCache) _templateHtmlCache.set(resolvedUrl, html);
       }
@@ -148,6 +153,12 @@ export async function _loadTemplateElement(tpl) {
       _log("[LTE] CACHE HIT:", resolvedUrl);
     } else {
       const res = await fetch(resolvedUrl);
+      if (!res.ok) {
+        _warn("Failed to load template:", src, "HTTP", res.status);
+        tpl.__loadFailed = true;
+        if (loadingMarker) loadingMarker.remove();
+        return;
+      }
       html = await res.text();
       if (useCache) _templateHtmlCache.set(resolvedUrl, html);
     }
@@ -170,7 +181,10 @@ export async function _loadTemplateElement(tpl) {
         const subSrc = sub.getAttribute("src");
         const subUrl = _resolveTemplateSrc(subSrc, sub);
         if (_templateHtmlCache.has(subUrl)) return;
-        return fetch(subUrl).then((r) => r.text()).then((h) => {
+        return fetch(subUrl).then((r) => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.text();
+        }).then((h) => {
           _templateHtmlCache.set(subUrl, h);
         }).catch(() => {});
       });

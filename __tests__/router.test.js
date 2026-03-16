@@ -180,7 +180,9 @@ describe('Router', () => {
     expect(outlet.querySelector('p')).not.toBeNull();
 
     await router.push('/unknown');
-    expect(outlet.querySelector('p')).toBeNull();
+    // Previous route content is cleared; built-in 404 renders instead
+    expect(outlet.querySelector('.routed')).toBeNull();
+    expect(outlet.innerHTML).toContain('404');
   });
 
   test('init collects route templates from DOM', async () => {
@@ -261,10 +263,11 @@ describe('Router', () => {
     global.fetch = jest.fn((url) => {
       if (url === '/nested-page.tpl') {
         return Promise.resolve({
+          ok: true,
           text: () => Promise.resolve('<div id="section-wrap"><template src="./section.tpl"></template></div>'),
         });
       }
-      return Promise.resolve({ text: () => Promise.resolve('<p class="section-loaded">Done</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p class="section-loaded">Done</p>') });
     });
 
     router = _createRouter();
@@ -291,10 +294,11 @@ describe('Router', () => {
     global.fetch = jest.fn((url) => {
       if (url === 'templates/page.tpl') {
         return Promise.resolve({
+          ok: true,
           text: () => Promise.resolve('<template src="./section.tpl"></template>'),
         });
       }
-      return Promise.resolve({ text: () => Promise.resolve('<p class="ok">ok</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p class="ok">ok</p>') });
     });
 
     router = _createRouter();
@@ -758,7 +762,7 @@ describe('Router — prefetch routes from <a route> links', () => {
     const fetchedUrls = [];
     global.fetch = jest.fn((url) => {
       fetchedUrls.push(url);
-      return Promise.resolve({ text: () => Promise.resolve('<p>Prefetched</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p>Prefetched</p>') });
     });
 
     const outlet = document.createElement('div');
@@ -791,7 +795,7 @@ describe('Router — prefetch routes from <a route> links', () => {
     const fetchedUrls = [];
     global.fetch = jest.fn((url) => {
       fetchedUrls.push(url);
-      return Promise.resolve({ text: () => Promise.resolve('<p>Page</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p>Page</p>') });
     });
 
     const outlet = document.createElement('div');
@@ -818,7 +822,7 @@ describe('Router — prefetch routes from <a route> links', () => {
     const fetchOrder = [];
     global.fetch = jest.fn((url) => {
       fetchOrder.push(url);
-      return Promise.resolve({ text: () => Promise.resolve('<p>Page</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p>Page</p>') });
     });
 
     const outlet = document.createElement('div');
@@ -856,7 +860,7 @@ describe('Router — prefetch routes from <a route> links', () => {
     const fetchedUrls = [];
     global.fetch = jest.fn((url) => {
       fetchedUrls.push(url);
-      return Promise.resolve({ text: () => Promise.resolve('<p>Page</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p>Page</p>') });
     });
 
     const outlet = document.createElement('div');
@@ -890,7 +894,7 @@ describe('Router — prefetch routes from <a route> links', () => {
     const fetchedUrls = [];
     global.fetch = jest.fn((url) => {
       fetchedUrls.push(url);
-      return Promise.resolve({ text: () => Promise.resolve('<p>Page</p>') });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('<p>Page</p>') });
     });
 
     const outlet = document.createElement('div');
@@ -1083,6 +1087,7 @@ describe('on-demand template loading', () => {
     window.scrollTo = jest.fn();
     setRouterInstance(null);
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p class="about-content">About</p>'),
     });
   });
@@ -1149,6 +1154,7 @@ describe('File-based routing', () => {
     window.scrollTo = jest.fn();
     setRouterInstance(null);
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<p class="auto-content">Auto Loaded</p>'),
     });
   });
@@ -1438,6 +1444,7 @@ describe('File-based routing', () => {
   test('renders content from fetched template in outlet', async () => {
     _templateHtmlCache.clear();
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       text: () => Promise.resolve('<h1 class="page-title">Dashboard</h1><p class="page-body">Stats here</p>'),
     });
 
@@ -1462,7 +1469,7 @@ describe('File-based routing', () => {
       const html = callCount === 1
         ? '<p class="first-page">First</p>'
         : '<p class="second-page">Second</p>';
-      return Promise.resolve({ text: () => Promise.resolve(html) });
+      return Promise.resolve({ ok: true, text: () => Promise.resolve(html) });
     });
 
     const outlet = document.createElement('div');
@@ -1548,7 +1555,8 @@ describe('File-based routing', () => {
     await router.push('/nowhere');
 
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(outlet.innerHTML).toBe('');
+    // No file-based routing but built-in 404 still renders for unmatched routes
+    expect(outlet.innerHTML).toContain('404');
   });
 });
 
@@ -1928,6 +1936,377 @@ describe('Router — anchor links in hash mode', () => {
 
     link.click();
     expect(router.current.path).toBe('/');
+  });
+});
+
+
+
+
+
+describe('Router — wildcard 404 catch-all', () => {
+  beforeEach(() => {
+    _config.router = { mode: 'hash', base: '/', scrollBehavior: 'top', templates: '', ext: '.tpl' };
+    document.body.innerHTML = '';
+    window.location.hash = '';
+    window.scrollTo = jest.fn();
+    setRouterInstance(null);
+  });
+
+  afterEach(() => {
+    setRouterInstance(null);
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    document.body.innerHTML = '';
+    window.location.hash = '';
+    if (global.fetch) delete global.fetch;
+  });
+
+  test('wildcard route registration: route="*" templates do NOT appear in routes array', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.setAttribute('route', '*');
+    wildcardTpl.innerHTML = '<p>404</p>';
+    document.body.appendChild(wildcardTpl);
+
+    const normalTpl = document.createElement('template');
+    normalTpl.setAttribute('route', '/about');
+    normalTpl.innerHTML = '<p>About</p>';
+    document.body.appendChild(normalTpl);
+
+    const router = _createRouter();
+    setRouterInstance(router);
+    window.location.hash = '#/about';
+    await router.init();
+
+    // register() exposes routes internally — wildcard should not be in routes
+    // Verify the wildcard is NOT navigable as an explicit route
+    const matched = router.push('/about');
+    expect(router.current.path).toBe('/about');
+
+    // If we navigate to "*" literally, it shouldn't match any explicit route
+    await router.push('/*');
+    expect(router.current.matched).toBe(false);
+  });
+
+  test('wildcard rendering — default outlet: navigate to /nonexistent renders wildcard content', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<p class="custom-404">Custom Not Found</p>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+    router.register('/home', document.createElement('template'));
+
+    await router.push('/nonexistent');
+
+    expect(outlet.querySelector('.custom-404')).not.toBeNull();
+    expect(outlet.querySelector('.custom-404').textContent).toBe('Custom Not Found');
+  });
+
+  test('wildcard rendering — named outlet: renders in [route-view="sidebar"] when no route matches', async () => {
+    const mainOutlet = document.createElement('div');
+    mainOutlet.setAttribute('route-view', '');
+    document.body.appendChild(mainOutlet);
+
+    const sidebarOutlet = document.createElement('div');
+    sidebarOutlet.setAttribute('route-view', 'sidebar');
+    document.body.appendChild(sidebarOutlet);
+
+    const mainWildcard = document.createElement('template');
+    mainWildcard.innerHTML = '<p class="main-404">Main 404</p>';
+
+    const sidebarWildcard = document.createElement('template');
+    sidebarWildcard.innerHTML = '<p class="sidebar-404">Sidebar 404</p>';
+
+    const router = _createRouter();
+    router.register('*', mainWildcard);
+    router.register('*', sidebarWildcard, 'sidebar');
+
+    await router.push('/nonexistent');
+
+    expect(sidebarOutlet.querySelector('.sidebar-404')).not.toBeNull();
+    expect(sidebarOutlet.querySelector('.sidebar-404').textContent).toBe('Sidebar 404');
+  });
+
+  test('fallback chain — local then global: named outlet with no local wildcard falls back to global', async () => {
+    const mainOutlet = document.createElement('div');
+    mainOutlet.setAttribute('route-view', '');
+    document.body.appendChild(mainOutlet);
+
+    const sidebarOutlet = document.createElement('div');
+    sidebarOutlet.setAttribute('route-view', 'sidebar');
+    document.body.appendChild(sidebarOutlet);
+
+    // Only define a global (default outlet) wildcard, no sidebar-specific one
+    const globalWildcard = document.createElement('template');
+    globalWildcard.innerHTML = '<p class="global-404">Global Not Found</p>';
+
+    const router = _createRouter();
+    router.register('*', globalWildcard);
+
+    await router.push('/nonexistent');
+
+    // Main outlet gets the global wildcard
+    expect(mainOutlet.querySelector('.global-404')).not.toBeNull();
+
+    // Sidebar should fall back to the global wildcard too
+    expect(sidebarOutlet.querySelector('.global-404')).not.toBeNull();
+  });
+
+  test('fallback chain — built-in 404: no wildcard defined → outlet contains the built-in 404 HTML', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const router = _createRouter();
+    // No wildcard, no routes — navigate to something
+
+    await router.push('/nonexistent');
+
+    expect(outlet.innerHTML).toContain('404');
+    expect(outlet.querySelector('h1')).not.toBeNull();
+    expect(outlet.querySelector('h1').textContent).toBe('404');
+    expect(outlet.querySelector('p').textContent).toBe('Page not found');
+  });
+
+  test('developer wildcard overrides built-in: route="*" content renders instead of built-in', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<h1 class="dev-404">Custom 404</h1>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+
+    await router.push('/nonexistent');
+
+    expect(outlet.querySelector('.dev-404')).not.toBeNull();
+    expect(outlet.querySelector('.dev-404').textContent).toBe('Custom 404');
+    // Built-in 404 should NOT be present
+    expect(outlet.innerHTML).not.toContain('Page not found');
+  });
+
+  test('$route.matched is false when navigating to unmatched path', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const router = _createRouter();
+    const tpl = document.createElement('template');
+    tpl.innerHTML = '<p>Home</p>';
+    router.register('/', tpl);
+
+    await router.push('/nonexistent');
+
+    expect(router.current.matched).toBe(false);
+  });
+
+  test('$route.matched is true when navigating to a defined route', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const router = _createRouter();
+    const tpl = document.createElement('template');
+    tpl.innerHTML = '<p>Home</p>';
+    router.register('/', tpl);
+
+    await router.push('/');
+
+    expect(router.current.matched).toBe(true);
+  });
+
+  test('$route.path available in wildcard: navigate to /nonexistent shows correct path', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<p class="path-display">Not Found</p>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+
+    await router.push('/nonexistent');
+
+    // The $route context is created with the current path
+    expect(router.current.path).toBe('/nonexistent');
+    expect(outlet.querySelector('.path-display')).not.toBeNull();
+  });
+
+  test('wildcard with src: remote template loads via fetch', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('<p class="remote-404">Remote 404 Page</p>'),
+    });
+
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.setAttribute('src', './404.tpl');
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+
+    await router.push('/nonexistent');
+
+    expect(global.fetch).toHaveBeenCalledWith('404.tpl');
+    expect(outlet.querySelector('.remote-404')).not.toBeNull();
+    expect(outlet.querySelector('.remote-404').textContent).toBe('Remote 404 Page');
+  });
+
+  test('wildcard with guard: guarded wildcard that blocks → redirect executes', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.setAttribute('guard', 'false');
+    wildcardTpl.setAttribute('redirect', '/login');
+    wildcardTpl.innerHTML = '<p>Guarded 404</p>';
+
+    const loginTpl = document.createElement('template');
+    loginTpl.innerHTML = '<p class="login">Login</p>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+    router.register('/login', loginTpl);
+
+    await router.push('/nonexistent');
+
+    // Guard blocked the wildcard, redirect to /login
+    expect(router.current.path).toBe('/login');
+    expect(outlet.querySelector('.login')).not.toBeNull();
+  });
+
+  test('wildcard not returned by matchRoute: navigating to "*" literally returns matched=false', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<p class="catch-all">Catch All</p>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+    router.register('/home', document.createElement('template'));
+
+    // Navigate to literal "*" — matchRoute should NOT match it
+    await router.push('/*');
+
+    expect(router.current.matched).toBe(false);
+  });
+
+  test('explicit routes always win: /about uses explicit route, not wildcard', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const aboutTpl = document.createElement('template');
+    aboutTpl.innerHTML = '<p class="about-page">About Us</p>';
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<p class="wildcard-page">404</p>';
+
+    const router = _createRouter();
+    router.register('/about', aboutTpl);
+    router.register('*', wildcardTpl);
+
+    await router.push('/about');
+
+    expect(router.current.matched).toBe(true);
+    expect(outlet.querySelector('.about-page')).not.toBeNull();
+    expect(outlet.querySelector('.wildcard-page')).toBeNull();
+  });
+
+  test('file-based routing 404: fetch returns { ok: false } → wildcard fallback activates', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      text: () => Promise.resolve('Not Found'),
+    });
+
+    _config.router.templates = 'pages';
+
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<p class="fallback-404">Wildcard Fallback</p>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+
+    await router.push('/nonexistent');
+
+    expect(outlet.querySelector('.fallback-404')).not.toBeNull();
+    expect(outlet.querySelector('.fallback-404').textContent).toBe('Wildcard Fallback');
+  });
+
+  test('multiple outlets with different wildcards: each renders independently', async () => {
+    const mainOutlet = document.createElement('div');
+    mainOutlet.setAttribute('route-view', '');
+    document.body.appendChild(mainOutlet);
+
+    const sidebarOutlet = document.createElement('div');
+    sidebarOutlet.setAttribute('route-view', 'sidebar');
+    document.body.appendChild(sidebarOutlet);
+
+    const mainWildcard = document.createElement('template');
+    mainWildcard.innerHTML = '<p class="main-wc">Main Wildcard</p>';
+
+    const sidebarWildcard = document.createElement('template');
+    sidebarWildcard.innerHTML = '<p class="sidebar-wc">Sidebar Wildcard</p>';
+
+    const router = _createRouter();
+    router.register('*', mainWildcard);
+    router.register('*', sidebarWildcard, 'sidebar');
+
+    await router.push('/nonexistent');
+
+    expect(mainOutlet.querySelector('.main-wc')).not.toBeNull();
+    expect(mainOutlet.querySelector('.main-wc').textContent).toBe('Main Wildcard');
+    expect(mainOutlet.querySelector('.sidebar-wc')).toBeNull();
+
+    expect(sidebarOutlet.querySelector('.sidebar-wc')).not.toBeNull();
+    expect(sidebarOutlet.querySelector('.sidebar-wc').textContent).toBe('Sidebar Wildcard');
+    expect(sidebarOutlet.querySelector('.main-wc')).toBeNull();
+  });
+
+  test('register("*", tpl) programmatic API: stores in wildcards, not routes', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const wildcardTpl = document.createElement('template');
+    wildcardTpl.innerHTML = '<p class="api-404">API 404</p>';
+
+    const normalTpl = document.createElement('template');
+    normalTpl.innerHTML = '<p>Home</p>';
+
+    const router = _createRouter();
+    router.register('*', wildcardTpl);
+    router.register('/home', normalTpl);
+
+    // Navigate to /home — should use normal route, not wildcard
+    await router.push('/home');
+    expect(router.current.matched).toBe(true);
+    expect(outlet.querySelector('.api-404')).toBeNull();
+
+    // Navigate to unmatched — wildcard should render
+    await router.push('/unknown');
+    expect(router.current.matched).toBe(false);
+    expect(outlet.querySelector('.api-404')).not.toBeNull();
   });
 });
 

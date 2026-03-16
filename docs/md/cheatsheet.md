@@ -99,6 +99,7 @@ Complete reference of every No.JS directive.
 | Directive | Example | Description |
 |-----------|---------|-------------|
 | `route` | `route="/path"` | Define route or link |
+| `route="*"` | `route="*"` | Catch-all 404 wildcard route |
 | `route-view` | `route-view` | Route outlet |
 | `route-view="name"` | `route-view="sidebar"` | Named route outlet |
 | `route-view[src]` | `route-view src="./pages/"` | File-based routing outlet |
@@ -110,6 +111,7 @@ Complete reference of every No.JS directive.
 | `guard` | `guard="expr"` | Route guard condition |
 | `lazy` | `lazy="ondemand"` | Defer route template fetch until first visit |
 | `lazy` | `lazy="priority"` | Force template to load before all others |
+| `$route.matched` | `if="$route.matched"` | `true` if an explicit route matched, `false` for wildcard/fallback |
 
 ## Animation
 
