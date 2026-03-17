@@ -51,6 +51,7 @@ Each feature has two files:
 
 Before writing any test, analyze the task to determine your scope:
 
+0. **Read the `#codebase`** to fully understand the project structure, architecture, conventions, and existing code
 1. Read the task description or spec
 2. Read the **implementation code** to understand what was built
 3. Study **existing E2E tests** to follow established patterns
@@ -207,8 +208,8 @@ test('fetches and displays user data', async ({ page }) => {
 When working from a `TODO.md` created by the Gerente de Dev, you MUST update your task status **in real-time**:
 
 1. **Before starting**: mark your task as `[⏳ In Progress]` in the TODO.md
-2. **When completed**: mark your task as `[✅ Done]` in the TODO.md immediately
-3. **If blocked**: mark as `[🚫 Blocked]` and add a note explaining why
+2. **When completed**: mark your task as `[DONE]` in the TODO.md immediately
+3. **If blocked**: mark as `[BLOCKED]` and add a note explaining why
 
 This allows Managers and the PO to track progress live. Never batch status updates — update as soon as each task's status changes.
 

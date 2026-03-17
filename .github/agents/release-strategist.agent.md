@@ -18,6 +18,10 @@ You NEVER modify any files. Your only output is the **Release Strategy Report**.
 
 ## Audit Process
 
+### 0. STUDY the codebase
+
+Read the `#codebase` to fully understand the project structure, architecture, conventions, and existing code before proceeding.
+
 ### 1. ANALYZE current release state
 
 Read and examine:
@@ -107,31 +111,31 @@ Assess each area and flag issues:
 - **Last Release**: YYYY-MM-DD
 - **Published Versions**: N total
 - **Tests**: N passing / N failing
-- **Build**: ✅ Current | ⚠️ Stale | ❌ Missing
+- **Build**: Current | Stale | Missing
 
 ### NoJS LSP
 - **Version**: x.y.z
-- **Version Sync**: ✅ Matches framework | ❌ Out of sync
+- **Version Sync**: Matches framework | Out of sync
 - **Tests**: N passing / N failing
-- **Build**: ✅ Current | ⚠️ Stale | ❌ Missing
+- **Build**: Current | Stale | Missing
 
 ## Findings
 
-### Critical ❌
+### Critical
 {Issues that must be fixed — broken versioning, missing tags, test failures, version mismatches}
 
 - **[Area]**: {Description}
   **Impact**: {What goes wrong}
   **Recommendation**: {How to fix}
 
-### Warnings ⚠️
+### Warnings
 {Issues that should be addressed — incomplete changelog, missing automation, convention drift}
 
 - **[Area]**: {Description}
   **Impact**: {What goes wrong}
   **Recommendation**: {How to fix}
 
-### Observations 💡
+### Observations
 {Optional improvements — automation opportunities, tooling suggestions, process refinements}
 
 - **[Area]**: {Description}
@@ -141,20 +145,20 @@ Assess each area and flag issues:
 
 | Version | Changes | Expected Type | Actual Type | Correct? |
 |---------|---------|--------------|-------------|----------|
-| x.y.z | {summary} | minor | minor | ✅ |
+| x.y.z | {summary} | minor | minor | Yes |
 
 ## Release Flow Review
 
 ### Framework (`@release`)
 | Step | Status | Notes |
 |------|--------|-------|
-| Investigate changes | ✅/⚠️/❌ | {notes} |
-| Commit message | ✅/⚠️/❌ | {notes} |
-| Version bump | ✅/⚠️/❌ | {notes} |
-| Changelog update | ✅/⚠️/❌ | {notes} |
-| Build | ✅/⚠️/❌ | {notes} |
-| Commit & Push | ✅/⚠️/❌ | {notes} |
-| npm publish | ✅/⚠️/❌ | {notes} |
+| Investigate changes | OK/WARN/FAIL | {notes} |
+| Commit message | OK/WARN/FAIL | {notes} |
+| Version bump | OK/WARN/FAIL | {notes} |
+| Changelog update | OK/WARN/FAIL | {notes} |
+| Build | OK/WARN/FAIL | {notes} |
+| Commit & Push | OK/WARN/FAIL | {notes} |
+| npm publish | OK/WARN/FAIL | {notes} |
 
 ### LSP (`@release-lsp`)
 | Step | Status | Notes |

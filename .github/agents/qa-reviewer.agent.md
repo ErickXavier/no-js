@@ -23,6 +23,10 @@ You review and run tests across **ALL** repos.
 
 Follow ALL steps in order.
 
+### 0. STUDY the codebase
+
+Read the `#codebase` to fully understand the project structure, architecture, conventions, and existing code before proceeding.
+
 ### 1. UNDERSTAND the requirements
 
 - Read the spec file (`.github/specs/<feature>.md`) to understand acceptance criteria
@@ -118,7 +122,7 @@ Verify ≥80% coverage on new code.
 **Reviewer**: QA Reviewer Agent
 **Spec**: `.github/specs/<feature>.md`
 
-## Verdict: ✅ APPROVED | ⚠️ CHANGES REQUESTED | ❌ BLOCKED
+## Verdict: APPROVED | CHANGES REQUESTED | BLOCKED
 
 ## Summary
 
@@ -128,23 +132,23 @@ Verify ≥80% coverage on new code.
 
 ### NoJS Framework — Unit Tests
 - **Total**: N | **Passed**: N | **Failed**: N | **Skipped**: N
-- Status: ✅ All passing | ❌ Failures detected
+- Status: All passing | Failures detected
 
 ### NoJS Framework — E2E Tests
 - **Total**: N | **Passed**: N | **Failed**: N | **Skipped**: N
-- Browsers: Chromium ✅ | Firefox ✅ | WebKit ✅
-- Status: ✅ All passing | ❌ Failures detected
+- Browsers: Chromium OK | Firefox OK | WebKit OK
+- Status: All passing | Failures detected
 
 ### NoJS LSP — Unit Tests
 - **Total**: N | **Passed**: N | **Failed**: N | **Skipped**: N
-- Status: ✅ All passing | ❌ Failures detected
+- Status: All passing | Failures detected
 
 ### Coverage (new code)
 | File | Statements | Branches | Functions | Lines |
 |------|-----------|----------|-----------|-------|
 | `path` | N% | N% | N% | N% |
 
-**Coverage target (≥80%)**: ✅ Met | ❌ Not met
+**Coverage target (≥80%)**: Met | Not met
 
 ## Pre-existing Failures
 
@@ -160,23 +164,23 @@ Verify ≥80% coverage on new code.
 
 | File | Type | Status | Issues |
 |------|------|--------|--------|
-| `path` | Unit/E2E | ✅/⚠️/❌ | Description |
+| `path` | Unit/E2E | OK/WARN/FAIL | Description |
 
 ## Issues
 
-### Critical ❌
+### Critical
 {Must be fixed. Missing critical scenarios, broken tests, security gaps.}
 
 - **[file:LN]** {Description}
   **Suggestion**: {How to fix}
 
-### Warnings ⚠️
+### Warnings
 {Should be fixed. Missing edge cases, convention violations, flakiness risk.}
 
 - **[file:LN]** {Description}
   **Suggestion**: {How to fix}
 
-### Suggestions 💡
+### Suggestions
 {Optional improvements.}
 
 - **[file:LN]** {Description}
@@ -185,13 +189,13 @@ Verify ≥80% coverage on new code.
 
 | # | Criterion | Unit Test | E2E Test | Status |
 |---|-----------|-----------|----------|--------|
-| 1 | {from spec} | ✅/❌ | ✅/❌/N/A | Covered/Gap |
+| 1 | {from spec} | OK/FAIL | OK/FAIL/N/A | Covered/Gap |
 
 ## Flakiness Risk
 
 | Test | Risk | Reason |
 |------|------|--------|
-| `test name` | 🔴 High / 🟡 Medium / 🟢 Low | {Why} |
+| `test name` | High / Medium / Low | {Why} |
 
 ## Notes
 
@@ -203,8 +207,8 @@ Verify ≥80% coverage on new code.
 When working from a `TODO.md` created by the Gerente de Dev, you MUST update your task status **in real-time**:
 
 1. **Before starting**: mark your review task as `[⏳ In Progress]` in the TODO.md
-2. **When completed**: mark as `[✅ Done]` in the TODO.md immediately
-3. **If blocked**: mark as `[🚫 Blocked]` and add a note explaining why
+2. **When completed**: mark as `[DONE]` in the TODO.md immediately
+3. **If blocked**: mark as `[BLOCKED]` and add a note explaining why
 
 This allows Managers and the PO to track progress live. Never batch status updates — update as soon as each task's status changes.
 
@@ -218,9 +222,9 @@ This allows Managers and the PO to track progress live. Never batch status updat
 
 | Verdict | When |
 |---------|------|
-| ✅ **APPROVED** | All tests pass, coverage ≥80%, no critical/warning issues. |
-| ⚠️ **CHANGES REQUESTED** | Tests pass but quality issues found (missing scenarios, conventions, flakiness risk). |
-| ❌ **BLOCKED** | Test failures detected (new or pre-existing), coverage <80%, or critical gaps in acceptance criteria coverage. |
+| **APPROVED** | All tests pass, coverage ≥80%, no critical/warning issues. |
+| **CHANGES REQUESTED** | Tests pass but quality issues found (missing scenarios, conventions, flakiness risk). |
+| **BLOCKED** | Test failures detected (new or pre-existing), coverage <80%, or critical gaps in acceptance criteria coverage. |
 
 **Pre-existing test failures are always blockers** — they indicate codebase instability that must be resolved before the feature can proceed.
 

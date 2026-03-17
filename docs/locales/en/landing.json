@@ -1,5 +1,12 @@
 {
   "landing": {
+    "hero": {
+      "badge": "v1.8.0 — HTML-first reactive framework",
+      "headline": "Build reactive apps\nwith zero JavaScript.",
+      "subtitle": "No.JS is an HTML-first framework that turns attributes into a full reactive engine. ~20 KB gzipped, zero dependencies, zero build step.",
+      "getStarted": "Get Started",
+      "playground": "Playground"
+    },
     "codeCompare": {
       "title": "The same app.<br>The real difference.",
       "subtitle": "A reactive search box - the most common real-world pattern.",
@@ -9,13 +16,30 @@
       "nojsMeta": "4 lines  ·  0 imports",
       "nojsNote": "✓ Reactive  ·  ✓ Auto-fetches  ·  ✓ No build step"
     },
+    "featuresGrid": {
+      "kicker": "WHAT YOU GET",
+      "title": "Everything your app needs.\nNothing it doesn't.",
+      "subtitle": "40+ directives, built-in routing, i18n, forms, fetch, animations — all via HTML attributes.",
+      "f1Title": "Reactive State",
+      "f1Desc": "Declare state with a single attribute. Two-way binding, computed values, and watchers — all without writing a line of JavaScript.",
+      "f2Title": "SPA Router",
+      "f2Desc": "Client-side routing with path params, wildcards, guards, nested routes, and lazy-loaded templates. No config files.",
+      "f3Title": "i18n Built-in",
+      "f3Desc": "Locale switching, namespace loading, pluralization, and RTL support. All powered by a single t attribute.",
+      "f4Title": "Declarative Fetch",
+      "f4Desc": "GET, POST, PUT, DELETE — just add the attribute. Auto-binding to state, loading indicators, and error handling included.",
+      "f5Title": "Form Validation",
+      "f5Desc": "15+ built-in validators with custom error messages, conditional validation, and real-time feedback. Pure HTML.",
+      "f6Title": "Animations",
+      "f6Desc": "CSS-class transitions with stagger support. Enter, leave and move animations driven entirely by attributes."
+    },
     "bundle": {
       "badge": "The outcome.",
       "h1": "Your bundle is 2.3 MB.",
       "h2": "Ours is 20 KB.",
       "subtitle": "No build step. No bundler. No excuses.",
       "getStarted": "Get Started",
-      "seeFeatures": "See the Features"
+      "seeFeatures": "Read the Docs"
     },
     "manifesto": {
       "kicker": "A MANIFESTO",
@@ -42,12 +66,13 @@
       "p4Title": "Ship on day one",
       "p4Desc": "The best framework is the one you can use right now, without asking permission from a terminal."
     },
-    "quote": "\"The best JavaScript<br>is the JavaScript you don't write.\"",
-    "cta": {
-      "headline": "Ready to Build?",
-      "subtitle": "Start using No.JS today.",
-      "getStarted": "Get Started",
-      "learnMore": "Learn More"
-    }
+    "community": {
+      "kicker": "OPEN SOURCE",
+      "title": "Built in the open.\nPowered by the community.",
+      "subtitle": "No.JS is free, MIT-licensed, and community-driven. Star us on GitHub, join the Discord, or contribute.",
+      "github": "Star on GitHub",
+      "discord": "Join Discord"
+    },
+    "quote": "\"The best JavaScript<br>is the JavaScript you don't write.\""
   }
 }

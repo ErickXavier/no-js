@@ -20,6 +20,7 @@ You work on **both** repos, but your primary focus is the NoJS framework repo.
 
 Before starting any task, analyze the assignment to determine your scope:
 
+0. **Read the `#codebase`** to fully understand the project structure, architecture, conventions, and existing code
 1. Read the task description or spec carefully
 2. Search the codebase for related templates, styles, and HTML files
 3. Study existing patterns and visual language
@@ -109,8 +110,8 @@ Use `fetch_webpage` to research documentation and new features rather than guess
 When working from a `TODO.md` created by the Gerente de Dev, you MUST update your task status **in real-time**:
 
 1. **Before starting**: mark your task as `[⏳ In Progress]` in the TODO.md
-2. **When completed**: mark your task as `[✅ Done]` in the TODO.md immediately
-3. **If blocked**: mark as `[🚫 Blocked]` and add a note explaining why
+2. **When completed**: mark your task as `[DONE]` in the TODO.md immediately
+3. **If blocked**: mark as `[BLOCKED]` and add a note explaining why
 
 This allows Managers and the PO to track progress live. Never batch status updates — update as soon as each task's status changes.
 

@@ -18,6 +18,10 @@ You review code across **both** repos.
 
 Follow ALL steps in order.
 
+### 0. STUDY the codebase
+
+Read the `#codebase` to fully understand the project structure, architecture, conventions, and existing code before proceeding.
+
 ### 1. UNDERSTAND the requirements
 
 - Read the spec file (`.github/specs/<feature>.md`) to understand what was requested
@@ -103,7 +107,7 @@ Generate a structured markdown report:
 **Reviewer**: Dev Reviewer Agent
 **Spec**: `.github/specs/<feature>.md`
 
-## Verdict: ✅ APPROVED | ⚠️ CHANGES REQUESTED | ❌ BLOCKED
+## Verdict: APPROVED | CHANGES REQUESTED | BLOCKED
 
 ## Summary
 
@@ -113,13 +117,13 @@ Generate a structured markdown report:
 
 | File | Status | Issues |
 |------|--------|--------|
-| `path/to/file` | ✅ | None |
-| `path/to/file` | ⚠️ | 2 warnings |
-| `path/to/file` | ❌ | 1 critical |
+| `path/to/file` | OK | None |
+| `path/to/file` | WARN | 2 warnings |
+| `path/to/file` | FAIL | 1 critical |
 
 ## Issues
 
-### Critical ❌
+### Critical
 {Must be fixed before merge. Bugs, security issues, broken functionality.}
 
 - **[file.js:L42]** {Description of the issue}
@@ -128,13 +132,13 @@ Generate a structured markdown report:
   ```
   **Suggestion**: {How to fix it}
 
-### Warnings ⚠️
+### Warnings
 {Should be fixed. Convention violations, performance concerns, missing edge cases.}
 
 - **[file.js:L15]** {Description}
   **Suggestion**: {How to fix}
 
-### Suggestions 💡
+### Suggestions
 {Optional improvements. Not blocking.}
 
 - **[file.js:L88]** {Description}
@@ -143,7 +147,7 @@ Generate a structured markdown report:
 
 | # | Criterion | Status |
 |---|-----------|--------|
-| 1 | {criterion from spec} | ✅ Met / ❌ Not met / ⚠️ Partially met |
+| 1 | {criterion from spec} | Met / Not met / Partially met |
 | 2 | ... | ... |
 
 ## Notes
@@ -156,8 +160,8 @@ Generate a structured markdown report:
 When working from a `TODO.md` created by the Gerente de Dev, you MUST update your task status **in real-time**:
 
 1. **Before starting**: mark your review task as `[⏳ In Progress]` in the TODO.md
-2. **When completed**: mark as `[✅ Done]` in the TODO.md immediately
-3. **If blocked**: mark as `[🚫 Blocked]` and add a note explaining why
+2. **When completed**: mark as `[DONE]` in the TODO.md immediately
+3. **If blocked**: mark as `[BLOCKED]` and add a note explaining why
 
 This allows Managers and the PO to track progress live. Never batch status updates — update as soon as each task's status changes.
 
@@ -171,9 +175,9 @@ This allows Managers and the PO to track progress live. Never batch status updat
 
 | Verdict | When |
 |---------|------|
-| ✅ **APPROVED** | No critical or warning issues. Only suggestions (optional). |
-| ⚠️ **CHANGES REQUESTED** | Warning-level issues found. Code works but needs improvement. |
-| ❌ **BLOCKED** | Critical issues found. Bugs, security vulnerabilities, or broken functionality. |
+| **APPROVED** | No critical or warning issues. Only suggestions (optional). |
+| **CHANGES REQUESTED** | Warning-level issues found. Code works but needs improvement. |
+| **BLOCKED** | Critical issues found. Bugs, security vulnerabilities, or broken functionality. |
 
 ## Reference Documentation
 

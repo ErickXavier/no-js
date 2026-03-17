@@ -18,6 +18,10 @@ You MUST analyze impact across BOTH repos for every feature.
 
 Follow ALL steps below in order.
 
+### 0. STUDY the codebase
+
+Read the `#codebase` to fully understand the project structure, architecture, conventions, and existing code before proceeding.
+
 ### 1. RECEIVE the request
 
 - Read the PO's description carefully

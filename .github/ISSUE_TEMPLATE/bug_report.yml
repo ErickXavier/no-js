@@ -1,0 +1,190 @@
+name: Bug Report
+description: Report a bug in the No.JS framework
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the sections below so we can reproduce and fix it.
+
+  - type: input
+    id: version
+    attributes:
+      label: No.JS Version
+      description: "Check `NoJS.version` in the browser console or your package.json."
+      placeholder: "e.g., 1.8.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: installation-method
+    attributes:
+      label: Installation Method
+      description: How are you loading No.JS?
+      options:
+        - CDN (script tag)
+        - npm / yarn (ESM import)
+        - npm / yarn (CJS require)
+        - Local build
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Bug Category
+      description: Which area of the framework is affected?
+      options:
+        - Directive behavior
+        - Reactivity / State management
+        - Router / Navigation
+        - i18n / Localization
+        - Filters / Pipes
+        - Form validation
+        - Animations / Transitions
+        - Fetch / HTTP requests
+        - Expression evaluation
+        - Drag & Drop
+        - Template loading
+        - DevTools integration
+        - Documentation site
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: directive
+    attributes:
+      label: Directive(s) Involved
+      description: "If applicable, list the directive(s) related to this bug."
+      placeholder: "e.g., each, model, bind-*, on:click"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: "e.g., macOS 15, Windows 11, Ubuntu 24.04"
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: HTML to Reproduce
+      description: |
+        Paste the minimal HTML that reproduces the issue. No.JS is HTML-attribute-based, so most bugs can be reproduced with a self-contained HTML file.
+        You can also link to a reproduction in the [No.JS Playground](https://no-js.dev/playground).
+      render: html
+      placeholder: |
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <script src="https://cdn.no-js.dev/"></script>
+        </head>
+        <body>
+          <!-- Your reproduction here -->
+        </body>
+        </html>
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console Errors
+      description: |
+        Paste any errors from the browser console.
+        Tip: enable verbose logging with `NoJS.config({ debug: true })`.
+      render: text
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: affects
+    attributes:
+      label: Where does this occur?
+      options:
+        - label: Framework (my own app)
+        - label: Documentation site (no-js.dev)
+        - label: Playground
+
+  - type: checkboxes
+    id: formats
+    attributes:
+      label: Affected output formats (if known)
+      description: "No.JS ships as IIFE, ESM, and CJS. Check all formats where you've confirmed the bug."
+      options:
+        - label: IIFE (CDN script tag)
+        - label: ESM (import)
+        - label: CJS (require)
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Screenshots, screen recordings, related issues, or anything else that helps.
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix
+      description: |
+        If you have an idea of what might be causing this or how to fix it, describe it here.
+        You can reference source files (e.g., `src/directives/loops.js`) or link to relevant code.
+      placeholder: |
+        I think the issue is in `src/directives/loops.js` because...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this hasn't been reported yet
+          required: true
+        - label: I can reproduce this with the latest version of No.JS
+          required: true

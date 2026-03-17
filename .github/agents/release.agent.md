@@ -11,6 +11,10 @@ Your job is to investigate changes, commit, version bump, rebuild, push, and pub
 
 You MUST follow ALL steps below, in order, without skipping any.
 
+### 0. STUDY the codebase
+
+Read the `#codebase` to fully understand the project structure, architecture, conventions, and existing code before proceeding.
+
 ### 1. INVESTIGATE all changes
 - Run `git status --short` to list modified files
 - Run `git diff --stat` for an overview
@@ -51,10 +55,15 @@ You MUST follow ALL steps below, in order, without skipping any.
 - `git add -A`
 - `git commit -m '<planned message>'`
 
-### 7. PUSH
-- `git push origin main`
+### 7. TAG
+- Create a git tag for the new version: `git tag v<x.y.z>`
+- Confirm with `git tag --sort=-v:refname | head -3`
 
-### 8. LOGIN & PUBLISH
+### 8. PUSH
+- `git push origin main`
+- `git push --tags`
+
+### 9. LOGIN & PUBLISH
 - `npm login`
 - `npm publish --access public`
 - Verify: `npm view @erickxavier/no-js version`

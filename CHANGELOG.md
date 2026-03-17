@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1](https://github.com/ErickXavier/no-js/compare/v1.8.0...v1.8.1) — 2026-03-17
+
+### Changed
+
+- Redesign landing page v8 with new hero, feature grid, and community sections
+- Update all 5 locales (en/es/pt/fr/it) with new landing page translation keys
+- Change language switcher from `<a>` to `<button>` for accessibility
+- Update README with npm install instructions, `notify()`, drag & drop, and wildcard routes
+- Update agent definitions with codebase-first workflow step
+
+### Added
+
+- CONTRIBUTING.md with contribution guidelines
+- GitHub issue template for bug reports (`bug_report.yml`)
+- Firefox and WebKit browsers to Playwright E2E config
+- Landing page E2E tests
+
 ## [1.8.0](https://github.com/ErickXavier/no-js/compare/v1.7.0...v1.8.0) — 2026-03-16
 
 ### Added

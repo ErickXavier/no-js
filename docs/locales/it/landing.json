@@ -1,5 +1,12 @@
 {
   "landing": {
+    "hero": {
+      "badge": "v1.8.0 — Framework reattivo HTML-first",
+      "headline": "Costruisci app reattive\nsenza JavaScript.",
+      "subtitle": "No.JS è un framework HTML-first che trasforma gli attributi in un motore reattivo completo. ~20 KB gzipped, zero dipendenze, nessun build step.",
+      "getStarted": "Inizia Ora",
+      "playground": "Playground"
+    },
     "codeCompare": {
       "title": "La stessa app.<br>La vera differenza.",
       "subtitle": "Una casella di ricerca reattiva — il pattern più comune nel mondo reale.",
@@ -9,13 +16,30 @@
       "nojsMeta": "4 righe  ·  0 import",
       "nojsNote": "✓ Reattivo  ·  ✓ Auto-fetch  ·  ✓ Nessun build step"
     },
+    "featuresGrid": {
+      "kicker": "COSA OTTIENI",
+      "title": "Tutto ciò di cui la tua app ha bisogno.\nNiente di superfluo.",
+      "subtitle": "40+ direttive, routing integrato, i18n, form, fetch, animazioni — il tutto tramite attributi HTML.",
+      "f1Title": "Stato Reattivo",
+      "f1Desc": "Dichiara lo stato con un singolo attributo. Binding bidirezionale, valori calcolati e watcher — il tutto senza scrivere una riga di JavaScript.",
+      "f2Title": "SPA Router",
+      "f2Desc": "Routing lato client con parametri di percorso, wildcard, guard, route annidate e template a caricamento lazy. Nessun file di configurazione.",
+      "f3Title": "i18n Integrato",
+      "f3Desc": "Cambio lingua, caricamento di namespace, pluralizzazione e supporto RTL. Il tutto guidato da un singolo attributo t.",
+      "f4Title": "Fetch Dichiarativo",
+      "f4Desc": "GET, POST, PUT, DELETE — basta aggiungere l'attributo. Auto-binding allo stato, indicatori di caricamento e gestione degli errori inclusi.",
+      "f5Title": "Validazione dei Form",
+      "f5Desc": "15+ validatori integrati con messaggi di errore personalizzati, validazione condizionale e feedback in tempo reale. Puro HTML.",
+      "f6Title": "Animazioni",
+      "f6Desc": "Transizioni tramite classi CSS con supporto allo sfalsamento. Animazioni di ingresso, uscita e spostamento guidate interamente da attributi."
+    },
     "bundle": {
       "badge": "Il risultato.",
       "h1": "Il tuo bundle è 2,3 MB.",
       "h2": "Il nostro è 20 KB.",
       "subtitle": "Nessun build step. Nessun bundler. Nessuna scusa.",
       "getStarted": "Inizia Ora",
-      "seeFeatures": "Scopri le Funzionalità"
+      "seeFeatures": "Leggi la Documentazione"
     },
     "manifesto": {
       "kicker": "UN MANIFESTO",
@@ -42,12 +66,13 @@
       "p4Title": "Pubblica dal primo giorno",
       "p4Desc": "Il miglior framework è quello che puoi usare subito, senza chiedere il permesso a un terminale."
     },
-    "quote": "\"Il miglior JavaScript<br>è il JavaScript che non scrivi.\"",
-    "cta": {
-      "headline": "Pronto a Costruire?",
-      "subtitle": "Inizia a usare No.JS oggi.",
-      "getStarted": "Inizia Ora",
-      "learnMore": "Scopri di Più"
-    }
+    "community": {
+      "kicker": "OPEN SOURCE",
+      "title": "Costruito apertamente.\nAlimentato dalla comunità.",
+      "subtitle": "No.JS è gratuito, con licenza MIT e guidato dalla comunità. Metti una stella su GitHub, unisciti al Discord o contribuisci.",
+      "github": "Stella su GitHub",
+      "discord": "Unisciti a Discord"
+    },
+    "quote": "\"Il miglior JavaScript<br>è il JavaScript che non scrivi.\""
   }
 }

@@ -23,12 +23,13 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 - **Declarative HTTP** — `get`, `post`, `put`, `patch`, `delete` as HTML attributes
 - **Reactive Binding** — `bind`, `bind-*`, `model` for one/two-way data binding
 - **Conditionals & Loops** — `if`, `else-if`, `show`, `hide`, `each`, `foreach`, `switch`
-- **State Management** — `state` (local), `store` (global), `computed`, `watch`
-- **SPA Routing** — `route`, `route-view`, guards, params, nested routes
+- **State Management** — `state` (local), `store` (global), `computed`, `watch`, `notify()`
+- **SPA Routing** — `route`, `route-view`, guards, params, nested routes, wildcard catch-all
 - **Forms & Validation** — Built-in validators + `$form` context
 - **Animations** — `animate`, `transition` with stagger support
 - **i18n** — `t` directive with pluralization
-- **Filters** — `uppercase`, `currency`, `date`, `truncate`, 30+ built-in pipes
+- **Filters** — `uppercase`, `currency`, `date`, `truncate`, 32 built-in pipes
+- **Drag & Drop** — `drag`, `drop`, `drag-image`, `drag-data`, `drop-zone`
 - **Custom Directives** — Extend with `NoJS.directive()`
 - **~20 KB gzipped** — Zero dependencies
 
@@ -44,19 +45,25 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 
 ### NPM
 
-No.JS is distributed via CDN only (no npm package)
-Just add the script tag above to your HTML, no build step required.
+```bash
+npm install @erickxavier/no-js
+```
 
-No initialization required, No.JS auto-starts on `DOMContentLoaded`. But you can also configure it before it loads:
+```js
+import NoJS from "@erickxavier/no-js";
+NoJS.init();
+```
+
+With the CDN, No.JS auto-starts on `DOMContentLoaded`. You can configure it before it loads:
 
 ```html
 <script>
-NoJS.config = {
+NoJS.config({
   debug: true,
   router: {
     useHash: true
   },
-};
+});
 </script>
 ```
 

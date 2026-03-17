@@ -50,11 +50,11 @@
           <svg class="lang-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
         </button>
         <div id="lang-menu" class="lang-dropdown-menu" popover>
-          <a on:click="NoJS.locale = 'en'" class-active="NoJS.locale === 'en'">🇺🇸 English</a>
-          <a on:click="NoJS.locale = 'es'" class-active="NoJS.locale === 'es'">🇪🇸 Español</a>
-          <a on:click="NoJS.locale = 'pt'" class-active="NoJS.locale === 'pt'">🇧🇷 Português</a>
-          <a on:click="NoJS.locale = 'it'" class-active="NoJS.locale === 'it'">🇮🇹 Italiano</a>
-          <a on:click="NoJS.locale = 'fr'" class-active="NoJS.locale === 'fr'">🇫🇷 Français</a>
+          <button class="lang-option" on:click="NoJS.locale = 'en'" class-active="NoJS.locale === 'en'" popovertarget="lang-menu">🇺🇸 English</button>
+          <button class="lang-option" on:click="NoJS.locale = 'es'" class-active="NoJS.locale === 'es'" popovertarget="lang-menu">🇪🇸 Español</button>
+          <button class="lang-option" on:click="NoJS.locale = 'pt'" class-active="NoJS.locale === 'pt'" popovertarget="lang-menu">🇧🇷 Português</button>
+          <button class="lang-option" on:click="NoJS.locale = 'it'" class-active="NoJS.locale === 'it'" popovertarget="lang-menu">🇮🇹 Italiano</button>
+          <button class="lang-option" on:click="NoJS.locale = 'fr'" class-active="NoJS.locale === 'fr'" popovertarget="lang-menu">🇫🇷 Français</button>
         </div>
       </div>
     </nav>
@@ -80,11 +80,11 @@
     </div>
     <div class="mobile-nav-divider"></div>
     <div class="mobile-nav-lang">
-      <a on:click="NoJS.locale = 'en'; document.getElementById('mobile-nav').hidePopover()" class-active="NoJS.locale === 'en'">🇺🇸 English</a>
-      <a on:click="NoJS.locale = 'es'; document.getElementById('mobile-nav').hidePopover()" class-active="NoJS.locale === 'es'">🇪🇸 Español</a>
-      <a on:click="NoJS.locale = 'pt'; document.getElementById('mobile-nav').hidePopover()" class-active="NoJS.locale === 'pt'">🇧🇷 Português</a>
-      <a on:click="NoJS.locale = 'it'; document.getElementById('mobile-nav').hidePopover()" class-active="NoJS.locale === 'it'">🇮🇹 Italiano</a>
-      <a on:click="NoJS.locale = 'fr'; document.getElementById('mobile-nav').hidePopover()" class-active="NoJS.locale === 'fr'">🇫🇷 Français</a>
+      <button class="lang-option" on:click="NoJS.locale = 'en'" class-active="NoJS.locale === 'en'" popovertarget="mobile-nav">🇺🇸 English</button>
+      <button class="lang-option" on:click="NoJS.locale = 'es'" class-active="NoJS.locale === 'es'" popovertarget="mobile-nav">🇪🇸 Español</button>
+      <button class="lang-option" on:click="NoJS.locale = 'pt'" class-active="NoJS.locale === 'pt'" popovertarget="mobile-nav">🇧🇷 Português</button>
+      <button class="lang-option" on:click="NoJS.locale = 'it'" class-active="NoJS.locale === 'it'" popovertarget="mobile-nav">🇮🇹 Italiano</button>
+      <button class="lang-option" on:click="NoJS.locale = 'fr'" class-active="NoJS.locale === 'fr'" popovertarget="mobile-nav">🇫🇷 Français</button>
     </div>
   </nav>
 

@@ -1,5 +1,12 @@
 {
   "landing": {
+    "hero": {
+      "badge": "v1.8.0 — Framework reativo HTML-first",
+      "headline": "Construa apps reativos\nsem JavaScript.",
+      "subtitle": "No.JS é um framework HTML-first que transforma atributos em um motor reativo completo. ~20 KB gzipped, zero dependências, sem build.",
+      "getStarted": "Começar",
+      "playground": "Playground"
+    },
     "codeCompare": {
       "title": "O mesmo app.<br>A diferença real.",
       "subtitle": "Uma caixa de busca reativa — o padrão mais comum do mundo real.",
@@ -9,13 +16,30 @@
       "nojsMeta": "4 linhas  ·  0 imports",
       "nojsNote": "✓ Reativo  ·  ✓ Auto-fetch  ·  ✓ Sem build"
     },
+    "featuresGrid": {
+      "kicker": "O QUE VOCÊ RECEBE",
+      "title": "Tudo que seu app precisa.\nNada que não precisa.",
+      "subtitle": "40+ diretivas, roteamento integrado, i18n, formulários, fetch, animações — tudo via atributos HTML.",
+      "f1Title": "Estado Reativo",
+      "f1Desc": "Declare o estado com um único atributo. Binding bidirecional, valores computados e watchers — tudo sem escrever uma linha de JavaScript.",
+      "f2Title": "SPA Router",
+      "f2Desc": "Roteamento client-side com parâmetros de rota, wildcards, guards, rotas aninhadas e templates com carregamento lazy. Sem arquivos de configuração.",
+      "f3Title": "i18n Integrado",
+      "f3Desc": "Troca de idioma, carregamento de namespaces, pluralização e suporte RTL. Tudo movido por um único atributo t.",
+      "f4Title": "Fetch Declarativo",
+      "f4Desc": "GET, POST, PUT, DELETE — basta adicionar o atributo. Auto-binding ao estado, indicadores de carregamento e tratamento de erros incluídos.",
+      "f5Title": "Validação de Formulários",
+      "f5Desc": "15+ validadores integrados com mensagens de erro personalizadas, validação condicional e feedback em tempo real. HTML puro.",
+      "f6Title": "Animações",
+      "f6Desc": "Transições por classes CSS com suporte a escalonamento. Animações de entrada, saída e movimento controladas inteiramente por atributos."
+    },
     "bundle": {
       "badge": "O resultado.",
       "h1": "Seu bundle tem 2.3 MB.",
       "h2": "O nosso tem 20 KB.",
       "subtitle": "Sem build. Sem bundler. Sem desculpas.",
       "getStarted": "Começar",
-      "seeFeatures": "Ver os Recursos"
+      "seeFeatures": "Ler a Documentação"
     },
     "manifesto": {
       "kicker": "UM MANIFESTO",
@@ -42,12 +66,13 @@
       "p4Title": "Publique no primeiro dia",
       "p4Desc": "O melhor framework é aquele que você pode usar agora, sem pedir permissão a um terminal."
     },
-    "quote": "\"O melhor JavaScript<br>é o JavaScript que você não escreve.\"",
-    "cta": {
-      "headline": "Pronto para Construir?",
-      "subtitle": "Comece a usar o No.JS hoje.",
-      "getStarted": "Começar",
-      "learnMore": "Saiba Mais"
-    }
+    "community": {
+      "kicker": "CÓDIGO ABERTO",
+      "title": "Construído abertamente.\nMovido pela comunidade.",
+      "subtitle": "No.JS é gratuito, licenciado sob MIT e mantido pela comunidade. Dê uma estrela no GitHub, entre no Discord ou contribua.",
+      "github": "Estrela no GitHub",
+      "discord": "Entre no Discord"
+    },
+    "quote": "\"O melhor JavaScript<br>é o JavaScript que você não escreve.\""
   }
 }

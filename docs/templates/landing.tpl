@@ -1,81 +1,92 @@
 <div class="page-wrapper">
 <style>
 /* ══════════════════════════════════════════════════════════════════
-   LANDING PAGE
+   LANDING PAGE v8
    ══════════════════════════════════════════════════════════════════ */
 
-/* Hero: padding 100/80/80/80, gap 32 */
+/* ── Hero ── */
 .landing-hero {
-  padding: 100px 80px 80px;
+  background: linear-gradient(180deg, var(--code-bg), var(--code-surface));
+  padding: calc(140px + var(--header-h)) 80px 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 32px;
   text-align: center;
-  padding-top: calc(100px + var(--header-h));
 }
-.landing-headline {
+.landing-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 100px;
+  background: #0EA5E91A;
+  border: 1px solid #0EA5E966;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+.landing-hero-headline {
   font-family: var(--font-heading);
   font-size: 72px;
   font-weight: bold;
-  color: var(--text);
+  color: var(--white);
+  letter-spacing: -2px;
   line-height: 1.1;
+  max-width: 900px;
+  white-space: pre-line;
 }
-.landing-headline-accent {
-  color: var(--primary);
-}
-.landing-subline {
+.landing-hero-sub {
   font-family: var(--font-body);
   font-size: 20px;
-  color: var(--text-muted);
+  color: var(--text-dim);
+  line-height: 1.6;
   max-width: 700px;
-  text-align: center;
-  line-height: 1.5;
 }
-.landing-cta-row {
+.landing-hero-cta {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
 }
-/* Install tabs — 3-option install widget (CDN / npm / ESM) */
-.install-tabs {
-  background: var(--code-bg);
-  border: 1px solid var(--code-surface);
+.landing-hero-cta .btn-hero-outline {
+  background: transparent;
+  color: #CBD5E1;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border: 1px solid #475569;
+  border-radius: var(--radius);
+  transition: border-color 0.2s;
+}
+.landing-hero-cta .btn-hero-outline:hover {
+  border-color: var(--text-dim);
+}
+.landing-hero-install {
+  background: var(--code-surface);
+  border: 1px solid #334155;
   border-radius: var(--radius);
   overflow: hidden;
-  min-width: 480px;
-  max-width: 660px;
+  width: 560px;
 }
-.install-tabs-nav {
+.landing-hero-install-tab {
   display: flex;
-  background: var(--code-surface);
-  border-bottom: 1px solid #334155;
+  background: var(--code-bg);
 }
-.install-tab-btn {
+.landing-hero-install-tab span {
   padding: 10px 18px;
   font-family: var(--font-heading);
   font-size: 13px;
-  font-weight: 500;
-  color: var(--text-dim);
-  background: transparent;
-  border-right: 1px solid #334155;
-  transition: color 0.15s, background 0.15s;
-}
-.install-tab-btn:last-child {
-  border-right: none;
-}
-.install-tab-btn:hover {
-  color: #CBD5E1;
-}
-.install-tab-btn.active {
+  font-weight: 600;
   color: var(--primary);
-  background: var(--code-bg);
+  background: var(--code-surface);
 }
-.install-tab-panel {
+.landing-hero-install-code {
   padding: 14px 20px;
+  text-align: left;
 }
-.install-tab-panel pre {
+.landing-hero-install-code pre {
   font-family: var(--font-mono);
   font-size: 13px;
   color: #E2E8F0;
@@ -83,165 +94,42 @@
   white-space: pre;
   overflow-x: auto;
 }
+.hl-tag { color: #F47067; }
+.hl-attr { color: #79C0FF; }
+.hl-punct { color: #E2E8F0; }
+.hl-string { color: #A5D6FF; }
 
-/* Code Example Section: #F8FAFC bg, padding 80, gap 16 */
-.landing-code-section {
-  background: var(--surface);
-  padding: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-.landing-panels {
-  display: flex;
-  gap: 0;
-  width: 100%;
-  margin-top: 44px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-.landing-code-panel {
-  flex: 1;
-  background: var(--code-bg);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.landing-code-topbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.landing-code-dots {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.landing-code-filename {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.landing-code-panel pre {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.6;
-  color: #E2E8F0;
-  margin: 0;
-}
-.landing-preview-panel {
-  flex: 1;
+/* ── Code Compare ── */
+.landing-code-compare {
   background: var(--white);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.landing-preview-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.landing-preview-label {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-.landing-live-indicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--success);
-}
-.preview-user {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.preview-user-name {
-  font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-}
-.preview-user-email {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--text-muted);
-}
-.preview-divider {
-  height: 1px;
-  background: var(--border);
-}
-
-/* Features Section: white bg, padding 100/80, gap 60 */
-.landing-features {
-  padding: 100px 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 60px;
-}
-
-/* Final CTA: #0F172A bg, padding 100/80, gap 24 */
-.landing-cta {
-  background: var(--code-bg);
-  padding: 100px 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  text-align: center;
-}
-.landing-cta-headline {
-  font-family: var(--font-heading);
-  font-size: 48px;
-  font-weight: bold;
-  color: var(--white);
-}
-.landing-cta-sub {
-  font-family: var(--font-body);
-  font-size: 20px;
-  color: var(--text-dim);
-}
-
-/* ── V7 Landing Sections ── */
-
-/* Code Comparison */
-.v7-code-compare {
-  background: var(--surface);
   padding: 80px;
-  padding-top: calc(80px + var(--header-h));
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 40px;
 }
-.v7-code-compare-title {
+.landing-code-compare-title {
   font-family: var(--font-heading);
-  font-size: 80px;
+  font-size: 48px;
   font-weight: bold;
-  color: var(--text);
+  color: var(--code-bg);
   text-align: center;
-  letter-spacing: -1px;
-  line-height: 1.1;
+  letter-spacing: -2px;
+  line-height: 1.2;
+  max-width: 700px;
 }
-.v7-code-compare-sub {
+.landing-code-compare-sub {
   font-family: var(--font-body);
   font-size: 16px;
   color: var(--text-muted);
   text-align: center;
 }
-.v7-panels {
+.landing-panels {
   display: flex;
   gap: 24px;
   width: 100%;
 }
-.v7-panel {
+.landing-panel {
   flex: 1;
   background: var(--code-bg);
   border-radius: var(--radius-lg);
@@ -250,24 +138,24 @@
   flex-direction: column;
   gap: 16px;
 }
-.v7-panel-topbar {
+.landing-panel-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.v7-panel-label {
+.landing-panel-label {
   font-family: var(--font-heading);
   font-size: 13px;
   font-weight: 600;
 }
-.v7-panel-label--react { color: #F87171; }
-.v7-panel-label--nojs { color: var(--primary); }
-.v7-panel-meta {
+.landing-panel-label--react { color: #F87171; }
+.landing-panel-label--nojs { color: var(--primary); }
+.landing-panel-meta {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
 }
-.v7-panel-code {
+.landing-panel-code {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
@@ -276,8 +164,8 @@
   white-space: pre;
   overflow-x: auto;
 }
-.v7-panel-code--nojs { color: #A5F3FC; }
-.v7-ln {
+.landing-panel-code--nojs { color: #A5F3FC; }
+.landing-ln {
   display: inline-block;
   width: 2.5ch;
   text-align: right;
@@ -287,15 +175,78 @@
   pointer-events: none;
   opacity: .45;
 }
-.v7-panel-note {
+.landing-panel-note {
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   color: var(--primary);
 }
 
-/* Bundle Stats */
-.v7-bundle {
+/* ── Features Grid ── */
+.landing-features {
+  background: var(--surface);
+  padding: 100px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+.landing-kicker {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+.landing-features-title {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--code-bg);
+  letter-spacing: -2px;
+  line-height: 1.2;
+  max-width: 700px;
+  text-align: center;
+  white-space: pre-line;
+}
+.landing-features-sub {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 700px;
+}
+.landing-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+.landing-feature-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.landing-feature-title {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--code-bg);
+}
+.landing-feature-desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── Bundle Stats ── */
+.landing-bundle {
   background: var(--white);
   padding: 100px 80px 80px;
   display: flex;
@@ -304,7 +255,7 @@
   gap: 24px;
   text-align: center;
 }
-.v7-bundle-badge {
+.landing-bundle-badge {
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
@@ -316,41 +267,41 @@
   font-weight: 600;
   color: var(--primary-dark);
 }
-.v7-bundle-h1 {
+.landing-bundle-h1 {
   font-family: var(--font-heading);
   font-size: 64px;
   font-weight: bold;
   color: var(--text);
   letter-spacing: -2px;
 }
-.v7-bundle-h2 {
+.landing-bundle-h2 {
   font-family: var(--font-heading);
   font-size: 64px;
   font-weight: bold;
   color: var(--primary);
   letter-spacing: -2px;
 }
-.v7-bundle-sub {
+.landing-bundle-sub {
   font-family: var(--font-body);
   font-size: 20px;
   color: var(--text-dim);
   max-width: 520px;
 }
-.v7-bundle-btns {
+.landing-bundle-btns {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* Philosophy Hero / Manifesto */
-.v7-manifesto {
+/* ── Manifesto ── */
+.landing-manifesto {
   background: var(--code-bg);
   padding: 120px 80px 100px;
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
-.v7-kicker {
+.landing-manifesto-kicker {
   font-family: var(--font-heading);
   font-size: 11px;
   font-weight: 700;
@@ -358,7 +309,7 @@
   color: #475569;
   text-transform: uppercase;
 }
-.v7-manifesto-h1 {
+.landing-manifesto-h1 {
   font-family: var(--font-heading);
   font-size: 64px;
   font-weight: bold;
@@ -367,7 +318,7 @@
   max-width: 900px;
   line-height: 1.1;
 }
-.v7-manifesto-h2 {
+.landing-manifesto-h2 {
   font-family: var(--font-heading);
   font-size: 36px;
   font-weight: normal;
@@ -375,14 +326,14 @@
   letter-spacing: -1px;
   max-width: 800px;
 }
-.v7-divider {
+.landing-divider {
   width: 120px;
   height: 3px;
   background: var(--primary);
 }
 
-/* Problem Editorial */
-.v7-problem {
+/* ── Problem Editorial ── */
+.landing-problem {
   background: var(--code-bg);
   padding: 80px;
   display: flex;
@@ -390,39 +341,56 @@
   gap: 60px;
   border-top: 1px solid var(--code-surface);
 }
-.v7-columns {
+.landing-problem-kicker {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #475569;
+  text-transform: uppercase;
+}
+.landing-columns {
   display: flex;
   gap: 48px;
   width: 100%;
 }
-.v7-column {
+.landing-column {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1.2em;
 }
-.v7-column p {
+.landing-column p {
   font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-dim);
   line-height: 1.8;
 }
 
-/* Principles */
-.v7-principles {
+/* ── Principles ── */
+.landing-principles {
   background: #0A1020;
   padding: 80px;
   display: flex;
   flex-direction: column;
   gap: 48px;
+  border-top: 1px solid var(--code-surface);
 }
-.v7-principles-grid {
+.landing-principles-kicker {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #475569;
+  text-transform: uppercase;
+}
+.landing-principles-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   width: 100%;
 }
-.v7-principle-card {
+.landing-principle-card {
   background: var(--code-bg);
   border: 1px solid var(--code-surface);
   border-radius: var(--radius);
@@ -431,34 +399,104 @@
   flex-direction: column;
   gap: 12px;
 }
-.v7-principle-num {
+.landing-principle-num {
   font-family: var(--font-heading);
   font-size: 24px;
   font-weight: bold;
   color: var(--primary);
 }
-.v7-principle-title {
+.landing-principle-title {
   font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 600;
   color: var(--white);
 }
-.v7-principle-desc {
+.landing-principle-desc {
   font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
 }
 
-/* Pull Quote */
-.v7-quote {
+/* ── Community ── */
+.landing-community {
+  background: var(--surface);
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  text-align: center;
+}
+.landing-community-title {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--code-bg);
+  letter-spacing: -2px;
+  line-height: 1.2;
+  max-width: 700px;
+  white-space: pre-line;
+}
+.landing-community-sub {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--text-muted);
+  max-width: 600px;
+}
+.landing-community-btns {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.landing-community-btns .btn-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--code-bg);
+  color: var(--white);
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.landing-community-btns .btn-github:hover {
+  background: #1E293B;
+}
+.landing-community-btns .btn-github svg,
+.landing-community-btns .btn-discord svg {
+  width: 20px;
+  height: 20px;
+}
+.landing-community-btns .btn-discord {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--code-bg);
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  border: 1px solid #CBD5E1;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+.landing-community-btns .btn-discord:hover {
+  border-color: var(--text-dim);
+}
+
+/* ── Quote ── */
+.landing-quote {
   background: var(--surface);
   padding: 80px 160px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.v7-quote-text {
+.landing-quote-text {
   font-family: var(--font-heading);
   font-size: 48px;
   font-weight: bold;
@@ -472,172 +510,235 @@
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .landing-hero { padding: 60px 24px 40px; padding-top: calc(60px + var(--header-h)); }
-  .landing-headline { font-size: 48px; }
-  .landing-code-section { padding: 40px 24px; }
-  .landing-features { padding: 60px 24px; }
-  .landing-cta { padding: 60px 24px; }
-  .landing-cta-headline { font-size: 36px; }
+  .landing-hero { padding: calc(100px + var(--header-h)) 24px 60px; }
+  .landing-hero-headline { font-size: 48px; }
+  .landing-hero-install { width: auto; max-width: 100%; }
+  .landing-code-compare { padding: 60px 24px; }
+  .landing-code-compare-title { font-size: 36px; }
   .landing-panels { flex-direction: column; }
-  .v7-code-compare { padding: 40px 24px; padding-top: calc(40px + var(--header-h)); }
-  .v7-code-compare-title { font-size: 48px; }
-  .v7-panels { flex-direction: column; }
-  .v7-bundle { padding: 60px 24px; }
-  .v7-bundle-h1, .v7-bundle-h2 { font-size: 40px; }
-  .v7-manifesto { padding: 60px 24px; }
-  .v7-manifesto-h1 { font-size: 40px; }
-  .v7-manifesto-h2 { font-size: 24px; }
-  .v7-problem { padding: 40px 24px; }
-  .v7-columns { flex-direction: column; gap: 32px; }
-  .v7-principles { padding: 40px 24px; }
-  .v7-principles-grid { grid-template-columns: repeat(2, 1fr); }
-  .v7-quote { padding: 40px 24px; }
-  .v7-quote-text { font-size: 32px; }
+  .landing-features { padding: 60px 24px; }
+  .landing-features-title { font-size: 36px; }
+  .landing-features-grid { grid-template-columns: repeat(2, 1fr); }
+  .landing-bundle { padding: 60px 24px; }
+  .landing-bundle-h1, .landing-bundle-h2 { font-size: 40px; }
+  .landing-manifesto { padding: 60px 24px; }
+  .landing-manifesto-h1 { font-size: 40px; }
+  .landing-manifesto-h2 { font-size: 24px; }
+  .landing-problem { padding: 40px 24px; }
+  .landing-columns { flex-direction: column; gap: 32px; }
+  .landing-principles { padding: 40px 24px; }
+  .landing-principles-grid { grid-template-columns: repeat(2, 1fr); }
+  .landing-community { padding: 60px 24px; }
+  .landing-community-title { font-size: 36px; }
+  .landing-quote { padding: 40px 24px; }
+  .landing-quote-text { font-size: 32px; }
 }
 @media (max-width: 768px) {
-  .landing-headline { font-size: 36px; }
-  .landing-subline { font-size: 16px; }
-  .landing-cta-row { flex-direction: column; }
-  .v7-code-compare-title { font-size: 36px; }
-  .v7-bundle-h1, .v7-bundle-h2 { font-size: 32px; }
-  .v7-bundle-btns { flex-direction: column; }
-  .v7-manifesto-h1 { font-size: 32px; }
-  .v7-manifesto-h2 { font-size: 20px; }
-  .v7-principles-grid { grid-template-columns: 1fr; }
-  .v7-quote-text { font-size: 24px; }
-  .v7-quote { padding: 40px 16px; }
+  .landing-hero-headline { font-size: 36px; }
+  .landing-hero-sub { font-size: 16px; }
+  .landing-hero-cta { flex-direction: column; }
+  .landing-code-compare-title { font-size: 28px; }
+  .landing-features-title { font-size: 28px; }
+  .landing-features-sub { font-size: 16px; }
+  .landing-features-grid { grid-template-columns: 1fr; }
+  .landing-bundle-h1, .landing-bundle-h2 { font-size: 32px; }
+  .landing-bundle-btns { flex-direction: column; }
+  .landing-manifesto-h1 { font-size: 32px; }
+  .landing-manifesto-h2 { font-size: 20px; }
+  .landing-principles-grid { grid-template-columns: 1fr; }
+  .landing-community-title { font-size: 28px; }
+  .landing-community-btns { flex-direction: column; }
+  .landing-quote-text { font-size: 24px; }
+  .landing-quote { padding: 40px 16px; }
 }
 </style>
-<!-- Landing Page - from design.pen V7 "The Full Story" (bAp6a) -->
+<!-- Landing Page v8 — from design.pen frame JWtJT -->
 
-<!-- ═══ Section 1: Code Comparison - #F8FAFC bg, padding 80, gap 40 ═══ -->
-<section class="v7-code-compare">
-  <h2 class="v7-code-compare-title" t="landing.codeCompare.title" t-html></h2>
-  <p class="v7-code-compare-sub" t="landing.codeCompare.subtitle"></p>
-  <div class="v7-panels">
-    <div class="v7-panel">
-      <div class="v7-panel-topbar">
-        <span class="v7-panel-label v7-panel-label--react" t="landing.codeCompare.reactLabel"></span>
-        <span class="v7-panel-meta" t="landing.codeCompare.reactMeta"></span>
-      </div>
-      <pre class="v7-panel-code"><span class="v7-ln"> 1</span><span class="hl-kw">import</span> { useState, useEffect } <span class="hl-kw">from</span> <span class="hl-str">'react'</span>;
-<span class="v7-ln"> 2</span>
-<span class="v7-ln"> 3</span><span class="hl-kw">const</span> <span class="hl-fn">Search</span> = () =&gt; {
-<span class="v7-ln"> 4</span>  <span class="hl-kw">const</span> [query, setQuery] = <span class="hl-fn">useState</span>(<span class="hl-str">''</span>);
-<span class="v7-ln"> 5</span>  <span class="hl-kw">const</span> [results, setResults] = <span class="hl-fn">useState</span>([]);
-<span class="v7-ln"> 6</span>
-<span class="v7-ln"> 7</span>  <span class="hl-fn">useEffect</span>(() =&gt; {
-<span class="v7-ln"> 8</span>    <span class="hl-kw">if</span> (!query) <span class="hl-kw">return</span>;
-<span class="v7-ln"> 9</span>    <span class="hl-fn">fetch</span>(<span class="hl-str">`/api/search?q=</span><span class="hl-op">${</span>query<span class="hl-op">}</span><span class="hl-str">`</span>)
-<span class="v7-ln">10</span>      .then(r =&gt; r.json())
-<span class="v7-ln">11</span>      .then(setResults);
-<span class="v7-ln">12</span>  }, [query]);
-<span class="v7-ln">13</span>
-<span class="v7-ln">14</span>  <span class="hl-kw">return</span> (
-<span class="v7-ln">15</span>    <span class="hl-tag">&lt;div&gt;</span>
-<span class="v7-ln">16</span>      <span class="hl-tag">&lt;input</span>
-<span class="v7-ln">17</span>        <span class="hl-attr">value</span>=<span class="hl-str">{query}</span>
-<span class="v7-ln">18</span>        <span class="hl-attr">onChange</span>=<span class="hl-str">{e =&gt; setQuery(e.target.value)}</span>
-<span class="v7-ln">19</span>      <span class="hl-tag">/&gt;</span>
-<span class="v7-ln">20</span>      {results.map(r =&gt; (
-<span class="v7-ln">21</span>        <span class="hl-tag">&lt;li</span> <span class="hl-attr">key</span>=<span class="hl-str">{r.id}</span><span class="hl-tag">&gt;</span>{r.name}<span class="hl-tag">&lt;/li&gt;</span>
-<span class="v7-ln">22</span>      ))}
-<span class="v7-ln">23</span>    <span class="hl-tag">&lt;/div&gt;</span>
-<span class="v7-ln">24</span>  );
-<span class="v7-ln">25</span>};</pre>
-    </div>
-    <div class="v7-panel">
-      <div class="v7-panel-topbar">
-        <span class="v7-panel-label v7-panel-label--nojs" t="landing.codeCompare.nojsLabel"></span>
-        <span class="v7-panel-meta" t="landing.codeCompare.nojsMeta"></span>
-      </div>
-      <pre class="v7-panel-code v7-panel-code--nojs"><span class="v7-ln">1</span><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ query: '' }"</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/search?q={{ query }}"</span> <span class="hl-attr">as</span>=<span class="hl-str">"results"</span><span class="hl-tag">&gt;</span>
-<span class="v7-ln">2</span>  <span class="hl-tag">&lt;input</span> <span class="hl-attr">model</span>=<span class="hl-str">"query"</span> <span class="hl-tag">/&gt;</span>
-<span class="v7-ln">3</span>  <span class="hl-tag">&lt;li</span> <span class="hl-attr">each</span>=<span class="hl-str">"r in results"</span> <span class="hl-attr">bind</span>=<span class="hl-str">"r.name"</span><span class="hl-tag">&gt;&lt;/li&gt;</span>
-<span class="v7-ln">4</span><span class="hl-tag">&lt;/div&gt;</span></pre>
-      <span class="v7-panel-note" t="landing.codeCompare.nojsNote"></span>
+<!-- ═══ Section 1: Hero — gradient dark bg ═══ -->
+<section class="landing-hero">
+  <span class="landing-hero-badge" t="landing.hero.badge"></span>
+  <h1 class="landing-hero-headline" t="landing.hero.headline"></h1>
+  <p class="landing-hero-sub" t="landing.hero.subtitle"></p>
+  <div class="landing-hero-cta">
+    <a route="/docs" class="btn btn-primary" t="landing.hero.getStarted"></a>
+    <a route="/playground" class="btn btn-hero-outline" t="landing.hero.playground"></a>
+  </div>
+  <div class="landing-hero-install">
+    <div class="landing-hero-install-tab"><span>CDN</span></div>
+    <div class="landing-hero-install-code">
+      <pre><span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span><span class="hl-punct">=</span><span class="hl-string">"https://cdn.no-js.dev/"</span><span class="hl-tag">&gt;&lt;/script&gt;</span></pre>
     </div>
   </div>
 </section>
 
-<!-- ═══ Section 2: Bundle Stats - white bg, padding 100/80, gap 24, centered ═══ -->
-<section class="v7-bundle">
-  <span class="v7-bundle-badge" t="landing.bundle.badge"></span>
-  <h2 class="v7-bundle-h1" t="landing.bundle.h1"></h2>
-  <h2 class="v7-bundle-h2" t="landing.bundle.h2"></h2>
-  <p class="v7-bundle-sub" t="landing.bundle.subtitle"></p>
-  <div class="v7-bundle-btns">
+<!-- ═══ Section 2: Code Compare — #FFFFFF bg ═══ -->
+<section class="landing-code-compare">
+  <h2 class="landing-code-compare-title" t="landing.codeCompare.title" t-html></h2>
+  <p class="landing-code-compare-sub" t="landing.codeCompare.subtitle"></p>
+  <div class="landing-panels">
+    <div class="landing-panel">
+      <div class="landing-panel-topbar">
+        <span class="landing-panel-label landing-panel-label--react" t="landing.codeCompare.reactLabel"></span>
+        <span class="landing-panel-meta" t="landing.codeCompare.reactMeta"></span>
+      </div>
+      <pre class="landing-panel-code"><span class="landing-ln"> 1</span><span class="hl-kw">import</span> { useState, useEffect } <span class="hl-kw">from</span> <span class="hl-str">'react'</span>;
+<span class="landing-ln"> 2</span>
+<span class="landing-ln"> 3</span><span class="hl-kw">const</span> <span class="hl-fn">Search</span> = () =&gt; {
+<span class="landing-ln"> 4</span>  <span class="hl-kw">const</span> [query, setQuery] = <span class="hl-fn">useState</span>(<span class="hl-str">''</span>);
+<span class="landing-ln"> 5</span>  <span class="hl-kw">const</span> [results, setResults] = <span class="hl-fn">useState</span>([]);
+<span class="landing-ln"> 6</span>
+<span class="landing-ln"> 7</span>  <span class="hl-fn">useEffect</span>(() =&gt; {
+<span class="landing-ln"> 8</span>    <span class="hl-kw">if</span> (!query) <span class="hl-kw">return</span>;
+<span class="landing-ln"> 9</span>    <span class="hl-fn">fetch</span>(<span class="hl-str">`/api/search?q=</span><span class="hl-op">${</span>query<span class="hl-op">}</span><span class="hl-str">`</span>)
+<span class="landing-ln">10</span>      .then(r =&gt; r.json())
+<span class="landing-ln">11</span>      .then(setResults);
+<span class="landing-ln">12</span>  }, [query]);
+<span class="landing-ln">13</span>
+<span class="landing-ln">14</span>  <span class="hl-kw">return</span> (
+<span class="landing-ln">15</span>    <span class="hl-tag">&lt;div&gt;</span>
+<span class="landing-ln">16</span>      <span class="hl-tag">&lt;input</span>
+<span class="landing-ln">17</span>        <span class="hl-attr">value</span>=<span class="hl-str">{query}</span>
+<span class="landing-ln">18</span>        <span class="hl-attr">onChange</span>=<span class="hl-str">{e =&gt; setQuery(e.target.value)}</span>
+<span class="landing-ln">19</span>      <span class="hl-tag">/&gt;</span>
+<span class="landing-ln">20</span>      {results.map(r =&gt; (
+<span class="landing-ln">21</span>        <span class="hl-tag">&lt;li</span> <span class="hl-attr">key</span>=<span class="hl-str">{r.id}</span><span class="hl-tag">&gt;</span>{r.name}<span class="hl-tag">&lt;/li&gt;</span>
+<span class="landing-ln">22</span>      ))}
+<span class="landing-ln">23</span>    <span class="hl-tag">&lt;/div&gt;</span>
+<span class="landing-ln">24</span>  );
+<span class="landing-ln">25</span>};</pre>
+    </div>
+    <div class="landing-panel">
+      <div class="landing-panel-topbar">
+        <span class="landing-panel-label landing-panel-label--nojs" t="landing.codeCompare.nojsLabel"></span>
+        <span class="landing-panel-meta" t="landing.codeCompare.nojsMeta"></span>
+      </div>
+      <pre class="landing-panel-code landing-panel-code--nojs"><span class="landing-ln">1</span><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ query: '' }"</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/search?q={{ query }}"</span> <span class="hl-attr">as</span>=<span class="hl-str">"results"</span><span class="hl-tag">&gt;</span>
+<span class="landing-ln">2</span>  <span class="hl-tag">&lt;input</span> <span class="hl-attr">model</span>=<span class="hl-str">"query"</span> <span class="hl-tag">/&gt;</span>
+<span class="landing-ln">3</span>  <span class="hl-tag">&lt;li</span> <span class="hl-attr">each</span>=<span class="hl-str">"r in results"</span> <span class="hl-attr">bind</span>=<span class="hl-str">"r.name"</span><span class="hl-tag">&gt;&lt;/li&gt;</span>
+<span class="landing-ln">4</span><span class="hl-tag">&lt;/div&gt;</span></pre>
+      <span class="landing-panel-note" t="landing.codeCompare.nojsNote"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Section 3: Features Grid — #F8FAFC bg ═══ -->
+<section class="landing-features">
+  <span class="landing-kicker" t="landing.featuresGrid.kicker"></span>
+  <h2 class="landing-features-title" t="landing.featuresGrid.title"></h2>
+  <p class="landing-features-sub" t="landing.featuresGrid.subtitle"></p>
+  <div class="landing-features-grid">
+    <div class="landing-feature-card">
+      <h3 class="landing-feature-title" t="landing.featuresGrid.f1Title"></h3>
+      <p class="landing-feature-desc" t="landing.featuresGrid.f1Desc"></p>
+    </div>
+    <div class="landing-feature-card">
+      <h3 class="landing-feature-title" t="landing.featuresGrid.f2Title"></h3>
+      <p class="landing-feature-desc" t="landing.featuresGrid.f2Desc"></p>
+    </div>
+    <div class="landing-feature-card">
+      <h3 class="landing-feature-title" t="landing.featuresGrid.f3Title"></h3>
+      <p class="landing-feature-desc" t="landing.featuresGrid.f3Desc"></p>
+    </div>
+    <div class="landing-feature-card">
+      <h3 class="landing-feature-title" t="landing.featuresGrid.f4Title"></h3>
+      <p class="landing-feature-desc" t="landing.featuresGrid.f4Desc"></p>
+    </div>
+    <div class="landing-feature-card">
+      <h3 class="landing-feature-title" t="landing.featuresGrid.f5Title"></h3>
+      <p class="landing-feature-desc" t="landing.featuresGrid.f5Desc"></p>
+    </div>
+    <div class="landing-feature-card">
+      <h3 class="landing-feature-title" t="landing.featuresGrid.f6Title"></h3>
+      <p class="landing-feature-desc" t="landing.featuresGrid.f6Desc"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Section 4: Bundle Stats — #FFFFFF bg ═══ -->
+<section class="landing-bundle">
+  <span class="landing-bundle-badge" t="landing.bundle.badge"></span>
+  <h2 class="landing-bundle-h1" t="landing.bundle.h1"></h2>
+  <h2 class="landing-bundle-h2" t="landing.bundle.h2"></h2>
+  <p class="landing-bundle-sub" t="landing.bundle.subtitle"></p>
+  <div class="landing-bundle-btns">
     <a route="/docs" class="btn btn-primary" t="landing.bundle.getStarted"></a>
-    <a route="/features" class="btn btn-secondary" t="landing.bundle.seeFeatures"></a>
+    <a route="/docs" class="btn btn-secondary" t="landing.bundle.seeFeatures"></a>
   </div>
 </section>
 
-<!-- ═══ Section 3: Philosophy Hero - #0F172A bg, padding 120/80/100/80, gap 32 ═══ -->
-<section class="v7-manifesto">
-  <span class="v7-kicker" t="landing.manifesto.kicker"></span>
-  <h1 class="v7-manifesto-h1" t="landing.manifesto.h1"></h1>
-  <h2 class="v7-manifesto-h2" t="landing.manifesto.h2"></h2>
-  <div class="v7-divider"></div>
+<!-- ═══ Section 5: Manifesto — #0F172A bg ═══ -->
+<section class="landing-manifesto">
+  <span class="landing-manifesto-kicker" t="landing.manifesto.kicker"></span>
+  <h1 class="landing-manifesto-h1" t="landing.manifesto.h1"></h1>
+  <h2 class="landing-manifesto-h2" t="landing.manifesto.h2"></h2>
+  <div class="landing-divider"></div>
 </section>
 
-<!-- ═══ Section 4: Problem Editorial - #0F172A bg, padding 80, gap 60 ═══ -->
-<section class="v7-problem">
-  <span class="v7-kicker" t="landing.problem.kicker"></span>
-  <div class="v7-columns">
-    <div class="v7-column">
+<!-- ═══ Section 6: Problem Editorial — #0F172A bg ═══ -->
+<section class="landing-problem">
+  <span class="landing-problem-kicker" t="landing.problem.kicker"></span>
+  <div class="landing-columns">
+    <div class="landing-column">
       <p t="landing.problem.col1p1"></p>
       <p t="landing.problem.col1p2"></p>
     </div>
-    <div class="v7-column">
+    <div class="landing-column">
       <p t="landing.problem.col2p1"></p>
       <p t="landing.problem.col2p2"></p>
     </div>
-    <div class="v7-column">
+    <div class="landing-column">
       <p t="landing.problem.col3p1"></p>
       <p t="landing.problem.col3p2"></p>
     </div>
   </div>
 </section>
 
-<!-- ═══ Section 5: Principles - #0A1020 bg, padding 80, gap 48 ═══ -->
-<section class="v7-principles">
-  <span class="v7-kicker" t="landing.principles.kicker"></span>
-  <div class="v7-principles-grid">
-    <div class="v7-principle-card">
-      <span class="v7-principle-num">01</span>
-      <h3 class="v7-principle-title" t="landing.principles.p1Title"></h3>
-      <p class="v7-principle-desc" t="landing.principles.p1Desc"></p>
+<!-- ═══ Section 7: Principles — #0A1020 bg ═══ -->
+<section class="landing-principles">
+  <span class="landing-principles-kicker" t="landing.principles.kicker"></span>
+  <div class="landing-principles-grid">
+    <div class="landing-principle-card">
+      <span class="landing-principle-num">01</span>
+      <h3 class="landing-principle-title" t="landing.principles.p1Title"></h3>
+      <p class="landing-principle-desc" t="landing.principles.p1Desc"></p>
     </div>
-    <div class="v7-principle-card">
-      <span class="v7-principle-num">02</span>
-      <h3 class="v7-principle-title" t="landing.principles.p2Title"></h3>
-      <p class="v7-principle-desc" t="landing.principles.p2Desc"></p>
+    <div class="landing-principle-card">
+      <span class="landing-principle-num">02</span>
+      <h3 class="landing-principle-title" t="landing.principles.p2Title"></h3>
+      <p class="landing-principle-desc" t="landing.principles.p2Desc"></p>
     </div>
-    <div class="v7-principle-card">
-      <span class="v7-principle-num">03</span>
-      <h3 class="v7-principle-title" t="landing.principles.p3Title"></h3>
-      <p class="v7-principle-desc" t="landing.principles.p3Desc"></p>
+    <div class="landing-principle-card">
+      <span class="landing-principle-num">03</span>
+      <h3 class="landing-principle-title" t="landing.principles.p3Title"></h3>
+      <p class="landing-principle-desc" t="landing.principles.p3Desc"></p>
     </div>
-    <div class="v7-principle-card">
-      <span class="v7-principle-num">04</span>
-      <h3 class="v7-principle-title" t="landing.principles.p4Title"></h3>
-      <p class="v7-principle-desc" t="landing.principles.p4Desc"></p>
+    <div class="landing-principle-card">
+      <span class="landing-principle-num">04</span>
+      <h3 class="landing-principle-title" t="landing.principles.p4Title"></h3>
+      <p class="landing-principle-desc" t="landing.principles.p4Desc"></p>
     </div>
   </div>
 </section>
 
-<!-- ═══ Section 6: Pull Quote - #F8FAFC bg, padding 80/160, centered ═══ -->
-<section class="v7-quote">
-  <blockquote class="v7-quote-text" t="landing.quote" t-html></blockquote>
+<!-- ═══ Section 8: Community — #F8FAFC bg ═══ -->
+<section class="landing-community">
+  <span class="landing-kicker" t="landing.community.kicker"></span>
+  <h2 class="landing-community-title" t="landing.community.title"></h2>
+  <p class="landing-community-sub" t="landing.community.subtitle"></p>
+  <div class="landing-community-btns">
+    <a href="https://github.com/ErickXavier/no-js" target="_blank" rel="noopener noreferrer" class="btn-github">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      <span t="landing.community.github"></span>
+    </a>
+    <a href="https://discord.gg/CaSbGYg3xY" target="_blank" rel="noopener noreferrer" class="btn-discord">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      <span t="landing.community.discord"></span>
+    </a>
+  </div>
 </section>
 
-<!-- ═══ Section 7: CTA - #0F172A bg, padding 80, gap 20, centered ═══ -->
-<section class="landing-cta">
-  <h2 class="landing-cta-headline" t="landing.cta.headline"></h2>
-  <p class="landing-cta-sub" t="landing.cta.subtitle"></p>
-  <div class="cta-buttons">
-    <a route="/docs" class="btn btn-cta-primary" t="landing.cta.getStarted"></a>
-    <a route="/features" class="btn btn-ghost" t="landing.cta.learnMore"></a>
-  </div>
+<!-- ═══ Section 9: Quote — #F8FAFC bg ═══ -->
+<section class="landing-quote">
+  <blockquote class="landing-quote-text" t="landing.quote" t-html></blockquote>
 </section>
 </div>
