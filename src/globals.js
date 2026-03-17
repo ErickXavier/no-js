@@ -16,7 +16,6 @@ export const _config = {
   i18n: { defaultLocale: "en", fallbackLocale: "en", detectBrowser: false, loadPath: null, ns: [], cache: true, persist: false },
   debug: false,
   devtools: false,
-  csp: null,
   sanitize: true,
 };
 

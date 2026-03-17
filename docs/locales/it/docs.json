@@ -1156,9 +1156,6 @@
         "devtoolsTitle": "devtools",
         "devtoolsType": "Tipo: boolean | Default: false",
         "devtoolsText": "Abilita il pannello devtools di No.JS, accessibile tramite window.__NOJS_DEVTOOLS__. Quando attivo, espone lo stato reattivo, le direttive registrate, le route attive e gli alberi dei componenti per l'ispezione nella console del browser.",
-        "cspTitle": "csp",
-        "cspType": "Tipo: string | null | Default: null",
-        "cspText": "Imposta a 'strict' per disabilitare l'uso di new Function() per la valutazione delle espressioni. Necessario per ambienti con una Content Security Policy che blocca unsafe-eval. In modalità strict, le espressioni sono limitate all'accesso tramite percorsi con punto e confronti semplici — JavaScript arbitrario non è consentito.",
         "templatesCacheTitle": "templates.cache",
         "templatesCacheType": "Tipo: boolean | Default: true",
         "templatesCacheText1": "Controlla se il contenuto HTML dei file .tpl recuperati da remoto viene memorizzato in una Map in memoria dopo la prima richiesta. Nelle navigazioni successive verso la stessa route, l'HTML in cache viene usato direttamente senza effettuare richieste HTTP. La cache dura per tutta la sessione della pagina (nessun TTL — le risorse template sono statiche).",
@@ -1188,11 +1185,10 @@
         "xssTitle": "Protezione XSS",
         "xssList1": "bind imposta sempre textContent, mai innerHTML — sicuro per impostazione predefinita.",
         "xssList2": "bind-html sanitizza il contenuto usando un sanitizer integrato basato su regex (rimuove i tag <script>, blocca i gestori di eventi on*, rimuove gli URI javascript:).",
-        "xssList3": "Le espressioni dei template vengono valutate in uno scope Function() sandboxed — nessun accesso a window, document o globali a meno che non siano esposti esplicitamente.",
+        "xssList3": "Le espressioni dei template vengono valutate da un parser sandboxed personalizzato — eval() e Function() non vengono usati, e le proprietà pericolose come __proto__ e constructor sono bloccate.",
         "csrfTitle": "Protezione CSRF",
         "cspSecTitle": "Content Security Policy",
-        "cspSecText1": "No.JS usa new Function() per la valutazione delle espressioni. Se la tua CSP blocca unsafe-eval, usa la modalità precompilata:",
-        "cspSecText2": "In modalità strict, le espressioni sono limitate all'accesso tramite percorsi con punto e confronti semplici (nessun JS arbitrario)."
+        "cspSecText1": "No.JS utilizza un parser di espressioni personalizzato completamente compatibile con CSP — eval() e il costruttore Function() non vengono usati. Nessuna direttiva unsafe-eval è richiesta nella tua Content Security Policy."
       }
     }
   }

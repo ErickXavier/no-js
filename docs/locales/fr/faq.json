@@ -82,7 +82,7 @@
       "title": "Sécurité & Production",
       "q13": {
         "question": "Comment No.JS gère la sécurité ?",
-        "answer": "Trois couches de protection :<br><br>• <strong>Sanitisation HTML :</strong> supprime les balises <code>&lt;script&gt;</code>, les event handlers et les protocoles <code>javascript:</code><br>• <strong>Isolation de scope :</strong> le contexte de chaque composant est isolé via Proxy<br>• <strong>Mode CSP-safe :</strong> évaluateur strict optionnel qui évite le constructeur <code>Function</code><br><br>Les contributions de la communauté sur les politiques CSP et le sandboxing runtime sont les bienvenues."
+        "answer": "Trois couches de protection :<br><br>• <strong>Sanitisation HTML :</strong> supprime les balises <code>&lt;script&gt;</code>, les event handlers et les protocoles <code>javascript:</code><br>• <strong>Isolation de scope :</strong> le contexte de chaque composant est isolé via Proxy<br>• <strong>CSP-safe par défaut :</strong> les expressions sont évaluées par un parser personnalisé — aucun <code>eval()</code> ni constructeur <code>Function()</code> n'est utilisé"
       },
       "q14": {
         "question": "Quelle est la taille du bundle ?",

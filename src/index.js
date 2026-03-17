@@ -83,6 +83,10 @@ const NoJS = {
     const prevTemplates = { ..._config.templates };
     const prevRouter = { ..._config.router };
     const prevI18n = { ..._config.i18n };
+    if ("csp" in opts) {
+      _warn("csp config option removed — No.JS is now CSP-safe by default");
+      delete opts.csp;
+    }
     Object.assign(_config, opts);
     if (opts.headers)
       _config.headers = { ...prevHeaders, ...opts.headers };
@@ -240,7 +244,7 @@ const NoJS = {
   resolve,
 
   // Version
-  version: "1.8.2",
+  version: "1.9.0",
 };
 
 export default NoJS;

@@ -1156,9 +1156,6 @@
         "devtoolsTitle": "devtools",
         "devtoolsType": "Tipo: boolean | Padrão: false",
         "devtoolsText": "Habilita o painel de devtools do No.JS, acessível via window.__NOJS_DEVTOOLS__. Quando ativo, expõe estado reativo, diretivas registradas, rotas ativas e árvores de componentes para inspeção no console do navegador.",
-        "cspTitle": "csp",
-        "cspType": "Tipo: string | null | Padrão: null",
-        "cspText": "Defina como 'strict' para desabilitar o uso de new Function() na avaliação de expressões. Isso é necessário para ambientes com Content Security Policy que bloqueia unsafe-eval. No modo strict, expressões são limitadas a acesso por dot-path e comparações simples — JavaScript arbitrário não é permitido.",
         "templatesCacheTitle": "templates.cache",
         "templatesCacheType": "Tipo: boolean | Padrão: true",
         "templatesCacheText1": "Controla se o conteúdo HTML de arquivos .tpl buscados remotamente é armazenado em um Map em memória após a primeira requisição. Em navegações repetidas para a mesma rota, o HTML cacheado é usado diretamente e nenhuma requisição HTTP é feita. O cache dura pela sessão da página (sem TTL — recursos de template são estáticos).",
@@ -1188,11 +1185,10 @@
         "xssTitle": "Proteção XSS",
         "xssList1": "bind sempre define textContent, nunca innerHTML — seguro por padrão.",
         "xssList2": "bind-html sanitiza conteúdo usando um sanitizador integrado baseado em regex (remove tags <script>, bloqueia handlers de evento on*, remove URIs javascript:).",
-        "xssList3": "Expressões de template são avaliadas em um escopo Function() isolado — sem acesso a window, document ou globals a menos que explicitamente expostos.",
+        "xssList3": "Expressões de template são avaliadas por um parser sandboxed personalizado — eval() e Function() não são usados, e propriedades perigosas como __proto__ e constructor são bloqueadas.",
         "csrfTitle": "Proteção CSRF",
         "cspSecTitle": "Content Security Policy",
-        "cspSecText1": "O No.JS usa new Function() para avaliação de expressões. Se sua CSP bloqueia unsafe-eval, use o modo pré-compilado:",
-        "cspSecText2": "No modo strict, expressões são limitadas a acesso por dot-path e comparações simples (sem JS arbitrário)."
+        "cspSecText1": "O No.JS usa um parser de expressões personalizado totalmente compatível com CSP — eval() e o construtor Function() não são usados. Nenhuma diretiva unsafe-eval é necessária na sua Content Security Policy."
       }
     }
   }

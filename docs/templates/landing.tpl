@@ -7,10 +7,12 @@
 /* ── Hero ── */
 .landing-hero {
   background: linear-gradient(180deg, var(--code-bg), var(--code-surface));
-  padding: calc(140px + var(--header-h)) 80px 80px;
+  min-height: calc(100vh - var(--header-h));
+  padding: calc(var(--header-h) + 60px) 80px 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 32px;
   text-align: center;
 }
@@ -510,7 +512,7 @@
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .landing-hero { padding: calc(100px + var(--header-h)) 24px 60px; }
+  .landing-hero { padding: calc(var(--header-h) + 40px) 24px 60px; }
   .landing-hero-headline { font-size: 48px; }
   .landing-hero-install { width: auto; max-width: 100%; }
   .landing-code-compare { padding: 60px 24px; }
@@ -534,22 +536,50 @@
   .landing-quote-text { font-size: 32px; }
 }
 @media (max-width: 768px) {
-  .landing-hero-headline { font-size: 36px; }
+  .landing-hero { min-height: auto; padding: calc(var(--header-h) + 32px) 20px 48px; }
+  .landing-hero-headline { font-size: 36px; letter-spacing: -1px; }
   .landing-hero-sub { font-size: 16px; }
-  .landing-hero-cta { flex-direction: column; }
+  .landing-hero-cta { flex-direction: column; width: 100%; }
+  .landing-hero-cta .btn, .landing-hero-cta .btn-hero-outline { width: 100%; text-align: center; }
+  .landing-hero-install-code pre { font-size: 11px; }
+  .landing-panel-code { font-size: 11px; }
+  .landing-code-compare { padding: 48px 20px; }
   .landing-code-compare-title { font-size: 28px; }
+  .landing-features { padding: 48px 20px; }
   .landing-features-title { font-size: 28px; }
   .landing-features-sub { font-size: 16px; }
   .landing-features-grid { grid-template-columns: 1fr; }
+  .landing-bundle { padding: 48px 20px; }
   .landing-bundle-h1, .landing-bundle-h2 { font-size: 32px; }
-  .landing-bundle-btns { flex-direction: column; }
-  .landing-manifesto-h1 { font-size: 32px; }
+  .landing-bundle-btns { flex-direction: column; width: 100%; }
+  .landing-bundle-btns .btn { width: 100%; text-align: center; }
+  .landing-manifesto { padding: 48px 20px; }
+  .landing-manifesto-h1 { font-size: 32px; letter-spacing: -1px; }
   .landing-manifesto-h2 { font-size: 20px; }
+  .landing-problem { padding: 40px 20px; }
+  .landing-principles { padding: 40px 20px; }
   .landing-principles-grid { grid-template-columns: 1fr; }
+  .landing-community { padding: 48px 20px; }
   .landing-community-title { font-size: 28px; }
-  .landing-community-btns { flex-direction: column; }
+  .landing-community-btns { flex-direction: column; width: 100%; }
+  .landing-community-btns .btn-github,
+  .landing-community-btns .btn-discord { width: 100%; justify-content: center; }
+  .landing-quote { padding: 40px 20px; }
   .landing-quote-text { font-size: 24px; }
-  .landing-quote { padding: 40px 16px; }
+}
+@media (max-width: 480px) {
+  .landing-hero-headline { font-size: 28px; }
+  .landing-hero-sub { font-size: 15px; }
+  .landing-hero-badge { font-size: 12px; }
+  .landing-code-compare-title { font-size: 24px; }
+  .landing-features-title { font-size: 24px; }
+  .landing-bundle-h1, .landing-bundle-h2 { font-size: 26px; }
+  .landing-manifesto-h1 { font-size: 26px; }
+  .landing-manifesto-h2 { font-size: 18px; }
+  .landing-community-title { font-size: 24px; }
+  .landing-quote-text { font-size: 20px; }
+  .landing-principle-num { font-size: 20px; }
+  .landing-principle-title { font-size: 16px; }
 }
 </style>
 <!-- Landing Page v8 — from design.pen frame JWtJT -->

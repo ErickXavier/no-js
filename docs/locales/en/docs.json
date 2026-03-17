@@ -1156,9 +1156,6 @@
         "devtoolsTitle": "devtools",
         "devtoolsType": "Type: boolean | Default: false",
         "devtoolsText": "Enables the No.JS devtools panel, accessible via window.__NOJS_DEVTOOLS__. When active, it exposes reactive state, registered directives, active routes, and component trees for inspection in the browser console.",
-        "cspTitle": "csp",
-        "cspType": "Type: string | null | Default: null",
-        "cspText": "Set to 'strict' to disable the use of new Function() for expression evaluation. This is required for environments with a Content Security Policy that blocks unsafe-eval. In strict mode, expressions are limited to dot-path property access and simple comparisons — arbitrary JavaScript is not allowed.",
         "templatesCacheTitle": "templates.cache",
         "templatesCacheType": "Type: boolean | Default: true",
         "templatesCacheText1": "Controls whether the HTML content of remotely-fetched .tpl files is stored in an in-memory Map after the first request. On repeated navigations to the same route, the cached HTML is used directly and no HTTP request is made. The cache lives for the duration of the page session (no TTL — template assets are static).",
@@ -1188,11 +1185,10 @@
         "xssTitle": "XSS Protection",
         "xssList1": "bind always sets textContent, never innerHTML — safe by default.",
         "xssList2": "bind-html sanitizes content using a built-in regex-based sanitizer (strips <script> tags, blocks on* event handlers, removes javascript: URIs).",
-        "xssList3": "Template expressions are evaluated in a sandboxed Function() scope — no access to window, document, or globals unless explicitly exposed.",
+        "xssList3": "Template expressions are evaluated by a custom sandboxed parser — no eval() or Function() is used, and dangerous properties like __proto__ and constructor are blocked.",
         "csrfTitle": "CSRF Protection",
         "cspSecTitle": "Content Security Policy",
-        "cspSecText1": "No.JS uses new Function() for expression evaluation. If your CSP blocks unsafe-eval, use the precompiled mode:",
-        "cspSecText2": "In strict mode, expressions are limited to dot-path access and simple comparisons (no arbitrary JS)."
+        "cspSecText1": "No.JS uses a custom expression parser that is fully CSP-compliant — no eval() or Function() constructor is used. No unsafe-eval directive is required in your Content Security Policy."
       }
     }
   }

@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0](https://github.com/ErickXavier/no-js/compare/v1.8.2...v1.9.0) — 2026-03-17
+
+### Added
+
+- Custom recursive-descent expression parser — replaces all `new Function()` calls for full CSP compliance
+- Statement interpreter with assignment, compound operators (`+=`, `-=`, `*=`, `/=`, `%=`), prefix/postfix `++`/`--`
+- Deny-list (`_DENY_GLOBALS`) blocks `eval`, `Function`, `process`, `require`, `importScripts` from globalThis fallback
+- Forbidden property checks on `__proto__`, `constructor`, `prototype` in object expressions and member access
+- Arrow function rest parameters support in expression evaluator
+- 24 new unit tests for statement interpreter
+
+### Changed
+
+- Expression evaluation no longer uses `new Function()` — zero `unsafe-eval` CSP requirement
+- `csp` config option deprecated (no longer needed — framework is CSP-compliant by default)
+- Documentation updated across 5 locales (en, es, pt, fr, it) reflecting CSP-by-default
+- Landing page hero fills viewport height; responsive fixes for 768px and new 480px breakpoint
+
+### Removed
+
+- `csp` option from `NoJS.config()` (shows deprecation warning if used)
+
 ## [1.8.2](https://github.com/ErickXavier/no-js/compare/v1.8.1...v1.8.2) — 2026-03-17
 
 ### Fixed
