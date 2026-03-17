@@ -43,17 +43,6 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 <script src="https://cdn.no-js.dev/"></script>
 ```
 
-### NPM
-
-```bash
-npm install @erickxavier/no-js
-```
-
-```js
-import NoJS from "@erickxavier/no-js";
-NoJS.init();
-```
-
 With the CDN, No.JS auto-starts on `DOMContentLoaded`. You can configure it before it loads:
 
 ```html

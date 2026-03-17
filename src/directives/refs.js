@@ -16,7 +16,7 @@ import { createContext } from "../context.js";
 import { evaluate, _execStatement, _interpolate } from "../evaluate.js";
 import { _doFetch } from "../fetch.js";
 import { findContext, _cloneTemplate } from "../dom.js";
-import { registerDirective, processTree } from "../registry.js";
+import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 
 registerDirective("ref", {
   priority: 5,
@@ -64,6 +64,7 @@ registerDirective("use", {
       }
     }
 
+    _disposeChildren(el);
     el.innerHTML = "";
     const wrapper = document.createElement("div");
     wrapper.style.display = "contents";
@@ -93,7 +94,7 @@ registerDirective("call", {
     const originalChildren = [...el.childNodes].map((n) => n.cloneNode(true));
     let _activeAbort = null;
 
-    el.addEventListener("click", async (e) => {
+    const clickHandler = async (e) => {
       e.preventDefault();
       if (confirmMsg && !window.confirm(confirmMsg)) return;
 
@@ -107,6 +108,7 @@ registerDirective("call", {
       if (loadingTpl) {
         const clone = _cloneTemplate(loadingTpl);
         if (clone) {
+          _disposeChildren(el);
           el.innerHTML = "";
           el.appendChild(clone);
           processTree(el);
@@ -137,6 +139,7 @@ registerDirective("call", {
 
         // Restore original children
         if (loadingTpl) {
+          _disposeChildren(el);
           el.innerHTML = "";
           for (const child of originalChildren)
             el.appendChild(child.cloneNode(true));
@@ -181,6 +184,7 @@ registerDirective("call", {
 
         // Restore original children
         if (loadingTpl) {
+          _disposeChildren(el);
           el.innerHTML = "";
           for (const child of originalChildren)
             el.appendChild(child.cloneNode(true));
@@ -210,6 +214,8 @@ registerDirective("call", {
           }
         }
       }
-    });
+    };
+    el.addEventListener("click", clickHandler);
+    _onDispose(() => el.removeEventListener("click", clickHandler));
   },
 });

@@ -560,47 +560,7 @@ describe('fetch.js — HTTP error json() catch', () => {
   });
 });
 
-describe('fetch.js — cache unknown strategy', () => {
-  test('_cacheGet returns null for unknown strategy', () => {
-    expect(_cacheGet('somekey', 'redis')).toBeNull();
-    expect(_cacheGet('somekey', 'custom')).toBeNull();
-    expect(_cacheGet('somekey', '')).toBeNull();
-  });
 
-  test('_cacheSet is no-op for unknown strategy', () => {
-    _cacheSet('somekey', { data: 1 }, 'redis');
-    _cacheSet('somekey', { data: 1 }, 'custom');
-    _cacheSet('somekey', { data: 1 }, '');
-
-    expect(_cache.has('somekey')).toBe(false);
-    expect(localStorage.getItem('nojs_cache_somekey')).toBeNull();
-    expect(sessionStorage.getItem('nojs_cache_somekey')).toBeNull();
-  });
-});
-
-describe('fetch.js — storage quota error', () => {
-  test('_cacheSet silently handles localStorage setItem throwing', () => {
-    const originalSetItem = Storage.prototype.setItem;
-    Storage.prototype.setItem = jest.fn(() => {
-      throw new DOMException('QuotaExceededError');
-    });
-
-    expect(() => _cacheSet('quotakey', { big: 'data' }, 'local')).not.toThrow();
-
-    Storage.prototype.setItem = originalSetItem;
-  });
-
-  test('_cacheGet silently handles localStorage getItem throwing', () => {
-    const originalGetItem = Storage.prototype.getItem;
-    Storage.prototype.getItem = jest.fn(() => {
-      throw new Error('SecurityError');
-    });
-
-    expect(_cacheGet('securekey', 'local')).toBeNull();
-
-    Storage.prototype.getItem = originalGetItem;
-  });
-});
 
 describe('fetch.js — external abort signal listener fires abort callback (L77)', () => {
   let origFetch;

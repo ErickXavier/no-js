@@ -5,7 +5,7 @@
 import { evaluate, _execStatement, resolve } from "../evaluate.js";
 import { findContext } from "../dom.js";
 import { createContext } from "../context.js";
-import { registerDirective, processTree } from "../registry.js";
+import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { _onDispose, _warn } from "../globals.js";
 
 // ─── Module-scoped DnD coordination state ─────────────────────────────
@@ -414,7 +414,8 @@ registerDirective("drag", {
         if (disabled) el.removeAttribute("aria-grabbed");
         else el.setAttribute("aria-grabbed", "false");
       }
-      ctx.$watch(updateDisabled);
+      const unwatchDisabled = ctx.$watch(updateDisabled);
+      _onDispose(unwatchDisabled);
     }
 
     // Keyboard DnD support
@@ -724,6 +725,7 @@ registerDirective("drag-list", {
       const tpl = tplId ? document.getElementById(tplId) : null;
       if (!tpl) return;
 
+      _disposeChildren(el);
       el.innerHTML = "";
       const count = list.length;
 
@@ -1074,7 +1076,8 @@ registerDirective("drag-list", {
     });
 
     // ─── Reactive rendering ──────────────────────────────────────────
-    ctx.$watch(renderItems);
+    const unwatchList = ctx.$watch(renderItems);
+    _onDispose(unwatchList);
     renderItems();
   },
 });

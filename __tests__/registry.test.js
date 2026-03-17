@@ -1,5 +1,7 @@
-import { registerDirective, processElement, processTree } from '../src/registry.js';
+import { registerDirective, processElement, processTree, _disposeTree, _disposeChildren } from '../src/registry.js';
 import { createContext } from '../src/context.js';
+import { _setCurrentEl, _onDispose, _storeWatchers } from '../src/globals.js';
+import { _i18nListeners } from '../src/i18n.js';
 
 describe('Directive Registry', () => {
   describe('registerDirective', () => {
@@ -134,6 +136,171 @@ describe('Directive Registry', () => {
       processTree(root);
 
       expect(initFn).toHaveBeenCalledWith(root, 'root-test', 'val');
+    });
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DISPOSAL: _disposeTree, _disposeChildren
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('Disposal', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  describe('_disposeTree', () => {
+    test('calls __disposers on root and all descendants', () => {
+      const root = document.createElement('div');
+      const child = document.createElement('span');
+      const grandchild = document.createElement('p');
+      root.appendChild(child);
+      child.appendChild(grandchild);
+
+      const fn1 = jest.fn();
+      const fn2 = jest.fn();
+      const fn3 = jest.fn();
+      root.__disposers = [fn1];
+      child.__disposers = [fn2];
+      grandchild.__disposers = [fn3];
+
+      _disposeTree(root);
+
+      expect(fn1).toHaveBeenCalledTimes(1);
+      expect(fn2).toHaveBeenCalledTimes(1);
+      expect(fn3).toHaveBeenCalledTimes(1);
+    });
+
+    test('nulls out __disposers after calling them', () => {
+      const el = document.createElement('div');
+      el.__disposers = [jest.fn()];
+
+      _disposeTree(el);
+
+      expect(el.__disposers).toBeNull();
+    });
+
+    test('resets __declared to false', () => {
+      const el = document.createElement('div');
+      el.__declared = true;
+      el.__disposers = [];
+
+      _disposeTree(el);
+
+      expect(el.__declared).toBe(false);
+    });
+
+    test('clears context __listeners and removes from _storeWatchers', () => {
+      const fn = jest.fn();
+      _storeWatchers.add(fn);
+
+      const el = document.createElement('div');
+      el.__ctx = { __listeners: new Set([fn]) };
+
+      _disposeTree(el);
+
+      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(el.__ctx.__listeners.size).toBe(0);
+    });
+
+    test('handles null root gracefully', () => {
+      expect(() => _disposeTree(null)).not.toThrow();
+    });
+  });
+
+  describe('_disposeChildren', () => {
+    test('calls __disposers on children but NOT on parent', () => {
+      const parent = document.createElement('div');
+      const child1 = document.createElement('span');
+      const child2 = document.createElement('p');
+      parent.appendChild(child1);
+      parent.appendChild(child2);
+
+      const parentFn = jest.fn();
+      const childFn1 = jest.fn();
+      const childFn2 = jest.fn();
+      parent.__disposers = [parentFn];
+      child1.__disposers = [childFn1];
+      child2.__disposers = [childFn2];
+
+      _disposeChildren(parent);
+
+      expect(parentFn).not.toHaveBeenCalled();
+      expect(childFn1).toHaveBeenCalledTimes(1);
+      expect(childFn2).toHaveBeenCalledTimes(1);
+    });
+
+    test('disposes deeply nested descendants', () => {
+      const root = document.createElement('div');
+      const child = document.createElement('div');
+      const grandchild = document.createElement('span');
+      root.appendChild(child);
+      child.appendChild(grandchild);
+
+      const deepFn = jest.fn();
+      grandchild.__disposers = [deepFn];
+
+      _disposeChildren(root);
+
+      expect(deepFn).toHaveBeenCalledTimes(1);
+    });
+
+    test('resets __declared on children only', () => {
+      const parent = document.createElement('div');
+      parent.__declared = true;
+      const child = document.createElement('span');
+      child.__declared = true;
+      parent.appendChild(child);
+
+      _disposeChildren(parent);
+
+      expect(parent.__declared).toBe(true);
+      expect(child.__declared).toBe(false);
+    });
+
+    test('handles parent with no children', () => {
+      const parent = document.createElement('div');
+      expect(() => _disposeChildren(parent)).not.toThrow();
+    });
+  });
+
+  describe('_onDispose registration', () => {
+    test('registers callback that fires on _disposeTree', () => {
+      const el = document.createElement('div');
+      const cleanup = jest.fn();
+
+      _setCurrentEl(el);
+      _onDispose(cleanup);
+      _setCurrentEl(null);
+
+      _disposeTree(el);
+
+      expect(cleanup).toHaveBeenCalledTimes(1);
+    });
+
+    test('multiple _onDispose callbacks are all called', () => {
+      const el = document.createElement('div');
+      const fn1 = jest.fn();
+      const fn2 = jest.fn();
+      const fn3 = jest.fn();
+
+      _setCurrentEl(el);
+      _onDispose(fn1);
+      _onDispose(fn2);
+      _onDispose(fn3);
+      _setCurrentEl(null);
+
+      _disposeTree(el);
+
+      expect(fn1).toHaveBeenCalledTimes(1);
+      expect(fn2).toHaveBeenCalledTimes(1);
+      expect(fn3).toHaveBeenCalledTimes(1);
+    });
+
+    test('does not register when _currentEl is null', () => {
+      _setCurrentEl(null);
+      _onDispose(jest.fn());
+      // No error, just a no-op
     });
   });
 });

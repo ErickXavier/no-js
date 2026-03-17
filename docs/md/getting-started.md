@@ -8,23 +8,7 @@
 <script src="https://cdn.no-js.dev/"></script>
 ```
 
-### NPM
-
-```bash
-npm install no-js
-```
-
-```js
-// ESM
-import NoJS from 'no-js';
-await NoJS.init();
-
-// CommonJS
-const NoJS = require('no-js');
-await NoJS.init();
-```
-
-> `init()` returns a **Promise** — it loads remote templates and initializes the router before processing directives. When using the CDN `<script>` tag, this is handled automatically on `DOMContentLoaded`.
+> When using the CDN `<script>` tag, initialization is handled automatically on `DOMContentLoaded`.
 
 ### Self-hosted
 

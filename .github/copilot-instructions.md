@@ -2,7 +2,7 @@
 
 ## Overview
 
-No.JS is an HTML-first reactive framework (~20 KB gzipped, zero dependencies). Users build dynamic web apps using HTML attributes only — no JavaScript required. The framework ships in three formats: IIFE (CDN), ESM, and CJS.
+No.JS is an HTML-first reactive framework (~20 KB gzipped, zero dependencies). Users build dynamic web apps using HTML attributes only — no JavaScript required. The framework is distributed exclusively via CDN — there is no NPM package or ESM/CJS install path for end users.
 
 ## Architecture
 
@@ -39,10 +39,10 @@ src/
 ## Build
 
 ```sh
-node build.js        # → dist/iife/no.js, dist/esm/no.js, dist/cjs/no.js (esbuild, minified + sourcemaps)
+node build.js        # → dist/iife/no.js (esbuild, minified + sourcemaps)
 ```
 
-Build target is ES2020. Version must be updated in **both** `package.json` and `src/index.js`.
+Build target is ES2020. The only user-facing output is `dist/iife/no.js` (served via CDN). Version must be updated in **both** `package.json` and `src/index.js`.
 
 ## Testing
 

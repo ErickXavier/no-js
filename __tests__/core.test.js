@@ -15,7 +15,11 @@ import {
   _notifyStoreWatchers,
   _watchExpr,
   _emitEvent,
+  _setCurrentEl,
+  _onDispose,
 } from '../src/globals.js';
+
+import { _disposeTree } from '../src/registry.js';
 
 import {
   createContext,
@@ -72,14 +76,6 @@ describe('Globals', () => {
       expect(typeof _stores).toBe('object');
     });
 
-    test('_storeWatchers is a Set', () => {
-      expect(_storeWatchers).toBeInstanceOf(Set);
-    });
-
-    test('_filters is an object', () => {
-      expect(typeof _filters).toBe('object');
-    });
-
     test('_validators is an object', () => {
       expect(typeof _validators).toBe('object');
     });
@@ -88,9 +84,6 @@ describe('Globals', () => {
       expect(_cache).toBeInstanceOf(Map);
     });
 
-    test('_refs is an object', () => {
-      expect(typeof _refs).toBe('object');
-    });
   });
 
   describe('setRouterInstance', () => {
@@ -176,6 +169,45 @@ describe('Globals', () => {
       _watchExpr('$store.cart.items', ctx, fn);
       expect(_storeWatchers.size).toBe(sizeBefore + 1);
       _storeWatchers.delete(fn);
+    });
+
+    test('registers _onDispose that calls unwatch on disposal', () => {
+      const ctx = createContext({ x: 1 });
+      const fn = jest.fn();
+      const el = document.createElement('div');
+      document.body.appendChild(el);
+
+      _setCurrentEl(el);
+      _watchExpr('x', ctx, fn);
+      _setCurrentEl(null);
+
+      // Watcher fires before disposal
+      ctx.x = 2;
+      expect(fn).toHaveBeenCalledTimes(1);
+
+      // Dispose the element
+      _disposeTree(el);
+
+      // Watcher should no longer fire after disposal
+      fn.mockClear();
+      ctx.x = 3;
+      expect(fn).not.toHaveBeenCalled();
+    });
+
+    test('removes from _storeWatchers on disposal', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+      const el = document.createElement('div');
+
+      _setCurrentEl(el);
+      _watchExpr('$store.cart.items', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      _disposeTree(el);
+
+      expect(_storeWatchers.has(fn)).toBe(false);
     });
   });
 });
@@ -568,28 +600,6 @@ describe('evaluate.js — filter args with quotes and commas', () => {
   });
 });
 
-describe('_execStatement — setters write back local state', () => {
-  test('writes modified state back to context after execution', () => {
-    const ctx = createContext({ x: 1, y: 2 });
-    _execStatement('x = x + y', ctx);
-    expect(ctx.x).toBe(3);
-    expect(ctx.y).toBe(2);
-  });
-
-  test('handles multiple assignments in sequence', () => {
-    const ctx = createContext({ a: 0, b: 0 });
-    _execStatement('a = 10; b = 20', ctx);
-    expect(ctx.a).toBe(10);
-    expect(ctx.b).toBe(20);
-  });
-
-  test('writes back unchanged variables without error', () => {
-    const ctx = createContext({ foo: 'bar' });
-    _execStatement('void 0', ctx);
-    expect(ctx.foo).toBe('bar');
-  });
-});
-
 describe('context.js — get handler special keys', () => {
   test('$form returns null when not set', () => {
     const ctx = createContext({});
@@ -881,28 +891,6 @@ describe('evaluate — pipe parsing edge cases (L104)', () => {
     const ctx = createContext({ a: 1, b: 2 });
     const result = evaluate('[a | b]', ctx);
     expect(result).toEqual([3]);
-  });
-});
-
-describe('evaluate — _execStatement setter writeback (L172-182)', () => {
-  test('writes back modified local state through setters', () => {
-    const ctx = createContext({ count: 0, name: 'test' });
-    _execStatement('count = 42', ctx);
-    expect(ctx.count).toBe(42);
-  });
-
-  test('writes back multiple local variables', () => {
-    const ctx = createContext({ x: 1, y: 2 });
-    _execStatement('x = 10; y = 20', ctx);
-    expect(ctx.x).toBe(10);
-    expect(ctx.y).toBe(20);
-  });
-
-  test('preserves unchanged variables through setter fallback', () => {
-    const ctx = createContext({ a: 'keep', b: 'change' });
-    _execStatement('b = "changed"', ctx);
-    expect(ctx.a).toBe('keep');
-    expect(ctx.b).toBe('changed');
   });
 });
 

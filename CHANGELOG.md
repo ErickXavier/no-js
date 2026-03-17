@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2](https://github.com/ErickXavier/no-js/compare/v1.8.1...v1.8.2) — 2026-03-17
+
+### Fixed
+
+- Fix memory leaks across 10 directive files: dispose child contexts before `innerHTML = ""` ([#4](https://github.com/ErickXavier/no-js/issues/4))
+- Fix `_watchExpr` in `globals.js`: capture `$watch` unsubscribe and register via `_onDispose` so ancestor-context watchers are cleaned on element disposal ([#4](https://github.com/ErickXavier/no-js/issues/4))
+- Fix `on:*` and `trigger` event listeners leaking on re-render: register `removeEventListener` via `_onDispose` ([#4](https://github.com/ErickXavier/no-js/issues/4))
+- Fix `bind-*`, `model`, `call`, `drag`, `drag-list` listener/watcher leaks via `_onDispose` cleanup ([#4](https://github.com/ErickXavier/no-js/issues/4))
+
+### Added
+
+- `_disposeChildren(parent)` utility in `registry.js` for safe child disposal before `innerHTML` clear
+- 27 new unit tests for disposal behavior across `registry`, `core`, `directives-core`, and `directives-data`
+
+### Changed
+
+- Remove 86 disposable unit tests (duplicates, no-assertion, trivially obvious) identified by QA audit
+- Remove landing page E2E tests (docs site tests moved out of scope)
+- Remove NPM/ESM install references from documentation (CDN-only distribution)
+
 ## [1.8.1](https://github.com/ErickXavier/no-js/compare/v1.8.0...v1.8.1) — 2026-03-17
 
 ### Changed

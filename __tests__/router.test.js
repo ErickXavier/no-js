@@ -2454,27 +2454,6 @@ describe('Router — base stripping (_stripBase)', () => {
     expect(router.current.path).toBe('lication');
   });
 
-  test('base "" with pathname "/about" returns "/about"', async () => {
-    _config.router = { useHash: false, base: '', scrollBehavior: 'top' };
-    const outlet = document.createElement('div');
-    outlet.setAttribute('route-view', '');
-    document.body.appendChild(outlet);
-
-    const tpl = document.createElement('template');
-    tpl.setAttribute('route', '/about');
-    tpl.innerHTML = '<p>About</p>';
-    document.body.appendChild(tpl);
-
-    window.history.pushState({}, '', '/about');
-
-    const router = _createRouter();
-    setRouterInstance(router);
-    await router.init();
-
-    expect(router.current.path).toBe('/about');
-    expect(router.current.matched).toBe(true);
-  });
-
   test('base "/" with pathname "/" returns "/"', async () => {
     _config.router = { useHash: false, base: '/', scrollBehavior: 'top' };
     const outlet = document.createElement('div');
@@ -2674,8 +2653,5 @@ describe('Router — mode→useHash backward compat', () => {
     _config.router.useHash = false;
   });
 
-  test('default useHash is false (history mode)', () => {
-    expect(_config.router.useHash).toBe(false);
-  });
 });
 

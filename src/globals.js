@@ -62,7 +62,11 @@ export function _notifyStoreWatchers() {
 }
 
 export function _watchExpr(expr, ctx, fn) {
-  ctx.$watch(fn);
+  const unwatch = ctx.$watch(fn);
+  _onDispose(() => {
+    unwatch();
+    _storeWatchers.delete(fn);
+  });
   if (typeof expr === "string" && expr.includes("$store")) {
     _storeWatchers.add(fn);
   }

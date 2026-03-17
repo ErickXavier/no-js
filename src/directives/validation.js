@@ -6,7 +6,7 @@
 import { _validators, _onDispose } from "../globals.js";
 import { createContext } from "../context.js";
 import { findContext, _cloneTemplate } from "../dom.js";
-import { registerDirective, processTree } from "../registry.js";
+import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { evaluate } from "../evaluate.js";
 
 // ── ValidityState → rule name mapping ────────────────────────────────
@@ -544,6 +544,7 @@ registerDirective("error-boundary", {
           { err: { message } },
           ctx,
         );
+        _disposeChildren(el);
         el.innerHTML = "";
         const wrapper = document.createElement("div");
         wrapper.style.display = "contents";

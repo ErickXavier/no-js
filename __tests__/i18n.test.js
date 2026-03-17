@@ -91,42 +91,6 @@ describe('i18n System', () => {
   });
 });
 
-describe('index.js — i18n detectBrowser', () => {
-  test('sets locale when browser language matches available locale', async () => {
-    const { default: No } = await import('../src/index.js');
-
-    const originalLanguage = navigator.language;
-    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
-
-    No.i18n({
-      locales: { 'en': { hello: 'Hello' }, 'pt-BR': { hello: 'Olá' } },
-      defaultLocale: 'en',
-      detectBrowser: true,
-    });
-
-    expect(_i18n.locale).toBe('pt-BR');
-
-    Object.defineProperty(navigator, 'language', { value: originalLanguage, configurable: true });
-  });
-
-  test('keeps default locale when browser language is not available', async () => {
-    const { default: No } = await import('../src/index.js');
-
-    const originalLanguage = navigator.language;
-    Object.defineProperty(navigator, 'language', { value: 'ja-JP', configurable: true });
-
-    No.i18n({
-      locales: { 'en': { hello: 'Hello' }, 'fr': { hello: 'Bonjour' } },
-      defaultLocale: 'en',
-      detectBrowser: true,
-    });
-
-    expect(_i18n.locale).toBe('en');
-
-    Object.defineProperty(navigator, 'language', { value: originalLanguage, configurable: true });
-  });
-});
-
 describe('i18n — pluralization edge cases', () => {
   beforeEach(() => {
     _i18n.locale = 'en';

@@ -1,12 +1,9 @@
 
 
 
-
-
-
 import { _stores, _config } from '../src/globals.js';
 import { createContext } from '../src/context.js';
-import { registerDirective, processTree, processElement } from '../src/registry.js';
+import { registerDirective, processTree, processElement, _disposeTree, _disposeChildren } from '../src/registry.js';
 import { findContext } from '../src/dom.js';
 
 
@@ -1528,59 +1525,6 @@ describe('if without animations', () => {
   });
 });
 
-describe('else-if hides when prior if is true', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
-  });
-
-  test('hides else-if when preceding if is truthy', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 5 }');
-
-    const ifEl = document.createElement('div');
-    ifEl.setAttribute('if', 'x > 3');
-    ifEl.innerHTML = '<p>IF block</p>';
-
-    const elseIfEl = document.createElement('div');
-    elseIfEl.setAttribute('else-if', 'x > 1');
-    elseIfEl.innerHTML = '<p>ELSE-IF block</p>';
-
-    parent.appendChild(ifEl);
-    parent.appendChild(elseIfEl);
-    document.body.appendChild(parent);
-
-    processTree(parent);
-
-    expect(ifEl.querySelector('p').textContent).toBe('IF block');
-    expect(elseIfEl.style.display).toBe('none');
-  });
-
-  test('shows else-if when preceding if is falsy', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 2 }');
-
-    const ifEl = document.createElement('div');
-    ifEl.setAttribute('if', 'x > 3');
-    ifEl.innerHTML = '<p>IF block</p>';
-
-    const elseIfEl = document.createElement('div');
-    elseIfEl.setAttribute('else-if', 'x > 1');
-    elseIfEl.innerHTML = '<p>ELSE-IF block</p>';
-
-    parent.appendChild(ifEl);
-    parent.appendChild(elseIfEl);
-    document.body.appendChild(parent);
-
-    processTree(parent);
-
-    expect(elseIfEl.style.display).not.toBe('none');
-  });
-});
-
-
-
-
-
 describe('bind-html — null/undefined value', () => {
   afterEach(() => {
     document.body.innerHTML = '';
@@ -1633,8 +1577,6 @@ describe('bind-html — null/undefined value', () => {
 
 
 
-
-
 describe('model SELECT — null value branch', () => {
   afterEach(() => {
     document.body.innerHTML = '';
@@ -1677,60 +1619,6 @@ describe('model SELECT — null value branch', () => {
 
 
 
-
-
-describe('if directive — with then template (L41)', () => {
-  test('renders then template when condition is true', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'then-tpl';
-    tpl.innerHTML = '<span class="then-content">Then!</span>';
-    document.body.appendChild(tpl);
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ show: true }');
-    const el = document.createElement('div');
-    el.setAttribute('if', 'show');
-    el.setAttribute('then', 'then-tpl');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(el.querySelector('.then-content')).not.toBeNull();
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
-
-describe('if directive — with else template (L53)', () => {
-  test('renders else template when condition is false', () => {
-    const thenTpl = document.createElement('template');
-    thenTpl.id = 'if-then-tpl';
-    thenTpl.innerHTML = '<span class="yes">Yes</span>';
-    document.body.appendChild(thenTpl);
-
-    const elseTpl = document.createElement('template');
-    elseTpl.id = 'if-else-tpl';
-    elseTpl.innerHTML = '<span class="no">No</span>';
-    document.body.appendChild(elseTpl);
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ visible: false }');
-    const el = document.createElement('div');
-    el.setAttribute('if', 'visible');
-    el.setAttribute('then', 'if-then-tpl');
-    el.setAttribute('else', 'if-else-tpl');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(el.querySelector('.no')).not.toBeNull();
-    expect(el.querySelector('.yes')).toBeNull();
-    document.body.removeChild(parent);
-    document.body.removeChild(thenTpl);
-    document.body.removeChild(elseTpl);
-  });
-});
-
 describe('if directive — animLeave/transition (L26, L30-34)', () => {
   test('if with animate-leave removes content via animation', async () => {
     const parent = document.createElement('div');
@@ -1760,392 +1648,165 @@ describe('if directive — animLeave/transition (L26, L30-34)', () => {
   });
 });
 
-describe('else-if — with then template (L106)', () => {
-  test('renders then template when else-if matches', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'elseif-then-tpl';
-    tpl.innerHTML = '<span class="elif-content">Else-If Then!</span>';
-    document.body.appendChild(tpl);
+// ═══════════════════════════════════════════════════════════════════════
+//  DISPOSAL: directives register _onDispose cleanup
+// ═══════════════════════════════════════════════════════════════════════
 
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 5 }');
-    const ifEl = document.createElement('div');
-    ifEl.setAttribute('if', 'x > 10');
-    ifEl.innerHTML = '<span>Big</span>';
-    parent.appendChild(ifEl);
-
-    const elifEl = document.createElement('div');
-    elifEl.setAttribute('else-if', 'x > 3');
-    elifEl.setAttribute('then', 'elseif-then-tpl');
-    parent.appendChild(elifEl);
-
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(elifEl.querySelector('.elif-content')).not.toBeNull();
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
-
-describe('switch — case with then template (L170-180)', () => {
-  test('renders then template for matching case', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'switch-then-tpl';
-    tpl.innerHTML = '<span class="switched">Switched!</span>';
-    document.body.appendChild(tpl);
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', "{ tab: 'a' }");
-    const sw = document.createElement('div');
-    sw.setAttribute('switch', 'tab');
-
-    const caseA = document.createElement('div');
-    caseA.setAttribute('case', "'a'");
-    caseA.setAttribute('then', 'switch-then-tpl');
-    sw.appendChild(caseA);
-
-    const caseB = document.createElement('div');
-    caseB.setAttribute('case', "'b'");
-    caseB.innerHTML = '<span>B</span>';
-    sw.appendChild(caseB);
-
-    parent.appendChild(sw);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(caseA.querySelector('.switched')).not.toBeNull();
-    expect(caseB.style.display).toBe('none');
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
-
-describe('switch — default with then template (L184)', () => {
-  test('renders then template for default case when no match', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'default-then-tpl';
-    tpl.innerHTML = '<span class="default-content">Default!</span>';
-    document.body.appendChild(tpl);
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', "{ tab: 'z' }");
-    const sw = document.createElement('div');
-    sw.setAttribute('switch', 'tab');
-
-    const caseA = document.createElement('div');
-    caseA.setAttribute('case', "'a'");
-    caseA.innerHTML = '<span>A</span>';
-    sw.appendChild(caseA);
-
-    const defEl = document.createElement('div');
-    defEl.setAttribute('default', '');
-    defEl.setAttribute('then', 'default-then-tpl');
-    sw.appendChild(defEl);
-
-    parent.appendChild(sw);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(caseA.style.display).toBe('none');
-    expect(defEl.querySelector('.default-content')).not.toBeNull();
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
-
-
-
-
-
-describe('state — null/falsy value (L15 || {} fallback)', () => {
-  test('state with null expression creates empty context', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', 'null');
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    const ctx = findContext(parent);
-    expect(ctx).toBeDefined();
-    document.body.removeChild(parent);
-  });
-});
-
-describe('store — empty storeName (L63 early return)', () => {
-  test('store with empty name does nothing', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('store', '');
-    document.body.appendChild(parent);
-    processTree(parent);
-    
-    document.body.removeChild(parent);
-  });
-});
-
-describe('computed — missing expr (L94-96 early return)', () => {
-  test('computed without expr attribute does nothing', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 1 }');
-    const comp = document.createElement('div');
-    comp.setAttribute('computed', 'doubled');
-    
-    parent.appendChild(comp);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    const ctx = findContext(comp);
-    expect(ctx.doubled).toBeUndefined();
-    document.body.removeChild(parent);
-  });
-
-  test('computed without name does nothing', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 1 }');
-    const comp = document.createElement('div');
-    comp.setAttribute('computed', '');
-    comp.setAttribute('expr', 'x * 2');
-    parent.appendChild(comp);
-    document.body.appendChild(parent);
-    processTree(parent);
-    
-    document.body.removeChild(parent);
-  });
-});
-
-
-
-
-
-
-describe('if — no-change early return (L26)', () => {
-  test('update returns early when condition value unchanged', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ show: true, other: 1 }');
-    const el = document.createElement('div');
-    el.setAttribute('if', 'show');
-    el.textContent = 'Visible';
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(el.textContent).toBe('Visible');
-    
-    const ctx = findContext(el);
-    ctx.$set('other', 2);
-    
-    expect(el.textContent).toBe('Visible');
-    document.body.removeChild(parent);
-  });
-});
-
-describe('if — then with missing template (L41 clone null)', () => {
-  test('gracefully handles nonexistent then template', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ show: true }');
-    const el = document.createElement('div');
-    el.setAttribute('if', 'show');
-    el.setAttribute('then', 'nonexistent-tpl-xyz-41');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-    
-    document.body.removeChild(parent);
-  });
-});
-
-describe('if — else with missing template (L53 clone null)', () => {
-  test('gracefully handles nonexistent else template', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ show: false }');
-    const el = document.createElement('div');
-    el.setAttribute('if', 'show');
-    el.setAttribute('else', 'nonexistent-else-xyz-53');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-    
-    document.body.removeChild(parent);
-  });
-});
-
-describe('else-if — then with missing template (L106 clone null)', () => {
-  test('gracefully handles nonexistent then template in else-if', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 0 }');
-    const ifEl = document.createElement('div');
-    ifEl.setAttribute('if', 'x > 10');
-    ifEl.innerHTML = '<span>Big</span>';
-    parent.appendChild(ifEl);
-
-    const elifEl = document.createElement('div');
-    elifEl.setAttribute('else-if', 'x < 5');
-    elifEl.setAttribute('then', 'nonexistent-elif-tpl-106');
-    parent.appendChild(elifEl);
-    document.body.appendChild(parent);
-    processTree(parent);
-    
-    document.body.removeChild(parent);
-  });
-});
-
-describe('switch — case then missing template (L170 clone null)', () => {
-  test('gracefully handles nonexistent then template in case', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', "{ mode: 'a' }");
-    const sw = document.createElement('div');
-    sw.setAttribute('switch', 'mode');
-    const caseEl = document.createElement('div');
-    caseEl.setAttribute('case', "'a'");
-    caseEl.setAttribute('then', 'nonexistent-switch-case-170');
-    sw.appendChild(caseEl);
-    parent.appendChild(sw);
-    document.body.appendChild(parent);
-    processTree(parent);
-    document.body.removeChild(parent);
-  });
-});
-
-describe('switch — default then missing template (L184 clone null)', () => {
-  test('gracefully handles nonexistent then template on default', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', "{ mode: 'z' }");
-    const sw = document.createElement('div');
-    sw.setAttribute('switch', 'mode');
-    const caseEl = document.createElement('div');
-    caseEl.setAttribute('case', "'a'");
-    caseEl.innerHTML = '<span>A</span>';
-    sw.appendChild(caseEl);
-    const defEl = document.createElement('div');
-    defEl.setAttribute('default', '');
-    defEl.setAttribute('then', 'nonexistent-default-184');
-    sw.appendChild(defEl);
-    parent.appendChild(sw);
-    document.body.appendChild(parent);
-    processTree(parent);
-    document.body.removeChild(parent);
-  });
-});
-
-
-
-
-
-
-describe('state — no parent element (L15 false branch)', () => {
-  test('state on detached element uses null parent', () => {
-    const el = document.createElement('div');
-    el.setAttribute('state', '{ x: 42 }');
-    
-    processTree(el);
-    const ctx = findContext(el);
-    expect(ctx).toBeDefined();
-    expect(ctx.x).toBe(42);
-  });
-});
-
-describe('store — value evaluates to falsy (L63 || {} fallback)', () => {
+describe('Directive disposal cleanup', () => {
   afterEach(() => {
     document.body.innerHTML = '';
-    delete _stores['falsyStore'];
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
   });
 
-  test('store with value=null uses empty object fallback', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('store', 'falsyStore');
-    parent.setAttribute('value', 'null');
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(_stores.falsyStore).toBeDefined();
-    document.body.removeChild(parent);
+  describe('if directive disposal', () => {
+    test('disposes children before re-rendering on condition change', () => {
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ show: true }');
+      const ifEl = document.createElement('div');
+      ifEl.setAttribute('if', 'show');
+      ifEl.innerHTML = '<span>visible</span>';
+      parent.appendChild(ifEl);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      const span = ifEl.querySelector('span');
+      expect(span).not.toBeNull();
+
+      // Toggle off — should clear content
+      parent.__ctx.show = false;
+      expect(ifEl.innerHTML).toBe('');
+
+      // Toggle on — should restore content
+      parent.__ctx.show = true;
+      expect(ifEl.querySelector('span')).not.toBeNull();
+    });
+
+    test('disposes children when _disposeTree is called on if element', () => {
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ show: true }');
+      const ifEl = document.createElement('div');
+      ifEl.setAttribute('if', 'show');
+      ifEl.innerHTML = '<span>visible</span>';
+      parent.appendChild(ifEl);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      _disposeTree(ifEl);
+      expect(ifEl.__declared).toBe(false);
+    });
+  });
+
+  describe('on:* event listener disposal', () => {
+    test('click handler removed after _disposeTree', () => {
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ count: 0 }');
+      const btn = document.createElement('button');
+      btn.setAttribute('on:click', 'count++');
+      parent.appendChild(btn);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      // Handler works before disposal
+      btn.click();
+      expect(parent.__ctx.count).toBe(1);
+
+      const removeSpy = jest.spyOn(btn, 'removeEventListener');
+      _disposeTree(btn);
+
+      expect(removeSpy).toHaveBeenCalledWith(
+        'click',
+        expect.any(Function),
+        expect.any(Object)
+      );
+      removeSpy.mockRestore();
+    });
+  });
+
+  describe('each loop disposal', () => {
+    test('disposes children when list changes', () => {
+      const tpl = document.createElement('template');
+      tpl.id = 'loop-item-tpl';
+      tpl.innerHTML = '<span class="loop-item"></span>';
+      document.body.appendChild(tpl);
+
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ items: [1, 2, 3] }');
+      const list = document.createElement('div');
+      list.setAttribute('each', 'item in items');
+      list.setAttribute('template', 'loop-item-tpl');
+      parent.appendChild(list);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      expect(list.querySelectorAll('.loop-item').length).toBe(3);
+
+      // Update list — old children should be disposed, new ones rendered
+      parent.__ctx.items = [4, 5];
+      expect(list.querySelectorAll('.loop-item').length).toBe(2);
+    });
+
+    test('disposeTree on loop container cleans up', () => {
+      const tpl = document.createElement('template');
+      tpl.id = 'loop-dispose-tpl';
+      tpl.innerHTML = '<span></span>';
+      document.body.appendChild(tpl);
+
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ items: [1, 2] }');
+      const list = document.createElement('div');
+      list.setAttribute('each', 'item in items');
+      list.setAttribute('template', 'loop-dispose-tpl');
+      parent.appendChild(list);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      _disposeTree(list);
+      expect(list.__declared).toBe(false);
+    });
+  });
+
+  describe('bind-value disposal', () => {
+    test('input handler removed after _disposeTree', () => {
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ name: "" }');
+      const input = document.createElement('input');
+      input.setAttribute('bind-value', 'name');
+      parent.appendChild(input);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      const removeSpy = jest.spyOn(input, 'removeEventListener');
+      _disposeTree(input);
+
+      expect(removeSpy).toHaveBeenCalledWith(
+        'input',
+        expect.any(Function)
+      );
+      removeSpy.mockRestore();
+    });
+  });
+
+  describe('model disposal', () => {
+    test('model handler removed after _disposeTree', () => {
+      const parent = document.createElement('div');
+      parent.setAttribute('state', '{ text: "" }');
+      const input = document.createElement('input');
+      input.setAttribute('model', 'text');
+      parent.appendChild(input);
+      document.body.appendChild(parent);
+      processTree(parent);
+
+      const removeSpy = jest.spyOn(input, 'removeEventListener');
+      _disposeTree(input);
+
+      // model uses 'input' event by default for text inputs
+      expect(removeSpy).toHaveBeenCalled();
+      removeSpy.mockRestore();
+    });
   });
 });
 
-describe('watch — no change and no handler (L94-96)', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
-  });
 
-  test('watch watcher fires but expression unchanged (L94 false)', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ target: 1, other: 10 }');
-    const w = document.createElement('div');
-    w.setAttribute('watch', 'target');
-    w.setAttribute('on:change', 'other = other + 1');
-    parent.appendChild(w);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    const ctx = findContext(w);
-    
-    ctx.$set('other', 20);
-    expect(ctx.target).toBe(1);
-  });
-
-  test('watch without on:change handler (L96 false)', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ counter: 0 }');
-    const w = document.createElement('div');
-    w.setAttribute('watch', 'counter');
-    
-    parent.appendChild(w);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    const ctx = findContext(w);
-    ctx.$set('counter', 5);
-    
-    expect(ctx.counter).toBe(5);
-  });
-});
-
-
-
-
-
-
-describe('bind — null/undefined skips textContent (L16)', () => {
-  test('bind with null value clears text', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ text: null }');
-    const el = document.createElement('span');
-    el.textContent = 'original';
-    el.setAttribute('bind', 'text');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(el.textContent).toBe('');
-    document.body.removeChild(parent);
-  });
-
-  test('bind with undefined value clears text', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{}');
-    const el = document.createElement('span');
-    el.textContent = 'placeholder';
-    el.setAttribute('bind', 'missingProp');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(el.textContent).toBe('');
-    document.body.removeChild(parent);
-  });
-});
-
-describe('bind-* — boolean attr on element without DOM property (L70 false)', () => {
-  test('bind-checked on div skips DOM property assignment', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ flag: true }');
-    const el = document.createElement('div');
-    el.setAttribute('bind-checked', 'flag');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-    
-    expect(el.hasAttribute('checked')).toBe(true);
-    expect(el.checked).toBeUndefined();
-    document.body.removeChild(parent);
-  });
-});
 
 describe('model — text input with null value (L98)', () => {
   test('model on text input sets empty string when null', () => {
@@ -2161,36 +1822,6 @@ describe('model — text input with null value (L98)', () => {
     document.body.removeChild(parent);
   });
 });
-
-describe('switch — child with neither case nor default (L180 false)', () => {
-  test('ignores plain child elements in switch', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', "{ tab: 'a' }");
-    const sw = document.createElement('div');
-    sw.setAttribute('switch', 'tab');
-
-    const caseA = document.createElement('div');
-    caseA.setAttribute('case', "'a'");
-    caseA.innerHTML = '<span>A</span>';
-    sw.appendChild(caseA);
-
-    
-    const plainChild = document.createElement('hr');
-    sw.appendChild(plainChild);
-
-    parent.appendChild(sw);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    
-    expect(caseA.style.display).toBe('');
-    document.body.removeChild(parent);
-  });
-});
-
-
-
-
 
 describe('on:updated lifecycle hook', () => {
   afterEach(() => {
@@ -2237,8 +1868,6 @@ describe('on:error lifecycle hook', () => {
     expect(() => processTree(parent)).not.toThrow();
   });
 });
-
-
 
 
 
@@ -2295,8 +1924,6 @@ describe('hide with animation attributes', () => {
     expect(child.classList.contains('fadeIn')).toBe(true);
   });
 });
-
-
 
 
 

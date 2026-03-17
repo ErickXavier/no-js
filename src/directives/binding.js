@@ -2,7 +2,7 @@
 //  DIRECTIVES: bind, bind-html, bind-*, model
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _watchExpr } from "../globals.js";
+import { _watchExpr, _onDispose } from "../globals.js";
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext, _sanitizeHtml } from "../dom.js";
 import { registerDirective } from "../registry.js";
@@ -46,10 +46,12 @@ registerDirective("bind-*", {
         el.tagName === "TEXTAREA" ||
         el.tagName === "SELECT")
     ) {
-      el.addEventListener("input", () => {
+      const inputHandler = () => {
         const val = el.type === "number" ? Number(el.value) : el.value;
         _execStatement(`${expr} = ${JSON.stringify(val)}`, ctx);
-      });
+      };
+      el.addEventListener("input", inputHandler);
+      _onDispose(() => el.removeEventListener("input", inputHandler));
     }
 
     function update() {
@@ -104,13 +106,15 @@ registerDirective("model", {
       tag === "SELECT" || type === "checkbox" || type === "radio"
         ? "change"
         : "input";
-    el.addEventListener(event, () => {
+    const domHandler = () => {
       let val;
       if (type === "checkbox") val = el.checked;
       else if (type === "number" || type === "range") val = Number(el.value);
       else val = el.value;
       _execStatement(`${expr} = __val`, ctx, { __val: val });
-    });
+    };
+    el.addEventListener(event, domHandler);
+    _onDispose(() => el.removeEventListener(event, domHandler));
 
     _watchExpr(expr, ctx, update);
     update();

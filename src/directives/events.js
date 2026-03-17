@@ -142,6 +142,9 @@ registerDirective("on:*", {
     if (modifiers.has("once")) opts.once = true;
 
     el.addEventListener(event, handler, opts);
+    if (!opts.once) {
+      _onDispose(() => el.removeEventListener(event, handler, opts));
+    }
   },
 });
 
@@ -150,9 +153,11 @@ registerDirective("trigger", {
   init(el, name, eventName) {
     const ctx = findContext(el);
     const dataExpr = el.getAttribute("trigger-data");
-    el.addEventListener("click", () => {
+    const clickHandler = () => {
       const detail = dataExpr ? evaluate(dataExpr, ctx) : null;
       el.dispatchEvent(new CustomEvent(eventName, { detail, bubbles: true }));
-    });
+    };
+    el.addEventListener("click", clickHandler);
+    _onDispose(() => el.removeEventListener("click", clickHandler));
   },
 });

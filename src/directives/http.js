@@ -15,7 +15,7 @@ import { createContext } from "../context.js";
 import { evaluate, _execStatement, _interpolate } from "../evaluate.js";
 import { _doFetch, _cacheGet, _cacheSet } from "../fetch.js";
 import { findContext, _clearDeclared, _cloneTemplate } from "../dom.js";
-import { registerDirective, processTree } from "../registry.js";
+import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { _devtoolsEmit } from "../devtools.js";
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete"];
@@ -96,6 +96,7 @@ for (const method of HTTP_METHODS) {
         if (loadingTpl) {
           const clone = _cloneTemplate(loadingTpl);
           if (clone) {
+            _disposeChildren(el);
             el.innerHTML = "";
             el.appendChild(clone);
             processTree(el);
@@ -149,6 +150,7 @@ for (const method of HTTP_METHODS) {
           ) {
             const clone = _cloneTemplate(emptyTpl);
             if (clone) {
+              _disposeChildren(el);
               el.innerHTML = "";
               el.appendChild(clone);
               processTree(el);
@@ -169,6 +171,7 @@ for (const method of HTTP_METHODS) {
           if (successTpl) {
             const clone = _cloneTemplate(successTpl);
             if (clone) {
+              _disposeChildren(el);
               el.innerHTML = "";
               // Inject var
               const tplEl = document.getElementById(
@@ -185,6 +188,7 @@ for (const method of HTTP_METHODS) {
             }
           } else {
             // Restore original children and re-process
+            _disposeChildren(el);
             el.innerHTML = "";
             for (const child of originalChildren)
               el.appendChild(child.cloneNode(true));
@@ -216,6 +220,7 @@ for (const method of HTTP_METHODS) {
           if (errorTpl) {
             const clone = _cloneTemplate(errorTpl);
             if (clone) {
+              _disposeChildren(el);
               el.innerHTML = "";
               const tplEl = document.getElementById(
                 errorTpl.replace("#", ""),
@@ -244,18 +249,22 @@ for (const method of HTTP_METHODS) {
 
       // For forms, intercept submit
       if (el.tagName === "FORM" && method !== "get") {
-        el.addEventListener("submit", (e) => {
+        const submitHandler = (e) => {
           e.preventDefault();
           doRequest();
-        });
+        };
+        el.addEventListener("submit", submitHandler);
+        _onDispose(() => el.removeEventListener("submit", submitHandler));
       } else if (method === "get") {
         doRequest();
       } else {
         // Non-GET on non-FORM: attach click listener
-        el.addEventListener("click", (e) => {
+        const clickHandler = (e) => {
           e.preventDefault();
           doRequest();
-        });
+        };
+        el.addEventListener("click", clickHandler);
+        _onDispose(() => el.removeEventListener("click", clickHandler));
       }
 
       // Reactive URL watching: re-fetch when {expressions} in URL change
@@ -278,13 +287,22 @@ for (const method of HTTP_METHODS) {
           }
         }
 
+        _onDispose(() => {
+          if (_debounceTimer) clearTimeout(_debounceTimer);
+        });
+
         // Watch all ancestor contexts for changes
         let ancestor = parentCtx;
         while (ancestor && ancestor.__isProxy) {
-          ancestor.$watch(onAncestorChange);
+          const unwatch = ancestor.$watch(onAncestorChange);
+          _onDispose(unwatch);
           ancestor = ancestor.$parent;
         }
       }
+
+      // Expose doRequest for programmatic re-fetch via $refs
+      el.refresh = doRequest;
+      _onDispose(() => { delete el.refresh; });
 
       // Polling
       if (refreshInterval > 0) {

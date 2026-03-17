@@ -106,3 +106,9 @@ export function _disposeTree(root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
   while (walker.nextNode()) _disposeElement(walker.currentNode);
 }
+
+export function _disposeChildren(parent) {
+  if (!parent) return;
+  const walker = document.createTreeWalker(parent, NodeFilter.SHOW_ELEMENT);
+  while (walker.nextNode()) _disposeElement(walker.currentNode);
+}

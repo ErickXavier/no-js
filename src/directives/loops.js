@@ -6,7 +6,7 @@ import { createContext } from "../context.js";
 import { _watchExpr } from "../globals.js";
 import { evaluate, resolve } from "../evaluate.js";
 import { findContext, _cloneTemplate } from "../dom.js";
-import { registerDirective, processTree } from "../registry.js";
+import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { _animateOut } from "../animations.js";
 
 registerDirective("each", {
@@ -48,6 +48,7 @@ registerDirective("each", {
       if (list.length === 0 && elseTpl) {
         const clone = _cloneTemplate(elseTpl);
         if (clone) {
+          _disposeChildren(el);
           el.innerHTML = "";
           el.appendChild(clone);
           processTree(el);
@@ -80,6 +81,7 @@ registerDirective("each", {
 
     function renderItems(tpl, list) {
       const count = list.length;
+      _disposeChildren(el);
       el.innerHTML = "";
 
       list.forEach((item, i) => {
@@ -178,6 +180,7 @@ registerDirective("foreach", {
       if (list.length === 0 && elseTpl) {
         const clone = _cloneTemplate(elseTpl);
         if (clone) {
+          _disposeChildren(el);
           el.innerHTML = "";
           el.appendChild(clone);
           processTree(el);
@@ -189,6 +192,7 @@ registerDirective("foreach", {
       const count = list.length;
 
       function renderForeachItems() {
+        _disposeChildren(el);
         el.innerHTML = "";
         list.forEach((item, i) => {
           const childData = {

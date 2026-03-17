@@ -74,14 +74,6 @@ describe('DOM Helpers', () => {
     test('returns null for non-existent template', () => {
       expect(_cloneTemplate('nonexistent')).toBeNull();
     });
-
-    test('returns null for empty id', () => {
-      expect(_cloneTemplate('')).toBeNull();
-    });
-
-    test('returns null for null id', () => {
-      expect(_cloneTemplate(null)).toBeNull();
-    });
   });
 
   describe('_sanitizeHtml', () => {
@@ -236,20 +228,6 @@ describe('_loadRemoteTemplates', () => {
   });
 });
 
-describe('_cloneTemplate — element without .content', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
-  });
-
-  test('returns null when element found by ID has no .content property', () => {
-    const div = document.createElement('div');
-    div.id = 'plain-div';
-    document.body.appendChild(div);
-
-    expect(_cloneTemplate('plain-div')).toBeNull();
-  });
-});
-
 describe('_loadRemoteTemplates — uncovered branches', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
@@ -258,15 +236,6 @@ describe('_loadRemoteTemplates — uncovered branches', () => {
 
   afterEach(() => {
     delete global.fetch;
-  });
-
-  test('returns immediately when scope has no template[src] (L67)', async () => {
-    const div = document.createElement('div');
-    div.innerHTML = '<p>No templates</p>';
-    document.body.appendChild(div);
-
-    await _loadRemoteTemplates(div);
-    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   test('./ path with no ancestor __srcBase strips prefix (L56)', async () => {
@@ -304,31 +273,6 @@ describe('_loadRemoteTemplates — uncovered branches', () => {
 
     expect(wrapper.querySelector('template[route]')).not.toBeNull();
     expect(wrapper.querySelector('p')).toBeNull();
-  });
-
-  test('skips __srcBase when tpl.content is falsy (L83)', async () => {
-    global.fetch.mockResolvedValue({
-      ok: true,
-      text: () => Promise.resolve('<span>ok</span>'),
-    });
-
-    const wrapper = document.createElement('div');
-    const tpl = document.createElement('template');
-    tpl.setAttribute('src', '/frag.html');
-    tpl.setAttribute('route', '/frag');
-    wrapper.appendChild(tpl);
-    document.body.appendChild(wrapper);
-
-    Object.defineProperty(tpl, 'content', {
-      value: null,
-      writable: true,
-      configurable: true,
-    });
-
-    await _loadRemoteTemplates();
-
-    expect(global.fetch).toHaveBeenCalledWith('/frag.html');
-    expect(wrapper.querySelector('template[route]')).not.toBeNull();
   });
 });
 

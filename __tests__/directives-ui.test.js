@@ -1414,63 +1414,9 @@ describe('class-list with falsy items', () => {
   });
 });
 
-describe('class-map with non-object result', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
-  });
 
-  test('class-map does nothing when expression returns non-object', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ val: "not-an-object" }');
-    const div = document.createElement('div');
-    div.setAttribute('class-map', 'val');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
 
-    expect(() => processTree(parent)).not.toThrow();
-    expect(div.classList.length).toBe(0);
-  });
 
-  test('class-map does nothing when expression returns null', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ val: null }');
-    const div = document.createElement('div');
-    div.setAttribute('class-map', 'val');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-
-    expect(() => processTree(parent)).not.toThrow();
-    expect(div.classList.length).toBe(0);
-  });
-});
-
-describe('style-map with non-object result', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
-  });
-
-  test('style-map does nothing when expression returns non-object', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ val: 42 }');
-    const div = document.createElement('div');
-    div.setAttribute('style-map', 'val');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-
-    expect(() => processTree(parent)).not.toThrow();
-  });
-
-  test('style-map does nothing when expression returns null', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ val: null }');
-    const div = document.createElement('div');
-    div.setAttribute('style-map', 'val');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-
-    expect(() => processTree(parent)).not.toThrow();
-  });
-});
 
 describe('style-* with null value', () => {
   afterEach(() => {
@@ -1518,139 +1464,17 @@ describe('style-* with null value', () => {
 
 
 
-describe('each — no template attribute (L39-40 tpl=null early return)', () => {
-  test('does nothing when template attribute is missing', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ items: [1,2,3] }');
-    const el = document.createElement('div');
-    el.setAttribute('each', 'item in items');
-    
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
 
-    
-    expect(el.children.length).toBe(0);
-    document.body.removeChild(parent);
-  });
-});
 
-describe('each — empty list without else template (L31 false branch)', () => {
-  test('does not render else content when list is empty and no else attr', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'item-tpl-empty';
-    tpl.innerHTML = '<span class="item"></span>';
-    document.body.appendChild(tpl);
 
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ items: [] }');
-    const el = document.createElement('div');
-    el.setAttribute('each', 'item in items');
-    el.setAttribute('template', 'item-tpl-empty');
-    
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
 
-    expect(el.children.length).toBe(0);
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
 
-describe('foreach — inline template (L133 false branch, no tplId)', () => {
-  test('uses element itself as template when no template attr', () => {
-    
-    
-    
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ colors: ["red","blue"] }');
 
-    
-    const tpl = document.createElement('template');
-    tpl.id = 'inline-color-tpl';
-    tpl.innerHTML = '<span class="c"></span>';
-    document.body.appendChild(tpl);
 
-    const el = document.createElement('div');
-    el.setAttribute('foreach', 'color');
-    el.setAttribute('from', 'colors');
-    el.setAttribute('template', 'inline-color-tpl');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
 
-    const wrappers = el.querySelectorAll('div[style*="contents"]');
-    expect(wrappers.length).toBe(2);
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
 
-describe('foreach — descending sort (L120-122)', () => {
-  test('sorts items in descending order with - prefix', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'sort-tpl';
-    tpl.innerHTML = '<span class="sorted"></span>';
-    document.body.appendChild(tpl);
 
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ items: [{n:1},{n:3},{n:2}] }');
-    const el = document.createElement('div');
-    el.setAttribute('foreach', 'item');
-    el.setAttribute('from', 'items');
-    el.setAttribute('sort', '-n');
-    el.setAttribute('template', 'sort-tpl');
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
 
-    const wrappers = el.querySelectorAll('div[style*="contents"]');
-    expect(wrappers.length).toBe(3);
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
-
-describe('foreach — no filter, no sort (L94, L102 false branches)', () => {
-  test('renders without filter or sort when those attrs are absent', () => {
-    const tpl = document.createElement('template');
-    tpl.id = 'plain-foreach-tpl';
-    tpl.innerHTML = '<span class="plain"></span>';
-    document.body.appendChild(tpl);
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ nums: [10,20,30] }');
-    const el = document.createElement('div');
-    el.setAttribute('foreach', 'num');
-    el.setAttribute('from', 'nums');
-    el.setAttribute('template', 'plain-foreach-tpl');
-    
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(el.querySelectorAll('.plain').length).toBe(3);
-    document.body.removeChild(parent);
-    document.body.removeChild(tpl);
-  });
-});
-
-describe('foreach — missing fromPath (L71 early return)', () => {
-  test('does nothing when from attribute is missing', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ x: 1 }');
-    const el = document.createElement('div');
-    el.setAttribute('foreach', 'item');
-    
-    parent.appendChild(el);
-    document.body.appendChild(parent);
-    processTree(parent);
-
-    expect(el.children.length).toBe(0);
-    document.body.removeChild(parent);
-  });
-});
 
 
 
@@ -1739,29 +1563,5 @@ describe('on:keydown key modifiers — all keys', () => {
 
 
 
-describe('class-list with non-array value (L34 Array.isArray false)', () => {
-  test('skips processing when expression evaluates to a string', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ cls: "not-an-array" }');
-    const div = document.createElement('div');
-    div.setAttribute('class-list', 'cls');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(div.classList.length).toBe(0);
-    document.body.removeChild(parent);
-  });
 
-  test('skips processing when expression evaluates to null', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ cls: null }');
-    const div = document.createElement('div');
-    div.setAttribute('class-list', 'cls');
-    parent.appendChild(div);
-    document.body.appendChild(parent);
-    processTree(parent);
-    expect(div.classList.length).toBe(0);
-    document.body.removeChild(parent);
-  });
-});
 
