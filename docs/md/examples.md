@@ -41,6 +41,7 @@ via a request interceptor.
     <script>
       NoJS.store.auth.user  = res.user;
       NoJS.store.auth.token = res.token;
+      NoJS.notify(); // flush DOM bindings after external store mutation
       NoJS.router.push('/dashboard');
     </script>
   </template>
@@ -50,7 +51,7 @@ via a request interceptor.
 </template>
 ```
 
-**Key concepts:** `interceptor('request')` · `store` · `form` · `validate` · `post` · `guard` · `redirect` · `success/error` templates
+**Key concepts:** `interceptor('request')` · `store` · `form` · `validate` · `post` · `guard` · `redirect` · `success/error` templates · `notify()`
 
 ---
 
@@ -68,6 +69,7 @@ automatically — no extra code needed in the route itself.
     if (response.status === 401 || response.status === 403) {
       NoJS.store.auth.user  = null;
       NoJS.store.auth.token = null;
+      NoJS.notify(); // flush DOM bindings before redirect
       NoJS.router.push('/login');
       throw new Error('Session expired');
     }
@@ -226,6 +228,7 @@ All five patterns combined into a single production-grade SPA:
       if (response.status === 401 || response.status === 403) {
         NoJS.store.auth.user  = null;
         NoJS.store.auth.token = null;
+        NoJS.notify(); // flush DOM bindings before redirect
         NoJS.router.push('/login');
         throw new Error('Session expired');
       }
@@ -250,6 +253,7 @@ All five patterns combined into a single production-grade SPA:
       <script>
         NoJS.store.auth.user = res.user;
         NoJS.store.auth.token = res.token;
+        NoJS.notify();
         NoJS.router.push('/dashboard');
       </script>
     </template>

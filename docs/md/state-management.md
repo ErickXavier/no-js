@@ -163,4 +163,42 @@ Persist state across page reloads:
 
 ---
 
+## `NoJS.notify()` — Flush Store Updates from JavaScript
+
+When external JavaScript (interceptors, helper functions, `<script>` blocks) mutates a store via `NoJS.store`, the DOM bindings don't update automatically because the mutation bypasses the framework's expression engine. Call `NoJS.notify()` after mutating the store to flush all pending DOM updates.
+
+```html
+<script>
+  function addToCart(item) {
+    NoJS.store.cart.items.push(item);
+    NoJS.store.cart.total += item.price;
+    NoJS.notify(); // ← triggers DOM update
+  }
+</script>
+
+<div store="cart" value="{ items: [], total: 0 }"></div>
+<span bind="$store.cart.items.length + ' items'"></span>
+```
+
+### Interceptor example
+
+```html
+<script>
+  NoJS.interceptor('response', (response) => {
+    if (response.status === 401) {
+      NoJS.store.auth.user = null;
+      NoJS.store.auth.token = null;
+      NoJS.notify(); // ← flush before redirect
+      NoJS.router.push('/login');
+      throw new Error('Session expired');
+    }
+    return response;
+  });
+</script>
+```
+
+> **When do I need `notify()`?** Only when you mutate `NoJS.store` from plain JavaScript — outside of HTML expressions like `on:click` or `bind`. If you write `on:click="$store.cart.count++"` directly in HTML, the framework handles notification automatically.
+
+---
+
 **Next:** [Events →](events.md)

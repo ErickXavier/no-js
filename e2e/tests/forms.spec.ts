@@ -96,7 +96,13 @@ test.describe('Forms & Validation', () => {
     const error = page.getByTestId('html5-required-error');
     const valid = page.getByTestId('html5-required-valid');
 
+    // Form is invalid but errors only show after interaction
     await expect(valid).toHaveText('false');
+    await expect(error).toBeEmpty();
+
+    // Touch the field to trigger error display
+    await input.focus();
+    await input.blur();
     await expect(error).not.toBeEmpty();
 
     await input.fill('myuser');
@@ -173,15 +179,25 @@ test.describe('Forms & Validation', () => {
   test('13 — firstError and errorCount', async ({ page }) => {
     const firstError = page.getByTestId('first-error');
     const errorCount = page.getByTestId('error-count');
+    const countA = page.getByTestId('count-a');
+    const countB = page.getByTestId('count-b');
 
+    // Before interaction, errors are not displayed
+    await expect(errorCount).toHaveText('0');
+
+    // Touch both fields to trigger error display
+    await countA.focus();
+    await countA.blur();
+    await countB.focus();
+    await countB.blur();
     await expect(firstError).toHaveText('Field A is required');
     await expect(errorCount).toHaveText('2');
 
-    await page.getByTestId('count-a').fill('ok');
+    await countA.fill('ok');
     await expect(firstError).toHaveText('Field B is required');
     await expect(errorCount).toHaveText('1');
 
-    await page.getByTestId('count-b').fill('ok');
+    await countB.fill('ok');
     await expect(errorCount).toHaveText('0');
   });
 
@@ -195,9 +211,10 @@ test.describe('Forms & Validation', () => {
     await expect(valid).toHaveText('true');
     await expect(error).toBeEmpty();
 
-    // Check → now company is required
+    // Check → now company is required, touch the field to show error
     await toggle.check();
-    await page.waitForTimeout(100);
+    await input.focus();
+    await input.blur();
     await expect(valid).toHaveText('false');
     await expect(error).toHaveText('Company is required');
 
@@ -229,7 +246,12 @@ test.describe('Forms & Validation', () => {
     const rendered = page.getByTestId('tpl-rendered');
     const input = page.getByTestId('tpl-input');
 
-    // Template should render with error message
+    // Before interaction, template should not render
+    await expect(rendered).toHaveCount(0);
+
+    // Touch the field to trigger error template
+    await input.focus();
+    await input.blur();
     await expect(rendered).toHaveCount(1);
     await expect(rendered).not.toBeEmpty();
 

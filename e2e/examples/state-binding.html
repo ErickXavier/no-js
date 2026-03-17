@@ -67,6 +67,21 @@
     <div data-test="html-output" bind-html="html"></div>
   </section>
 
+  <!-- 8. External store mutation via notify() -->
+  <script>
+    function toggleThemeExternal() {
+      NoJS.store.app.theme = NoJS.store.app.theme === 'light' ? 'dark' : 'light';
+      NoJS.notify();
+    }
+  </script>
+  <section state="{}">
+    <p class="test-label">Test 8: External store mutation + notify()</p>
+    <span class="value" data-test="notify-display" bind="$store.app.theme"></span>
+    <button data-test="notify-toggle" on:click="toggleThemeExternal()">
+      Toggle via JS
+    </button>
+  </section>
+
   <script src="../../dist/iife/no.js"></script>
   <script>NoJS.init();</script>
 </body>

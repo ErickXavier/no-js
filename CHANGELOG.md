@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `NoJS.notify()` public API method to flush store watchers after external JavaScript mutations to `NoJS.store`
+- Documentation for `NoJS.notify()` with interceptor and cart examples in state-management guide
+- E2E test for external store mutation via `NoJS.notify()`
+- Unit tests for `NoJS.notify()` (6 test cases covering safety, pruning, and DOM updates)
+
+### Fixed
+
+- E2E form validation tests (8, 13, 14, 16) now properly interact with fields (focus/blur) before asserting errors, matching the pristine-aware validation behavior
+
 ## [1.7.0](https://github.com/ErickXavier/no-js/compare/v1.6.1...v1.7.0) — 2026-03-13
 
 ### Added

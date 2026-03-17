@@ -307,6 +307,78 @@ describe('NoJS.store', () => {
   });
 });
 
+describe('NoJS.notify()', () => {
+  test('exposes notify as a function', () => {
+    expect(typeof NoJS.notify).toBe('function');
+  });
+
+  test('is safe to call with no stores or watchers', () => {
+    expect(() => NoJS.notify()).not.toThrow();
+  });
+
+  test('triggers store watchers', () => {
+    const { _storeWatchers } = require('../src/globals.js');
+    const fn1 = jest.fn();
+    const fn2 = jest.fn();
+    _storeWatchers.add(fn1);
+    _storeWatchers.add(fn2);
+
+    NoJS.notify();
+
+    expect(fn1).toHaveBeenCalledTimes(1);
+    expect(fn2).toHaveBeenCalledTimes(1);
+
+    _storeWatchers.delete(fn1);
+    _storeWatchers.delete(fn2);
+  });
+
+  test('prunes disconnected element watchers', () => {
+    const { _storeWatchers } = require('../src/globals.js');
+    const fn = jest.fn();
+    fn._el = { isConnected: false };
+    _storeWatchers.add(fn);
+
+    NoJS.notify();
+
+    expect(fn).not.toHaveBeenCalled();
+    expect(_storeWatchers.has(fn)).toBe(false);
+  });
+
+  test('multiple rapid calls do not break anything', () => {
+    const { _storeWatchers } = require('../src/globals.js');
+    const fn = jest.fn();
+    _storeWatchers.add(fn);
+
+    NoJS.notify();
+    NoJS.notify();
+    NoJS.notify();
+
+    expect(fn).toHaveBeenCalledTimes(3);
+    _storeWatchers.delete(fn);
+  });
+
+  test('DOM updates after external store mutation + notify()', async () => {
+    NoJS.config({
+      stores: { counter: { value: 0 } },
+    });
+
+    document.body.innerHTML = `
+      <div state="{}">
+        <span id="count" bind="$store.counter.value"></span>
+      </div>
+    `;
+    await NoJS.init();
+
+    expect(document.getElementById('count').textContent).toBe('0');
+
+    // External mutation — bypasses expression engine
+    NoJS.store.counter.value = 42;
+    NoJS.notify();
+
+    expect(document.getElementById('count').textContent).toBe('42');
+  });
+});
+
 describe('Integration: state + bind', () => {
   test('binds state to text content', async () => {
     document.body.innerHTML = `

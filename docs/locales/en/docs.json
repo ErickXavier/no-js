@@ -302,6 +302,11 @@
       "persistence": {
         "title": "State Persistence",
         "text": "Persist state across page reloads using localStorage or sessionStorage."
+      },
+      "notify": {
+        "title": "NoJS.notify() — Flush Store Updates",
+        "text": "When external JavaScript mutates a store via NoJS.store, call NoJS.notify() to flush all pending DOM updates.",
+        "callout": "Only needed when mutating NoJS.store from plain JavaScript — outside of HTML expressions. Store mutations inside on:click or bind expressions are handled automatically."
       }
     },
     "dataBinding": {

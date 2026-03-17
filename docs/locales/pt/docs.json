@@ -302,6 +302,11 @@
       "persistence": {
         "title": "Persistência de Estado",
         "text": "Persista o estado entre recarregamentos de página usando localStorage ou sessionStorage."
+      },
+      "notify": {
+        "title": "NoJS.notify() — Atualizar Store",
+        "text": "Quando JavaScript externo muta uma store via NoJS.store, chame NoJS.notify() para atualizar todos os bindings do DOM.",
+        "callout": "Só é necessário ao mutar NoJS.store a partir de JavaScript puro — fora de expressões HTML. Mutações dentro de on:click ou bind são tratadas automaticamente."
       }
     },
     "dataBinding": {

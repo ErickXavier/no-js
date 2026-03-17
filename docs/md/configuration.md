@@ -102,6 +102,7 @@ If a store name already exists, `config()` will **not** overwrite it. This means
   NoJS.interceptor('response', (response, url) => {
     if (response.status === 401) {
       NoJS.store.auth.user = null;
+      NoJS.notify(); // flush DOM bindings before redirect
       NoJS.router.push('/login');
       throw new Error('Unauthorized');
     }

@@ -316,7 +316,7 @@ registerDirective("validate", {
           // $form.valid reflects real state (keeps submit disabled)
           if (!fieldValid) valid = false;
 
-          // $form.errors only shows errors for non-pristine fields
+          // $form.errors only shows errors for interacted fields
           if (!fieldValid && fieldInteracted) {
             errors[field.name] = topError.message;
             errorCount++;

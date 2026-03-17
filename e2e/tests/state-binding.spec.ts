@@ -71,4 +71,16 @@ test.describe('State & Binding', () => {
     await expect(output.locator('strong')).toHaveText('bold');
     await expect(output.locator('em')).toHaveText('italic');
   });
+
+  test('8 — External store mutation with NoJS.notify()', async ({ page }) => {
+    const display = page.getByTestId('notify-display');
+    await expect(display).toHaveText('light');
+
+    await page.getByTestId('notify-toggle').click();
+    await expect(display).toHaveText('dark');
+
+    // Click again to verify toggling back works
+    await page.getByTestId('notify-toggle').click();
+    await expect(display).toHaveText('light');
+  });
 });
