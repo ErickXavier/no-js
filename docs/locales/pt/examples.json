@@ -48,15 +48,15 @@
     "polling": {
       "badge": "Iniciante",
       "title": "Polling em Tempo Real",
-      "desc": "Um painel de status do servidor que atualiza automaticamente a cada 5 segundos usando o atributo <code>poll</code>. Estilização condicional reage instantaneamente ao estado de saúde atual — sem <code>setInterval</code>, sem loop de <code>fetch</code>.",
+      "desc": "Um painel de status do servidor que atualiza automaticamente a cada 5 segundos usando o atributo <code>refresh</code>. Estilização condicional reage instantaneamente ao estado de saúde atual — sem <code>setInterval</code>, sem loop de <code>fetch</code>.",
       "serverStatus": "Status do Servidor",
       "online": "Online",
       "cpu": "CPU",
       "reqPerSec": "Req/s",
       "errors": "Erros",
       "lastResponse": "Último tempo de resposta",
-      "nextPoll": "Próximo poll em",
-      "refreshNote": "Atualiza automaticamente via <code>poll=\"5000\"</code>",
+      "nextPoll": "Próximo refresh em",
+      "refreshNote": "Atualiza automaticamente via <code>refresh=\"5000\"</code>",
       "onlineBadge": "Online"
     },
     "cta": {

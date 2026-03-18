@@ -2739,7 +2739,7 @@
                       "id": "DAx4w",
                       "name": "vLabel",
                       "fill": "#0EA5E9",
-                      "content": "v1.8.0",
+                      "content": "v1.9.1",
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 11,
                       "fontWeight": "500"
@@ -3108,7 +3108,7 @@
                   "id": "7LzA7",
                   "name": "verTxt",
                   "fill": "#64748B",
-                  "content": "No.JS v1.8.0",
+                  "content": "No.JS v1.9.1",
                   "fontFamily": "Inter",
                   "fontSize": 13,
                   "fontWeight": "normal"
@@ -17862,7 +17862,7 @@
                   "id": "kZNx8",
                   "name": "heroBadgeTxt",
                   "fill": "#0EA5E9",
-                  "content": "v1.8.0 — HTML-first reactive framework",
+                  "content": "HTML-first reactive framework",
                   "fontFamily": "Space Grotesk",
                   "fontSize": 13,
                   "fontWeight": "600"

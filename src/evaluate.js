@@ -1161,6 +1161,7 @@ export function evaluate(expr, ctx) {
 
     return result;
   } catch (e) {
+    _warn("Expression error:", expr, e.message);
     return undefined;
   }
 }

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1](https://github.com/ErickXavier/no-js/compare/v1.9.0...v1.9.1) — 2026-03-18
+
+### Fixed
+
+- Fix `foreach` directive infinite recursion: strip 15 directive attributes from inline template clone before `processTree` re-entry ([#5](https://github.com/ErickXavier/no-js/issues/5))
+- Add `_warn()` call in `evaluate()` catch block for visible error reporting ([#5](https://github.com/ErickXavier/no-js/issues/5))
+- Make `_deepMerge`, `_i18nCache`, `_loadedNs`, `_loadLocale` module-private in i18n.js ([#5](https://github.com/ErickXavier/no-js/issues/5))
+- Fix docs Example 1 (Login): replace verbose `success` template with `then` + `redirect`
+- Fix docs Example 3 (Live Search): replace unsupported `function()` syntax with arrow function
+- Fix docs Example 5 (Live Polling): correct `poll` → `refresh` attribute across template and 5 locales
+
+### Added
+
+- 11 new unit tests covering `foreach` inline-template and `evaluate` error-reporting fixes
+
 ## [1.9.0](https://github.com/ErickXavier/no-js/compare/v1.8.2...v1.9.0) — 2026-03-17
 
 ### Added

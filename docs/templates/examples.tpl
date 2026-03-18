@@ -244,8 +244,12 @@
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/login"</span>
           <span class="hl-attr">guard</span>=<span class="hl-str">"!$store.auth.token"</span>
           <span class="hl-attr">redirect</span>=<span class="hl-str">"/dashboard"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-cmt">&lt;!-- then runs after success; result = response data --&gt;</span>
   <span class="hl-tag">&lt;form</span> <span class="hl-attr">post</span>=<span class="hl-str">"/auth/login"</span> <span class="hl-attr">validate</span>
-        <span class="hl-attr">success</span>=<span class="hl-str">"#auth-ok"</span> <span class="hl-attr">error</span>=<span class="hl-str">"#auth-err"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-attr">then</span>=<span class="hl-str">"$store.auth.user = result.user;</span>
+<span class="hl-str">              $store.auth.token = result.token"</span>
+        <span class="hl-attr">redirect</span>=<span class="hl-str">"/dashboard"</span>
+        <span class="hl-attr">error</span>=<span class="hl-str">"#auth-err"</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;input</span> <span class="hl-attr">name</span>=<span class="hl-str">"email"</span> <span class="hl-attr">type</span>=<span class="hl-str">"email"</span>
            <span class="hl-attr">required</span> <span class="hl-attr">validate</span>=<span class="hl-str">"email"</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;input</span> <span class="hl-attr">name</span>=<span class="hl-str">"password"</span> <span class="hl-attr">type</span>=<span class="hl-str">"password"</span>
@@ -257,13 +261,6 @@
     <span class="hl-tag">&lt;/button&gt;</span>
   <span class="hl-tag">&lt;/form&gt;</span>
 
-  <span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"auth-ok"</span> <span class="hl-attr">var</span>=<span class="hl-str">"res"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;script&gt;</span>
-      <span class="hl-fn">NoJS</span>.store.auth.user  <span class="hl-op">=</span> res.user;
-      <span class="hl-fn">NoJS</span>.store.auth.token <span class="hl-op">=</span> res.token;
-      <span class="hl-fn">NoJS</span>.router.<span class="hl-fn">push</span>(<span class="hl-str">'/dashboard'</span>);
-    <span class="hl-tag">&lt;/script&gt;</span>
-  <span class="hl-tag">&lt;/template&gt;</span>
   <span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"auth-err"</span> <span class="hl-attr">var</span>=<span class="hl-str">"err"</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-str">"error"</span> <span class="hl-attr">bind</span>=<span class="hl-str">"err.message"</span>
        <span class="hl-attr">animate</span>=<span class="hl-str">"shake"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
@@ -271,7 +268,7 @@
 <span class="hl-tag">&lt;/template&gt;</span></pre>
     </div>
     <!-- Live preview: working login mock -->
-    <div class="example-preview-panel" state="{ loggedIn: false, email: '', password: '' }" style="justify-content:center;">
+    <div class="example-preview-panel" state="{ loggedIn: false, email: '', password: '' }" style="justify-content:flex-start;">
       <div show="!loggedIn" style="display:flex;flex-direction:column;gap:14px;width:100%">
         <div class="form-group" style="margin-bottom:0">
           <label class="form-label" t="examples.login.emailLabel"></label>
@@ -442,7 +439,7 @@
       <input class="input" placeholder="Search products..." style="margin-bottom:0"
              style-border-bottom-left-radius="query ? '0' : ''"
              style-border-bottom-right-radius="query ? '0' : ''"
-             on:input="query = $event.target.value; filtered = products.filter(function(item){ return item.name.toLowerCase().includes(query.toLowerCase()) })">
+             on:input="query = $event.target.value; filtered = products.filter(item => item.name.toLowerCase().includes(query.toLowerCase()))">
       <!-- Results panel: only visible when user has typed something -->
       <div show="query" style="width:100%;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden;background:var(--white)">
         <div each="p in filtered" template="srch-row-tpl"></div>
@@ -556,7 +553,7 @@
   </div>
   <p class="example-desc" t="examples.polling.desc" t-html>
     A server-status dashboard that refreshes automatically every 5 seconds using
-    the <code>poll</code> attribute. Conditional styling reacts instantly to the
+    the <code>refresh</code> attribute. Conditional styling reacts instantly to the
     current health state — no <code>setInterval</code>, no <code>fetch</code> loop.
   </p>
   <div class="example-panels">
@@ -564,7 +561,7 @@
       <span class="code-tab">index.html</span>
       <pre><span class="hl-cmt">&lt;!-- Refetches /api/status every 5 seconds --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/status"</span>
-     <span class="hl-attr">poll</span>=<span class="hl-str">"5000"</span>
+     <span class="hl-attr">refresh</span>=<span class="hl-str">"5000"</span>
      <span class="hl-attr">as</span>=<span class="hl-str">"s"</span><span class="hl-tag">&gt;</span>
 
   <span class="hl-cmt">&lt;!-- Badge: green when healthy, red otherwise --&gt;</span>
@@ -614,7 +611,7 @@
         </div>
       </div>
       <div style="font-size:11px;color:var(--text-muted);text-align:center" t="examples.polling.refreshNote" t-html>
-        Refreshes automatically via <code>poll="5000"</code>
+        Refreshes automatically via <code>refresh="5000"</code>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 {
   "landing": {
     "hero": {
-      "badge": "v1.8.0 — Framework réactif HTML-first",
+      "badge": "Framework réactif HTML-first",
       "headline": "Créez des apps réactives\nsans JavaScript.",
       "subtitle": "No.JS est un framework HTML-first qui transforme les attributs en un moteur réactif complet. ~24 KB gzippé, zéro dépendances, aucune étape de build.",
       "getStarted": "Commencer",

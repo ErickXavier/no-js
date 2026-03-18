@@ -48,15 +48,15 @@
     "polling": {
       "badge": "Débutant",
       "title": "Polling en direct",
-      "desc": "Un tableau de bord de statut serveur qui se rafraîchit automatiquement toutes les 5 secondes grâce à l'attribut <code>poll</code>. Le style conditionnel réagit instantanément à l'état de santé actuel — pas de <code>setInterval</code>, pas de boucle <code>fetch</code>.",
+      "desc": "Un tableau de bord de statut serveur qui se rafraîchit automatiquement toutes les 5 secondes grâce à l'attribut <code>refresh</code>. Le style conditionnel réagit instantanément à l'état de santé actuel — pas de <code>setInterval</code>, pas de boucle <code>fetch</code>.",
       "serverStatus": "Statut du serveur",
       "online": "En ligne",
       "cpu": "CPU",
       "reqPerSec": "Req/s",
       "errors": "Erreurs",
       "lastResponse": "Dernier temps de réponse",
-      "nextPoll": "Prochain poll dans",
-      "refreshNote": "Se rafraîchit automatiquement via <code>poll=\"5000\"</code>",
+      "nextPoll": "Prochain refresh dans",
+      "refreshNote": "Se rafraîchit automatiquement via <code>refresh=\"5000\"</code>",
       "onlineBadge": "En ligne"
     },
     "cta": {

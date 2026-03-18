@@ -21,7 +21,7 @@ export function _notifyI18n() {
 }
 
 // ─── Deep merge (recursive, returns new object) ─────────────────────
-export function _deepMerge(target, source) {
+function _deepMerge(target, source) {
   const out = { ...target };
   for (const key of Object.keys(source)) {
     if (
@@ -37,11 +37,11 @@ export function _deepMerge(target, source) {
 }
 
 // ─── Locale file cache: Map<string, object>  key = "en" or "en:dashboard"
-export const _i18nCache = new Map();
-export const _loadedNs = new Set();
+const _i18nCache = new Map();
+const _loadedNs = new Set();
 
 // ─── Fetch a single JSON file and merge into _i18n.locales[locale] ──
-export async function _loadLocale(locale, ns) {
+async function _loadLocale(locale, ns) {
   const cacheKey = ns ? `${locale}:${ns}` : locale;
   if (_config.i18n.cache && _i18nCache.has(cacheKey)) return;
 
