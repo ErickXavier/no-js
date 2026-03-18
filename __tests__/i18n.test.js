@@ -1,4 +1,4 @@
-import { _i18n, _i18nListeners, _watchI18n, _notifyI18n, _deepMerge, _i18nCache, _loadLocale, _loadI18nForLocale, _loadI18nNamespace } from '../src/i18n.js';
+import { _i18n, _i18nListeners, _watchI18n, _notifyI18n, _loadI18nForLocale, _loadI18nNamespace } from '../src/i18n.js';
 import { _config } from '../src/globals.js';
 
 describe('i18n System', () => {
@@ -199,50 +199,72 @@ describe('i18n — pluralization forms[1] fallback (L25)', () => {
 //  EXTERNAL FILE LOADING — NEW TESTS
 // ═══════════════════════════════════════════════════════════════════════
 
-describe('_deepMerge', () => {
-  test('merges flat objects', () => {
-    expect(_deepMerge({ a: 1 }, { b: 2 })).toEqual({ a: 1, b: 2 });
-  });
-
-  test('deep merges nested objects', () => {
-    const target = { nav: { home: 'Home' } };
-    const source = { nav: { docs: 'Docs' } };
-    expect(_deepMerge(target, source)).toEqual({ nav: { home: 'Home', docs: 'Docs' } });
-  });
-
-  test('source overwrites scalar', () => {
-    expect(_deepMerge({ a: 1 }, { a: 2 })).toEqual({ a: 2 });
-  });
-
-  test('does not merge arrays (replaces)', () => {
-    expect(_deepMerge({ a: [1] }, { a: [2, 3] })).toEqual({ a: [2, 3] });
-  });
-
-  test('returns new object (no mutation)', () => {
-    const target = { a: 1 };
-    const source = { b: 2 };
-    const result = _deepMerge(target, source);
-    expect(result).not.toBe(target);
-    expect(result).not.toBe(source);
-    expect(target).toEqual({ a: 1 });
-    expect(source).toEqual({ b: 2 });
-  });
-
-  test('handles empty inputs', () => {
-    expect(_deepMerge({}, { a: 1 })).toEqual({ a: 1 });
-    expect(_deepMerge({ a: 1 }, {})).toEqual({ a: 1 });
-  });
-});
-
-describe('_loadLocale', () => {
+describe('deep merge behavior (via _loadI18nForLocale)', () => {
   const originalFetch = global.fetch;
   let fetchMock;
 
   beforeEach(() => {
     _i18n.locales = {};
-    _i18nCache.clear();
     _config.i18n.loadPath = '/locales/{locale}.json';
+    _config.i18n.cache = false;
+    _config.i18n.ns = [];
+  });
+
+  afterEach(() => {
+    _i18n.locales = {};
+    _config.i18n.loadPath = null;
     _config.i18n.cache = true;
+    _config.i18n.ns = [];
+    global.fetch = originalFetch;
+  });
+
+  test('deep merges nested locale objects', async () => {
+    _i18n.locales.en = { nav: { home: 'Home' }, existing: 'value' };
+    fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ nav: { docs: 'Docs' }, greeting: 'Hello' }),
+    });
+    global.fetch = fetchMock;
+    await _loadI18nForLocale('en');
+    expect(_i18n.locales.en).toEqual({
+      nav: { home: 'Home', docs: 'Docs' },
+      existing: 'value',
+      greeting: 'Hello',
+    });
+  });
+
+  test('source overwrites scalar values', async () => {
+    _i18n.locales.en = { greeting: 'Hi' };
+    fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ greeting: 'Hello' }),
+    });
+    global.fetch = fetchMock;
+    await _loadI18nForLocale('en');
+    expect(_i18n.locales.en.greeting).toBe('Hello');
+  });
+
+  test('replaces arrays instead of merging', async () => {
+    _i18n.locales.en = { tags: ['old'] };
+    fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ tags: ['new1', 'new2'] }),
+    });
+    global.fetch = fetchMock;
+    await _loadI18nForLocale('en');
+    expect(_i18n.locales.en.tags).toEqual(['new1', 'new2']);
+  });
+});
+
+describe('locale loading (via _loadI18nForLocale)', () => {
+  const originalFetch = global.fetch;
+  let fetchMock;
+
+  beforeEach(() => {
+    _i18n.locales = {};
+    _config.i18n.loadPath = '/locales/{locale}.json';
+    _config.i18n.cache = false;
+    _config.i18n.ns = [];
 
     fetchMock = jest.fn().mockResolvedValue({
       ok: true,
@@ -253,40 +275,36 @@ describe('_loadLocale', () => {
 
   afterEach(() => {
     _i18n.locales = {};
-    _i18nCache.clear();
     _config.i18n.loadPath = null;
     _config.i18n.cache = true;
+    _config.i18n.ns = [];
     global.fetch = originalFetch;
   });
 
   test('flat mode: fetches and merges', async () => {
-    await _loadLocale('en', null);
+    await _loadI18nForLocale('en');
     expect(fetchMock).toHaveBeenCalledWith('/locales/en.json');
     expect(_i18n.locales.en).toEqual({ greeting: 'Hello' });
   });
 
   test('ns mode: fetches with namespace', async () => {
     _config.i18n.loadPath = '/locales/{locale}/{ns}.json';
-    await _loadLocale('en', 'dashboard');
+    _config.i18n.ns = ['dashboard'];
+    await _loadI18nForLocale('en');
     expect(fetchMock).toHaveBeenCalledWith('/locales/en/dashboard.json');
   });
 
-  test('caches response', async () => {
-    await _loadLocale('en', null);
-    await _loadLocale('en', null);
+  test('caches response when cache enabled', async () => {
+    _config.i18n.cache = true;
+    await _loadI18nForLocale('en');
+    await _loadI18nForLocale('en');
     expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-
-  test('skips fetch when cache hit', async () => {
-    _i18nCache.set('en', { greeting: 'Cached' });
-    await _loadLocale('en', null);
-    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   test('handles fetch error gracefully', async () => {
     fetchMock.mockResolvedValue({ ok: false, status: 404 });
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
-    await _loadLocale('en', null);
+    await _loadI18nForLocale('en');
     expect(warnSpy).toHaveBeenCalled();
     expect(_i18n.locales.en).toBeUndefined();
     warnSpy.mockRestore();
@@ -294,8 +312,8 @@ describe('_loadLocale', () => {
 
   test('respects cache:false', async () => {
     _config.i18n.cache = false;
-    await _loadLocale('en', null);
-    await _loadLocale('en', null);
+    await _loadI18nForLocale('en');
+    await _loadI18nForLocale('en');
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
@@ -305,8 +323,7 @@ describe('_loadLocale', () => {
       ok: true,
       json: () => Promise.resolve({ greeting: 'Hello', nav: { docs: 'Docs' } }),
     });
-    _config.i18n.cache = false;
-    await _loadLocale('en', null);
+    await _loadI18nForLocale('en');
     expect(_i18n.locales.en).toEqual({
       existing: 'value',
       greeting: 'Hello',
@@ -317,7 +334,7 @@ describe('_loadLocale', () => {
   test('handles network error gracefully', async () => {
     fetchMock.mockRejectedValue(new Error('Network error'));
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
-    await _loadLocale('en', null);
+    await _loadI18nForLocale('en');
     expect(warnSpy).toHaveBeenCalled();
     warnSpy.mockRestore();
   });
@@ -329,7 +346,6 @@ describe('_loadI18nForLocale', () => {
 
   beforeEach(() => {
     _i18n.locales = {};
-    _i18nCache.clear();
     _config.i18n.cache = false;
 
     fetchMock = jest.fn().mockResolvedValue({
@@ -341,7 +357,6 @@ describe('_loadI18nForLocale', () => {
 
   afterEach(() => {
     _i18n.locales = {};
-    _i18nCache.clear();
     _config.i18n.loadPath = null;
     _config.i18n.ns = [];
     _config.i18n.cache = true;
@@ -387,7 +402,6 @@ describe('_loadI18nNamespace', () => {
   beforeEach(() => {
     _i18n._locale = 'es';
     _i18n.locales = {};
-    _i18nCache.clear();
     _config.i18n.loadPath = '/locales/{locale}/{ns}.json';
     _config.i18n.fallbackLocale = 'en';
     _config.i18n.cache = false;
@@ -402,7 +416,6 @@ describe('_loadI18nNamespace', () => {
   afterEach(() => {
     _i18n._locale = 'en';
     _i18n.locales = {};
-    _i18nCache.clear();
     _config.i18n.loadPath = null;
     _config.i18n.ns = [];
     _config.i18n.cache = true;
@@ -445,7 +458,6 @@ describe('locale setter with loadPath', () => {
   beforeEach(() => {
     _i18n._locale = 'en';
     _i18n.locales = {};
-    _i18nCache.clear();
     _i18nListeners.clear();
     _config.i18n.cache = false;
 
@@ -459,7 +471,6 @@ describe('locale setter with loadPath', () => {
   afterEach(() => {
     _i18n._locale = 'en';
     _i18n.locales = {};
-    _i18nCache.clear();
     _i18nListeners.clear();
     _config.i18n.loadPath = null;
     _config.i18n.ns = [];

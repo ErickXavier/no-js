@@ -48,15 +48,15 @@
     "polling": {
       "badge": "Principiante",
       "title": "Polling en Vivo",
-      "desc": "Un panel de estado del servidor que se actualiza automáticamente cada 5 segundos usando el atributo <code>poll</code>. Los estilos condicionales reaccionan instantáneamente al estado de salud actual — sin <code>setInterval</code>, sin bucle de <code>fetch</code>.",
+      "desc": "Un panel de estado del servidor que se actualiza automáticamente cada 5 segundos usando el atributo <code>refresh</code>. Los estilos condicionales reaccionan instantáneamente al estado de salud actual — sin <code>setInterval</code>, sin bucle de <code>fetch</code>.",
       "serverStatus": "Estado del Servidor",
       "online": "En línea",
       "cpu": "CPU",
       "reqPerSec": "Sol/s",
       "errors": "Errores",
       "lastResponse": "Último tiempo de respuesta",
-      "nextPoll": "Próximo poll en",
-      "refreshNote": "Se actualiza automáticamente vía <code>poll=\"5000\"</code>",
+      "nextPoll": "Próximo refresh en",
+      "refreshNote": "Se actualiza automáticamente vía <code>refresh=\"5000\"</code>",
       "onlineBadge": "En línea"
     },
     "cta": {

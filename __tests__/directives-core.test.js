@@ -1969,3 +1969,247 @@ describe('foreach with animation attributes', () => {
     expect(wrappersArr[2].firstElementChild.style.animationDelay).toBe('200ms');
   });
 });
+
+describe('foreach with inline template (no external template)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('renders items correctly without external template', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b", "c"] }');
+
+    const list = document.createElement('ul');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.innerHTML = '<li><span bind="item"></span></li>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    expect(wrappers.length).toBe(3);
+
+    const texts = [...wrappers].map(
+      (w) => w.querySelector('span').textContent,
+    );
+    expect(texts).toEqual(['a', 'b', 'c']);
+  });
+
+  test('does not cause infinite recursion with inline template', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["x", "y"] }');
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.innerHTML = '<span bind="item"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+
+    // Track how many times the foreach directive initializes.
+    // With the bug, cloneNode preserves foreach/from on the clone,
+    // so processTree on the wrapper re-triggers the directive infinitely.
+    let foreachInitCount = 0;
+    const origProcessTree = processTree;
+    const observer = new MutationObserver(() => {
+      // Count display:contents wrappers nested more than 1 level deep
+      // which would indicate recursive foreach initialization
+      const nestedWrappers = list.querySelectorAll(
+        'div[style*="contents"] div[style*="contents"]',
+      );
+      if (nestedWrappers.length > 0) {
+        foreachInitCount++;
+      }
+    });
+
+    processTree(parent);
+
+    // After processing, there should be exactly 2 wrappers (one per item),
+    // and no nested wrappers (which would indicate recursion)
+    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    expect(wrappers.length).toBe(2);
+
+    const nestedWrappers = list.querySelectorAll(
+      'div[style*="contents"] div[style*="contents"]',
+    );
+    expect(nestedWrappers.length).toBe(0);
+
+    // The cloned elements inside wrappers should NOT have foreach/from attributes
+    wrappers.forEach((wrapper) => {
+      const clonedEl = wrapper.firstElementChild;
+      if (clonedEl) {
+        expect(clonedEl.hasAttribute('foreach')).toBe(false);
+        expect(clonedEl.hasAttribute('from')).toBe(false);
+      }
+    });
+  });
+
+  test('provides iteration variables ($index, $count, $first, $last, $even, $odd)', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b", "c"] }');
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.innerHTML =
+      '<div>' +
+      '<span class="val" bind="item"></span>' +
+      '<span class="idx" bind="$index"></span>' +
+      '<span class="cnt" bind="$count"></span>' +
+      '<span class="first" bind="$first"></span>' +
+      '<span class="last" bind="$last"></span>' +
+      '<span class="even" bind="$even"></span>' +
+      '<span class="odd" bind="$odd"></span>' +
+      '</div>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    expect(wrappers.length).toBe(3);
+
+    // First item: index=0, count=3, first=true, last=false, even=true, odd=false
+    const w0 = wrappers[0];
+    expect(w0.querySelector('.val').textContent).toBe('a');
+    expect(w0.querySelector('.idx').textContent).toBe('0');
+    expect(w0.querySelector('.cnt').textContent).toBe('3');
+    expect(w0.querySelector('.first').textContent).toBe('true');
+    expect(w0.querySelector('.last').textContent).toBe('false');
+    expect(w0.querySelector('.even').textContent).toBe('true');
+    expect(w0.querySelector('.odd').textContent).toBe('false');
+
+    // Second item: index=1, first=false, last=false, even=false, odd=true
+    const w1 = wrappers[1];
+    expect(w1.querySelector('.val').textContent).toBe('b');
+    expect(w1.querySelector('.idx').textContent).toBe('1');
+    expect(w1.querySelector('.first').textContent).toBe('false');
+    expect(w1.querySelector('.last').textContent).toBe('false');
+    expect(w1.querySelector('.even').textContent).toBe('false');
+    expect(w1.querySelector('.odd').textContent).toBe('true');
+
+    // Third item: index=2, first=false, last=true, even=true, odd=false
+    const w2 = wrappers[2];
+    expect(w2.querySelector('.val').textContent).toBe('c');
+    expect(w2.querySelector('.idx').textContent).toBe('2');
+    expect(w2.querySelector('.first').textContent).toBe('false');
+    expect(w2.querySelector('.last').textContent).toBe('true');
+    expect(w2.querySelector('.even').textContent).toBe('true');
+    expect(w2.querySelector('.odd').textContent).toBe('false');
+  });
+
+  test('supports filter, sort, and limit with inline template', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute(
+      'state',
+      '{ users: [{ name: "Charlie", age: 30 }, { name: "Alice", age: 25 }, { name: "Bob", age: 35 }, { name: "Diana", age: 28 }] }',
+    );
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'user');
+    list.setAttribute('from', 'users');
+    list.setAttribute('filter', 'user.age >= 28');
+    list.setAttribute('sort', 'name');
+    list.setAttribute('limit', '2');
+    list.innerHTML = '<span bind="user.name"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    // Filtered: Charlie(30), Bob(35), Diana(28) — ages >= 28
+    // Sorted by name: Bob, Charlie, Diana
+    // Limit 2: Bob, Charlie
+    expect(wrappers.length).toBe(2);
+
+    const names = wrappers.map((w) => w.querySelector('span').textContent);
+    expect(names).toEqual(['Bob', 'Charlie']);
+  });
+
+  test('re-renders when source array changes', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b"] }');
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.innerHTML = '<span bind="item"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Initial: 2 items
+    let wrappers = list.querySelectorAll('div[style*="contents"]');
+    expect(wrappers.length).toBe(2);
+
+    // Mutate the array via the reactive context
+    const ctx = parent.__ctx;
+    ctx.items = ['x', 'y', 'z'];
+
+    // After mutation: 3 items
+    wrappers = list.querySelectorAll('div[style*="contents"]');
+    expect(wrappers.length).toBe(3);
+
+    const texts = [...wrappers].map(
+      (w) => w.querySelector('span').textContent,
+    );
+    expect(texts).toEqual(['x', 'y', 'z']);
+  });
+
+  test('supports custom index name via index attribute', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b"] }');
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('index', 'i');
+    list.innerHTML = '<span bind="i"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    expect(wrappers.length).toBe(2);
+    expect(wrappers[0].querySelector('span').textContent).toBe('0');
+    expect(wrappers[1].querySelector('span').textContent).toBe('1');
+  });
+
+  test('renders empty list without errors', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: [] }');
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.innerHTML = '<span bind="item"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    expect(wrappers.length).toBe(0);
+  });
+
+  test('supports offset with inline template', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b", "c", "d", "e"] }');
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('offset', '2');
+    list.setAttribute('limit', '2');
+    list.innerHTML = '<span bind="item"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    expect(wrappers.length).toBe(2);
+
+    const texts = wrappers.map((w) => w.querySelector('span').textContent);
+    expect(texts).toEqual(['c', 'd']);
+  });
+});

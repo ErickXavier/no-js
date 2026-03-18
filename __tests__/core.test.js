@@ -448,6 +448,43 @@ describe('Expression Evaluator', () => {
       expect(evaluate('this is not valid @#$', ctx)).toBeUndefined();
     });
 
+    test('calls _warn() when expression evaluation fails in debug mode', () => {
+      _config.debug = true;
+      const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        // Passing null ctx triggers TypeError in evaluate()'s scope-building code
+        evaluate('x', null);
+        expect(spy).toHaveBeenCalled();
+        const warnCall = spy.mock.calls.find(args =>
+          args.some(a => typeof a === 'string' && a.includes('Expression error'))
+        );
+        expect(warnCall).toBeDefined();
+      } finally {
+        spy.mockRestore();
+        _config.debug = false;
+      }
+    });
+
+    test('calls _warn() regardless of debug mode', () => {
+      _config.debug = false;
+      const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        evaluate('x', null);
+        const warnCall = spy.mock.calls.find(args =>
+          args.some(a => typeof a === 'string' && a.includes('Expression error'))
+        );
+        expect(warnCall).toBeDefined();
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    test('does not throw to the caller on expression error', () => {
+      const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      expect(() => evaluate('x', null)).not.toThrow();
+      spy.mockRestore();
+    });
+
     test('accesses nested properties', () => {
       const ctx = createContext({ user: { name: 'Bob', age: 25 } });
       expect(evaluate('user.name', ctx)).toBe('Bob');

@@ -146,6 +146,24 @@ registerDirective("foreach", {
       ? null // Will use external template
       : el.cloneNode(true); // Use the element itself as template
 
+    // Prevent infinite recursion: strip directive attributes from inline template clone
+    if (templateContent) {
+      templateContent.removeAttribute("foreach");
+      templateContent.removeAttribute("from");
+      templateContent.removeAttribute("index");
+      templateContent.removeAttribute("filter");
+      templateContent.removeAttribute("sort");
+      templateContent.removeAttribute("limit");
+      templateContent.removeAttribute("offset");
+      templateContent.removeAttribute("else");
+      templateContent.removeAttribute("template");
+      templateContent.removeAttribute("animate-enter");
+      templateContent.removeAttribute("animate");
+      templateContent.removeAttribute("animate-leave");
+      templateContent.removeAttribute("animate-stagger");
+      templateContent.removeAttribute("animate-duration");
+    }
+
     function update() {
       let list = resolve(fromPath, ctx);
       if (!Array.isArray(list)) return;

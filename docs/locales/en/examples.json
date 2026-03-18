@@ -48,15 +48,15 @@
     "polling": {
       "badge": "Beginner",
       "title": "Live Polling",
-      "desc": "A server-status dashboard that refreshes automatically every 5 seconds using the <code>poll</code> attribute. Conditional styling reacts instantly to the current health state — no <code>setInterval</code>, no <code>fetch</code> loop.",
+      "desc": "A server-status dashboard that refreshes automatically every 5 seconds using the <code>refresh</code> attribute. Conditional styling reacts instantly to the current health state — no <code>setInterval</code>, no <code>fetch</code> loop.",
       "serverStatus": "Server Status",
       "online": "Online",
       "cpu": "CPU",
       "reqPerSec": "Req/s",
       "errors": "Errors",
       "lastResponse": "Last response time",
-      "nextPoll": "Next poll in",
-      "refreshNote": "Refreshes automatically via <code>poll=\"5000\"</code>",
+      "nextPoll": "Next refresh in",
+      "refreshNote": "Refreshes automatically via <code>refresh=\"5000\"</code>",
       "onlineBadge": "Online"
     },
     "cta": {
