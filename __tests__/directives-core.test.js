@@ -1040,6 +1040,25 @@ describe('state persist directive', () => {
     const ctx = findContext(parent);
     expect(ctx.safe).toBe(true);
   });
+
+  test('warns and skips persistence when persist-key is missing', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ x: 1 }');
+    parent.setAttribute('persist', 'localStorage');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('persist-key')
+    );
+    expect(localStorage.length).toBe(0);
+
+    warnSpy.mockRestore();
+  });
 });
 
 
