@@ -211,7 +211,7 @@ describe('Globals', () => {
       expect(_storeWatchers.has(fn)).toBe(false);
     });
 
-    test('removes $store watcher from Set when element is removed without dispose', async () => {
+    test('prunes stale $store watcher on next notify when element is removed without dispose', () => {
       const ctx = createContext({});
       const fn = jest.fn();
 
@@ -229,9 +229,11 @@ describe('Globals', () => {
       // Remove element externally (bypassing framework dispose)
       parent.innerHTML = '';
 
-      // Allow MutationObserver microtask to run
-      await new Promise((r) => setTimeout(r, 0));
+      // Watcher is still present — cleanup is lazy (via fn._el.isConnected check)
+      expect(_storeWatchers.has(fn)).toBe(true);
 
+      // Pruned on the next _notifyStoreWatchers call (fn._el.isConnected === false)
+      _notifyStoreWatchers();
       expect(_storeWatchers.has(fn)).toBe(false);
     });
 
@@ -1660,5 +1662,93 @@ describe('evaluate.js — expression cache (LRU)', () => {
     // Either the first entry was already gone (from a prior test run filling the cache)
     // or it is now evicted — the important assertion is that the cache size is bounded
     expect(_exprCache.size).toBeLessThanOrEqual(500);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// evaluate.js — browser globals allow-list (TIP-S2)
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe('evaluate — browser globals allow-list', () => {
+  let ctx;
+
+  beforeEach(() => {
+    ctx = createContext({});
+  });
+
+  // ── Blocked: network and storage APIs ──────────────────────────────────
+
+  test('fetch is not accessible as a bare identifier', () => {
+    expect(evaluate('fetch', ctx)).toBeUndefined();
+  });
+
+  test('XMLHttpRequest is not accessible as a bare identifier', () => {
+    expect(evaluate('XMLHttpRequest', ctx)).toBeUndefined();
+  });
+
+  test('localStorage is not accessible as a bare identifier', () => {
+    expect(evaluate('localStorage', ctx)).toBeUndefined();
+  });
+
+  test('sessionStorage is not accessible as a bare identifier', () => {
+    expect(evaluate('sessionStorage', ctx)).toBeUndefined();
+  });
+
+  test('WebSocket is not accessible as a bare identifier', () => {
+    expect(evaluate('WebSocket', ctx)).toBeUndefined();
+  });
+
+  test('indexedDB is not accessible as a bare identifier', () => {
+    expect(evaluate('indexedDB', ctx)).toBeUndefined();
+  });
+
+  // ── Allowed: safe browser globals ──────────────────────────────────────
+
+  test('window is accessible', () => {
+    expect(evaluate('window', ctx)).toBe(globalThis.window ?? globalThis);
+  });
+
+  test('document is accessible', () => {
+    expect(evaluate('document', ctx)).toBe(document);
+  });
+
+  test('URL is accessible', () => {
+    expect(evaluate('URL', ctx)).toBe(URL);
+  });
+
+  test('setTimeout is accessible', () => {
+    expect(evaluate('setTimeout', ctx)).toBe(setTimeout);
+  });
+
+  test('Promise is accessible', () => {
+    expect(evaluate('Promise', ctx)).toBe(Promise);
+  });
+
+  // ── _SAFE_GLOBALS are unaffected ────────────────────────────────────────
+
+  test('Math is still accessible (in _SAFE_GLOBALS)', () => {
+    expect(evaluate('Math.max(1, 2)', ctx)).toBe(2);
+  });
+
+  test('JSON is still accessible (in _SAFE_GLOBALS)', () => {
+    expect(evaluate('JSON.stringify({a:1})', ctx)).toBe('{"a":1}');
+  });
+
+  // ── Scope values take precedence over allow-list ────────────────────────
+
+  test('scope variable shadows a browser global', () => {
+    const ctxWithWindow = createContext({ window: 'shadowed' });
+    expect(evaluate('window', ctxWithWindow)).toBe('shadowed');
+  });
+
+  // ── window.fetch is still reachable via the window object ──────────────
+
+  test('window.fetch is accessible via window (not blocked)', () => {
+    if (typeof globalThis.fetch !== 'undefined') {
+      expect(evaluate('window.fetch', ctx)).toBe(globalThis.fetch);
+    } else {
+      // JSDOM may not define fetch — just confirm no throw
+      expect(() => evaluate('window.fetch', ctx)).not.toThrow();
+    }
   });
 });
