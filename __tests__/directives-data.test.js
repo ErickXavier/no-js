@@ -1959,6 +1959,31 @@ describe('polling with refresh-interval', () => {
     await jest.advanceTimersByTimeAsync(2000);
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
+
+  test('stops polling when element is removed from DOM without explicit dispose', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ status: 'ok' }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/status');
+    el.setAttribute('as', 'status');
+    el.setAttribute('refresh', '1000');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    await jest.advanceTimersByTimeAsync(100);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // Remove element externally (bypassing framework dispose)
+    parent.innerHTML = '';
+
+    const countBefore = global.fetch.mock.calls.length;
+    await jest.advanceTimersByTimeAsync(3000);
+    expect(global.fetch).toHaveBeenCalledTimes(countBefore);
+  });
 });
 
 describe('loading template', () => {

@@ -306,7 +306,10 @@ for (const method of HTTP_METHODS) {
 
       // Polling
       if (refreshInterval > 0) {
-        const id = setInterval(doRequest, refreshInterval);
+        const id = setInterval(() => {
+          if (!el.isConnected) { clearInterval(id); return; }
+          doRequest();
+        }, refreshInterval);
         _onDispose(() => clearInterval(id));
       }
     },
