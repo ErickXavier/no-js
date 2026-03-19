@@ -2,7 +2,7 @@
 //  CLIENT-SIDE ROUTER
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _log } from "./globals.js";
+import { _config, _stores, _log, _warn } from "./globals.js";
 import { createContext } from "./context.js";
 import { evaluate } from "./evaluate.js";
 import { findContext, _clearDeclared, _loadTemplateElement, _processTemplateIncludes } from "./dom.js";
@@ -91,8 +91,16 @@ export function _createRouter() {
         ctx.__raw.$store = _stores;
         ctx.__raw.$route = current;
         const allowed = evaluate(guardExpr, ctx);
-        if (!allowed && redirectPath) {
-          await navigate(redirectPath, true);
+        if (!allowed) {
+          if (redirectPath) {
+            await navigate(redirectPath, true);
+          } else {
+            _warn(`Route guard failed for "${path}" but no redirect is defined. The route will not render.`);
+            for (const outletEl of document.querySelectorAll("[route-view]")) {
+              _disposeTree(outletEl);
+              outletEl.innerHTML = "";
+            }
+          }
           return;
         }
       }
@@ -109,8 +117,16 @@ export function _createRouter() {
           ctx.__raw.$store = _stores;
           ctx.__raw.$route = current;
           const allowed = evaluate(guardExpr, ctx);
-          if (!allowed && redirectPath) {
-            await navigate(redirectPath, true);
+          if (!allowed) {
+            if (redirectPath) {
+              await navigate(redirectPath, true);
+            } else {
+              _warn(`Route guard failed for "${path}" but no redirect is defined. The route will not render.`);
+              for (const outletEl of document.querySelectorAll("[route-view]")) {
+                _disposeTree(outletEl);
+                outletEl.innerHTML = "";
+              }
+            }
             return;
           }
         }

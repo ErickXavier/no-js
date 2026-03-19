@@ -287,6 +287,33 @@ describe('Router', () => {
     expect(outlet.querySelector('.login')).not.toBeNull();
   });
 
+  test('route guard without redirect clears outlet and emits warning', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    router = _createRouter();
+
+    const protectedTpl = document.createElement('template');
+    protectedTpl.setAttribute('guard', 'false');
+    // No redirect attribute
+    protectedTpl.innerHTML = '<p class="secret">Secret</p>';
+    router.register('/secret', protectedTpl);
+
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await router.push('/secret');
+
+    expect(outlet.querySelector('.secret')).toBeNull();
+    expect(outlet.innerHTML).toBe('');
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('guard failed')
+    );
+
+    warnSpy.mockRestore();
+  });
+
   test('active class on route links', async () => {
     const outlet = document.createElement('div');
     outlet.setAttribute('route-view', '');
