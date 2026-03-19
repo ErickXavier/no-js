@@ -2213,3 +2213,255 @@ describe('foreach with inline template (no external template)', () => {
     expect(texts).toEqual(['c', 'd']);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// loops.js — key-based reconciliation in each and foreach (TIP-P3)
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe('each — key-based reconciliation', () => {
+  let container;
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  function makeEachList(items) {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items }));
+    container.appendChild(state);
+
+    const tpl = document.createElement('template');
+    tpl.id = 'row-tpl';
+    tpl.innerHTML = '<span class="row"></span>';
+    document.body.appendChild(tpl);
+
+    const list = document.createElement('div');
+    list.setAttribute('each', 'item in items');
+    list.setAttribute('template', 'row-tpl');
+    list.setAttribute('key', 'item.id');
+    state.appendChild(list);
+
+    processTree(state);
+    return { state, list };
+  }
+
+  test('push: only one new wrapper is created, existing ones are preserved', () => {
+    const { list, state } = makeEachList([{ id: 1 }, { id: 2 }]);
+    const initialWrappers = [...list.children];
+    expect(initialWrappers).toHaveLength(2);
+
+    // Mark wrappers to detect identity preservation
+    initialWrappers[0].__marker = 'A';
+    initialWrappers[1].__marker = 'B';
+
+    // Push a new item
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(3);
+    expect(list.children[0].__marker).toBe('A');
+    expect(list.children[1].__marker).toBe('B');
+    expect(list.children[2].__marker).toBeUndefined(); // new node
+  });
+
+  test('splice: only the removed wrapper is disposed, others preserved', () => {
+    const { list, state } = makeEachList([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    const wrapperB = list.children[1];
+    wrapperB.__marker = 'B';
+    list.children[0].__marker = 'A';
+    list.children[2].__marker = 'C';
+
+    // Remove middle item
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(2);
+    expect(list.children[0].__marker).toBe('A');
+    expect(list.children[1].__marker).toBe('C');
+    expect(wrapperB.isConnected).toBe(false); // removed from DOM
+  });
+
+  test('reorder: DOM order matches new list order without recreating nodes', () => {
+    const { list, state } = makeEachList([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    list.children[0].__marker = 'A';
+    list.children[1].__marker = 'B';
+    list.children[2].__marker = 'C';
+
+    // Reverse the list
+    state.__ctx.__raw.items = [{ id: 3 }, { id: 2 }, { id: 1 }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(3);
+    expect(list.children[0].__marker).toBe('C');
+    expect(list.children[1].__marker).toBe('B');
+    expect(list.children[2].__marker).toBe('A');
+  });
+
+  test('no key attribute: falls back to full rebuild (backward compat)', () => {
+    // Ensure row-tpl exists in this test's DOM (beforeEach clears it)
+    const tpl = document.createElement('template');
+    tpl.id = 'row-tpl';
+    tpl.innerHTML = '<span class="row"></span>';
+    document.body.appendChild(tpl);
+
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items: [{ id: 1 }, { id: 2 }] }));
+    container.appendChild(state);
+
+    const list = document.createElement('div');
+    list.setAttribute('each', 'item in items');
+    list.setAttribute('template', 'row-tpl');
+    // Note: no key attribute
+    state.appendChild(list);
+    processTree(state);
+
+    const first = list.children[0];
+    first.__marker = 'should-be-gone';
+
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    // Full rebuild: original wrapper is gone, marker is not on any child
+    const markers = [...list.children].map((c) => c.__marker).filter(Boolean);
+    expect(markers).toHaveLength(0);
+  });
+
+  test('$index and $count are updated on existing wrappers', () => {
+    const { list, state } = makeEachList([{ id: 1 }, { id: 2 }, { id: 3 }]);
+
+    // Remove first item — $index of remaining items must update
+    state.__ctx.__raw.items = [{ id: 2 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(list.children[0].__ctx.__raw.$index).toBe(0);
+    expect(list.children[1].__ctx.__raw.$index).toBe(1);
+    expect(list.children[0].__ctx.__raw.$first).toBe(true);
+    expect(list.children[1].__ctx.__raw.$last).toBe(true);
+  });
+
+  test('empty list clears all rendered wrappers (keyMap flushed)', () => {
+    const { list, state } = makeEachList([{ id: 1 }, { id: 2 }]);
+    expect(list.children).toHaveLength(2);
+
+    state.__ctx.__raw.items = [];
+    state.__ctx.$notify();
+
+    // Both wrappers disposed and removed
+    expect(list.children).toHaveLength(0);
+  });
+});
+
+describe('foreach — key-based reconciliation', () => {
+  let container;
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  function makeForeachList(items) {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items }));
+    container.appendChild(state);
+
+    const tpl = document.createElement('template');
+    tpl.id = 'fc-row-tpl';
+    tpl.innerHTML = '<span class="fc-row"></span>';
+    document.body.appendChild(tpl);
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('template', 'fc-row-tpl');
+    list.setAttribute('key', 'item.id');
+    state.appendChild(list);
+
+    processTree(state);
+    return { state, list };
+  }
+
+  test('push: existing wrappers preserved, one new wrapper created', () => {
+    const { list, state } = makeForeachList([{ id: 'a' }, { id: 'b' }]);
+    list.children[0].__marker = 'A';
+    list.children[1].__marker = 'B';
+
+    state.__ctx.__raw.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(3);
+    expect(list.children[0].__marker).toBe('A');
+    expect(list.children[1].__marker).toBe('B');
+    expect(list.children[2].__marker).toBeUndefined();
+  });
+
+  test('splice: only the removed wrapper is taken out of DOM', () => {
+    const { list, state } = makeForeachList([{ id: 'a' }, { id: 'b' }, { id: 'c' }]);
+    const removed = list.children[1];
+    removed.__marker = 'B';
+    list.children[0].__marker = 'A';
+    list.children[2].__marker = 'C';
+
+    state.__ctx.__raw.items = [{ id: 'a' }, { id: 'c' }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(2);
+    expect(list.children[0].__marker).toBe('A');
+    expect(list.children[1].__marker).toBe('C');
+    expect(removed.isConnected).toBe(false);
+  });
+
+  test('reorder: nodes reused and repositioned without recreation', () => {
+    const { list, state } = makeForeachList([{ id: 'x' }, { id: 'y' }, { id: 'z' }]);
+    list.children[0].__marker = 'X';
+    list.children[1].__marker = 'Y';
+    list.children[2].__marker = 'Z';
+
+    state.__ctx.__raw.items = [{ id: 'z' }, { id: 'x' }, { id: 'y' }];
+    state.__ctx.$notify();
+
+    expect(list.children[0].__marker).toBe('Z');
+    expect(list.children[1].__marker).toBe('X');
+    expect(list.children[2].__marker).toBe('Y');
+  });
+
+  test('no key attribute: uses full rebuild (backward compat)', () => {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items: [{ id: 1 }, { id: 2 }] }));
+    container.appendChild(state);
+
+    const tpl = document.createElement('template');
+    tpl.id = 'fc-nokey-tpl';
+    tpl.innerHTML = '<span></span>';
+    document.body.appendChild(tpl);
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('template', 'fc-nokey-tpl');
+    // No key attribute
+    state.appendChild(list);
+    processTree(state);
+
+    const first = list.children[0];
+    first.__marker = 'original';
+
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    const markers = [...list.children].map((c) => c.__marker).filter(Boolean);
+    expect(markers).toHaveLength(0); // full rebuild, no preserved markers
+  });
+});
