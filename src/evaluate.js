@@ -1254,6 +1254,9 @@ export function resolve(path, ctx) {
 }
 
 // Interpolate strings like "/users/{user.id}?q={search}"
+// Note: interpolated values are encoded with encodeURIComponent, which encodes
+// "/" as "%2F". Path segments that intentionally contain "/" must be passed
+// as pre-encoded strings or concatenated outside of {} placeholders.
 export function _interpolate(str, ctx) {
   return str.replace(/\{([^}]+)\}/g, (_, expr) => {
     const val = evaluate(expr.trim(), ctx);
