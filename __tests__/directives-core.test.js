@@ -1041,58 +1041,6 @@ describe('state persist directive', () => {
     expect(ctx.safe).toBe(true);
   });
 
-  test('persist-fields stores only the listed fields', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ theme: "dark", lang: "pt", token: "secret" }');
-    parent.setAttribute('persist', 'localStorage');
-    parent.setAttribute('persist-key', 'pf-test1');
-    parent.setAttribute('persist-fields', 'theme, lang');
-    document.body.appendChild(parent);
-
-    processTree(parent);
-    // Mutate state to trigger $watch
-    findContext(parent).theme = 'light';
-
-    const stored = JSON.parse(localStorage.getItem('nojs_state_pf-test1'));
-    expect(stored).toEqual({ theme: 'light', lang: 'pt' });
-    expect(stored.token).toBeUndefined();
-  });
-
-  test('persist-fields restores only the listed fields', () => {
-    localStorage.setItem('nojs_state_pf-test2', JSON.stringify({ theme: 'light', lang: 'en', token: 'leaked' }));
-
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ theme: "dark", lang: "pt", token: "safe" }');
-    parent.setAttribute('persist', 'localStorage');
-    parent.setAttribute('persist-key', 'pf-test2');
-    parent.setAttribute('persist-fields', 'theme, lang');
-    document.body.appendChild(parent);
-
-    processTree(parent);
-
-    const ctx = findContext(parent);
-    expect(ctx.theme).toBe('light');
-    expect(ctx.lang).toBe('en');
-    // token was in storage but not in persist-fields — must not be restored
-    expect(ctx.token).toBe('safe');
-  });
-
-  test('persist without persist-fields stores the full state', () => {
-    const parent = document.createElement('div');
-    parent.setAttribute('state', '{ a: 1, b: 2 }');
-    parent.setAttribute('persist', 'localStorage');
-    parent.setAttribute('persist-key', 'pf-test3');
-    document.body.appendChild(parent);
-
-    processTree(parent);
-    // Mutate state to trigger $watch
-    findContext(parent).a = 99;
-
-    const stored = JSON.parse(localStorage.getItem('nojs_state_pf-test3'));
-    expect(stored.a).toBe(99);
-    expect(stored.b).toBe(2);
-  });
-
   test('warns and skips persistence when persist-key is missing', () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 

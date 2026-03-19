@@ -2,7 +2,7 @@
 //  DIRECTIVES: state, store, computed, watch
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _stores, _log, _watchExpr } from "../globals.js";
+import { _stores, _log, _warn, _watchExpr } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext } from "../dom.js";
@@ -20,6 +20,9 @@ registerDirective("state", {
     // Persistence
     const persist = el.getAttribute("persist");
     const persistKey = el.getAttribute("persist-key");
+    if (persist && !persistKey) {
+      _warn(`persist="${persist}" requires a persist-key attribute. State will not be persisted.`);
+    }
     if (persist && persistKey) {
       const store =
         persist === "localStorage"
