@@ -158,6 +158,44 @@ describe('Watch Directive', () => {
     parent.__ctx.count = 5;
     expect(parent.__ctx.lastChange).toBe('changed');
   });
+
+  test('does not fire on:change when object contents are shallowly equal', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ user: { name: "Alice" }, changeCount: 0 }');
+    const watch = document.createElement('span');
+    watch.setAttribute('watch', 'user');
+    watch.setAttribute('on:change', 'changeCount++');
+    parent.appendChild(watch);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+
+    // Assign a new object with the same contents — shallowEqual should suppress the event
+    ctx.user = { name: 'Alice' };
+    expect(ctx.changeCount).toBe(0);
+
+    // Assign a new object with different contents — should fire
+    ctx.user = { name: 'Bob' };
+    expect(ctx.changeCount).toBe(1);
+  });
+
+  test('fires on:change when primitive value changes', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ score: 10, fired: false }');
+    const watch = document.createElement('span');
+    watch.setAttribute('watch', 'score');
+    watch.setAttribute('on:change', 'fired = true');
+    parent.appendChild(watch);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    parent.__ctx.score = 10; // same value
+    expect(parent.__ctx.fired).toBe(false);
+
+    parent.__ctx.score = 20;
+    expect(parent.__ctx.fired).toBe(true);
+  });
 });
 
 

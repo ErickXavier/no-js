@@ -91,6 +91,16 @@ registerDirective("computed", {
   },
 });
 
+function _shallowEqual(a, b) {
+  if (a === b) return true;
+  if (a === null || b === null) return false;
+  if (typeof a !== "object" || typeof b !== "object") return false;
+  const ka = Object.keys(a), kb = Object.keys(b);
+  if (ka.length !== kb.length) return false;
+  for (const k of ka) if (a[k] !== b[k]) return false;
+  return true;
+}
+
 registerDirective("watch", {
   priority: 2,
   init(el, name, watchExpr) {
@@ -99,7 +109,7 @@ registerDirective("watch", {
     let lastVal = evaluate(watchExpr, ctx);
     _watchExpr(watchExpr, ctx, () => {
       const newVal = evaluate(watchExpr, ctx);
-      if (newVal !== lastVal) {
+      if (!_shallowEqual(newVal, lastVal)) {
         const oldVal = lastVal;
         lastVal = newVal;
         if (onChange)
