@@ -209,6 +209,68 @@ describe('Globals', () => {
 
       expect(_storeWatchers.has(fn)).toBe(false);
     });
+
+    test('removes $store watcher from Set when element is removed without dispose', async () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      const parent = document.createElement('div');
+      const el = document.createElement('span');
+      parent.appendChild(el);
+      document.body.appendChild(parent);
+
+      _setCurrentEl(el);
+      _watchExpr('$store.cart', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // Remove element externally (bypassing framework dispose)
+      parent.innerHTML = '';
+
+      // Allow MutationObserver microtask to run
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('disconnects MutationObserver via _onDispose when _disposeTree runs (each re-render pattern)', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      const container = document.createElement('div');
+      const itemWrapper = document.createElement('div');
+      container.appendChild(itemWrapper);
+      document.body.appendChild(container);
+
+      // Simulate processElement binding a $store watcher on itemWrapper
+      _setCurrentEl(itemWrapper);
+      _watchExpr('$store.cart.items', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // Simulate each re-render: disposeTree then clear innerHTML
+      _disposeTree(itemWrapper);
+      container.innerHTML = '';
+
+      // Watcher must be removed by the _onDispose path (not the MutationObserver callback)
+      expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('does not throw when element has no parentElement', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      // Element with no parent
+      const el = document.createElement('div');
+
+      _setCurrentEl(el);
+      expect(() => _watchExpr('$store.x', ctx, fn)).not.toThrow();
+      _setCurrentEl(null);
+
+      _storeWatchers.delete(fn);
+    });
   });
 });
 

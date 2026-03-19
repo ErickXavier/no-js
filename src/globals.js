@@ -68,6 +68,20 @@ export function _watchExpr(expr, ctx, fn) {
   });
   if (typeof expr === "string" && expr.includes("$store")) {
     _storeWatchers.add(fn);
+    fn._el = _currentEl;
+    // Self-cleanup when the element is removed without going through dispose
+    const el = _currentEl;
+    if (el && el.parentElement) {
+      const ro = new MutationObserver(() => {
+        if (!el.isConnected) {
+          _storeWatchers.delete(fn);
+          unwatch();
+          ro.disconnect();
+        }
+      });
+      ro.observe(el.parentElement, { childList: true, subtree: true });
+      _onDispose(() => ro.disconnect());
+    }
   }
 }
 
