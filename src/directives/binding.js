@@ -33,6 +33,17 @@ registerDirective("bind-html", {
   },
 });
 
+const _SAFE_URL_ATTRS = new Set(["href", "src", "action", "formaction", "poster", "data"]);
+
+function _sanitizeAttrValue(attrName, value) {
+  if (_SAFE_URL_ATTRS.has(attrName)) {
+    const str = String(value).trimStart();
+    if (/^(javascript|vbscript):/i.test(str)) return "#";
+    if (/^data:/i.test(str) && !/^data:image\//i.test(str)) return "#";
+  }
+  return value;
+}
+
 registerDirective("bind-*", {
   priority: 20,
   init(el, name, expr) {
@@ -72,7 +83,7 @@ registerDirective("bind-*", {
         if (attrName in el) el[attrName] = !!val;
         return;
       }
-      if (val != null) el.setAttribute(attrName, String(val));
+      if (val != null) el.setAttribute(attrName, String(_sanitizeAttrValue(attrName, val)));
       else el.removeAttribute(attrName);
     }
     _watchExpr(expr, ctx, update);

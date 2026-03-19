@@ -284,6 +284,67 @@ describe('Bind-* Directive', () => {
     parent.__ctx.title = null;
     expect(div.hasAttribute('title')).toBe(false);
   });
+
+  test('blocks javascript: protocol in bind-href', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ url: "javascript:alert(1)" }');
+    const a = document.createElement('a');
+    a.setAttribute('bind-href', 'url');
+    parent.appendChild(a);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(a.getAttribute('href')).toBe('#');
+  });
+
+  test('blocks vbscript: protocol in bind-href', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ url: "vbscript:run()" }');
+    const a = document.createElement('a');
+    a.setAttribute('bind-href', 'url');
+    parent.appendChild(a);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(a.getAttribute('href')).toBe('#');
+  });
+
+  test('blocks javascript: protocol in bind-src', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ src: "javascript:void(0)" }');
+    const img = document.createElement('img');
+    img.setAttribute('bind-src', 'src');
+    parent.appendChild(img);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(img.getAttribute('src')).toBe('#');
+  });
+
+  test('passes safe HTTPS URL through bind-href unchanged', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ url: "https://example.com/page" }');
+    const a = document.createElement('a');
+    a.setAttribute('bind-href', 'url');
+    parent.appendChild(a);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(a.getAttribute('href')).toBe('https://example.com/page');
+  });
+
+  test('does not sanitize non-URL attributes like data-custom', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ val: "javascript:test" }');
+    const div = document.createElement('div');
+    div.setAttribute('bind-data-custom', 'val');
+    parent.appendChild(div);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // data-custom is not in _SAFE_URL_ATTRS — value passes through
+    expect(div.getAttribute('data-custom')).toBe('javascript:test');
+  });
 });
 
 describe('Model Directive', () => {
