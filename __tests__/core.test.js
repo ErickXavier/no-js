@@ -552,6 +552,28 @@ describe('Expression Evaluator', () => {
       const ctx = createContext({});
       expect(_interpolate('/users/{id}', ctx)).toBe('/users/');
     });
+
+    test('encodes path traversal sequences in interpolated values', () => {
+      const ctx = createContext({ id: '../admin' });
+      const result = _interpolate('/api/users/{id}', ctx);
+      expect(result).not.toContain('../');
+      expect(result).toBe('/api/users/..%2Fadmin');  // .. + encoded /
+    });
+
+    test('encodes spaces and special characters in interpolated values', () => {
+      const ctx = createContext({ q: 'hello world' });
+      expect(_interpolate('/search?q={q}', ctx)).toBe('/search?q=hello%20world');
+    });
+
+    test('encodes slashes inside interpolated values', () => {
+      const ctx = createContext({ path: 'a/b/c' });
+      expect(_interpolate('/api/{path}', ctx)).toBe('/api/a%2Fb%2Fc');
+    });
+
+    test('does not encode plain numeric IDs', () => {
+      const ctx = createContext({ id: 123 });
+      expect(_interpolate('/api/users/{id}', ctx)).toBe('/api/users/123');
+    });
   });
 
   describe('_execStatement', () => {

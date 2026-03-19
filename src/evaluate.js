@@ -1257,6 +1257,7 @@ export function resolve(path, ctx) {
 export function _interpolate(str, ctx) {
   return str.replace(/\{([^}]+)\}/g, (_, expr) => {
     const val = evaluate(expr.trim(), ctx);
-    return val != null ? val : "";
+    if (val == null) return "";
+    return encodeURIComponent(String(val));
   });
 }
