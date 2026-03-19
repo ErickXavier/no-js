@@ -17,6 +17,7 @@ export const _config = {
   debug: false,
   devtools: false,
   sanitize: true,
+  sanitizeHtml: null,
 };
 
 export const _interceptors = { request: [], response: [] };
@@ -68,6 +69,7 @@ export function _watchExpr(expr, ctx, fn) {
   });
   if (typeof expr === "string" && expr.includes("$store")) {
     _storeWatchers.add(fn);
+    fn._el = _currentEl;
   }
 }
 
