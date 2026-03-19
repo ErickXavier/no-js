@@ -2465,3 +2465,215 @@ describe('foreach — key-based reconciliation', () => {
     expect(markers).toHaveLength(0); // full rebuild, no preserved markers
   });
 });
+
+// ─── foreach + key + inline template (no external <template> element) ──────
+describe('foreach — key-based reconciliation, inline template', () => {
+  let container;
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  // Build a foreach list that uses the element itself as the template
+  // (no template= attribute). The element's inner HTML becomes the clone source.
+  function makeInlineForeachList(items) {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items }));
+    container.appendChild(state);
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('key', 'item.id');
+    list.innerHTML = '<span class="inline-row"></span>';
+    state.appendChild(list);
+
+    processTree(state);
+    return { state, list };
+  }
+
+  test('push: existing wrappers preserved, one new wrapper created', () => {
+    const { list, state } = makeInlineForeachList([{ id: 1 }, { id: 2 }]);
+    expect(list.children).toHaveLength(2);
+    list.children[0].__marker = 'A';
+    list.children[1].__marker = 'B';
+
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(3);
+    expect(list.children[0].__marker).toBe('A');
+    expect(list.children[1].__marker).toBe('B');
+    expect(list.children[2].__marker).toBeUndefined();
+  });
+
+  test('splice: only the removed wrapper is taken out of DOM', () => {
+    const { list, state } = makeInlineForeachList([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    const removed = list.children[1];
+    removed.__marker = 'B';
+    list.children[0].__marker = 'A';
+    list.children[2].__marker = 'C';
+
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(list.children).toHaveLength(2);
+    expect(list.children[0].__marker).toBe('A');
+    expect(list.children[1].__marker).toBe('C');
+    expect(removed.isConnected).toBe(false);
+  });
+
+  test('reorder: nodes repositioned without recreation', () => {
+    const { list, state } = makeInlineForeachList([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    list.children[0].__marker = 'A';
+    list.children[1].__marker = 'B';
+    list.children[2].__marker = 'C';
+
+    state.__ctx.__raw.items = [{ id: 3 }, { id: 1 }, { id: 2 }];
+    state.__ctx.$notify();
+
+    expect(list.children[0].__marker).toBe('C');
+    expect(list.children[1].__marker).toBe('A');
+    expect(list.children[2].__marker).toBe('B');
+  });
+
+  test('each item renders its own clone (no shared template state)', () => {
+    const { list } = makeInlineForeachList([{ id: 'x' }, { id: 'y' }]);
+    const spans = list.querySelectorAll('.inline-row');
+    expect(spans).toHaveLength(2);
+    // Each span is a distinct node
+    expect(spans[0]).not.toBe(spans[1]);
+  });
+});
+
+// ─── key reconciliation: disposal of removed items ──────────────────────────
+describe('key reconciliation — disposal of removed items', () => {
+  let container;
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  test('each: __disposers on removed item child are called on splice', () => {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items: [{ id: 1 }, { id: 2 }, { id: 3 }] }));
+    container.appendChild(state);
+
+    const tpl = document.createElement('template');
+    tpl.id = 'dispose-row-tpl';
+    tpl.innerHTML = '<span class="row"></span>';
+    document.body.appendChild(tpl);
+
+    const list = document.createElement('div');
+    list.setAttribute('each', 'item in items');
+    list.setAttribute('template', 'dispose-row-tpl');
+    list.setAttribute('key', 'item.id');
+    state.appendChild(list);
+    processTree(state);
+
+    // Plant a disposer on the span inside the second wrapper (item id=2)
+    const spanToDispose = list.children[1].querySelector('.row');
+    const disposed = [];
+    spanToDispose.__disposers = [() => disposed.push('id2-disposed')];
+
+    // Remove item id=2
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(disposed).toEqual(['id2-disposed']);
+  });
+
+  test('foreach: __disposers on removed item child are called on splice', () => {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] }));
+    container.appendChild(state);
+
+    const tpl = document.createElement('template');
+    tpl.id = 'fc-dispose-tpl';
+    tpl.innerHTML = '<span class="fc-row"></span>';
+    document.body.appendChild(tpl);
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('template', 'fc-dispose-tpl');
+    list.setAttribute('key', 'item.id');
+    state.appendChild(list);
+    processTree(state);
+
+    const spanToDispose = list.children[1].querySelector('.fc-row');
+    const disposed = [];
+    spanToDispose.__disposers = [() => disposed.push('b-disposed')];
+
+    state.__ctx.__raw.items = [{ id: 'a' }, { id: 'c' }];
+    state.__ctx.$notify();
+
+    expect(disposed).toEqual(['b-disposed']);
+  });
+
+  test('foreach inline: __disposers on removed item child are called on splice', () => {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items: [{ id: 1 }, { id: 2 }] }));
+    container.appendChild(state);
+
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.setAttribute('key', 'item.id');
+    list.innerHTML = '<span class="inline-dispose"></span>';
+    state.appendChild(list);
+    processTree(state);
+
+    const spanToDispose = list.children[0].querySelector('.inline-dispose');
+    const disposed = [];
+    spanToDispose.__disposers = [() => disposed.push('id1-disposed')];
+
+    // Remove first item
+    state.__ctx.__raw.items = [{ id: 2 }];
+    state.__ctx.$notify();
+
+    expect(disposed).toEqual(['id1-disposed']);
+  });
+
+  test('each: preserved wrappers do NOT have their disposers called on update', () => {
+    const state = document.createElement('div');
+    state.setAttribute('state', JSON.stringify({ items: [{ id: 1 }, { id: 2 }] }));
+    container.appendChild(state);
+
+    const tpl = document.createElement('template');
+    tpl.id = 'no-dispose-tpl';
+    tpl.innerHTML = '<span class="nd-row"></span>';
+    document.body.appendChild(tpl);
+
+    const list = document.createElement('div');
+    list.setAttribute('each', 'item in items');
+    list.setAttribute('template', 'no-dispose-tpl');
+    list.setAttribute('key', 'item.id');
+    state.appendChild(list);
+    processTree(state);
+
+    const preserved = list.children[0].querySelector('.nd-row');
+    const disposed = [];
+    preserved.__disposers = [() => disposed.push('id1-wrongly-disposed')];
+
+    // Push a new item — id=1 wrapper must be preserved
+    state.__ctx.__raw.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    state.__ctx.$notify();
+
+    expect(disposed).toHaveLength(0);
+  });
+});

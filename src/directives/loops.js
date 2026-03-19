@@ -367,6 +367,11 @@ registerDirective("foreach", {
     // Applied to the final (filtered, sorted, sliced) list so keys always
     // correspond to what is actually rendered.
     function reconcileForeachItems(tpl, list, count) {
+      // On first render the element may still hold its original inline template
+      // markup (the same content that was captured into templateContent).
+      // Clear it so only managed wrappers appear as children.
+      if (keyMap.size === 0) el.innerHTML = "";
+
       const newOrder = list.map((item, i) => {
         const tempCtx = createContext({ [itemName]: item, [indexName]: i }, ctx);
         return { key: evaluate(keyExpr, tempCtx), item, i };
