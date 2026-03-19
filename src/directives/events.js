@@ -26,6 +26,7 @@ registerDirective("on:*", {
     }
     if (event === "updated") {
       const updatedObserver = new MutationObserver(() => {
+        if (!el.isConnected) { updatedObserver.disconnect(); return; }
         _execStatement(expr, ctx, { $el: el });
       });
       updatedObserver.observe(el, { childList: true, subtree: true, characterData: true, attributes: true });
