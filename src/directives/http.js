@@ -121,6 +121,14 @@ for (const method of HTTP_METHODS) {
           }
 
           const extraHeaders = headersAttr ? JSON.parse(headersAttr) : {};
+          if (_config.debug && headersAttr) {
+            const _SENSITIVE_HEADERS = ['authorization', 'x-api-key', 'x-auth-token', 'cookie'];
+            for (const k of Object.keys(extraHeaders)) {
+              if (_SENSITIVE_HEADERS.includes(k.toLowerCase())) {
+                _warn(`Sensitive header "${k}" is set inline on a headers attribute. Use NoJS.config({ headers }) or an interceptor to avoid exposing credentials in HTML source.`);
+              }
+            }
+          }
           const savedRetries = _config.retries;
           const savedRetryDelay = _config.retryDelay;
           _config.retries = retryCount;
