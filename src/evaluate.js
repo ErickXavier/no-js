@@ -1137,25 +1137,17 @@ export function evaluate(expr, ctx) {
     const mainExpr = pipes[0];
     const { keys, vals } = _collectKeys(ctx);
 
-    // Add special variables
-    const specialKeys = [
-      "$store",
-      "$route",
-      "$router",
-      "$i18n",
-      "$refs",
-      "$form",
-    ];
-    for (const sk of specialKeys) {
-      if (!keys.includes(sk)) {
-        keys.push(sk);
-        vals[sk] = ctx[sk];
-      }
-    }
-
-    // Build scope object from keys/vals
+    // Build scope from cache without mutating it
     const scope = {};
     for (let i = 0; i < keys.length; i++) scope[keys[i]] = vals[keys[i]];
+    // Add special variables to scope only (never to the shared cache),
+    // preserving any same-named local context vars already in scope
+    if (!("$store"  in scope)) scope.$store  = _stores;
+    if (!("$route"  in scope)) scope.$route  = _routerInstance?.current;
+    if (!("$router" in scope)) scope.$router = _routerInstance;
+    if (!("$i18n"   in scope)) scope.$i18n   = _i18n;
+    if (!("$refs"   in scope)) scope.$refs   = ctx.$refs;
+    if (!("$form"   in scope)) scope.$form   = ctx.$form || null;
 
     // Parse expression into AST (cached)
     let ast = _exprCache.get(mainExpr);
@@ -1183,25 +1175,16 @@ export function evaluate(expr, ctx) {
 export function _execStatement(expr, ctx, extraVars = {}) {
   try {
     const { keys, vals } = _collectKeys(ctx);
-    // Add special vars
-    const specials = {
-      $store: _stores,
-      $route: _routerInstance?.current,
-      $router: _routerInstance,
-      $i18n: _i18n,
-      $refs: ctx.$refs,
-    };
-    Object.assign(specials, extraVars);
-    for (const [k, v] of Object.entries(specials)) {
-      if (!keys.includes(k)) {
-        keys.push(k);
-        vals[k] = v;
-      }
-    }
 
-    // Build scope
+    // Build scope from cache without mutating it, then add special vars and extraVars
     const scope = {};
     for (let i = 0; i < keys.length; i++) scope[keys[i]] = vals[keys[i]];
+    if (!("$store"  in scope)) scope.$store  = _stores;
+    if (!("$route"  in scope)) scope.$route  = _routerInstance?.current;
+    if (!("$router" in scope)) scope.$router = _routerInstance;
+    if (!("$i18n"   in scope)) scope.$i18n   = _i18n;
+    if (!("$refs"   in scope)) scope.$refs   = ctx.$refs;
+    Object.assign(scope, extraVars);
 
     // Snapshot context chain values for write-back comparison
     const chainKeys = new Set();
@@ -1243,7 +1226,6 @@ export function _execStatement(expr, ctx, extraVars = {}) {
     // Write back new variables created during execution
     for (const k in scope) {
       if (k.startsWith("$") || chainKeys.has(k)) continue;
-      if (k in vals) continue;
       ctx.$set(k, scope[k]);
     }
 
