@@ -711,6 +711,21 @@ describe('index.js — config()', () => {
 
     _config.router.useHash = false;
   });
+
+  test('emits warning when sanitize is set to false', async () => {
+    const { default: No } = await import('../src/index.js');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    No.config({ sanitize: false });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('sanitize: false')
+    );
+
+    warnSpy.mockRestore();
+    _config.sanitize = true;
+  });
 });
 
 describe('index.js — config() stores', () => {
