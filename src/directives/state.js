@@ -28,21 +28,28 @@ registerDirective("state", {
             ? sessionStorage
             : null;
       if (store) {
+        const persistFieldsAttr = el.getAttribute("persist-fields");
+        const persistFields = persistFieldsAttr
+          ? new Set(persistFieldsAttr.split(",").map((f) => f.trim()))
+          : null;
         try {
           const saved = store.getItem("nojs_state_" + persistKey);
           if (saved) {
             const parsed = JSON.parse(saved);
-            for (const [k, v] of Object.entries(parsed)) ctx.$set(k, v);
+            for (const [k, v] of Object.entries(parsed)) {
+              if (!persistFields || persistFields.has(k)) ctx.$set(k, v);
+            }
           }
         } catch {
           /* ignore */
         }
         ctx.$watch(() => {
           try {
-            store.setItem(
-              "nojs_state_" + persistKey,
-              JSON.stringify(ctx.__raw),
-            );
+            const raw = ctx.__raw;
+            const data = persistFields
+              ? Object.fromEntries(Object.entries(raw).filter(([k]) => persistFields.has(k)))
+              : raw;
+            store.setItem("nojs_state_" + persistKey, JSON.stringify(data));
           } catch {
             /* ignore */
           }
