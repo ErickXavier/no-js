@@ -12,9 +12,19 @@ import { _i18n } from "./i18n.js";
 export const _ctxRegistry = new Map();
 
 // ─── Hostname guard ─────────────────────────────────────────────────────────
-export function _isLocalHostname() {
-  const hostname = (typeof window !== "undefined" && window.location) ? window.location.hostname : "";
-  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "";
+// Optional `hostname` param exists for unit-testing without window.location mocking.
+export function _isLocalHostname(hostname) {
+  if (hostname === undefined) {
+    hostname = (typeof window !== "undefined" && window.location) ? window.location.hostname : "";
+  }
+  return (
+    hostname === "" ||
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1" ||
+    hostname === "0.0.0.0" ||
+    hostname.endsWith(".localhost")
+  );
 }
 
 // ─── Emit a devtools event ──────────────────────────────────────────────────
