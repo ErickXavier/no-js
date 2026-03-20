@@ -179,6 +179,25 @@ describe('DOM Helpers', () => {
       _config.sanitize = true;
       _config.sanitizeHtml = null;
     });
+
+    test('strips non-image data: URIs from href (e.g. data:text/html)', () => {
+      const html = '<a href="data:text/html,<script>alert(1)</script>">Click</a>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('data:text/html');
+      expect(result).toContain('Click');
+    });
+
+    test('strips non-image data: URIs from src', () => {
+      const html = '<img src="data:text/javascript,alert(1)">';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('data:text/javascript');
+    });
+
+    test('preserves safe image data: URIs in src', () => {
+      const html = '<img src="data:image/png;base64,abc123" alt="pic">';
+      const result = _sanitizeHtml(html);
+      expect(result).toContain('data:image/png;base64,abc123');
+    });
   });
 });
 

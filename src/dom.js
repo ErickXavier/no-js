@@ -62,7 +62,10 @@ export function _sanitizeHtml(html) {
       for (const attr of [...child.attributes]) {
         const n = attr.name.toLowerCase();
         const v = attr.value.toLowerCase().trimStart();
-        if (n.startsWith('on') || v.startsWith('javascript:') || v.startsWith('vbscript:')) {
+        const isUrlAttr = n === 'href' || n === 'src' || n === 'action' || n === 'xlink:href';
+        const isDangerousScheme = v.startsWith('javascript:') || v.startsWith('vbscript:');
+        const isDangerousData = isUrlAttr && v.startsWith('data:') && !/^data:image\//.test(v);
+        if (n.startsWith('on') || isDangerousScheme || isDangerousData) {
           child.removeAttribute(attr.name);
         }
       }
