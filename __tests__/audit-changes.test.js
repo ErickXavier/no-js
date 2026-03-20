@@ -284,22 +284,19 @@ describe('[3] animations.js — fallback timeout behaviour', () => {
 
   test('_animateOut callback fires via fallback timeout when animationend never fires', () => {
     // In JSDOM animationend is never dispatched automatically.
-    // This test documents the current fallback duration (2000 ms).
-    // If the default were changed to 0, the test assertions below must be
-    // updated — making this a sentinel for the animation default value.
+    // The default fallback is now 0 ms (|| 0): setTimeout(done, 0) fires on
+    // the next event-loop tick instead of blocking for an arbitrary duration.
     const el = document.createElement('div');
     el.appendChild(document.createElement('span'));
     document.body.appendChild(el);
 
     const cb = jest.fn();
-    _animateOut(el, 'fadeOut', null, cb); // no durationMs → fallback = 2000 ms
+    _animateOut(el, 'fadeOut', null, cb); // no durationMs → fallback = 0 ms
 
-    expect(cb).not.toHaveBeenCalled();        // not yet — waiting for fallback
+    expect(cb).not.toHaveBeenCalled(); // not yet — setTimeout(done, 0) not ticked
 
-    jest.advanceTimersByTime(1999);
-    expect(cb).not.toHaveBeenCalled();        // still not called at 1999 ms
-
-    jest.advanceTimersByTime(1);              // cross the 2000 ms threshold
+    // Fire the next-tick fallback
+    jest.runAllTimers();
     expect(cb).toHaveBeenCalledTimes(1);
   });
 
@@ -320,13 +317,13 @@ describe('[3] animations.js — fallback timeout behaviour', () => {
 
   test('_animateIn transition fallback cleans up classes when transitionend never fires', () => {
     // _animateIn schedules cleanup via requestAnimationFrame → setTimeout(done, fallback).
-    // With fake timers jest replaces rAF with a 0 ms timer, so running all timers
-    // covers both the rAF tick and the 1000 ms fallback in one shot.
+    // With fake timers Jest replaces rAF with a 0 ms timer, so running all timers
+    // covers both the rAF tick and the 0 ms fallback in one shot.
     const el = document.createElement('div');
     el.appendChild(document.createElement('span'));
     document.body.appendChild(el);
 
-    _animateIn(el, null, 'fade'); // no durationMs → fallback = 1000 ms
+    _animateIn(el, null, 'fade'); // no durationMs → fallback = 0 ms
 
     // Classes are added synchronously
     expect(el.firstElementChild.classList.contains('fade-enter-active')).toBe(true);
@@ -359,11 +356,11 @@ describe('[3] animations.js — fallback timeout behaviour', () => {
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  [4] loops.js — animate-leave fallback timeout
-//      The 2000 ms default means each re-renders are delayed 2 s in tests
-//      when animate-leave is set but no CSS animation plays.
+//      The fallback is now 0 ms (|| 0): each re-renders unblock on the next
+//      event-loop tick instead of waiting 2 s when no CSS animation fires.
 // ═══════════════════════════════════════════════════════════════════════════
 
-describe('[4] loops.js animate-leave — fallback timeout blocks re-render until it fires', () => {
+describe('[4] loops.js animate-leave — fallback fires on next tick', () => {
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
 
@@ -384,9 +381,7 @@ describe('[4] loops.js animate-leave — fallback timeout blocks re-render until
   });
 
   test('each with animate-leave holds old children until animationend fires', () => {
-    // This test documents the animate-leave path: old items linger until
-    // animationend (or the 2 s fallback) before new items are rendered.
-    // It proves the current default is 2000 ms, not 0.
+    // Old items linger until animationend (or the next-tick fallback) fires.
     _stores.data = { items: [{ id: 1 }] };
     document.body.innerHTML = `
       <template id="item-tpl"><li></li></template>
@@ -401,7 +396,7 @@ describe('[4] loops.js animate-leave — fallback timeout blocks re-render until
     _stores.data.items = [{ id: 2 }, { id: 3 }];
     _notifyStoreWatchers();
 
-    // Old child still in place (waiting for animationend or timeout)
+    // Old child still in place (waiting for animationend or next-tick timeout)
     expect(list.children.length).toBe(1);
 
     // animationend fires on the old child's first element
@@ -413,7 +408,8 @@ describe('[4] loops.js animate-leave — fallback timeout blocks re-render until
     expect(list.children.length).toBe(2);
   });
 
-  test('each with animate-leave falls back to rendering after 2000 ms when animationend never fires', () => {
+  test('each with animate-leave falls back to rendering on next tick when animationend never fires', () => {
+    // The fallback is now setTimeout(done, 0) — fires on the next event-loop tick.
     _stores.data = { items: [{ id: 1 }] };
     document.body.innerHTML = `
       <template id="item-tpl"><li></li></template>
@@ -426,12 +422,9 @@ describe('[4] loops.js animate-leave — fallback timeout blocks re-render until
     _stores.data.items = [{ id: 2 }, { id: 3 }];
     _notifyStoreWatchers();
 
-    expect(list.children.length).toBe(1); // still old
+    expect(list.children.length).toBe(1); // still old — timeout not yet ticked
 
-    jest.advanceTimersByTime(1999);
-    expect(list.children.length).toBe(1); // still old at 1999 ms
-
-    jest.advanceTimersByTime(1);           // 2000 ms reached
+    jest.runAllTimers(); // fire the next-tick fallback
     expect(list.children.length).toBe(2); // new items rendered
   });
 });

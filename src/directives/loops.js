@@ -72,7 +72,8 @@ registerDirective("each", {
             if (remaining <= 0) renderItems(tpl, list);
           };
           target.addEventListener("animationend", done, { once: true });
-          setTimeout(done, animDuration || 2000);
+          // || 0: unblocks the next render on the next tick when no CSS animation fires.
+          setTimeout(done, animDuration || 0);
         });
       } else {
         renderItems(tpl, list);
@@ -356,7 +357,8 @@ registerDirective("foreach", {
             if (remaining <= 0) renderForeachItems();
           };
           target.addEventListener("animationend", done, { once: true });
-          setTimeout(done, animDuration || 2000);
+          // || 0: unblocks the next render on the next tick when no CSS animation fires.
+          setTimeout(done, animDuration || 0);
         });
       } else {
         renderForeachItems();
