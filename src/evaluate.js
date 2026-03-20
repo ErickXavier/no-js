@@ -716,8 +716,13 @@ const _SAFE_GLOBALS = {
 const _BROWSER_GLOBALS = new Set([
   'window', 'document', 'console', 'location', 'history',
   'navigator', 'screen', 'performance', 'crypto',
+  // setTimeout/setInterval allow deferred execution from template expressions;
+  // necessary for legitimate use cases (e.g. debounce patterns in event handlers).
   'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval',
   'requestAnimationFrame', 'cancelAnimationFrame',
+  // alert/confirm/prompt are included for completeness and backward compatibility
+  // (e.g. confirm dialogs before delete). They are discouraged in production UIs —
+  // prefer custom modal components for a better user experience.
   'alert', 'confirm', 'prompt',
   'CustomEvent', 'Event', 'URL', 'URLSearchParams',
   'FormData', 'FileReader', 'Blob', 'Promise',
