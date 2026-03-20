@@ -256,7 +256,7 @@ for (const method of HTTP_METHODS) {
         el.addEventListener("submit", submitHandler);
         _onDispose(() => el.removeEventListener("submit", submitHandler));
       } else if (method === "get") {
-        doRequest();
+        if (el.isConnected) doRequest();
       } else {
         // Non-GET on non-FORM: attach click listener
         const clickHandler = (e) => {
