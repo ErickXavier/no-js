@@ -22,6 +22,7 @@ registerDirective("state", {
     const persistKey = el.getAttribute("persist-key");
     if (persist && !persistKey) {
       _warn(`persist="${persist}" requires a persist-key attribute. State will not be persisted.`);
+      return;
     }
     if (persist && persistKey) {
       const store =

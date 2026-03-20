@@ -1059,6 +1059,67 @@ describe('state persist directive', () => {
 
     warnSpy.mockRestore();
   });
+
+  test('persist-fields limits which fields are saved to storage', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ theme: "dark", token: "secret", sidebar: true }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'pf-test1');
+    parent.setAttribute('persist-fields', 'theme, sidebar');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Mutate state to trigger the $watch save
+    const ctx = parent.__ctx;
+    ctx.theme = 'light';
+
+    const saved = JSON.parse(localStorage.getItem('nojs_state_pf-test1'));
+    expect(saved.theme).toBe('light');
+    expect(saved.sidebar).toBe(true);
+    // token is not in persist-fields — must not be written to storage
+    expect(saved.token).toBeUndefined();
+  });
+
+  test('persist-fields limits which fields are restored from storage', () => {
+    // Pre-populate storage with all three fields (as if saved by old code without persist-fields)
+    localStorage.setItem('nojs_state_pf-test2', JSON.stringify({ theme: 'light', token: 'old-secret', sidebar: false }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ theme: "dark", token: "default", sidebar: true }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'pf-test2');
+    parent.setAttribute('persist-fields', 'theme');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+    // Only theme should be restored from storage
+    expect(ctx.theme).toBe('light');
+    // token is not in persist-fields — must stay at initial value
+    expect(ctx.token).toBe('default');
+  });
+
+  test('persist-fields handles comma-separated values with whitespace', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ a: 1, b: 2, c: 3 }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'pf-test3');
+    parent.setAttribute('persist-fields', '  a , c  ');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Mutate to trigger the $watch save
+    const ctx = parent.__ctx;
+    ctx.a = 10;
+
+    const saved = JSON.parse(localStorage.getItem('nojs_state_pf-test3'));
+    expect(saved.a).toBe(10);
+    expect(saved.c).toBe(3);
+    expect(saved.b).toBeUndefined();
+  });
 });
 
 
