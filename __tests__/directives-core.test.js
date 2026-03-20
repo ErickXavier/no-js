@@ -1990,6 +1990,34 @@ describe('on:updated lifecycle hook', () => {
 
     expect(ctx.updated).toBe(true);
   });
+
+  test('does not fire after element is removed from DOM externally', async () => {
+    let callCount = 0;
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ count: 0 }');
+    const child = document.createElement('div');
+    child.setAttribute('on:updated', 'count++');
+    child.innerHTML = '<span>Original</span>';
+    parent.appendChild(child);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Confirm it fires while connected
+    child.innerHTML = '<span>Changed</span>';
+    await new Promise((r) => setTimeout(r, 50));
+    const ctx = findContext(parent);
+    expect(ctx.count).toBe(1);
+
+    // Remove element externally (bypassing framework dispose)
+    parent.innerHTML = '';
+
+    // Trigger a mutation on the now-detached child
+    child.innerHTML = '<span>After removal</span>';
+    await new Promise((r) => setTimeout(r, 50));
+
+    // Count must not have increased
+    expect(ctx.count).toBe(1);
+  });
 });
 
 describe('on:error lifecycle hook', () => {
