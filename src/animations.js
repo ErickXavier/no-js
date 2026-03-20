@@ -40,11 +40,11 @@ export function _animateIn(el, animName, transitionName, durationMs) {
     const target = el.firstElementChild || el;
     target.classList.add(animName);
     if (durationMs) target.style.animationDuration = durationMs + "ms";
-    target.addEventListener(
-      "animationend",
-      () => target.classList.remove(animName),
-      { once: true },
-    );
+    const done = () => target.classList.remove(animName);
+    target.addEventListener("animationend", done, { once: true });
+    // Fallback: remove the class on the next tick if animationend never fires
+    // (e.g. CSS absent, element detached). Mirrors the transitionName branch.
+    setTimeout(done, fallback);
   }
   if (transitionName) {
     const target = el.firstElementChild || el;
