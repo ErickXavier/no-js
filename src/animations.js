@@ -33,7 +33,9 @@ function _injectBuiltInStyles() {
 
 export function _animateIn(el, animName, transitionName, durationMs) {
   _injectBuiltInStyles();
-  const fallback = durationMs || 1000;
+  // || 0: fires on the next event-loop tick when no CSS transition is present,
+  // instead of blocking for an arbitrary duration.
+  const fallback = durationMs || 0;
   if (animName) {
     const target = el.firstElementChild || el;
     target.classList.add(animName);
@@ -68,7 +70,9 @@ export function _animateIn(el, animName, transitionName, durationMs) {
 
 export function _animateOut(el, animName, transitionName, callback, durationMs) {
   _injectBuiltInStyles();
-  const fallback = durationMs || 2000;
+  // || 0: fires on the next event-loop tick when no CSS animation/transition is
+  // present, instead of blocking for an arbitrary duration.
+  const fallback = durationMs || 0;
   if (!el.firstElementChild && !el.childNodes.length) {
     callback();
     return () => {};
