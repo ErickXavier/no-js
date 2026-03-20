@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Replace hardcoded `|| 2000` / `|| 1000` animation fallback timeouts with `|| 0` in `_animateOut`, `_animateIn`, and the `each` / `foreach` animate-leave branches ([#7](https://github.com/ErickXavier/no-js/issues/7))
+  - The fallback `setTimeout(done, 0)` fires on the next event-loop tick instead of blocking for 1–2 s when no CSS animation or transition is present (e.g. JSDOM, missing stylesheet)
+  - Explicit `animate-duration` values are forwarded unchanged — no behavioral change for apps that set an explicit duration
+
+### Documentation
+
+- `docs/md/animations.md`: add animation attributes reference table and a note explaining the `animate-duration` / fallback-timeout relationship
+
 ## [1.9.1](https://github.com/ErickXavier/no-js/compare/v1.9.0...v1.9.1) — 2026-03-18
 
 ### Fixed
