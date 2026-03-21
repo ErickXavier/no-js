@@ -20,6 +20,11 @@ import { _devtoolsEmit } from "../devtools.js";
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete"];
 
+const _SENSITIVE_HEADERS = new Set([
+  'authorization', 'x-api-key', 'x-auth-token', 'cookie',
+  'proxy-authorization', 'set-cookie', 'x-csrf-token',
+]);
+
 for (const method of HTTP_METHODS) {
   registerDirective(method, {
     priority: 1,
@@ -121,6 +126,14 @@ for (const method of HTTP_METHODS) {
           }
 
           const extraHeaders = headersAttr ? JSON.parse(headersAttr) : {};
+          if (_config.debug && headersAttr) {
+            for (const k of Object.keys(extraHeaders)) {
+              const lower = k.toLowerCase();
+              if (_SENSITIVE_HEADERS.has(lower) || /^x-(auth|api)-/.test(lower)) {
+                _warn(`Sensitive header "${k}" is set inline on a headers attribute. Use NoJS.config({ headers }) or an interceptor to avoid exposing credentials in HTML source.`);
+              }
+            }
+          }
           const savedRetries = _config.retries;
           const savedRetryDelay = _config.retryDelay;
           _config.retries = retryCount;

@@ -849,6 +849,105 @@ describe('HTTP GET with custom headers', () => {
       }),
     );
   });
+
+  test('warns in debug mode when a sensitive header is set inline', async () => {
+    _config.debug = true;
+    global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/secure');
+    el.setAttribute('as', 'data');
+    el.setAttribute('headers', '{"Authorization":"Bearer token123"}');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush();
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('Authorization')
+    );
+
+    warnSpy.mockRestore();
+    _config.debug = false;
+  });
+
+  test('does not warn when debug mode is off', async () => {
+    _config.debug = false;
+    global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/data');
+    el.setAttribute('as', 'data');
+    el.setAttribute('headers', '{"Authorization":"Bearer token123"}');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush();
+
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+  });
+
+  test('warns for mixed-case sensitive header names (e.g. AUTHORIZATION)', async () => {
+    _config.debug = true;
+    global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/secure');
+    el.setAttribute('as', 'data');
+    el.setAttribute('headers', '{"AUTHORIZATION":"Bearer token123"}');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush();
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('AUTHORIZATION')
+    );
+
+    warnSpy.mockRestore();
+    _config.debug = false;
+  });
+
+  test('warns for x-auth-* and x-api-* prefix headers', async () => {
+    _config.debug = true;
+    global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/secure');
+    el.setAttribute('as', 'data');
+    el.setAttribute('headers', '{"X-Auth-Secret":"abc","X-Api-Key":"xyz"}');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush();
+
+    const calls = warnSpy.mock.calls.map((a) => a[1]);
+    expect(calls.some((m) => m.includes('X-Auth-Secret'))).toBe(true);
+    expect(calls.some((m) => m.includes('X-Api-Key'))).toBe(true);
+
+    warnSpy.mockRestore();
+    _config.debug = false;
+  });
 });
 
 describe('HTTP GET with redirect', () => {
