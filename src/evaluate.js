@@ -731,7 +731,26 @@ const _SAFE_GLOBALS = {
   Error, Symbol, console,
 };
 
-const _DENY_GLOBALS = { eval: 1, Function: 1, process: 1, require: 1, importScripts: 1 };
+// Explicit allow-list for browser globals accessible in template expressions.
+// Using an allow-list (opt-in) rather than a deny-list (opt-out) ensures that
+// network and storage APIs — fetch, XMLHttpRequest, localStorage, sessionStorage,
+// WebSocket, indexedDB — are unreachable from template code by default, closing
+// the surface where interpolated external data could trigger unintended requests.
+// window.fetch / window.localStorage remain accessible via the window object.
+const _BROWSER_GLOBALS = new Set([
+  'window', 'document', 'console', 'location', 'history',
+  'navigator', 'screen', 'performance', 'crypto',
+  // setTimeout/setInterval allow deferred execution from template expressions;
+  // necessary for legitimate use cases (e.g. debounce patterns in event handlers).
+  'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval',
+  'requestAnimationFrame', 'cancelAnimationFrame',
+  // alert/confirm/prompt are included for completeness and backward compatibility
+  // (e.g. confirm dialogs before delete). They are discouraged in production UIs —
+  // prefer custom modal components for a better user experience.
+  'alert', 'confirm', 'prompt',
+  'CustomEvent', 'Event', 'URL', 'URLSearchParams',
+  'FormData', 'FileReader', 'Blob', 'Promise',
+]);
 
 function _evalNode(node, scope) {
   try {
@@ -745,8 +764,7 @@ function _evalNode(node, scope) {
       case 'Identifier':
         if (node.name in scope) return scope[node.name];
         if (node.name in _SAFE_GLOBALS) return _SAFE_GLOBALS[node.name];
-        // Allow access to browser globals (window, document, etc.) for backward compat
-        if (typeof globalThis !== 'undefined' && node.name in globalThis && !_DENY_GLOBALS[node.name]) return globalThis[node.name];
+        if (_BROWSER_GLOBALS.has(node.name) && typeof globalThis !== 'undefined') return globalThis[node.name];
         return undefined;
 
       case 'Forbidden':
@@ -1030,8 +1048,7 @@ function _execStmtNode(node, scope) {
       // so error-boundary directives can catch the error
       if (node.type === "CallExpr" && node.callee.type === "Identifier") {
         const name = node.callee.name;
-        if (!(name in scope) && !(name in _SAFE_GLOBALS) &&
-            (typeof globalThis === "undefined" || !(name in globalThis))) {
+        if (!(name in scope) && !(name in _SAFE_GLOBALS) && !_BROWSER_GLOBALS.has(name)) {
           throw new ReferenceError(name + " is not defined");
         }
       }
