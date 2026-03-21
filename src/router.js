@@ -2,7 +2,7 @@
 //  CLIENT-SIDE ROUTER
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _log } from "./globals.js";
+import { _config, _stores, _log, _warn } from "./globals.js";
 import { createContext } from "./context.js";
 import { evaluate } from "./evaluate.js";
 import { findContext, _clearDeclared, _loadTemplateElement, _processTemplateIncludes } from "./dom.js";
@@ -11,6 +11,13 @@ import { _animateIn } from "./animations.js";
 import { _devtoolsEmit } from "./devtools.js";
 
 const _BUILTIN_404_HTML = '<div style="text-align:center;padding:3rem 1rem;font-family:system-ui,sans-serif"><h1 style="font-size:4rem;margin:0;opacity:.3">404</h1><p style="font-size:1.25rem;color:#666">Page not found</p></div>';
+
+function _clearOutlets() {
+  for (const outletEl of document.querySelectorAll("[route-view]")) {
+    _disposeTree(outletEl);
+    outletEl.innerHTML = "";
+  }
+}
 
 function _stripBase(pathname) {
   const base = (_config.router.base || "/").replace(/\/$/, "");
@@ -91,8 +98,13 @@ export function _createRouter() {
         ctx.__raw.$store = _stores;
         ctx.__raw.$route = current;
         const allowed = evaluate(guardExpr, ctx);
-        if (!allowed && redirectPath) {
-          await navigate(redirectPath, true);
+        if (!allowed) {
+          if (redirectPath) {
+            await navigate(redirectPath, true);
+          } else {
+            _warn(`Route guard failed for "${path}" but no redirect is defined. The route will not render.`);
+            _clearOutlets();
+          }
           return;
         }
       }
@@ -109,8 +121,13 @@ export function _createRouter() {
           ctx.__raw.$store = _stores;
           ctx.__raw.$route = current;
           const allowed = evaluate(guardExpr, ctx);
-          if (!allowed && redirectPath) {
-            await navigate(redirectPath, true);
+          if (!allowed) {
+            if (redirectPath) {
+              await navigate(redirectPath, true);
+            } else {
+              _warn(`Route guard failed for "${path}" but no redirect is defined. The route will not render.`);
+              _clearOutlets();
+            }
             return;
           }
         }
