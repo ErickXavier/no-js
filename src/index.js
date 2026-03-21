@@ -15,6 +15,7 @@ import {
   _routerInstance,
   setRouterInstance,
   _log,
+  _warn,
   _notifyStoreWatchers,
 } from "./globals.js";
 import { _i18n, _loadI18nForLocale } from "./i18n.js";
@@ -86,6 +87,10 @@ const NoJS = {
     if ("csp" in opts) {
       _warn("csp config option removed — No.JS is now CSP-safe by default");
       delete opts.csp;
+    }
+    if (opts.exprCacheSize !== undefined) {
+      const n = parseInt(opts.exprCacheSize);
+      opts.exprCacheSize = (Number.isFinite(n) && n > 0) ? n : 500;
     }
     Object.assign(_config, opts);
     if (opts.headers)

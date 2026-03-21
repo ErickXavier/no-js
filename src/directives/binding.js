@@ -33,6 +33,46 @@ registerDirective("bind-html", {
   },
 });
 
+const _SAFE_URL_ATTRS = new Set(["href", "src", "action", "formaction", "poster", "data"]);
+
+// Strip JS vectors from raw SVG markup: <script> blocks and on* event handlers.
+function _sanitizeSvgContent(svg) {
+  return svg
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s/>]*)/gi, "")
+    .replace(/\s+(?:href|xlink:href)\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, "");
+}
+
+// Sanitize a data:image/svg+xml URI — handles both base64 and URL-encoded forms.
+function _sanitizeSvgDataUri(str) {
+  try {
+    const b64 = str.match(/^data:image\/svg\+xml;base64,(.+)$/i);
+    if (b64) {
+      const clean = _sanitizeSvgContent(atob(b64[1]));
+      return "data:image/svg+xml;base64," + btoa(clean);
+    }
+    const comma = str.indexOf(",");
+    if (comma === -1) return "#";
+    const header = str.slice(0, comma + 1);
+    const clean = _sanitizeSvgContent(decodeURIComponent(str.slice(comma + 1)));
+    return header + encodeURIComponent(clean);
+  } catch (_e) {
+    return "#";
+  }
+}
+
+function _sanitizeAttrValue(attrName, value) {
+  if (_SAFE_URL_ATTRS.has(attrName)) {
+    const str = String(value).trimStart();
+    if (/^(javascript|vbscript):/i.test(str)) return "#";
+    if (/^data:/i.test(str)) {
+      if (/^data:image\/svg\+xml/i.test(str)) return _sanitizeSvgDataUri(str);
+      if (!/^data:image\//i.test(str)) return "#";
+    }
+  }
+  return value;
+}
+
 registerDirective("bind-*", {
   priority: 20,
   init(el, name, expr) {
@@ -72,7 +112,7 @@ registerDirective("bind-*", {
         if (attrName in el) el[attrName] = !!val;
         return;
       }
-      if (val != null) el.setAttribute(attrName, String(val));
+      if (val != null) el.setAttribute(attrName, String(_sanitizeAttrValue(attrName, val)));
       else el.removeAttribute(attrName);
     }
     _watchExpr(expr, ctx, update);

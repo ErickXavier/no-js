@@ -1,0 +1,3235 @@
+# No.JS Complete Documentation
+
+> No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. ~24 KB gzipped, zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
+
+No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `each`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP (1) → routing (5) → structural (10) → rendering (20) → side effects (30).
+
+## Getting Started
+
+- [Installation & Quick Start](#getting-started) — CDN, npm, and your first page
+
+## Core Guides
+
+- [Data Fetching](#data-fetching) — `get`, `post`, `put`, `patch`, `delete`, base URL, caching
+- [Data Binding](#data-binding) — `bind`, `bind-html`, `bind-*`, `model`
+- [Conditionals](#conditionals) — `if`, `else-if`, `show`, `hide`, `switch`/`case`
+- [Loops](#loops) — `each`, `foreach`, loop variables, nesting
+- [Templates](#templates) — Reusable fragments, slots, remote templates
+- [State Management](#state-management) — `state`, `store`, `into`, `computed`, `watch`, persistence
+
+## Interaction
+
+- [Events](#events) — `on:*`, modifiers, lifecycle hooks, `$event`, `$el`
+- [Forms & Validation](#forms--validation) — `validate`, `$form`, custom validators
+- [Actions & Refs](#actions--refs) — `call`, `trigger`, `ref`, `$refs`
+
+## Presentation
+
+- [Dynamic Styling](#dynamic-styling) — `class-*`, `class-map`, `style-*`, `style-map`
+- [Animations](#animations--transitions) — `animate`, `transition`, stagger, built-in names
+- [Filters & Pipes](#filters--pipes) — Built-in filters, chaining, custom filters
+
+## Advanced
+
+- [Routing](#routing--spa-navigation) — SPA navigation, params, guards, nested routes
+- [Internationalization](#internationalization-i18n) — `t`, pluralization, locale switching
+- [Custom Directives](#custom-directives) — Extend No.JS with your own directives
+- [Error Handling](#error-handling) — Per-element errors, boundaries, global handler
+- [Configuration](#configuration--security) — Global settings, interceptors, CSRF, security
+- [Drag and Drop](#drag-and-drop) — `drag`, `drop`, sortable lists, multi-select
+
+## Reference
+
+- [Directive Cheatsheet](#directive-cheatsheet) — Every directive at a glance
+- [Full SPA Example](#examples) — Complete app with routing, auth, i18n & more
+- [Playground](#playground) — Interactive code editor
+
+# Getting Started
+
+## Installation
+
+### CDN (recommended)
+
+```html
+<script src="https://cdn.no-js.dev/"></script>
+```
+
+> When using the CDN `<script>` tag, initialization is handled automatically on `DOMContentLoaded`.
+
+### Self-hosted
+
+Download `dist/iife/no.js` and include it with a `<script>` tag. It's a single file, ~24 KB gzipped.
+
+## Minimal Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.no-js.dev/"></script>
+</head>
+<body base="https://jsonplaceholder.typicode.com">
+
+  <div get="/users/1" as="user">
+    <h1 bind="user.name">Loading...</h1>
+    <p bind="user.email"></p>
+  </div>
+
+</body>
+</html>
+```
+
+That's it. No `app.mount()`. No `createApp()`. No `NgModule`. It just works.
+
+## How It Works
+
+1. **Parse** — On `DOMContentLoaded`, No.JS walks the DOM looking for elements with known attributes.
+2. **Resolve** — Each attribute maps to a **directive** that is executed by priority (data fetching first, then conditionals, then rendering).
+3. **React** — All data lives in **reactive contexts** (Proxy-backed). When data changes, every bound element updates automatically.
+4. **Scope** — Contexts inherit from parent elements, like lexical scoping. A `bind` inside an `each` loop can access both the loop item and ancestor data.
+
+## Core Concepts
+
+### Reactive Context
+
+Every element can have a **context** — a reactive data object. Contexts are created by `state`, `get`, `store`, etc. Child elements inherit their parent's context automatically.
+
+```
+body          → context: { baseUrl }
+  div[get]    → context: { user: { name, email } }  ← inherits from body
+    span[bind="user.name"]                           ← reads from div's context
+    div[each] → context: { post: { title } }         ← inherits from div (can access user + post)
+```
+
+### Directive Priority
+
+Directives run in a defined order:
+
+| Priority | Directives | Description |
+|----------|-----------|-------------|
+| 0 | `state`, `store` | Initialize local/global state |
+| 1 | `get`, `post`, `put`, `patch`, `delete` | Fetch data |
+| 5 | `route` | SPA routing |
+| 10 | `if`, `switch`, `each`, `foreach` | Structural (add/remove DOM) |
+| 20 | `bind`, `class-*`, `style-*`, `show`, `hide` | Rendering (update existing DOM) |
+| 20 | `on:*` | Event binding |
+| 30 | `validate`, `animate` | Side effects |
+
+### Expression Syntax
+
+Most directive values accept **JavaScript expressions** evaluated against the current context:
+
+```html
+<!-- Simple path -->
+<span bind="user.name"></span>
+
+<!-- Ternary -->
+<span bind="user.age >= 18 ? 'Adult' : 'Minor'"></span>
+
+<!-- Arithmetic -->
+<span bind="cart.total * 1.1"></span>
+
+<!-- Filters (pipes) -->
+<span bind="user.name | uppercase"></span>
+
+<!-- Template literals (bind-html) -->
+<div bind-html="`<strong>${user.name}</strong>`"></div>
+```
+
+# Data Fetching
+
+No.JS makes HTTP requests declarative — just add attributes to HTML elements.
+
+## Base URL
+
+Set once on any ancestor element. All descendant `get`, `post`, etc. resolve relative URLs against it.
+
+```html
+<body base="https://api.myapp.com/v1">
+  <div get="/users">...</div>        <!-- → https://api.myapp.com/v1/users -->
+  <div get="/posts">...</div>        <!-- → https://api.myapp.com/v1/posts -->
+</body>
+```
+
+Override for specific sections:
+
+```html
+<div base="https://cms.myapp.com/api">
+  <div get="/articles">...</div>     <!-- → https://cms.myapp.com/api/articles -->
+</div>
+```
+
+Absolute URLs skip base resolution:
+
+```html
+<div get="https://other-api.com/data">...</div>
+```
+
+### Programmatic Configuration
+
+```html
+<script>
+  NoJS.config({
+    baseApiUrl: 'https://api.myapp.com/v1',
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'
+    },
+    timeout: 10000,
+    retries: 2,
+    retryDelay: 1000
+  });
+</script>
+```
+
+### Per-Request Headers
+
+```html
+<div get="/me"
+     headers='{"Authorization": "Bearer abc123"}'
+     as="user">
+</div>
+```
+
+## `get` — Fetch and Render Data
+
+```html
+<div get="/users" as="users">
+  <!-- `users` is now available in this scope -->
+</div>
+```
+
+### Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `get` | `string` | URL to fetch (GET request) |
+| `as` | `string` | Name to assign the response in the context. Default: `"data"` |
+| `loading` | `string` | Template ID to show while loading (e.g. `"#skeleton"`) |
+| `error` | `string` | Template ID to show on fetch error (e.g. `"#errorTpl"`) |
+| `empty` | `string` | Template ID to show when response is empty array/null |
+| `refresh` | `number` | Auto-refresh interval in ms (polling) |
+| `cached` | `boolean\|string` | Cache responses. `cached` = memory, `cached="local"` = localStorage, `cached="session"` = sessionStorage |
+| `into` | `string` | Write response to a named global store |
+| `debounce` | `number` | Debounce in ms (useful with reactive URLs) |
+| `headers` | `string` | JSON string of additional headers |
+| `params` | `string` | Expression that resolves to query params object |
+
+### Full Example
+
+```html
+<div get="/users"
+     as="users"
+     loading="#usersSkeleton"
+     error="#usersError"
+     empty="#noUsers"
+     refresh="30000"
+     cached>
+
+  <div each="user in users" template="userCard"></div>
+
+</div>
+
+<template id="usersSkeleton">
+  <div class="skeleton-pulse">Loading users...</div>
+</template>
+
+<template id="usersError" var="err">
+  <div class="error">Failed to load: <span bind="err.message"></span></div>
+</template>
+
+<template id="noUsers">
+  <p>No users found.</p>
+</template>
+```
+
+### Reactive URLs
+
+URLs that reference state variables re-fetch automatically when those values change:
+
+```html
+<div state="{ page: 1, search: '' }">
+  <input type="text" bind-value="search" on:input="search = $event.target.value" />
+
+  <div get="/users?page={page}&q={search}"
+       as="results"
+       debounce="300">
+    ...
+  </div>
+</div>
+```
+
+## `post`, `put`, `patch`, `delete` — Mutating Requests
+
+Used on forms or triggered via `call`.
+
+> **Tip:** The `call` directive now supports the same attributes as form-based HTTP directives — including `loading`, `headers`, `redirect`, and `body`. See [Actions & Refs → `call`](#call--trigger-api-requests-from-any-element) for full details.
+
+### Form Submission
+
+```html
+<form post="/login"
+      success="#loginSuccess"
+      error="#loginError"
+      loading="#loginLoading">
+  <input type="text" name="email" />
+  <input type="password" name="password" />
+  <button type="submit">Login</button>
+</form>
+
+<template id="loginSuccess" var="result">
+  <p>Welcome, <span bind="result.user.name"></span>!</p>
+</template>
+
+<template id="loginError" var="err">
+  <p class="error" bind="err.message"></p>
+</template>
+```
+
+### PUT / PATCH / DELETE
+
+```html
+<form put="/users/{user.id}"
+      body='{"name": "{user.name}", "role": "{selectedRole}"}'
+      success="#updateSuccess">
+  ...
+</form>
+
+<button delete="/users/{user.id}"
+        confirm="Are you sure?"
+        success="#deleteSuccess"
+        error="#deleteError">
+  Delete User
+</button>
+```
+
+### Mutation Attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `post`, `put`, `patch`, `delete` | URL for the request |
+| `body` | Request body (JSON string with interpolation). For forms, auto-serializes fields |
+| `success` | Template ID to render on success. Receives response as `var` |
+| `error` | Template ID to render on error. Receives error as `var` |
+| `loading` | Template ID to show during request |
+| `confirm` | Show browser `confirm()` dialog before sending |
+| `redirect` | URL to navigate to on success (SPA route) |
+| `then` | Expression to execute on success (e.g. `"users.push(result)"`) |
+| `into` | Write response to a named global store |
+| `cached` | Cache responses (memory/local/session) |
+
+### Request Lifecycle
+
+```
+[idle] → [loading] → [success | error]
+                         ↓         ↓
+                    render tpl   render tpl
+                    exec `then`  log to console
+                    `redirect`
+```
+
+# Data Binding
+
+## `bind` — Text Content
+
+Replaces the element's `textContent` with the evaluated expression.
+
+```html
+<span bind="user.name"></span>
+<span bind="user.age + ' years old'"></span>
+<span bind="items.length === 0 ? 'Empty' : items.length + ' items'"></span>
+```
+
+## `bind-html` — Inner HTML
+
+Renders evaluated expression as HTML. Sanitized by default.
+
+```html
+<div bind-html="article.content"></div>
+<div bind-html="`<em>${user.bio}</em>`"></div>
+```
+
+> ⚠️ Uses DOMPurify-compatible sanitization to prevent XSS.
+
+## `bind-*` — Attribute Binding
+
+Bind any HTML attribute dynamically.
+
+```html
+<!-- src, href, alt, title, etc. -->
+<img bind-src="user.avatarUrl"
+     bind-alt="user.name + ' avatar'" />
+
+<a bind-href="'/users/' + user.id"
+   bind-title="'View ' + user.name">
+  Profile
+</a>
+
+<!-- disabled, readonly, checked -->
+<button bind-disabled="!form.isValid">Submit</button>
+<input type="checkbox" bind-checked="user.isActive" />
+
+<!-- data attributes -->
+<div bind-data-id="user.id"
+     bind-data-role="user.role"></div>
+```
+
+## `model` — Two-Way Binding
+
+For form inputs, `model` creates automatic two-way data binding:
+
+```html
+<div state="{ name: '', age: 0, agreed: false }">
+
+  <input type="text" model="name" />
+  <input type="number" model="age" />
+  <input type="checkbox" model="agreed" />
+  <select model="role">
+    <option value="admin">Admin</option>
+    <option value="user">User</option>
+  </select>
+  <textarea model="bio"></textarea>
+
+  <p>Hello, <span bind="name"></span>. You are <span bind="age"></span>.</p>
+
+</div>
+```
+
+# Conditionals
+
+## `if` / `then` / `else`
+
+Renders one of two templates based on a condition.
+
+```html
+<!-- With templates -->
+<div if="user.isAdmin" then="adminPanel" else="userPanel"></div>
+
+<!-- Inline content — keeps children if true, removes if false -->
+<div if="user.isLoggedIn">
+  <p>Welcome back!</p>
+</div>
+
+<!-- Negation -->
+<div if="!user.isLoggedIn" then="loginPrompt"></div>
+
+<!-- Complex expressions -->
+<div if="user.role === 'admin' && user.verified" then="adminTpl"></div>
+<div if="cart.items.length > 0" then="cartTpl" else="emptyCartTpl"></div>
+```
+
+## `else-if` — Chained Conditionals
+
+```html
+<div if="status === 'loading'" then="loadingTpl"></div>
+<div else-if="status === 'error'" then="errorTpl"></div>
+<div else-if="status === 'empty'" then="emptyTpl"></div>
+<div else then="contentTpl"></div>
+```
+
+## `show` / `hide`
+
+Toggles `display: none` without adding/removing DOM elements. Better for frequently toggled elements.
+
+```html
+<div show="user.isLoggedIn">Welcome!</div>
+<div hide="user.isLoggedIn">Please log in.</div>
+
+<button show="!editing" on:click="editing = true">Edit</button>
+<button show="editing" on:click="editing = false">Save</button>
+```
+
+### `if` vs `show`
+
+| | `if` | `show` |
+|--|------|--------|
+| Mechanism | Adds/removes DOM elements | Toggles CSS `display` |
+| Best for | Rarely toggled content | Frequently toggled content |
+| Preserves state | No (re-creates) | Yes |
+
+## Switch / Case
+
+Render one of many templates based on a value.
+
+```html
+<div get="/me" as="user">
+  <div switch="user.role">
+    <div case="'admin'"    then="adminDashboard"></div>
+    <div case="'editor'"   then="editorDashboard"></div>
+    <div case="'viewer'"   then="viewerDashboard"></div>
+    <div default           then="guestDashboard"></div>
+  </div>
+</div>
+```
+
+### Inline Content (no templates)
+
+```html
+<div switch="order.status">
+  <span case="'pending'"    class="badge warn">⏳ Pending</span>
+  <span case="'shipped'"    class="badge info">📦 Shipped</span>
+  <span case="'delivered'"  class="badge ok">✅ Delivered</span>
+  <span case="'cancelled'"  class="badge err">❌ Cancelled</span>
+  <span default             class="badge">Unknown</span>
+</div>
+```
+
+### Multi-Value Case
+
+```html
+<div switch="user.role">
+  <div case="'admin','superadmin'" then="adminPanel"></div>
+  <div case="'editor','writer'"    then="editorPanel"></div>
+  <div default                     then="viewerPanel"></div>
+</div>
+```
+
+# Loops
+
+## `each` — Iterate Over Arrays
+
+```html
+<div get="/posts" as="posts">
+  <div each="post in posts" template="postCard"></div>
+</div>
+
+<template id="postCard">
+  <article>
+    <h2 bind="post.title"></h2>
+    <p bind="post.body"></p>
+    <span bind="'#' + $index"></span>
+  </article>
+</template>
+```
+
+## `foreach` — Extended Loop
+
+Offers more control with filtering, sorting, pagination, and custom variable names.
+
+```html
+<ul>
+  <li foreach="item"
+      from="menuItems"
+      index="idx"
+      key="item.id"
+      else="#noItems"
+      filter="item.active"
+      sort="item.order"
+      limit="10"
+      offset="0">
+    <a bind-href="item.link">
+      <span bind="idx + 1"></span> - <span bind="item.label"></span>
+    </a>
+  </li>
+</ul>
+
+<template id="noItems">
+  <li class="empty">No items available</li>
+</template>
+```
+
+### Attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `foreach` | Variable name for current item |
+| `from` | Source array from context |
+| `index` | Variable name for the index (default: `$index`) |
+| `key` | Unique key expression for DOM diffing |
+| `else` | Template ID to render when array is empty |
+| `filter` | Expression to filter items (like `Array.filter`) |
+| `sort` | Property path to sort by (prefix with `-` for descending) |
+| `limit` | Maximum number of items to render |
+| `offset` | Number of items to skip |
+
+## Loop Context Variables
+
+Inside any loop, these variables are automatically available:
+
+| Variable | Description |
+|----------|-------------|
+| `$index` | Current index (0-based) |
+| `$count` | Total number of items |
+| `$first` | `true` if first item |
+| `$last` | `true` if last item |
+| `$even` | `true` if index is even |
+| `$odd` | `true` if index is odd |
+
+```html
+<div each="item in items" template="itemTpl"></div>
+
+<template id="itemTpl">
+  <div class-first="$first"
+       class-last="$last"
+       class-striped="$odd">
+    <span bind="($index + 1) + ' of ' + $count"></span>
+    <span bind="item.name"></span>
+  </div>
+</template>
+```
+
+## Nested Loops
+
+Child loops can access parent scope variables:
+
+```html
+<div each="category in categories" template="catTpl"></div>
+
+<template id="catTpl">
+  <h3 bind="category.name"></h3>
+  <div each="product in category.products" template="prodTpl"></div>
+</template>
+
+<template id="prodTpl">
+  <!-- Access both product AND category from parent scope -->
+  <p><span bind="category.name"></span>: <span bind="product.name"></span></p>
+</template>
+```
+
+# Templates
+
+Templates are reusable HTML fragments that are never rendered directly. They are cloned when referenced by directives like `then`, `else`, `template`, `loading`, `error`, etc.
+
+## Basic Template
+
+```html
+<template id="userCard">
+  <div class="card">
+    <h3 bind="user.name"></h3>
+    <p bind="user.email"></p>
+  </div>
+</template>
+```
+
+## Template Variables (`var`)
+
+Templates can declare which variable they expect from the calling context:
+
+```html
+<form post="/login" success="#loginOk" error="#loginFail">
+  ...
+</form>
+
+<template id="loginOk" var="result">
+  <p>Welcome, <span bind="result.user.name"></span>!</p>
+</template>
+
+<template id="loginFail" var="error">
+  <p>Error <span bind="error.code"></span>: <span bind="error.message"></span></p>
+</template>
+```
+
+## Template Slots
+
+Allow templates to accept projected content:
+
+```html
+<template id="card">
+  <div class="card">
+    <div class="card-header"><slot name="header"></slot></div>
+    <div class="card-body"><slot></slot></div>
+    <div class="card-footer"><slot name="footer"></slot></div>
+  </div>
+</template>
+
+<!-- Usage -->
+<div use="card">
+  <span slot="header">My Title</span>
+  <p>Main content goes here</p>
+  <span slot="footer">Footer info</span>
+</div>
+```
+
+## Remote Templates (`src`)
+
+Load templates from external HTML files:
+
+```html
+<template id="header" src="/templates/header.html"></template>
+<template id="footer" src="/templates/footer.html"></template>
+```
+
+### Recursive Loading
+
+Remote templates are loaded **recursively** — if a remote template itself contains `<template src="...">` elements, those are automatically resolved too:
+
+```html
+<!-- main page -->
+<template id="layout" src="/templates/layout.html"></template>
+
+<!-- /templates/layout.html can itself contain: -->
+<nav>
+  <template src="/templates/nav.html"></template>
+</nav>
+```
+
+### Lazy Loading (`lazy`)
+
+By default, No.JS loads all remote templates **before the first render** in two background phases. You can control this per-template with the `lazy` attribute:
+
+| Value | Phase | Behaviour |
+|-------|-------|-----------|
+| *(absent)* | Auto | Content-include templates and the active route template load before first render; other route templates preload silently in the background |
+| `lazy="priority"` | 0 (first) | Loaded before everything else — even before regular content includes. Use for critical shared layouts. |
+| `lazy="ondemand"` | On demand | **Route templates only.** Never preloaded — fetched the first time the user navigates to that route. Ideal for heavy or rarely-visited pages. |
+
+```html
+<!-- Default: loads before first render (Phase 1) -->
+<template src="./components/header.tpl"></template>
+
+<!-- Priority: loaded before everything else -->
+<template src="./components/critical-layout.tpl" lazy="priority"></template>
+
+<!-- Default route: auto Phase 1 because it matches the current URL -->
+<template route="/" src="./pages/home.tpl"></template>
+
+<!-- Other routes: silently preloaded after first render (Phase 2) -->
+<template route="/about" src="./pages/about.tpl"></template>
+
+<!-- On demand: only fetched when the user first visits /heavy -->
+<template route="/heavy" src="./pages/heavy.tpl" lazy="ondemand"></template>
+```
+
+### Remote Templates in Routes
+
+Remote templates inside route content are also automatically resolved before the route renders. See [Routing → Remote Templates in Routes](#remote-templates-in-routes).
+
+> **Tip:** For projects with many route pages, consider [File-Based Routing](#file-based-routing) — point your `route-view` at a folder and let No.JS resolve templates automatically, no explicit `<template route>` declarations needed.
+
+### Loading Placeholder (`loading`)
+
+Show a placeholder template while a remote file is being fetched. The placeholder is injected **synchronously** before any network request and removed automatically when the real content arrives. Works for both static content-includes and nested templates inside route pages.
+
+```html
+<template src="./dashboard.tpl" loading="#spinner"></template>
+
+<template id="spinner">
+  <div class="skeleton">Loading...</div>
+</template>
+```
+
+Both plain IDs and `#id` syntax are accepted. The same template can be reused as a placeholder for multiple remote templates — it is cloned independently each time:
+
+```html
+<template src="./section-a.tpl" loading="#page-skeleton"></template>
+<template src="./section-b.tpl" loading="#page-skeleton"></template>
+<template src="./section-c.tpl" loading="#page-skeleton"></template>
+
+<template id="page-skeleton">
+  <div class="skeleton"></div>
+</template>
+```
+
+## Inline Template Include (`include`)
+
+Clone an inline template into the current position synchronously, before any fetches. Useful for reusable markup (icon sets, common fragments) that needs no network request:
+
+```html
+<template include="#icon-set"></template>
+
+<template id="icon-set">
+  <svg hidden>...</svg>
+</template>
+```
+
+Both plain IDs and `#id` syntax are accepted. Each `include` creates a fresh independent clone, so the same source template can be included multiple times without sharing state.
+
+> `include` and `loading` serve different purposes: `include` inserts inline content **permanently**; `loading` inserts a **temporary** placeholder that disappears once a remote template finishes loading.
+
+# State Management
+
+## `state` — Local State
+
+Creates a reactive context scoped to the element and its children.
+
+```html
+<div state="{ count: 0, name: 'World' }">
+  <h1>Hello, <span bind="name"></span>!</h1>
+  <p>Count: <span bind="count"></span></p>
+  <button on:click="count++">+1</button>
+  <button on:click="count = 0">Reset</button>
+</div>
+```
+
+## `store` — Global Store
+
+A global reactive store accessible from anywhere. Ideal for auth state, theme, shared data.
+
+```html
+<!-- Define store (once, typically at the top of the page) -->
+<div store="app" value="{
+  user: null,
+  theme: 'dark',
+  lang: 'en',
+  notifications: []
+}"></div>
+
+<!-- Access store from anywhere -->
+<nav>
+  <span bind="$store.app.user.name"></span>
+  <button on:click="$store.app.theme = $store.app.theme === 'dark' ? 'light' : 'dark'">
+    Toggle Theme
+  </button>
+</nav>
+
+<!-- In a deeply nested component -->
+<footer>
+  <span bind="$store.app.notifications.length + ' notifications'"></span>
+</footer>
+```
+
+### Pre-initializing Stores via `config()`
+
+You can also create stores programmatically with `NoJS.config()`. This is useful for hydrating state from `localStorage`, setting auth tokens, or defining multiple stores before the DOM is processed:
+
+```html
+<script>
+  NoJS.config({
+    stores: {
+      auth:  { user: null, token: localStorage.getItem('token') },
+      cart:  { items: [], total: 0 },
+      theme: { mode: 'dark', accent: 'blue' }
+    }
+  });
+</script>
+
+<!-- These work immediately — no <div store> needed -->
+<span bind="$store.auth.token"></span>
+<span bind="$store.cart.items.length + ' items'"></span>
+```
+
+> Stores created via `config()` won't be overwritten by a later `<div store>` with the same name.
+
+## `into` — Write Fetch Results to a Store
+
+The `into` attribute on any HTTP directive writes the response directly into a named global store.
+
+```html
+<!-- Define an empty store -->
+<div store="currentUser" value="{}"></div>
+
+<!-- Fetch and write into the store -->
+<div get="/me" as="user" into="currentUser">
+  <p>Fetched: <span bind="user.name"></span></p>
+</div>
+
+<!-- Read from the store anywhere else on the page -->
+<nav>
+  <span bind="$store.currentUser.name"></span>
+  <span bind="$store.currentUser.email"></span>
+</nav>
+```
+
+The store doesn't need to be pre-defined — `into` will create it if it doesn't exist:
+
+```html
+<!-- No store directive needed — into creates it automatically -->
+<button call="/api/auth/refresh"
+        method="post"
+        into="session">
+  Refresh Session
+</button>
+
+<!-- These update reactively when the call completes -->
+<span bind="$store.session.token"></span>
+<span bind="$store.session.expiresAt"></span>
+```
+
+## `computed` — Derived State
+
+Values that are automatically recalculated when dependencies change:
+
+```html
+<div state="{ price: 100, quantity: 2, taxRate: 0.1 }">
+
+  <div computed="subtotal" expr="price * quantity"></div>
+  <div computed="tax" expr="subtotal * taxRate"></div>
+  <div computed="total" expr="subtotal + tax"></div>
+
+  <p>Subtotal: $<span bind="subtotal"></span></p>
+  <p>Tax: $<span bind="tax"></span></p>
+  <p>Total: $<span bind="total"></span></p>
+
+  <input type="number" model="quantity" />
+
+</div>
+```
+
+## `watch` — Side Effects on State Change
+
+Execute an action whenever a value changes:
+
+```html
+<div state="{ search: '' }"
+     watch="search"
+     on:change="console.log('Search changed:', search)">
+
+  <input model="search" />
+
+</div>
+```
+
+## State Persistence
+
+Persist state across page reloads:
+
+```html
+<!-- Persists to localStorage -->
+<div state="{ theme: 'dark', sidebar: true }"
+     persist="localStorage"
+     persist-key="app-settings">
+  ...
+</div>
+
+<!-- Persists to sessionStorage -->
+<div state="{ cartItems: [] }"
+     persist="sessionStorage"
+     persist-key="cart">
+  ...
+</div>
+```
+
+## `NoJS.notify()` — Flush Store Updates from JavaScript
+
+When external JavaScript (interceptors, helper functions, `<script>` blocks) mutates a store via `NoJS.store`, the DOM bindings don't update automatically because the mutation bypasses the framework's expression engine. Call `NoJS.notify()` after mutating the store to flush all pending DOM updates.
+
+```html
+<script>
+  function addToCart(item) {
+    NoJS.store.cart.items.push(item);
+    NoJS.store.cart.total += item.price;
+    NoJS.notify(); // ← triggers DOM update
+  }
+</script>
+
+<div store="cart" value="{ items: [], total: 0 }"></div>
+<span bind="$store.cart.items.length + ' items'"></span>
+```
+
+### Interceptor example
+
+```html
+<script>
+  NoJS.interceptor('response', (response) => {
+    if (response.status === 401) {
+      NoJS.store.auth.user = null;
+      NoJS.store.auth.token = null;
+      NoJS.notify(); // ← flush before redirect
+      NoJS.router.push('/login');
+      throw new Error('Session expired');
+    }
+    return response;
+  });
+</script>
+```
+
+> **When do I need `notify()`?** Only when you mutate `NoJS.store` from plain JavaScript — outside of HTML expressions like `on:click` or `bind`. If you write `on:click="$store.cart.count++"` directly in HTML, the framework handles notification automatically.
+
+# Events
+
+## `on:*` — Event Handlers
+
+Bind any DOM event directly in HTML:
+
+```html
+<!-- Click -->
+<button on:click="count++">Increment</button>
+<button on:click="handleLogout()">Logout</button>
+
+<!-- Input -->
+<input on:input="search = $event.target.value" />
+<input on:focus="focused = true" on:blur="focused = false" />
+
+<!-- Keyboard -->
+<input on:keydown.enter="submitForm()"
+       on:keydown.escape="cancel()" />
+
+<!-- Mouse -->
+<div on:mouseenter="hovered = true"
+     on:mouseleave="hovered = false">
+  Hover me
+</div>
+
+<!-- Custom events -->
+<div on:custom-event="handleCustom($event.detail)"></div>
+```
+
+## Event Modifiers
+
+```html
+<!-- .prevent — calls preventDefault() -->
+<form on:submit.prevent="handleSubmit()">
+
+<!-- .stop — calls stopPropagation() -->
+<button on:click.stop="handleClick()">
+
+<!-- .once — listener fires only once -->
+<button on:click.once="initializeApp()">
+
+<!-- .self — only fires if target is the element itself -->
+<div on:click.self="closeModal()">
+
+<!-- .debounce — debounce the handler -->
+<input on:input.debounce.300="search($event.target.value)" />
+
+<!-- .throttle — throttle the handler -->
+<div on:scroll.throttle.100="handleScroll()">
+
+<!-- Key modifiers -->
+<input on:keydown.enter="submit()"
+       on:keydown.ctrl.s="save()"
+       on:keydown.shift.delete="deleteAll()" />
+
+<!-- Combine modifiers -->
+<form on:submit.prevent.once="register()">
+```
+
+## `$event` — The Event Object
+
+Inside any `on:*` handler, `$event` refers to the native DOM event:
+
+```html
+<input on:input="name = $event.target.value" />
+<div on:click="handleClick($event.clientX, $event.clientY)"></div>
+```
+
+## `$el` — The Current Element
+
+```html
+<input on:focus="$el.select()" />
+<div on:click="$el.classList.toggle('expanded')"></div>
+```
+
+## Lifecycle Hooks
+
+```html
+<!-- Run when element is inserted into the DOM -->
+<div on:mounted="initChart($el)">
+  <canvas ref="chart"></canvas>
+</div>
+
+<!-- Run when element is removed from the DOM -->
+<div on:unmounted="cleanup()"></div>
+
+<!-- Run once when the element is first processed -->
+<div on:init="fetchInitialData()"></div>
+
+<!-- Run every time a bound value changes -->
+<div on:updated="logChange()"></div>
+```
+
+| Hook | When |
+|------|------|
+| `on:init` | Directive first processed |
+| `on:mounted` | Element inserted into visible DOM |
+| `on:updated` | Any reactive dependency changed |
+| `on:unmounted` | Element removed from DOM |
+| `on:error` | Any error in this element's subtree |
+
+# Forms & Validation
+
+## Declarative Form Submission
+
+```html
+<form post="/api/register"
+      success="#registerSuccess"
+      error="#registerError"
+      loading="#registerLoading"
+      validate>
+
+  <input type="text"     name="name"     required minlength="2" />
+  <input type="email"    name="email"    required />
+  <input type="password" name="password" required minlength="8"
+         pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
+
+  <button type="submit">Register</button>  <!-- auto-disabled when invalid -->
+
+</form>
+```
+
+## Validation Rules
+
+No.JS automatically detects **native HTML5 validation attributes** — no `validate` attribute needed for standard rules:
+
+```html
+<!-- All native HTML5 validation works automatically -->
+<input required />
+<input minlength="3" maxlength="50" />
+<input type="email" />
+<input type="url" />
+<input type="number" min="1" max="100" step="5" />
+<input pattern="[0-9]{3}-[0-9]{4}" />
+```
+
+The `validate` attribute is only needed for **No.JS-specific validators** that go beyond what HTML5 offers:
+
+```html
+<input validate="custom:validateUsername" />  <!-- Custom function -->
+```
+
+## Per-Rule Error Messages
+
+Use `error-{rule}` attributes to set a custom message for a specific validation rule, or `error` for a generic fallback:
+
+```html
+<input type="email" name="email" required
+       error-required="Email is required"
+       error-email="Please enter a valid email"
+       error="This field is invalid" />
+```
+
+When multiple rules fail, errors are resolved by **priority** (required → type-based → length → pattern → range).
+
+## Error Templates
+
+Point an error attribute to a `<template>` using a `#` prefix to render rich error UI:
+
+```html
+<input type="email" name="email" required
+       error="#emailError" />
+
+<template id="emailError">
+  <span class="field-error" bind="$error"></span>
+</template>
+```
+
+Inside the template, `$error` contains the error message and `$rule` contains the failing rule name. The template is rendered after the `<template>` element and automatically removed when the field becomes valid.
+
+Per-rule templates work too:
+
+```html
+<input name="user" required validate="custom:checkAvailability"
+       error-required="#reqTpl"
+       error-custom="#customTpl" />
+```
+
+## Error CSS Class
+
+Use `error-class` on the form or on individual fields to automatically toggle a CSS class when a field is invalid **and touched**:
+
+```html
+<!-- Form-level: applies to all fields -->
+<form validate error-class="is-invalid">
+  <input name="email" required />  <!-- gets .is-invalid when invalid + touched -->
+</form>
+
+<!-- Per-field override -->
+<input name="name" required error-class="field-error" />
+```
+
+The class is added only after the field has been touched (focused and blurred), so users don't see errors before interacting with the form.
+
+## `$form` — Form Context
+
+Inside any `<form>` with the `validate` attribute, `$form` provides:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `$form.valid` | `boolean` | `true` if all fields pass validation |
+| `$form.dirty` | `boolean` | `true` if any field has been modified |
+| `$form.touched` | `boolean` | `true` if any field has been focused and blurred |
+| `$form.submitting` | `boolean` | `true` while the request is in flight |
+| `$form.pending` | `boolean` | `true` while async validators are running |
+| `$form.errors` | `object` | Map of field names → error messages |
+| `$form.values` | `object` | Current form values |
+| `$form.firstError` | `string\|null` | Error message of the first invalid field (DOM order) |
+| `$form.errorCount` | `number` | Number of fields currently failing validation |
+| `$form.fields` | `object` | Per-field state (see below) |
+| `$form.reset()` | `function` | Reset form to initial values, clear errors and classes |
+
+```html
+<form post="/api/contact" validate>
+  <input type="text" name="name" required />
+  <input type="email" name="email" required />
+  <textarea name="message" required minlength="10"></textarea>
+
+  <p show="$form.errors.email" class="error" bind="$form.errors.email"></p>
+
+  <!-- Show first error as a summary -->
+  <p show="$form.firstError" class="error-summary" bind="$form.firstError"></p>
+  <p show="$form.errorCount" bind="$form.errorCount + ' field(s) need attention'"></p>
+
+  <button type="submit"
+          bind-disabled="!$form.valid || $form.submitting">
+    <span hide="$form.submitting">Send</span>
+    <span show="$form.submitting">Sending...</span>
+  </button>
+</form>
+```
+
+## `$form.fields` — Per-Field State
+
+`$form.fields` exposes individual field state keyed by field `name`:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `$form.fields.{name}.valid` | `boolean` | Whether this field passes validation |
+| `$form.fields.{name}.error` | `string\|null` | Error message for this field |
+| `$form.fields.{name}.dirty` | `boolean` | Whether this field has been modified |
+| `$form.fields.{name}.touched` | `boolean` | Whether this field has been focused and blurred |
+
+```html
+<form validate>
+  <input type="email" name="email" required />
+
+  <p show="$form.fields.email.touched && !$form.fields.email.valid"
+     bind="$form.fields.email.error"
+     class="error"></p>
+</form>
+```
+
+### Field Aliases with `as`
+
+Use the `as` attribute to expose a field's state under a custom name in the context:
+
+```html
+<form validate>
+  <input type="email" name="email" required as="emailField" />
+
+  <!-- Access via $form.fields.email OR via the alias -->
+  <p show="!emailField.valid && emailField.touched"
+     bind="emailField.error"></p>
+</form>
+```
+
+## Validation Triggers (`validate-on`)
+
+By default, validation runs on `input` and `focusout`. Use `validate-on` to change when visual feedback appears:
+
+```html
+<!-- Form-level: validate on blur only -->
+<form validate validate-on="blur">
+  <input name="email" required />
+</form>
+
+<!-- Per-field override -->
+<form validate>
+  <input name="email" required validate-on="blur" />
+  <input name="name" required />  <!-- uses default: input + focusout -->
+</form>
+```
+
+> **Note:** Internally, `$form` data is always kept up-to-date regardless of `validate-on`. The trigger only controls when **visual feedback** (error messages, error classes) is shown.
+
+## Conditional Validation (`validate-if`)
+
+Skip validation for a field based on a condition:
+
+```html
+<form validate>
+  <input type="checkbox" on:change="hasCompany = $event.target.checked" />
+  <label>I have a company</label>
+
+  <input name="company" required
+         validate-if="hasCompany"
+         placeholder="Company name" />
+</form>
+```
+
+When `validate-if` evaluates to `false`, the field is treated as valid and excluded from `$form.errors`.
+
+## Auto-Disable Submit Buttons
+
+Submit buttons (`<button type="submit">`, `<input type="submit">`, and `<button>` without a `type`) are **automatically disabled** when the form is invalid. No `bind-disabled` needed:
+
+```html
+<form validate>
+  <input name="email" required />
+  <button type="submit">Send</button>  <!-- auto-disabled when invalid -->
+</form>
+```
+
+Buttons with `type="button"` are not affected. If you set a custom `bind-disabled` expression, the auto-disable is skipped for that button.
+
+## Custom Validators
+
+```html
+<script>
+  NoJS.validator('strongPassword', (value) => {
+    if (value.length < 8) return 'Must be at least 8 characters';
+    if (!/[A-Z]/.test(value)) return 'Must contain uppercase';
+    if (!/[0-9]/.test(value)) return 'Must contain a number';
+    return true;
+  });
+</script>
+
+<input type="password" validate="strongPassword" />
+```
+
+# Actions & Refs
+
+## `call` — Trigger API Requests from Any Element
+
+Attach `call` to any clickable element to fire an HTTP request on click. It supports the same attributes as the HTTP directives (`get`, `post`, etc.), including loading templates, redirect, custom headers, and more.
+
+```html
+<!-- Logout button -->
+<a call="/api/logout"
+   method="post"
+   success="#loggedOut"
+   error="#logoutError"
+   confirm="Are you sure you want to logout?">
+  Logout
+</a>
+
+<!-- Like button -->
+<button call="/api/posts/{post.id}/like"
+        method="post"
+        then="post.likes++">
+  ❤️ <span bind="post.likes"></span>
+</button>
+
+<!-- Delete with confirmation -->
+<button call="/api/items/{item.id}"
+        method="delete"
+        confirm="Delete this item?"
+        then="items.splice($index, 1)">
+  🗑 Delete
+</button>
+
+<!-- Write result to a global store -->
+<button call="/api/me"
+        method="get"
+        into="currentUser">
+  Load Profile
+</button>
+```
+
+### Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `call` | `string` | URL for the request (supports `{variable}` interpolation) |
+| `method` | `string` | HTTP method. Default: `"get"` |
+| `as` | `string` | Name to assign the response in the context. Default: `"data"` |
+| `into` | `string` | Write response to a named global store |
+| `body` | `string` | Request body (JSON string with `{variable}` interpolation) |
+| `loading` | `string` | Template ID to show during the request (e.g. `"#spinner"`) |
+| `success` | `string` | Template ID to render on success. Receives response via `var` |
+| `error` | `string` | Template ID to render on error. Receives error via `var` |
+| `then` | `string` | Expression to execute on success (e.g. `"items.push(result)"`) |
+| `confirm` | `string` | Show browser `confirm()` dialog before sending |
+| `redirect` | `string` | SPA route to navigate to on success |
+| `headers` | `string` | JSON string of additional request headers |
+
+### Loading Template
+
+Show a loading indicator while the request is in flight. The element is **disabled** during loading and its content is restored afterwards.
+
+```html
+<button call="/api/deploy"
+        method="post"
+        loading="#deploySpinner"
+        success="#deployDone">
+  🚀 Deploy
+</button>
+
+<template id="deploySpinner">
+  <span class="spinner"></span> Deploying…
+</template>
+```
+
+### Custom Headers
+
+Pass per-request headers as a JSON string:
+
+```html
+<button call="/api/admin/clear-cache"
+        method="post"
+        headers='{"X-Admin-Token": "abc123"}'>
+  Clear Cache
+</button>
+```
+
+### Redirect After Success
+
+Navigate to an SPA route after a successful request:
+
+```html
+<button call="/api/onboarding/complete"
+        method="post"
+        redirect="/dashboard">
+  Finish Setup →
+</button>
+```
+
+### Abort / SwitchMap
+
+Rapid clicks automatically **abort** the previous in-flight request before starting a new one, preventing race conditions. Only the result of the last click is applied.
+
+### Events
+
+`call` emits lifecycle events on the document:
+
+- **`fetch:success`** — `{ url, data }` on successful response
+- **`fetch:error`** — `{ url, error }` on failure
+
+### Request Lifecycle
+
+```
+click → [confirm?] → [loading] → [success | error]
+                                      ↓         ↓
+                                 render tpl   render tpl
+                                 exec `then`  log warning
+                                 `redirect`
+```
+
+## `trigger` — Emit Custom Events
+
+```html
+<!-- Child emits an event -->
+<button on:click trigger="item-selected" trigger-data="item">
+  Select
+</button>
+
+<!-- Parent listens -->
+<div on:item-selected="handleSelection($event.detail)">
+  <div each="item in items" template="itemTpl"></div>
+</div>
+```
+
+## `ref` — Named References
+
+Access DOM elements without `querySelector`:
+
+```html
+<div state="{ }">
+  <input ref="searchInput" type="text" />
+  <canvas ref="chart"></canvas>
+  <button on:click="$refs.searchInput.focus()">Focus Search</button>
+</div>
+```
+
+## `$refs` — Ref Map
+
+All elements with `ref` are accessible via `$refs` in the current scope:
+
+```html
+<video ref="player" src="video.mp4"></video>
+<button on:click="$refs.player.play()">▶ Play</button>
+<button on:click="$refs.player.pause()">⏸ Pause</button>
+```
+
+# Dynamic Styling
+
+## `class-*` — Toggle Classes
+
+```html
+<!-- Toggle a single class based on expression -->
+<div class-active="isActive"
+     class-disabled="!isEnabled"
+     class-highlighted="score > 90">
+</div>
+
+<!-- Multiple classes from object -->
+<div class-map="{ active: isActive, 'text-bold': isBold, error: hasError }"></div>
+
+<!-- From array -->
+<div class-list="['base-class', isAdmin ? 'admin' : 'user']"></div>
+```
+
+## `style-*` — Inline Styles
+
+```html
+<div style-color="isError ? 'red' : 'green'"
+     style-font-size="fontSize + 'px'"
+     style-opacity="isVisible ? 1 : 0.5"
+     style-background="'linear-gradient(135deg, ' + color1 + ', ' + color2 + ')'">
+</div>
+
+<!-- From object -->
+<div style-map="{
+  color: textColor,
+  fontSize: size + 'px',
+  transform: 'rotate(' + rotation + 'deg)'
+}"></div>
+```
+
+# Animations & Transitions
+
+## `animate` — Enter/Leave Animations
+
+```html
+<!-- CSS animation name on enter -->
+<div if="visible" animate="fadeIn">Content</div>
+
+<!-- Enter and leave animations -->
+<div if="visible"
+     animate-enter="slideInRight"
+     animate-leave="slideOutLeft"
+     animate-duration="300">
+  Content
+</div>
+```
+
+## `transition` — CSS Transition Classes
+
+Follows a convention similar to Vue's transition system:
+
+```html
+<div if="show" transition="fade">Content</div>
+```
+
+No.JS adds/removes classes during the transition:
+
+| Class | When |
+|-------|------|
+| `fade-enter` | Start state of enter |
+| `fade-enter-active` | Active state of enter |
+| `fade-enter-to` | End state of enter |
+| `fade-leave` | Start state of leave |
+| `fade-leave-active` | Active state of leave |
+| `fade-leave-to` | End state of leave |
+
+```css
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+```
+
+## Loop Animations
+
+```html
+<div each="item in items"
+     template="itemTpl"
+     animate-enter="fadeInUp"
+     animate-leave="fadeOutDown"
+     animate-stagger="50">  <!-- 50ms delay between each item -->
+</div>
+```
+
+## Built-in Animation Names
+
+No.JS ships with these CSS animations:
+
+`fadeIn`, `fadeOut`, `slideInLeft`, `slideInRight`, `slideInUp`, `slideInDown`, `slideOutLeft`, `slideOutRight`, `slideOutUp`, `slideOutDown`, `zoomIn`, `zoomOut`, `bounceIn`, `flipIn`
+
+# Filters & Pipes
+
+Filters transform values in `bind` expressions using the `|` pipe syntax.
+
+## Built-in Filters
+
+### Text
+
+```html
+<span bind="name | uppercase"></span>           <!-- JOHN -->
+<span bind="name | lowercase"></span>           <!-- john -->
+<span bind="name | capitalize"></span>          <!-- John doe → John Doe -->
+<span bind="text | truncate:100"></span>        <!-- First 100 chars + ... -->
+<span bind="text | stripHtml"></span>           <!-- Remove HTML tags -->
+<span bind="slug | slugify"></span>             <!-- hello-world -->
+<span bind="text | nl2br"></span>               <!-- Newlines to <br> -->
+```
+
+### Numbers
+
+```html
+<span bind="price | currency"></span>           <!-- $29.99 -->
+<span bind="value | number:2"></span>           <!-- 1,234.56 -->
+<span bind="ratio | percent"></span>            <!-- 42% -->
+<span bind="bytes | filesize"></span>           <!-- 1.5 MB -->
+<span bind="value | ordinal"></span>            <!-- 1st, 2nd, 3rd -->
+```
+
+### Arrays
+
+```html
+<span bind="items | count"></span>              <!-- 5 -->
+<span bind="items | first"></span>              <!-- First item -->
+<span bind="items | last"></span>               <!-- Last item -->
+<span bind="items | join:', '"></span>          <!-- a, b, c -->
+<span bind="items | reverse"></span>            <!-- Reversed array -->
+<span bind="items | unique"></span>             <!-- Deduplicated -->
+<span bind="items | pluck:'name'"></span>       <!-- Extract property -->
+<span bind="items | sortBy:'date'"></span>      <!-- Sort by property -->
+```
+
+### Date
+
+```html
+<span bind="date | date:'short'"></span>        <!-- 02/25/26 -->
+<span bind="date | relative"></span>            <!-- 3 days ago -->
+<span bind="date | fromNow"></span>             <!-- in 2 hours -->
+```
+
+### Utility
+
+```html
+<span bind="value | default:'N/A'"></span>      <!-- Fallback for null/undefined -->
+<span bind="obj | json"></span>                 <!-- JSON.stringify -->
+<span bind="items | debug"></span>              <!-- console.log + passthrough -->
+```
+
+## Chaining Filters
+
+```html
+<span bind="user.bio | stripHtml | truncate:200 | capitalize"></span>
+<span bind="price | number:2 | currency:'USD'"></span>
+```
+
+## Custom Filters
+
+```html
+<script>
+  NoJS.filter('initials', (fullName) => {
+    return fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+  });
+
+  NoJS.filter('timeAgo', (date) => {
+    const diff = Date.now() - new Date(date).getTime();
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 60) return minutes + 'm ago';
+    if (minutes < 1440) return Math.floor(minutes / 60) + 'h ago';
+    return Math.floor(minutes / 1440) + 'd ago';
+  });
+</script>
+
+<span bind="user.name | initials"></span>      <!-- JD -->
+<span bind="post.createdAt | timeAgo"></span>   <!-- 3h ago -->
+```
+
+# Routing — SPA Navigation
+
+Full client-side routing with no page reloads.
+
+## Route Definition
+
+```html
+<body>
+  <nav>
+    <a route="/">Home</a>
+    <a route="/about">About</a>
+    <a route="/users">Users</a>
+    <a route="/users/:id">User Detail</a>
+  </nav>
+
+  <!-- This is where route content renders -->
+  <main route-view></main>
+
+  <!-- Route templates -->
+  <template route="/" id="homePage">
+    <h1>Home</h1>
+    <p>Welcome to No.JS</p>
+  </template>
+
+  <template route="/about" id="aboutPage">
+    <h1>About</h1>
+  </template>
+
+  <template route="/users" id="usersPage">
+    <div get="/api/users" as="users">
+      <div each="user in users" template="userLink"></div>
+    </div>
+  </template>
+
+  <template route="/users/:id" id="userDetail">
+    <div get="/api/users/{$route.params.id}" as="user">
+      <h1 bind="user.name"></h1>
+    </div>
+  </template>
+</body>
+```
+
+## Route Parameters & Query
+
+```html
+<!-- Params: /users/42 -->
+<template route="/users/:id">
+  <span bind="$route.params.id"></span>    <!-- "42" -->
+</template>
+
+<!-- Query: /search?q=hello&page=2 -->
+<template route="/search">
+  <span bind="$route.query.q"></span>      <!-- "hello" -->
+  <span bind="$route.query.page"></span>   <!-- "2" -->
+</template>
+```
+
+## `$route` — Route Context
+
+| Property | Description |
+|----------|-------------|
+| `$route.path` | Current path (e.g. `"/users/42"`) |
+| `$route.params` | Route parameters (e.g. `{ id: "42" }`) |
+| `$route.query` | Query string params (e.g. `{ q: "hello" }`) |
+| `$route.hash` | URL hash (e.g. `"#section"`) |
+| `$route.matched` | Whether an explicit route matched (`true`) or a wildcard/fallback is rendering (`false`) |
+
+## Active Route Styling
+
+```html
+<a route="/" route-active="active">Home</a>
+<a route="/about" route-active="active">About</a>
+
+<!-- Exact match only (won't match /users/123) -->
+<a route="/users" route-active-exact="active">Users</a>
+```
+
+## Route Guards
+
+```html
+<!-- Redirect if not authenticated -->
+<template route="/dashboard" guard="$store.auth.user" redirect="/login">
+  <h1>Dashboard</h1>
+</template>
+
+<!-- Redirect if already logged in -->
+<template route="/login" guard="!$store.auth.user" redirect="/dashboard">
+  <form post="/api/login">...</form>
+</template>
+```
+
+## Programmatic Navigation
+
+```html
+<button on:click="$router.push('/users/42')">Go to User</button>
+<button on:click="$router.back()">Go Back</button>
+<button on:click="$router.replace('/new-path')">Replace</button>
+```
+
+> **Note:** `$router.push()` and `$router.replace()` return Promises — navigation (including remote template loading) is fully async. In `on:click` handlers the return value is ignored, but in scripts you can `await` them:
+>
+> ```html
+> <script>
+>   await NoJS.router.push('/dashboard');
+> </script>
+> ```
+
+## Nested Routes
+
+```html
+<template route="/settings" id="settingsPage">
+  <nav>
+    <a route="/settings/profile">Profile</a>
+    <a route="/settings/security">Security</a>
+  </nav>
+  <div route-view></div>  <!-- Nested route content renders here -->
+</template>
+
+<template route="/settings/profile">
+  <h2>Profile Settings</h2>
+</template>
+
+<template route="/settings/security">
+  <h2>Security Settings</h2>
+</template>
+```
+
+## Remote Templates in Routes
+
+Route templates can include `<template src="...">` to load content from external files. They are automatically resolved before the route renders:
+
+```html
+<template route="/dashboard">
+  <template src="/partials/dash-header.html"></template>
+  <template src="/partials/dash-stats.html"></template>
+  <p>Dashboard content</p>
+</template>
+```
+
+Nested remote templates (a remote template that itself contains more `<template src>`) are recursively loaded.
+
+## File-Based Routing
+
+Instead of declaring each route template manually, point your `route-view` outlet at a folder. No.JS will automatically resolve route paths to template files inside that folder.
+
+```html
+<!-- Traditional (explicit) routing -->
+<template route="/" src="./pages/overview.tpl"></template>
+<template route="/analytics" src="./pages/analytics.tpl"></template>
+<template route="/users" src="./pages/users.tpl"></template>
+
+<!-- File-based routing — one line replaces all of the above! -->
+<main route-view src="./pages/" route-index="overview"></main>
+```
+
+### How it works
+
+1. Add `route-view` to your outlet element — file-based routing is enabled by default (config `router.templates: "pages"`). Override per-outlet with `src="folder/"`.
+2. When a user navigates to `/analytics`, No.JS resolves it to `pages/analytics.tpl`
+3. The template is fetched, cached, and rendered — automatically
+
+### Attributes
+
+| Attribute | Default | Description |
+|-----------|---------|-------------|
+| `src` | `"pages"` | Base folder for template resolution (per-outlet override; config: `router.templates`) |
+| `route-index` | `"index"` | Filename for the root route `/` |
+| `ext` | `".tpl"` | File extension appended to route segments (fallback: `".html"`) |
+| `i18n-ns` | — | When present, auto-derives i18n namespace from filename |
+
+> **Config default:** The default `router.templates` is `"pages"`, so file-based routing works out of the box — just add `route-view` to your outlet. Override with `NoJS.config({ router: { templates: 'views' } })` or per-outlet via `src="./custom/"`.
+
+### Example — SaaS Dashboard
+
+```
+pages/
+├── overview.tpl    ← /
+├── analytics.tpl   ← /analytics
+├── users.tpl       ← /users
+├── revenue.tpl     ← /revenue
+├── billing.tpl     ← /billing
+└── settings.tpl    ← /settings
+```
+
+```html
+<template src="./components/sidebar.tpl"></template>
+
+<main route-view src="./pages/" route-index="overview"></main>
+```
+
+That's it — **two lines** for a full SPA with six routes.
+
+### Mixing Explicit & File-Based Routes
+
+Explicit `<template route="...">` declarations **always take priority**. This lets you combine both approaches — use file-based routing for simple pages and explicit templates for routes that need guards, params, or named outlets:
+
+```html
+<!-- File-based routing handles most pages automatically -->
+<main route-view src="./pages/"></main>
+
+<!-- Explicit route for param-based pages -->
+<template route="/users/:id" src="./pages/user-detail.tpl"></template>
+
+<!-- Explicit route with guard -->
+<template route="/admin" src="./pages/admin.tpl"
+          guard="$store.auth.isAdmin" redirect="/"></template>
+```
+
+### Auto i18n Namespace
+
+When the `route-view` element has an `i18n-ns` attribute (even without a value), No.JS automatically loads the i18n namespace matching the filename:
+
+```html
+<!-- Auto-derives namespace: "/" → "landing", "/features" → "features", etc. -->
+<main route-view src="templates/" route-index="landing" i18n-ns></main>
+```
+
+This replaces the need to add `i18n-ns="..."` on each route template individually.
+
+## Lazy Template Loading
+
+Route templates support a `lazy` attribute to control when their remote file is fetched:
+
+| Value | Phase | Behaviour |
+|-------|-------|-----------|
+| *(absent)* | Auto | Active route loads before first render; others preload silently after |
+| `lazy="priority"` | 0 | Fetched first, before all other templates |
+| `lazy="ondemand"` | On demand | Only fetched the first time the user navigates to that route |
+
+```html
+<!-- Auto-prioritised: loads before first render (it's the active route at startup) -->
+<template route="/" src="./home.tpl"></template>
+
+<!-- Silently preloaded in background after first render -->
+<template route="/about" src="./about.tpl"></template>
+
+<!-- Loaded only when the user first visits /dashboard -->
+<template route="/dashboard" src="./dashboard.tpl" lazy="ondemand"></template>
+
+<!-- Forced priority — loads before all content-includes too -->
+<template route="/critical" src="./critical.tpl" lazy="priority"></template>
+```
+
+> `lazy="ondemand"` is skipped entirely during initialisation. The router fetches the file on the first navigation and caches it for all subsequent visits.
+
+## Anchor Links
+
+When using `useHash: true`, the URL hash (`#`) is used for routing (e.g. `#/docs`). This normally conflicts with standard anchor links like `<a href="#section">` — but No.JS handles it automatically in both hash and history modes.
+
+Anchor links that point to an element `id` on the page are intercepted by the router: the target element is scrolled into view smoothly, and the clicked link receives an `active` class. The route itself is **not** affected.
+
+```html
+<!-- These work in hash mode — no special attributes needed -->
+<nav>
+  <a href="#introduction">Introduction</a>
+  <a href="#getting-started">Getting Started</a>
+  <a href="#api">API Reference</a>
+</nav>
+
+<div id="introduction">
+  <h2>Introduction</h2>
+  <p>...</p>
+</div>
+
+<div id="getting-started">
+  <h2>Getting Started</h2>
+  <p>...</p>
+</div>
+
+<div id="api">
+  <h2>API Reference</h2>
+  <p>...</p>
+</div>
+```
+
+**How it works:**
+
+- Clicking `<a href="#introduction">` scrolls to `<div id="introduction">` with smooth behavior
+- The `.active` class is toggled on the clicked link (and removed from siblings)
+- The current route path is preserved — no navigation occurs
+- Links with a `route` attribute are always treated as route navigation, not anchors
+
+> **Tip:** Style the active anchor link with `.active` in your CSS — the router manages the class for you.
+
+## Named Outlets
+
+Multiple `route-view` outlets can coexist in the same layout. Give each outlet a name (the attribute value), then point route templates at specific outlets using the `outlet` attribute.
+
+```html
+<!-- Layout -->
+<main route-view></main>              <!-- "default" outlet -->
+<aside route-view="sidebar"></aside>
+<header route-view="topbar"></header>
+
+<!-- /home fills all three outlets -->
+<template route="/home">
+  <h1>Home page</h1>
+</template>
+
+<template route="/home" outlet="sidebar">
+  <nav>Home navigation</nav>
+</template>
+
+<template route="/home" outlet="topbar">
+  <span>Home breadcrumb</span>
+</template>
+
+<!-- /about only fills default; sidebar and topbar are cleared automatically -->
+<template route="/about">
+  <h1>About us</h1>
+</template>
+```
+
+> Outlets with no matching template for the active route are **always cleared** on navigation.
+
+### Programmatic Registration
+
+```js
+router.register('/home', mainTpl);                // → "default" outlet
+router.register('/home', sidebarTpl, 'sidebar');  // → "sidebar" outlet
+```
+
+## 404 / Catch-All Routes
+
+Use `route="*"` to define a **wildcard catch-all** template that renders when no explicit route matches the current path. The wildcard is always evaluated last, regardless of DOM order.
+
+```html
+<nav>
+  <a route="/">Home</a>
+  <a route="/about">About</a>
+</nav>
+
+<main route-view></main>
+
+<template route="/">
+  <h1>Home</h1>
+</template>
+
+<template route="/about">
+  <h1>About Us</h1>
+</template>
+
+<!-- Catch-all 404 -->
+<template route="*">
+  <h1>404 — Page Not Found</h1>
+  <p>Sorry, <code bind="$route.path"></code> doesn't exist.</p>
+  <a route="/">Back to Home</a>
+</template>
+```
+
+Explicit routes **always take priority** — the wildcard only fires when `matchRoute()` returns no match.
+
+### Automatic 404 Fallback
+
+If you don't define a `route="*"` template, No.JS automatically shows a minimal built-in 404 page when no route matches. This ensures users always see something meaningful instead of a blank outlet.
+
+```html
+<!-- No route="*" defined here -->
+<main route-view></main>
+
+<template route="/">
+  <h1>Home</h1>
+</template>
+
+<!-- Navigating to /xyz shows a built-in "404 — Page not found" message -->
+```
+
+> **Tip:** The built-in fallback is intentionally minimal and unstyled. Define your own `route="*"` template for production apps.
+
+### Named Outlet Wildcards
+
+Each named outlet can have its own wildcard fallback. When no route matches for an outlet, the framework resolves fallbacks in this order:
+
+1. **Local wildcard** — `<template route="*" outlet="{name}">` for that specific outlet
+2. **Global wildcard** — `<template route="*">` (the default outlet's wildcard), used only for non-default outlets
+3. **Built-in 404** — the framework's minimal fallback page
+
+```html
+<main route-view></main>
+<aside route-view="sidebar"></aside>
+
+<template route="/">
+  <h1>Home</h1>
+</template>
+
+<template route="/" outlet="sidebar">
+  <nav>Home sidebar</nav>
+</template>
+
+<!-- Global wildcard (default outlet) -->
+<template route="*">
+  <h1>Page not found</h1>
+</template>
+
+<!-- Sidebar-specific wildcard -->
+<template route="*" outlet="sidebar">
+  <p>No sidebar content for this page</p>
+</template>
+```
+
+If the sidebar has no local wildcard, it falls back to the global `route="*"`. If neither exists, the built-in 404 is used.
+
+### `$route.matched`
+
+The `$route.matched` boolean tells you whether the current path hit an explicit route (`true`) or a wildcard/fallback (`false`). Use it for conditional rendering inside your templates:
+
+```html
+<template route="*">
+  <div show="!$route.matched">
+    <h1>404</h1>
+    <p>Path <code bind="$route.path"></code> was not found.</p>
+    <a route="/">Go Home</a>
+  </div>
+</template>
+```
+
+`$route.matched` is set **before** the template renders, so it's always available during processing.
+
+### Remote 404 Template
+
+Wildcard routes support all the same attributes as regular route templates, including `src` for remote loading:
+
+```html
+<template route="*" src="./pages/404.tpl"></template>
+```
+
+The remote template is fetched, cached, and rendered just like any other route template — and it has full access to `$route.path`, `$route.matched`, and all other framework features.
+
+### File-Based Routing 404
+
+When using [file-based routing](#file-based-routing), navigating to a path whose `.tpl` file doesn't exist on the server (HTTP 404 or other error) automatically triggers the wildcard fallback chain.
+
+```html
+<!-- File-based routing -->
+<main route-view src="./pages/"></main>
+
+<!-- If ./pages/xyz.tpl returns HTTP 404, this catches it -->
+<template route="*">
+  <h1>404 — Page Not Found</h1>
+  <p><code bind="$route.path"></code> could not be loaded.</p>
+</template>
+```
+
+The failed HTTP response is **not** cached — subsequent navigations to other paths are unaffected.
+
+# Internationalization (i18n)
+
+## Setup
+
+```html
+<script>
+  NoJS.i18n({
+    defaultLocale: 'en',
+    fallbackLocale: 'en',
+    locales: {
+      en: {
+        greeting: 'Hello, {name}!',
+        items: '{count} item | {count} items',  // Pluralization
+        nav: {
+          home: 'Home',
+          about: 'About'
+        }
+      },
+      'pt-BR': {
+        greeting: 'Olá, {name}!',
+        items: '{count} item | {count} itens',
+        nav: {
+          home: 'Início',
+          about: 'Sobre'
+        }
+      }
+    }
+  });
+</script>
+```
+
+## External Locale Files
+
+Instead of inlining all translations in JavaScript, load them from external JSON files.
+
+### Flat Mode (one file per locale)
+
+```
+/locales/en.json
+/locales/es.json
+```
+
+```html
+<script>
+  NoJS.i18n({
+    defaultLocale: 'en',
+    loadPath: '/locales/{locale}.json'
+  });
+</script>
+```
+
+### Namespace Mode (split by feature)
+
+```
+/locales/en/common.json
+/locales/en/dashboard.json
+```
+
+```html
+<script>
+  NoJS.i18n({
+    defaultLocale: 'en',
+    loadPath: '/locales/{locale}/{ns}.json',
+    ns: ['common']   // Loaded at init
+  });
+</script>
+```
+
+### Namespace per Route
+
+```html
+<template route="/dashboard" src="./pages/dashboard.tpl" i18n-ns="dashboard"></template>
+```
+
+### Namespace on Any Element
+
+```html
+<div i18n-ns="settings">
+  <h2 t="settings.title"></h2>
+  <p t="settings.desc"></p>
+</div>
+```
+
+### Caching
+
+Fetched JSON files are cached in memory by default. Disable in development:
+
+```html
+<script>
+  NoJS.i18n({ loadPath: '/locales/{locale}.json', cache: false });
+</script>
+```
+
+## Usage
+
+```html
+<!-- Simple translation -->
+<h1 t="greeting" t-name="user.name"></h1>
+<!-- Output: "Hello, John!" or "Olá, John!" -->
+
+<!-- Nested keys -->
+<a route="/" t="nav.home"></a>
+
+<!-- Pluralization -->
+<span t="items" t-count="cart.items.length"></span>
+<!-- Output: "1 item" or "5 items" -->
+
+<!-- Switch locale -->
+<button on:click="$i18n.locale = 'pt-BR'">Português</button>
+<button on:click="$i18n.locale = 'en'">English</button>
+
+<!-- Current locale -->
+<span bind="$i18n.locale"></span>
+```
+
+## Number & Date Formatting
+
+```html
+<!-- Currency -->
+<span bind="price | currency"></span>           <!-- $1,234.56 -->
+<span bind="price | currency:'BRL'"></span>     <!-- R$ 1.234,56 -->
+
+<!-- Date -->
+<span bind="createdAt | date"></span>            <!-- 02/25/2026 -->
+<span bind="createdAt | date:'long'"></span>     <!-- February 25, 2026 -->
+<span bind="createdAt | datetime"></span>        <!-- 02/25/2026 3:45 PM -->
+<span bind="createdAt | relative"></span>        <!-- 2 hours ago -->
+
+<!-- Number -->
+<span bind="value | number"></span>              <!-- 1,234.56 -->
+<span bind="value | number:0"></span>            <!-- 1,235 -->
+<span bind="value | percent"></span>             <!-- 45% -->
+```
+
+# Custom Directives
+
+Extend No.JS with your own attribute-driven behaviors.
+
+## `NoJS.directive()`
+
+```html
+<script>
+  NoJS.directive('tooltip', {
+    priority: 25,
+    init(el, name, value) {
+      const ctx = NoJS.findContext(el);
+      const text = NoJS.evaluate(value, ctx);
+
+      const tip = document.createElement('div');
+      tip.className = 'tooltip';
+      tip.textContent = text;
+
+      el.addEventListener('mouseenter', () => document.body.appendChild(tip));
+      el.addEventListener('mouseleave', () => tip.remove());
+    }
+  });
+
+  NoJS.directive('clipboard', {
+    priority: 25,
+    init(el, name, value) {
+      el.addEventListener('click', () => {
+        const ctx = NoJS.findContext(el);
+        const text = NoJS.evaluate(value, ctx);
+        navigator.clipboard.writeText(text);
+      });
+    }
+  });
+
+  NoJS.directive('lazy-src', {
+    priority: 25,
+    init(el, name, value) {
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          const ctx = NoJS.findContext(el);
+          el.src = NoJS.evaluate(value, ctx);
+          observer.disconnect();
+        }
+      });
+      observer.observe(el);
+    }
+  });
+</script>
+```
+
+## Usage
+
+```html
+<button tooltip="'Click to copy'" clipboard="user.email">📋 Copy Email</button>
+<img lazy-src="user.avatarUrl" alt="avatar" />
+```
+
+## Web Components Compatibility
+
+No.JS directives work on custom elements:
+
+```html
+<!-- Pass reactive data to web components -->
+<user-avatar bind-prop-name="user.name"
+             bind-prop-size="avatarSize"
+             on:avatar-clicked="handleClick()">
+</user-avatar>
+
+<!-- Use No.JS inside shadow DOM -->
+<my-widget>
+  <template shadowroot="open">
+    <div state="{ count: 0 }">
+      <button on:click="count++">+</button>
+      <span bind="count"></span>
+    </div>
+  </template>
+</my-widget>
+```
+
+### Component-like Patterns with Templates
+
+```html
+<!-- Define a reusable "component" -->
+<template id="counter-component" var="config">
+  <div state="{ count: config.initial || 0 }">
+    <span bind="config.label + ': '"></span>
+    <button on:click="count--">−</button>
+    <span bind="count"></span>
+    <button on:click="count++">+</button>
+  </div>
+</template>
+
+<!-- Use it multiple times -->
+<div use="counter-component" var-config="{ label: 'Apples', initial: 5 }"></div>
+<div use="counter-component" var-config="{ label: 'Oranges', initial: 3 }"></div>
+```
+
+# Error Handling
+
+## Per-Element Error Handling
+
+```html
+<div get="/api/users"
+     as="users"
+     error="#usersError"
+     retry="3"
+     retry-delay="2000">
+  ...
+</div>
+
+<template id="usersError" var="err">
+  <div class="error-box">
+    <p bind="err.message"></p>
+    <p>Status: <span bind="err.status"></span></p>
+    <button on:click="$el.parentElement.dispatchEvent(new Event('retry'))">
+      Try Again
+    </button>
+  </div>
+</template>
+```
+
+## Global Error Handler
+
+```html
+<script>
+  NoJS.on('error', (error, context) => {
+    console.error('[No.JS Error]', error);
+    // Send to error tracking service
+  });
+
+  NoJS.on('fetch:error', (url, error) => {
+    if (error.status === 401) {
+      NoJS.store.auth.user = null;
+      NoJS.router.push('/login');
+    }
+  });
+</script>
+```
+
+## `error-boundary` — Catch Errors in Subtree
+
+```html
+<div error-boundary="#errorFallback">
+  <!-- If anything in here throws, errorFallback renders instead -->
+  <div get="/api/fragile-endpoint" as="data">
+    <span bind="data.deep.nested.value"></span>
+  </div>
+</div>
+
+<template id="errorFallback" var="err">
+  <div class="error-boundary">
+    <h3>Something went wrong</h3>
+    <pre bind="err.message"></pre>
+  </div>
+</template>
+```
+
+# Configuration & Security
+
+## Global Settings
+
+```html
+<script>
+  NoJS.config({
+    // API
+    baseApiUrl: 'https://api.myapp.com/v1',
+    headers: { 'Authorization': 'Bearer xxx' },
+    timeout: 10000,
+    retries: 2,
+    retryDelay: 1000,
+    credentials: 'include',    // fetch credentials mode
+
+    // CSRF
+    csrf: {
+      header: 'X-CSRF-Token',
+      token: '...'
+    },
+
+    // Caching
+    cache: {
+      strategy: 'memory',     // 'none' | 'memory' | 'session' | 'local'
+      ttl: 300000              // 5 minutes
+    },
+
+    // Templates
+    templates: {
+      cache: true             // Cache fetched .tpl HTML in memory (default: true)
+    },
+
+    // Router
+    router: {
+      useHash: false,          // true = hash mode, false = history mode (default)
+      base: '/',
+      scrollBehavior: 'top',  // 'top' | 'preserve' | 'smooth'
+      templates: 'pages',       // Default base path for file-based routing (default: 'pages')
+      ext: '.tpl'              // Default file extension for file-based routing (fallback: '.html')
+    },
+    // Note: Anchor links (href="#id") are automatically
+    // intercepted in both modes — they scroll to the target
+    // element without triggering route navigation.
+
+    // i18n
+    i18n: {
+      defaultLocale: 'en',
+      fallbackLocale: 'en',
+      detectBrowser: true,
+      loadPath: '/locales/{locale}.json',  // Load from external JSON (default: null)
+      ns: ['common'],           // Namespaces to preload (default: [])
+      cache: true               // Cache fetched locale files (default: true)
+    },
+
+    // Debugging
+    debug: true,               // Logs directive processing
+    devtools: true,            // Enables browser devtools panel
+
+    // Security
+    sanitize: true,            // Sanitize bind-html
+  });
+</script>
+```
+
+## Pre-initializing Stores
+
+Use `stores` in `NoJS.config()` to create multiple global stores before the DOM is processed.
+This is useful when stores need to exist before any HTML directive runs — for example, when setting auth state from a JWT, or hydrating from `localStorage`.
+
+```html
+<script>
+  NoJS.config({
+    stores: {
+      auth:  { user: null, token: localStorage.getItem('token') },
+      cart:  { items: [], total: 0 },
+      theme: { mode: 'dark', accent: 'blue' }
+    }
+  });
+</script>
+```
+
+Stores created via `config()` behave exactly like those declared with the `store` HTML attribute — they are reactive contexts accessible via `$store.name` in expressions and `NoJS.store.name` in JavaScript.
+
+If a store name already exists, `config()` will **not** overwrite it. This means you can safely call `config()` multiple times without resetting store data.
+
+## Request Interceptors
+
+```html
+<script>
+  // Before every request
+  NoJS.interceptor('request', (url, options) => {
+    options.headers['X-Request-ID'] = crypto.randomUUID();
+    return options;
+  });
+
+  // After every response
+  NoJS.interceptor('response', (response, url) => {
+    if (response.status === 401) {
+      NoJS.store.auth.user = null;
+      NoJS.notify(); // flush DOM bindings before redirect
+      NoJS.router.push('/login');
+      throw new Error('Unauthorized');
+    }
+    return response;
+  });
+</script>
+```
+
+## Security
+
+### XSS Protection
+
+- `bind` always sets `textContent`, never `innerHTML` — safe by default.
+- `bind-html` sanitizes content through a DOMPurify-compatible sanitizer.
+- Template expressions are evaluated by a custom sandboxed parser — no `eval()` or `Function()` is used, and dangerous properties like `__proto__` and `constructor` are blocked.
+
+### CSRF Protection
+
+```html
+<script>
+  NoJS.config({
+    csrf: {
+      header: 'X-CSRF-Token',
+      token: document.querySelector('meta[name="csrf-token"]').content
+    }
+  });
+</script>
+```
+
+### Content Security Policy
+
+No.JS uses a custom expression parser that is fully CSP-compliant — no `eval()` or `Function()` constructor is used. No `unsafe-eval` directive is required in your Content Security Policy.
+
+### `templates.cache`
+
+**Type:** `boolean` | **Default:** `true`
+
+Controls whether the HTML content of remotely-fetched `.tpl` files is stored in an in-memory `Map` after the first request. On repeated navigations to the same route, the cached HTML is used directly — no HTTP request is made. The cache lives for the duration of the page session (no TTL — template assets are static, not data).
+
+```js
+// Disable template caching (always re-fetch .tpl files)
+NoJS.config({ templates: { cache: false } });
+
+// Default — caching is on, no configuration needed
+NoJS.config({ templates: { cache: true } });
+```
+
+Set to `false` during local development if you want changes to `.tpl` files to be reflected without a hard page reload.
+
+### `i18n.loadPath`
+
+**Type:** `string | null` | **Default:** `null`
+
+URL template for loading locale JSON files via `fetch`. Use `{locale}` and optionally `{ns}` as placeholders. When `null`, translations must be provided inline via `NoJS.i18n({ locales })`.
+
+```js
+NoJS.i18n({
+  loadPath: '/locales/{locale}.json'          // Flat mode
+  loadPath: '/locales/{locale}/{ns}.json'   // Namespace mode
+});
+```
+
+### `i18n.ns`
+
+**Type:** `string[]` | **Default:** `[]`
+
+Array of namespace identifiers to preload at `init()`. Each namespace corresponds to a separate JSON file per locale. Additional namespaces can be loaded on-demand via the `i18n-ns` directive or route attribute.
+
+```js
+NoJS.i18n({
+  loadPath: '/locales/{locale}/{ns}.json',
+  ns: ['common', 'auth']
+});
+```
+
+### `i18n.cache`
+
+**Type:** `boolean` | **Default:** `true`
+
+Controls whether fetched locale JSON files are stored in an in-memory `Map` after the first request. Set to `false` during development for hot-reload of translation files.
+
+```js
+NoJS.i18n({ cache: false }); // Always re-fetch locale files
+```
+
+# Drag and Drop
+
+## `drag` — Make an Element Draggable
+
+```html
+<!-- Basic draggable -->
+<div drag="item">Drag me</div>
+
+<!-- With type (for filtering drop zones) -->
+<div drag="task" drag-type="task">Task card</div>
+
+<!-- With handle (only the grip icon starts a drag) -->
+<div drag="item" drag-handle=".grip">
+  <span class="grip">&#x2801;&#x2801;</span>
+  <span bind="item.name"></span>
+</div>
+
+<!-- Disabled state (reactive) -->
+<div drag="item" drag-disabled="isLocked">Locked item</div>
+```
+
+### Drag Attributes
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `drag` | expression | *required* | The value being dragged |
+| `drag-type` | string | `"default"` | Named type — only matching `drop-accept` zones respond |
+| `drag-effect` | `"copy"` \| `"move"` \| `"link"` | `"move"` | Maps to `dataTransfer.effectAllowed` |
+| `drag-handle` | CSS selector | — | Restricts the grab area to a child element |
+| `drag-image` | CSS selector \| `"none"` | — | Custom drag ghost element |
+| `drag-image-offset` | `"x,y"` | `"0,0"` | Pixel offset for custom drag image |
+| `drag-disabled` | expression | `false` | When truthy, disables dragging |
+| `drag-class` | string | `"nojs-dragging"` | Class added while dragging |
+| `drag-ghost-class` | string | — | Class added to the drag image element |
+| `drag-group` | string | — | Group name for multi-select |
+
+## `drop` — Define a Drop Zone
+
+```html
+<!-- Basic drop zone -->
+<div drop="items = [...items, $drag]"
+     drop-accept="task">
+  Drop tasks here
+</div>
+
+<!-- With sortable index -->
+<div drop="items.splice($dropIndex, 0, $drag)"
+     drop-accept="task"
+     drop-sort="vertical"
+     drop-placeholder="auto">
+</div>
+
+<!-- Max capacity -->
+<div drop="slots = [...slots, $drag]"
+     drop-accept="*"
+     drop-max="3">
+  Max 3 items
+</div>
+```
+
+### Drop Attributes
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `drop` | statement | *required* | Expression executed on drop |
+| `drop-accept` | string (comma-separated) | `"default"` | Accepted `drag-type`(s). Use `"*"` for any |
+| `drop-effect` | `"copy"` \| `"move"` \| `"link"` | `"move"` | Maps to `dataTransfer.dropEffect` |
+| `drop-class` | string | `"nojs-drag-over"` | Class added when valid item hovers |
+| `drop-reject-class` | string | `"nojs-drop-reject"` | Class added when item is rejected (wrong type or max exceeded) |
+| `drop-disabled` | expression | `false` | When truthy, disables dropping |
+| `drop-max` | expression (number) | `Infinity` | Max items the zone accepts |
+| `drop-sort` | `"vertical"` \| `"horizontal"` \| `"grid"` | — | Enables sortable reorder by position |
+| `drop-placeholder` | template ID \| `"auto"` | — | Shows a placeholder at insertion point |
+| `drop-placeholder-class` | string | `"nojs-drop-placeholder"` | Class for the placeholder |
+| `drop-settle-class` | string | `"nojs-drop-settle"` | Custom CSS class for the settle animation |
+| `drop-empty-class` | string | `"nojs-drag-list-empty"` | Custom CSS class for empty state on drop zone |
+
+## `drag-list` — Sortable List
+
+High-level shorthand for sortable lists bound to arrays. Combines `each` + `drag` + `drop` in one element.
+
+```html
+<!-- Basic sortable list -->
+<div drag-list="tasks"
+     template="task-tpl"
+     drag-list-key="id"
+     drop-sort="vertical">
+</div>
+
+<!-- Two-list transfer (Kanban) -->
+<div state="{ todo: [...], done: [] }">
+  <div drag-list="todo"
+       template="task-tpl"
+       drag-list-key="id"
+       drag-type="task"
+       drop-accept="task"
+       drop-sort="vertical"
+       drag-list-remove
+       on:reorder="console.log('reordered')">
+  </div>
+
+  <div drag-list="done"
+       template="task-tpl"
+       drag-list-key="id"
+       drag-type="task"
+       drop-accept="task"
+       drop-sort="vertical"
+       drag-list-remove
+       on:receive="console.log('received', $event.detail.item)">
+  </div>
+</div>
+
+<template id="task-tpl">
+  <div class="card">
+    <span bind="item.title"></span>
+  </div>
+</template>
+```
+
+### Drag-List Attributes
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `drag-list` | path | *required* | Path to array in state |
+| `template` | template ID | — | Template for each item (same as `each`) |
+| `drag-list-key` | property name | — | Unique key per item for stable identity |
+| `drag-list-item` | variable name | `"item"` | Loop variable name in template |
+| `drop-sort` | `"vertical"` \| `"horizontal"` \| `"grid"` | `"vertical"` | Layout direction |
+| `drop-accept` | string | *self* | Types accepted (defaults to same list only) |
+| `drag-list-copy` | boolean attr | — | Copy items instead of moving |
+| `drag-list-remove` | boolean attr | — | Remove items when dragged out |
+| `drag-disabled` | expression | `false` | Disables dragging from this list |
+| `drop-disabled` | expression | `false` | Disables dropping into this list |
+| `drop-max` | expression (number) | `Infinity` | Max items allowed |
+| `drop-settle-class` | string | `"nojs-drop-settle"` | Custom CSS class for the settle animation |
+| `drop-empty-class` | string | `"nojs-drag-list-empty"` | Custom CSS class for empty state on drag-list |
+| `drop-placeholder` | template ID \| `"auto"` | — | Shows a placeholder where the item will be dropped |
+
+### Drag-List Events
+
+| Event | `$event.detail` | Description |
+|-------|-----------------|-------------|
+| `on:reorder` | `{ list, item, from, to }` | Item reordered within same list |
+| `on:receive` | `{ list, item, from, fromList }` | Item received from another list |
+| `on:remove` | `{ list, item, index }` | Item removed (dragged out) |
+
+## `drag-multiple` — Multi-Select
+
+Enables click-to-select before dragging multiple items as a group.
+
+```html
+<div each="card in cards" template="cardTpl" style="display:contents"></div>
+
+<template id="cardTpl">
+  <div drag="card"
+       drag-type="card"
+       drag-group="kanban"
+       drag-multiple>
+    <span bind="card.title"></span>
+  </div>
+</template>
+```
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `drag-multiple` | boolean attr | — | Enables click-to-select |
+| `drag-multiple-class` | string | `"nojs-selected"` | Class added to selected items |
+| `drag-group` | string | *required* | Group name — all selected items move together |
+
+- **Click** selects a single item (replaces previous selection)
+- **Ctrl/Cmd+Click** adds to selection
+- **Escape** clears the selection
+- When dragging a selected item, `$drag` becomes an **array** of all selected items
+
+## Implicit Variables
+
+Available inside `drop` expressions:
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `$drag` | any | The dragged value. Array if multi-select |
+| `$dragType` | string | The `drag-type` of the item |
+| `$dragEffect` | string | The `drag-effect` |
+| `$dropIndex` | number | Insertion index within the drop zone |
+| `$source` | object \| null | `{ list, index, el }` — source info |
+| `$target` | object \| null | `{ list, index, el }` — target info |
+
+## CSS Classes
+
+No.JS automatically injects these classes:
+
+| Class | When applied |
+|-------|-------------|
+| `.nojs-dragging` | On the source element while dragging |
+| `.nojs-drag-over` | On the drop zone while a valid item hovers |
+| `.nojs-drop-reject` | On the drop zone when the item is rejected (wrong type or max exceeded) |
+| `.nojs-drop-placeholder` | On the insertion placeholder |
+| `.nojs-selected` | On multi-selected items |
+| `.nojs-drop-settle` | Brief settle animation on drop |
+| `.nojs-drag-list-empty` | On a `drag-list` when it has no items |
+
+## Accessibility
+
+No.JS automatically adds:
+
+- `draggable="true"` on drag sources
+- `aria-grabbed="true/false"` reflecting drag state
+- `aria-dropeffect` on drop zones
+- `role="listbox"` on `drag-list` containers
+- `role="option"` on `drag-list` items
+- `tabindex="0"` for keyboard access
+- **Space** to grab, **Escape** to cancel, **Arrow keys** to navigate, **Enter** to drop
+
+# Directive Cheatsheet
+
+Complete reference of every No.JS directive.
+
+## Data
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `base` | `base="https://api.com"` | Set API base URL for descendants |
+| `get` | `get="/users"` | Fetch data (GET) |
+| `post` | `post="/login"` | Submit data (POST) |
+| `put` | `put="/users/1"` | Update data (PUT) |
+| `patch` | `patch="/users/1"` | Partial update (PATCH) |
+| `delete` | `delete="/users/1"` | Delete data (DELETE) |
+| `as` | `as="users"` | Name for fetched data in context |
+| `body` | `body='{"key":"val"}'` | Request body |
+| `headers` | `headers='{"Auth":"Bearer x"}'` | Request headers |
+| `params` | `params="{ page: 1 }"` | Query parameters |
+| `cached` | `cached` or `cached="local"` | Cache responses (memory/local/session) |
+| `into` | `into="currentUser"` | Write response to a named global store |
+| `debounce` | `debounce="300"` | Debounce reactive URL refetches (ms) |
+
+## State
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `state` | `state="{ count: 0 }"` | Create local reactive state |
+| `store` | `store="auth"` | Define/access global store |
+| `computed` | `computed="total" expr="a+b"` | Derived reactive value |
+| `watch` | `watch="search"` | React to value changes |
+| `persist` | `persist="localStorage"` | Persist state to storage |
+| `model` | `model="name"` | Two-way binding for inputs |
+
+## Rendering
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `bind` | `bind="user.name"` | Set text content |
+| `bind-html` | `bind-html="content"` | Set innerHTML (sanitized) |
+| `bind-*` | `bind-src="url"` | Bind any attribute |
+| `if` | `if="condition"` | Conditional render |
+| `else-if` | `else-if="cond"` | Chained conditional |
+| `then` | `then="templateId"` | Template for truthy |
+| `else` | `else="templateId"` | Template for falsy |
+| `show` | `show="condition"` | Toggle visibility (CSS) |
+| `hide` | `hide="condition"` | Inverse of show |
+| `switch` | `switch="value"` | Switch/case render |
+| `case` | `case="'admin'"` | Case match |
+| `default` | `default` | Default case |
+
+## Loops
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `each` | `each="item in items"` | Simple loop |
+| `foreach` | `foreach="item"` | Extended loop |
+| `from` | `from="items"` | Source array |
+| `template` | `template="tplId"` | Template to clone |
+| `index` | `index="i"` | Index variable name |
+| `key` | `key="item.id"` | Unique key for diffing |
+| `filter` | `filter="item.active"` | Filter expression |
+| `sort` | `sort="item.name"` | Sort property |
+| `limit` | `limit="10"` | Max items |
+| `offset` | `offset="5"` | Skip items |
+
+## Events
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `on:click` | `on:click="count++"` | Click handler |
+| `on:submit` | `on:submit.prevent="..."` | Submit handler |
+| `on:input` | `on:input="..."` | Input handler |
+| `on:keydown.*` | `on:keydown.enter="..."` | Key handler |
+| `on:mounted` | `on:mounted="init()"` | Lifecycle: mounted |
+| `on:unmounted` | `on:unmounted="cleanup()"` | Lifecycle: unmounted |
+
+## Styling
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `class-*` | `class-active="isOn"` | Toggle CSS class |
+| `class-map` | `class-map="{ a: x }"` | Class from object |
+| `style-*` | `style-color="c"` | Set inline style |
+| `style-map` | `style-map="{ ... }"` | Style from object |
+
+## Forms
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `validate` | `validate` or `validate="email"` | Enable form/field validation |
+| `error` | `error="#tpl"` | Error template for field |
+| `success` | `success="#tpl"` | Success template |
+| `loading` | `loading="#tpl"` | Loading template |
+| `confirm` | `confirm="Sure?"` | Confirmation dialog |
+| `redirect` | `redirect="/home"` | Redirect on success |
+
+## Routing
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `route` | `route="/path"` | Define route or link |
+| `route="*"` | `route="*"` | Catch-all 404 wildcard route |
+| `route-view` | `route-view` | Route outlet |
+| `route-view="name"` | `route-view="sidebar"` | Named route outlet |
+| `route-view[src]` | `route-view src="./pages/"` | File-based routing outlet |
+| `route-index` | `route-index="overview"` | Filename for root `/` (default `"index"`) |
+| `ext` | `ext=".html"` | File extension (default `".tpl"`, fallback `".html"`) |
+| `i18n-ns` | `i18n-ns` | Auto-derive i18n namespace from route filename |
+| `outlet` | `outlet="sidebar"` | Target a named outlet from a route template |
+| `route-active` | `route-active="cls"` | Active link class |
+| `guard` | `guard="expr"` | Route guard condition |
+| `lazy` | `lazy="ondemand"` | Defer route template fetch until first visit |
+| `lazy` | `lazy="priority"` | Force template to load before all others |
+| `$route.matched` | `if="$route.matched"` | `true` if an explicit route matched, `false` for wildcard/fallback |
+
+## Animation
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `animate` | `animate="fadeIn"` | Enter animation |
+| `animate-enter` | `animate-enter="slideIn"` | Enter animation |
+| `animate-leave` | `animate-leave="slideOut"` | Leave animation |
+| `animate-duration` | `animate-duration="300"` | Duration in ms |
+| `animate-stagger` | `animate-stagger="50"` | Stagger delay |
+| `transition` | `transition="fade"` | CSS transition |
+
+## Drag and Drop
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `drag` | `drag` | Make element draggable |
+| `drag-type` | `drag-type="task"` | Data type identifier |
+| `drag-effect` | `drag-effect="move"` | Allowed effect (move/copy/link/all) |
+| `drag-handle` | `drag-handle=".handle"` | Restrict drag to handle selector |
+| `drag-disabled` | `drag-disabled="locked"` | Disable drag conditionally |
+| `drag-class` | `drag-class="dragging"` | Class added while dragging |
+| `drag-group` | `drag-group="board"` | Scope drag to a named group |
+| `drop` | `drop` | Make element a drop zone |
+| `drop-accept` | `drop-accept="task"` | Accepted drag type(s) |
+| `drop-effect` | `drop-effect="move"` | Visual feedback effect |
+| `drop-class` | `drop-class="over"` | Class added on drag-over |
+| `drop-reject-class` | `drop-reject-class="nope"` | Class added on rejected drag-over |
+| `drop-disabled` | `drop-disabled="full"` | Disable drop conditionally |
+| `drop-max` | `drop-max="5"` | Maximum items in drop zone |
+| `drop-sort` | `drop-sort` | Enable positional sorting |
+| `drop-placeholder` | `drop-placeholder="#ph"` | Placeholder template during drag-over |
+| `drop-settle-class` | `drop-settle-class="my-settle"` | Custom CSS class for settle animation |
+| `drop-empty-class` | `drop-empty-class="empty"` | Custom CSS class for empty state on drag-list |
+| `drag-list` | `drag-list="items"` | Sortable list bound to state array |
+| `drag-list-key` | `drag-list-key="id"` | Unique key for each item |
+| `drag-list-item` | `drag-list-item="task"` | Loop variable name in template |
+| `drag-list-copy` | `drag-list-copy` | Copy instead of move on transfer |
+| `drag-list-remove` | `drag-list-remove` | Remove items from source on transfer |
+| `drag-multiple` | `drag-multiple` | Lasso / multi-select on children |
+| `drag-multiple-class` | `drag-multiple-class="selected"` | Class added to selected items |
+
+## i18n
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `t` | `t="greeting"` | Translate key |
+| `t-*` | `t-name="user.name"` | Translation param |
+
+## Misc
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `ref` | `ref="input"` | Named element ref |
+| `call` | `call="/api/action" method="post"` | Trigger API call on click |
+| `trigger` | `trigger="event-name"` | Emit custom event |
+| `use` | `use="templateId"` | Instantiate template |
+| `src` (on template) | `src="/tpl.html"` | Remote template (see also: `lazy`) |
+| `loading` (on template) | `<template src="..." loading="#skl">` | Placeholder shown while remote template loads; removed on arrival |
+| `include` (on template) | `<template include="#fragment">` | Synchronously clone an inline template into the current position |
+| `error-boundary` | `error-boundary="#fb"` | Error boundary |
+
+# Examples
+
+Real-world patterns you'll actually use in production — in pure HTML.
+
+## 1. Login with JWT
+
+A complete login flow: form validation, POST to auth endpoint, save the JWT to
+a global store, and automatically attach the token to every subsequent request
+via a request interceptor.
+
+```html
+<script>
+  // Attach token to every outgoing request
+  NoJS.interceptor('request', (url, opts) => {
+    const token = NoJS.store.auth.token;
+    if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+    return opts;
+  });
+</script>
+
+<!-- Global auth store -->
+<div store="auth" value="{ user: null, token: null }"></div>
+
+<template route="/login"
+          guard="!$store.auth.token"
+          redirect="/dashboard">
+  <form post="/auth/login" validate
+        success="#auth-ok" error="#auth-err">
+    <input name="email" type="email" required validate="email">
+    <input name="password" type="password" required minlength="8">
+    <button type="submit"
+            bind-disabled="!$form.valid || $form.submitting">
+      <span hide="$form.submitting">Sign in</span>
+      <span show="$form.submitting">Signing in...</span>
+    </button>
+  </form>
+
+  <template id="auth-ok" var="res">
+    <script>
+      NoJS.store.auth.user  = res.user;
+      NoJS.store.auth.token = res.token;
+      NoJS.notify(); // flush DOM bindings after external store mutation
+      NoJS.router.push('/dashboard');
+    </script>
+  </template>
+  <template id="auth-err" var="err">
+    <p class="error" bind="err.message" animate="shake"></p>
+  </template>
+</template>
+```
+
+**Key concepts:** `interceptor('request')` · `store` · `form` · `validate` · `post` · `guard` · `redirect` · `success/error` templates · `notify()`
+
+## 2. Protected Route & Token Validation
+
+A route guarded by the auth store, paired with a **response interceptor** that
+acts as a control script: on every API call, if the server returns `401` or
+`403`, the token is invalidated and the user is redirected to login
+automatically — no extra code needed in the route itself.
+
+```html
+<script>
+  // Control script: validate token on every response
+  NoJS.interceptor('response', (response) => {
+    if (response.status === 401 || response.status === 403) {
+      NoJS.store.auth.user  = null;
+      NoJS.store.auth.token = null;
+      NoJS.notify(); // flush DOM bindings before redirect
+      NoJS.router.push('/login');
+      throw new Error('Session expired');
+    }
+    return response;
+  });
+</script>
+
+<!-- Guard: redirect to /login if no token -->
+<template route="/dashboard"
+          guard="$store.auth.token"
+          redirect="/login">
+  <!-- Token is attached automatically via the request interceptor -->
+  <div get="/me/dashboard" as="data" loading="#dash-skeleton">
+    <h2 bind="'Welcome, ' + data.user.name"></h2>
+    <div each="m in data.metrics">
+      <span bind="m.label"></span>
+      <span bind="m.value | number"></span>
+    </div>
+  </div>
+  <button on:click="$store.auth.user = null; $store.auth.token = null">
+    Sign out
+  </button>
+</template>
+```
+
+**Key concepts:** `interceptor('response')` · `guard` · `redirect` · `loading` · session invalidation
+
+The two interceptors from Examples 1 and 2 work together: the request
+interceptor stamps the token on the way out; the response interceptor revokes
+it on the way back if the server rejects it.
+
+## 3. Live Search
+
+An instant search input that fires a debounced GET request on every keystroke,
+rendering results reactively. No `addEventListener`, no `setTimeout`, no DOM
+manipulation.
+
+```html
+<div state="{ query: '' }">
+
+  <input model="query" placeholder="Search products...">
+
+  <!-- GET fires 300ms after the user stops typing -->
+  <div get="/products?q={query}"
+       watch="query"
+       debounce="300"
+       as="results">
+
+    <p show="!results.length && query">
+      No results for <strong bind="query"></strong>
+    </p>
+
+    <div each="item in results">
+      <span bind="item.name"></span>
+      <span bind="item.price | currency"></span>
+    </div>
+
+  </div>
+</div>
+```
+
+**Key concepts:** `model` · `watch` · `debounce` · dynamic `get` with interpolation · `show`
+
+## 4. Shopping Cart with Global Store
+
+A global store shared between a product list and a cart badge in different parts
+of the page. When a product is added, the badge and the cart summary update
+simultaneously — no event bus, no shared component.
+
+```html
+<!-- Global cart store -->
+<div store="cart" value="{ items: [] }"></div>
+
+<!-- Badge: lives anywhere in the DOM -->
+<span class="cart-badge" bind="$store.cart.items.length"></span>
+
+<!-- Product list -->
+<div get="/products" as="products">
+  <div each="p in products">
+    <span bind="p.name"></span>
+    <button on:click="$store.cart.items = [...$store.cart.items, p]">
+      Add to cart
+    </button>
+  </div>
+</div>
+
+<!-- Cart summary: somewhere else entirely -->
+<div show="$store.cart.items.length > 0">
+  <div each="item in $store.cart.items">
+    <span bind="item.name"></span>
+    <span bind="item.price | currency"></span>
+  </div>
+</div>
+```
+
+**Key concepts:** `store` · `$store.*` cross-component reactivity · `each` · `show`
+
+## 5. Live Polling
+
+A server-status dashboard that refreshes automatically every 5 seconds using the
+`poll` attribute. Conditional styling reacts instantly to the health state — no
+`setInterval`, no fetch loop.
+
+```html
+<!-- Refetches /api/status every 5 seconds -->
+<div get="/api/status" poll="5000" as="s">
+
+  <!-- Badge: green when healthy, red otherwise -->
+  <span class-success="s.healthy"
+        class-error="!s.healthy"
+        bind="s.healthy ? 'Online' : 'Degraded'">
+  </span>
+
+  <div each="metric in s.metrics">
+    <span bind="metric.label"></span>
+    <span bind="metric.value | number"></span>
+  </div>
+
+</div>
+```
+
+**Key concepts:** `poll` · `class-*` conditional styling · `bind` expression
+
+## Full SPA
+
+All five patterns combined into a single production-grade SPA:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.no-js.dev/"></script>
+  <script>
+    NoJS.config({
+      baseApiUrl: 'https://api.myapp.com/v1',
+      router: { useHash: false }
+    });
+
+    // Attach JWT to every request
+    NoJS.interceptor('request', (url, opts) => {
+      const token = NoJS.store.auth.token;
+      if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+      return opts;
+    });
+
+    // Revoke JWT on 401/403
+    NoJS.interceptor('response', (response) => {
+      if (response.status === 401 || response.status === 403) {
+        NoJS.store.auth.user  = null;
+        NoJS.store.auth.token = null;
+        NoJS.notify(); // flush DOM bindings before redirect
+        NoJS.router.push('/login');
+        throw new Error('Session expired');
+      }
+      return response;
+    });
+  </script>
+</head>
+<body>
+
+  <div store="auth" value="{ user: null, token: null }"></div>
+
+  <template route="/login" guard="!$store.auth.token" redirect="/dashboard">
+    <form post="/auth/login" validate success="#auth-ok" error="#auth-err">
+      <input name="email" type="email" required validate="email">
+      <input name="password" type="password" required minlength="8">
+      <button type="submit" bind-disabled="!$form.valid || $form.submitting">
+        <span hide="$form.submitting">Sign in</span>
+        <span show="$form.submitting">Signing in...</span>
+      </button>
+    </form>
+    <template id="auth-ok" var="res">
+      <script>
+        NoJS.store.auth.user = res.user;
+        NoJS.store.auth.token = res.token;
+        NoJS.notify();
+        NoJS.router.push('/dashboard');
+      </script>
+    </template>
+    <template id="auth-err" var="err">
+      <p bind="err.message" animate="shake"></p>
+    </template>
+  </template>
+
+  <template route="/dashboard" guard="$store.auth.token" redirect="/login">
+    <div get="/me/dashboard" as="data">
+      <h1 bind="'Welcome, ' + data.user.name"></h1>
+      <div each="m in data.metrics">
+        <span bind="m.label"></span>
+        <span bind="m.value | number"></span>
+      </div>
+    </div>
+    <button on:click="$store.auth.user = null; $store.auth.token = null">
+      Sign out
+    </button>
+  </template>
+
+</body>
+</html>
+```
+
+# Playground
+
+The No.JS Playground is an interactive code editor where you can experiment
+with the framework in real-time, right in your browser.
+
+## Getting Started
+
+Navigate to [Playground](#/playground) to start coding. The playground
+loads with a starter project showcasing state, binding, events, loops,
+and conditionals. Your edits are **automatically saved** to localStorage.
+
+## Features
+
+### Multi-File Editor
+
+Edit HTML, CSS, templates (.tpl), and JSON data files. All default files
+open as tabs in the editor. **Create new files** with the `+` button
+in the tab bar. Changes are reflected in the preview immediately.
+
+### Auto-Save
+
+All your edits are automatically saved to `localStorage`. Close the
+browser and come back later — your work will be right where you left it.
+Use "Reset" to start fresh.
+
+### Live Preview
+
+An isolated iframe renders your code in real-time with a 300ms debounce.
+The No.JS framework is automatically loaded and initialized.
+
+### Console
+
+An integrated console captures `console.log`, `console.warn`,
+`console.error`, and `console.info` from your code, plus No.JS debug
+messages.
+
+### Share
+
+Click "Share" to copy a URL that encodes your code. Send it to anyone
+and they'll see your exact playground state.
+
+### Download
+
+Export your project as a single HTML file with all templates and CSS
+inlined.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| Tab | Insert 2 spaces |
+| Ctrl+Z | Undo |
+| Ctrl+Y | Redo |
+| Ctrl+S | Save (prevent default) |
+
+## Limitations
+
+- **No server-side code** — The playground runs entirely in the browser
+- **No npm packages** — Only No.JS is available
+- **Limited file system** — Files are stored in memory
+- **CORS restrictions** — External API calls from the iframe may be
+  blocked; use inline JSON data instead
