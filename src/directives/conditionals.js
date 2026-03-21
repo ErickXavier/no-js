@@ -2,7 +2,7 @@
 //  DIRECTIVES: if, else-if, else, show, hide, switch
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _watchExpr } from "../globals.js";
+import { _watchExpr, _onDispose } from "../globals.js";
 import { evaluate } from "../evaluate.js";
 import { findContext, _clearDeclared, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeChildren } from "../registry.js";
@@ -21,6 +21,8 @@ registerDirective("if", {
     const animDuration = parseInt(el.getAttribute("animate-duration")) || 0;
     const originalChildren = [...el.childNodes].map((n) => n.cloneNode(true));
     let currentState = undefined;
+    let _cancelAnim = null;
+    _onDispose(() => { if (_cancelAnim) { _cancelAnim(); _cancelAnim = null; } });
 
     function update() {
       const result = !!evaluate(expr, ctx);
@@ -29,7 +31,11 @@ registerDirective("if", {
 
       // Animation leave
       if (animLeave || transition) {
-        _animateOut(el, animLeave, transition, () => render(result), animDuration);
+        if (_cancelAnim) { _cancelAnim(); _cancelAnim = null; }
+        _cancelAnim = _animateOut(el, animLeave, transition, () => {
+          _cancelAnim = null;
+          render(result);
+        }, animDuration);
       } else {
         render(result);
       }
