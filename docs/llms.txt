@@ -1,0 +1,53 @@
+# No.JS
+
+> No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. ~24 KB gzipped, zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
+
+No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `each`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP (1) → routing (5) → structural (10) → rendering (20) → side effects (30).
+
+## Getting Started
+
+- [Installation & Quick Start](https://no-js.dev/#/getting-started): CDN script tag, npm install, minimal example, how the framework initializes and processes the DOM
+
+## Core Guides
+
+- [Data Fetching](https://no-js.dev/#/data-fetching): Declarative HTTP via `get`, `post`, `put`, `patch`, `delete` attributes; base URL, caching, polling, reactive URLs, loading/error/empty templates
+- [Data Binding](https://no-js.dev/#/data-binding): `bind` (text), `bind-html` (sanitized HTML), `bind-*` (any attribute), `model` (two-way input binding)
+- [State Management](https://no-js.dev/#/state-management): `state` (local reactive data), `store` (global named stores), `computed` (derived values), `watch` (reactive side effects), `into` (write to store), persistence via `persist`/`persist-fields`
+- [Conditionals](https://no-js.dev/#/conditionals): `if`/`else-if`/`else` with `then` templates, `show`/`hide` (CSS toggle), `switch`/`case`
+- [Loops](https://no-js.dev/#/loops): `each` (template-based iteration), `foreach` (inline iteration), loop variables (`$index`, `$first`, `$last`), keyed updates, nesting
+- [Templates](https://no-js.dev/#/templates): `<template>` fragments, `use` for reuse, named `<slot>` elements, remote templates via `src`, preloading
+
+## Interaction
+
+- [Events](https://no-js.dev/#/events): `on:click`, `on:keydown.enter`, `on:submit.prevent`; modifiers (`.stop`, `.once`, `.debounce.300`); lifecycle hooks (`on:mounted`, `on:updated`, `on:unmounted`); `$event` and `$el` references
+- [Forms & Validation](https://no-js.dev/#/forms-validation): `validate` attribute with built-in rules (`required`, `email`, `min`, `max`, `pattern`); `$form` context for form state; custom validators via `NoJS.validator()`; real-time and submit-time validation
+- [Actions & Refs](https://no-js.dev/#/actions-refs): `call` (trigger HTTP from any element), `trigger` (dispatch custom events), `ref` (name an element), `$refs` (access named elements)
+
+## Presentation
+
+- [Dynamic Styling](https://no-js.dev/#/styling): `class-active="isActive"`, `class-map="{ dark: isDark }"`, `style-color="themeColor"`, `style-map="{ opacity: fade }"`
+- [Animations](https://no-js.dev/#/animations): `animate` attribute with built-in keyframes (fadeIn, slideUp, bounce, etc.), `transition` for enter/leave, stagger for lists
+- [Filters & Pipes](https://no-js.dev/#/filters): 32 built-in filters via pipe syntax (`value | uppercase | truncate:20`); text, number, array, date, and utility filters; custom filters via `NoJS.filter()`
+
+## Advanced
+
+- [Routing](https://no-js.dev/#/routing): SPA navigation with `route="/path/:param"`, `route-view` outlet, route guards, nested routes, query params, hash navigation, redirects, 404 handling
+- [Internationalization](https://no-js.dev/#/i18n): `t="key"` directive, pluralization, locale switching, async locale loading, fallback chains, interpolation
+- [Drag and Drop](https://no-js.dev/#/drag-and-drop): `drag` source, `drop` zone, `drag-list` for sortable reordering, multi-select, custom placeholders, event handlers
+- [Custom Directives](https://no-js.dev/#/custom-directives): Extend the framework via `NoJS.directive(name, { priority, init(el, value, ctx) })` with full access to the reactive context
+- [Error Handling](https://no-js.dev/#/error-handling): Per-element `error` templates, `error-boundary` for subtree isolation, global error handler via `NoJS.config({ onError })`
+- [Configuration](https://no-js.dev/#/configuration): `NoJS.config()` for global settings (baseApiUrl, headers, timeout, retries), request/response interceptors, CSRF token support
+
+## Reference
+
+- [Directive Cheatsheet](https://no-js.dev/#/cheatsheet): Every directive with syntax, attributes, and usage at a glance
+- [Examples](https://no-js.dev/#/examples): Full SPA example with routing, authentication, i18n, and CRUD
+- [Playground](https://no-js.dev/#/playground): Interactive multi-file code editor with live preview
+- [Full Documentation](https://no-js.dev/llms-full.txt): Complete documentation content in a single file for deep context
+
+## Ecosystem
+
+- [NoJS LSP](https://lsp.no-js.dev): VS Code language server extension — completions for 39+ directives, real-time diagnostics, hover docs, go-to-definition, semantic highlighting, code actions, and 23 built-in snippets
+- [NoJS MCP](https://www.npmjs.com/package/@erickxavier/nojs-mcp): MCP server for AI assistants — template validation, directive explanations, component scaffolding, and full framework documentation access
+- [GitHub](https://github.com/ErickXavier/no-js): Source code, issues, and contributions
+- [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=exs.nojs-lsp): Install the NoJS LSP extension directly

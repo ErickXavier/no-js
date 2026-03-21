@@ -11,6 +11,22 @@ import { _i18n } from "./i18n.js";
 // Maps __devtoolsId → Proxy reference for inspect/mutate commands.
 export const _ctxRegistry = new Map();
 
+// ─── Hostname guard ─────────────────────────────────────────────────────────
+// Optional `hostname` param exists for unit-testing without window.location mocking.
+export function _isLocalHostname(hostname) {
+  if (hostname === undefined) {
+    hostname = (typeof window !== "undefined" && window.location) ? window.location.hostname : "";
+  }
+  return (
+    hostname === "" ||
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1" ||
+    hostname === "0.0.0.0" ||
+    hostname.endsWith(".localhost")
+  );
+}
+
 // ─── Emit a devtools event ──────────────────────────────────────────────────
 export function _devtoolsEmit(type, data) {
   if (!_config.devtools || typeof window === "undefined") return;
@@ -223,6 +239,11 @@ function _handleDevtoolsCommand(event) {
 
 export function initDevtools(nojs) {
   if (!_config.devtools || typeof window === "undefined") return;
+
+  if (!_isLocalHostname()) {
+    console.warn("[No.JS] devtools: true is ignored outside local environments. Remove devtools: true before deploying to production.");
+    return;
+  }
 
   // Listen for commands
   window.addEventListener("nojs:devtools:cmd", _handleDevtoolsCommand);

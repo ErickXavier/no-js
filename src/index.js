@@ -15,6 +15,7 @@ import {
   _routerInstance,
   setRouterInstance,
   _log,
+  _warn,
   _notifyStoreWatchers,
 } from "./globals.js";
 import { _i18n, _loadI18nForLocale } from "./i18n.js";

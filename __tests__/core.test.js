@@ -210,6 +210,68 @@ describe('Globals', () => {
 
       expect(_storeWatchers.has(fn)).toBe(false);
     });
+
+    test('removes $store watcher from Set when element is removed without dispose', async () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      const parent = document.createElement('div');
+      const el = document.createElement('span');
+      parent.appendChild(el);
+      document.body.appendChild(parent);
+
+      _setCurrentEl(el);
+      _watchExpr('$store.cart', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // Remove element externally (bypassing framework dispose)
+      parent.innerHTML = '';
+
+      // Allow MutationObserver microtask to run
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('disconnects MutationObserver via _onDispose when _disposeTree runs (each re-render pattern)', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      const container = document.createElement('div');
+      const itemWrapper = document.createElement('div');
+      container.appendChild(itemWrapper);
+      document.body.appendChild(container);
+
+      // Simulate processElement binding a $store watcher on itemWrapper
+      _setCurrentEl(itemWrapper);
+      _watchExpr('$store.cart.items', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // Simulate each re-render: disposeTree then clear innerHTML
+      _disposeTree(itemWrapper);
+      container.innerHTML = '';
+
+      // Watcher must be removed by the _onDispose path (not the MutationObserver callback)
+      expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('does not throw when element has no parentElement', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      // Element with no parent
+      const el = document.createElement('div');
+
+      _setCurrentEl(el);
+      expect(() => _watchExpr('$store.x', ctx, fn)).not.toThrow();
+      _setCurrentEl(null);
+
+      _storeWatchers.delete(fn);
+    });
   });
 });
 
@@ -579,6 +641,28 @@ describe('Expression Evaluator', () => {
       const ctx = createContext({});
       expect(_interpolate('/users/{id}', ctx)).toBe('/users/');
     });
+
+    test('encodes path traversal sequences in interpolated values', () => {
+      const ctx = createContext({ id: '../admin' });
+      const result = _interpolate('/api/users/{id}', ctx);
+      expect(result).not.toContain('../');
+      expect(result).toBe('/api/users/..%2Fadmin');  // .. + encoded /
+    });
+
+    test('encodes spaces and special characters in interpolated values', () => {
+      const ctx = createContext({ q: 'hello world' });
+      expect(_interpolate('/search?q={q}', ctx)).toBe('/search?q=hello%20world');
+    });
+
+    test('encodes slashes inside interpolated values', () => {
+      const ctx = createContext({ path: 'a/b/c' });
+      expect(_interpolate('/api/{path}', ctx)).toBe('/api/a%2Fb%2Fc');
+    });
+
+    test('does not encode plain numeric IDs', () => {
+      const ctx = createContext({ id: 123 });
+      expect(_interpolate('/api/users/{id}', ctx)).toBe('/api/users/123');
+    });
   });
 
   describe('_execStatement', () => {
@@ -737,6 +821,35 @@ describe('index.js — config()', () => {
     expect(_config.router.mode).toBeUndefined();
 
     _config.router.useHash = false;
+  });
+
+  test('emits warning when sanitize is set to false', async () => {
+    const { default: No } = await import('../src/index.js');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    No.config({ sanitize: false });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('sanitize: false')
+    );
+
+    warnSpy.mockRestore();
+    _config.sanitize = true;
+  });
+
+  test('does not emit warning when sanitize is explicitly set to true', async () => {
+    const { default: No } = await import('../src/index.js');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    No.config({ sanitize: true });
+
+    const sanitizeWarningCalled = warnSpy.mock.calls.some(
+      (args) => args.some((a) => typeof a === 'string' && a.includes('sanitize'))
+    );
+    expect(sanitizeWarningCalled).toBe(false);
+
+    warnSpy.mockRestore();
   });
 });
 

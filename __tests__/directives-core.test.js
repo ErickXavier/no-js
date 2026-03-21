@@ -284,6 +284,67 @@ describe('Bind-* Directive', () => {
     parent.__ctx.title = null;
     expect(div.hasAttribute('title')).toBe(false);
   });
+
+  test('blocks javascript: protocol in bind-href', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ url: "javascript:alert(1)" }');
+    const a = document.createElement('a');
+    a.setAttribute('bind-href', 'url');
+    parent.appendChild(a);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(a.getAttribute('href')).toBe('#');
+  });
+
+  test('blocks vbscript: protocol in bind-href', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ url: "vbscript:run()" }');
+    const a = document.createElement('a');
+    a.setAttribute('bind-href', 'url');
+    parent.appendChild(a);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(a.getAttribute('href')).toBe('#');
+  });
+
+  test('blocks javascript: protocol in bind-src', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ src: "javascript:void(0)" }');
+    const img = document.createElement('img');
+    img.setAttribute('bind-src', 'src');
+    parent.appendChild(img);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(img.getAttribute('src')).toBe('#');
+  });
+
+  test('passes safe HTTPS URL through bind-href unchanged', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ url: "https://example.com/page" }');
+    const a = document.createElement('a');
+    a.setAttribute('bind-href', 'url');
+    parent.appendChild(a);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(a.getAttribute('href')).toBe('https://example.com/page');
+  });
+
+  test('does not sanitize non-URL attributes like data-custom', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ val: "javascript:test" }');
+    const div = document.createElement('div');
+    div.setAttribute('bind-data-custom', 'val');
+    parent.appendChild(div);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // data-custom is not in _SAFE_URL_ATTRS — value passes through
+    expect(div.getAttribute('data-custom')).toBe('javascript:test');
+  });
 });
 
 describe('Model Directive', () => {
@@ -1039,6 +1100,86 @@ describe('state persist directive', () => {
     expect(() => processTree(parent)).not.toThrow();
     const ctx = findContext(parent);
     expect(ctx.safe).toBe(true);
+  });
+
+  test('warns and skips persistence when persist-key is missing', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ x: 1 }');
+    parent.setAttribute('persist', 'localStorage');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('persist-key')
+    );
+    expect(localStorage.length).toBe(0);
+
+    warnSpy.mockRestore();
+  });
+
+  test('persist-fields limits which fields are saved to storage', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ theme: "dark", token: "secret", sidebar: true }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'pf-test1');
+    parent.setAttribute('persist-fields', 'theme, sidebar');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Mutate state to trigger the $watch save
+    const ctx = parent.__ctx;
+    ctx.theme = 'light';
+
+    const saved = JSON.parse(localStorage.getItem('nojs_state_pf-test1'));
+    expect(saved.theme).toBe('light');
+    expect(saved.sidebar).toBe(true);
+    // token is not in persist-fields — must not be written to storage
+    expect(saved.token).toBeUndefined();
+  });
+
+  test('persist-fields limits which fields are restored from storage', () => {
+    // Pre-populate storage with all three fields (as if saved by old code without persist-fields)
+    localStorage.setItem('nojs_state_pf-test2', JSON.stringify({ theme: 'light', token: 'old-secret', sidebar: false }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ theme: "dark", token: "default", sidebar: true }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'pf-test2');
+    parent.setAttribute('persist-fields', 'theme');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+    // Only theme should be restored from storage
+    expect(ctx.theme).toBe('light');
+    // token is not in persist-fields — must stay at initial value
+    expect(ctx.token).toBe('default');
+  });
+
+  test('persist-fields handles comma-separated values with whitespace', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ a: 1, b: 2, c: 3 }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'pf-test3');
+    parent.setAttribute('persist-fields', '  a , c  ');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Mutate to trigger the $watch save
+    const ctx = parent.__ctx;
+    ctx.a = 10;
+
+    const saved = JSON.parse(localStorage.getItem('nojs_state_pf-test3'));
+    expect(saved.a).toBe(10);
+    expect(saved.c).toBe(3);
+    expect(saved.b).toBeUndefined();
   });
 });
 
@@ -1848,6 +1989,34 @@ describe('on:updated lifecycle hook', () => {
     await new Promise((r) => setTimeout(r, 50));
 
     expect(ctx.updated).toBe(true);
+  });
+
+  test('does not fire after element is removed from DOM externally', async () => {
+    let callCount = 0;
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ count: 0 }');
+    const child = document.createElement('div');
+    child.setAttribute('on:updated', 'count++');
+    child.innerHTML = '<span>Original</span>';
+    parent.appendChild(child);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Confirm it fires while connected
+    child.innerHTML = '<span>Changed</span>';
+    await new Promise((r) => setTimeout(r, 50));
+    const ctx = findContext(parent);
+    expect(ctx.count).toBe(1);
+
+    // Remove element externally (bypassing framework dispose)
+    parent.innerHTML = '';
+
+    // Trigger a mutation on the now-detached child
+    child.innerHTML = '<span>After removal</span>';
+    await new Promise((r) => setTimeout(r, 50));
+
+    // Count must not have increased
+    expect(ctx.count).toBe(1);
   });
 });
 
