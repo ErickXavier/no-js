@@ -71,7 +71,7 @@ export function _animateOut(el, animName, transitionName, callback, durationMs) 
   const fallback = durationMs || 2000;
   if (!el.firstElementChild && !el.childNodes.length) {
     callback();
-    return;
+    return () => {};
   }
   if (animName) {
     const target = el.firstElementChild || el;
@@ -85,8 +85,12 @@ export function _animateOut(el, animName, transitionName, callback, durationMs) 
       callback();
     };
     target.addEventListener("animationend", done, { once: true });
-    setTimeout(done, fallback); // Fallback
-    return;
+    const timerId = setTimeout(done, fallback); // Fallback
+    return () => {
+      called = true;
+      clearTimeout(timerId);
+      target.removeEventListener("animationend", done);
+    };
   }
   if (transitionName) {
     const target = el.firstElementChild || el;
@@ -94,10 +98,11 @@ export function _animateOut(el, animName, transitionName, callback, durationMs) 
       transitionName + "-leave",
       transitionName + "-leave-active",
     );
-    requestAnimationFrame(() => {
+    let called = false;
+    let timerId;
+    const rafId = requestAnimationFrame(() => {
       target.classList.remove(transitionName + "-leave");
       target.classList.add(transitionName + "-leave-to");
-      let called = false;
       const done = () => {
         if (called) return;
         called = true;
@@ -108,9 +113,19 @@ export function _animateOut(el, animName, transitionName, callback, durationMs) 
         callback();
       };
       target.addEventListener("transitionend", done, { once: true });
-      setTimeout(done, fallback);
+      timerId = setTimeout(done, fallback);
     });
-    return;
+    return () => {
+      called = true;
+      cancelAnimationFrame(rafId);
+      clearTimeout(timerId);
+      target.classList.remove(
+        transitionName + "-leave",
+        transitionName + "-leave-active",
+        transitionName + "-leave-to",
+      );
+    };
   }
   callback();
+  return () => {};
 }
