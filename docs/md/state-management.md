@@ -161,6 +161,28 @@ Persist state across page reloads:
 </div>
 ```
 
+### `persist-fields` — Selective Persistence
+
+Use `persist-fields` to control exactly which fields are saved and restored. Fields not listed are never written to storage, which is useful for keeping sensitive values (tokens, passwords) out of `localStorage`/`sessionStorage`.
+
+```html
+<!-- Only `theme` and `sidebar` are persisted — `token` never touches storage -->
+<div state="{ theme: 'dark', sidebar: true, token: '' }"
+     persist="localStorage"
+     persist-key="app-settings"
+     persist-fields="theme, sidebar">
+  ...
+</div>
+```
+
+`persist-fields` accepts a comma-separated list of field names. Whitespace around each name is trimmed, so `"theme, sidebar"` and `"theme,sidebar"` are equivalent.
+
+| Attribute | Description |
+|-----------|-------------|
+| `persist` | Storage backend: `"localStorage"` or `"sessionStorage"` |
+| `persist-key` | Unique storage key. **Required** when `persist` is set |
+| `persist-fields` | Comma-separated list of fields to persist. Omit to persist all fields |
+
 ---
 
 ## `NoJS.notify()` — Flush Store Updates from JavaScript
