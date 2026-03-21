@@ -58,6 +58,9 @@
 
     // Security
     sanitize: true,            // Sanitize bind-html
+
+    // Performance
+    exprCacheSize: 500,        // Max entries in the expression/statement LRU caches
   });
 </script>
 ```
@@ -192,6 +195,26 @@ Controls whether fetched locale JSON files are stored in an in-memory `Map` afte
 ```js
 NoJS.i18n({ cache: false }); // Always re-fetch locale files
 ```
+
+---
+
+### `exprCacheSize`
+
+**Type:** `number` | **Default:** `500`
+
+Maximum number of entries in each of the two internal LRU caches used by the expression evaluator: one for parsed expression ASTs (`_exprCache`) and one for parsed statement ASTs (`_stmtCache`). When the limit is reached the least-recently-used entry is evicted to make room.
+
+The default of 500 is suitable for most applications. Increase it if your app evaluates a large number of distinct template expressions (e.g. a dynamic form with hundreds of unique field bindings). Decrease it to reduce memory pressure in memory-constrained environments.
+
+```js
+// Larger cache for apps with many distinct expressions
+NoJS.config({ exprCacheSize: 1000 });
+
+// Smaller cache for memory-constrained environments
+NoJS.config({ exprCacheSize: 100 });
+```
+
+Non-positive or non-numeric values are ignored and the default of 500 is used.
 
 ---
 

@@ -269,7 +269,7 @@ for (const method of HTTP_METHODS) {
         el.addEventListener("submit", submitHandler);
         _onDispose(() => el.removeEventListener("submit", submitHandler));
       } else if (method === "get") {
-        doRequest();
+        if (el.isConnected) doRequest();
       } else {
         // Non-GET on non-FORM: attach click listener
         const clickHandler = (e) => {
@@ -319,7 +319,10 @@ for (const method of HTTP_METHODS) {
 
       // Polling
       if (refreshInterval > 0) {
-        const id = setInterval(doRequest, refreshInterval);
+        const id = setInterval(() => {
+          if (!el.isConnected) { clearInterval(id); return; }
+          doRequest();
+        }, refreshInterval);
         _onDispose(() => clearInterval(id));
       }
     },

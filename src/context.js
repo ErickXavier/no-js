@@ -9,6 +9,7 @@ import { _devtoolsEmit, _ctxRegistry } from "./devtools.js";
 let _batchDepth = 0;
 const _batchQueue = new Set();
 let _ctxId = 0;
+let _ctxGeneration = 0;
 
 export function _resetCtxId() { _ctxId = 0; }
 
@@ -102,6 +103,7 @@ export function createContext(data = {}, parent = null) {
       const old = target[key];
       target[key] = value;
       if (old !== value) {
+        _ctxGeneration++;
         notify();
         _devtoolsEmit("ctx:updated", {
           id: target.__devtoolsId,
@@ -135,7 +137,11 @@ export function createContext(data = {}, parent = null) {
 }
 
 // Collect all keys from a context + its parent chain
+// Result is cached per context and invalidated on any reactive mutation.
 export function _collectKeys(ctx) {
+  const cache = ctx.__raw.__collectKeysCache;
+  if (cache && cache.gen === _ctxGeneration) return cache.result;
+
   const allKeys = new Set();
   const allVals = {};
   let c = ctx;
@@ -149,5 +155,7 @@ export function _collectKeys(ctx) {
     }
     c = c.$parent;
   }
-  return { keys: [...allKeys], vals: allVals };
+  const result = { keys: [...allKeys], vals: allVals };
+  ctx.__raw.__collectKeysCache = { gen: _ctxGeneration, result };
+  return result;
 }

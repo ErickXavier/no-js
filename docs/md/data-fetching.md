@@ -123,6 +123,24 @@ URLs that reference state variables re-fetch automatically when those values cha
 </div>
 ```
 
+### URL Interpolation and Encoding
+
+> ⚠️ **Breaking change (v1.10):** Values inside `{…}` placeholders are encoded with `encodeURIComponent`. This means `/` is encoded as `%2F`, which is correct for **query-string values** but will break **path segments** that intentionally contain slashes.
+>
+> ```html
+> <!-- ✅ Safe — query value, encoding is correct -->
+> <div get="/search?q={query}">...</div>
+>
+> <!-- ✅ Safe — single-level path segment, no slashes -->
+> <div get="/users/{user.id}/profile">...</div>
+>
+> <!-- ❌ Broken — path contains "/", will become "%2F" -->
+> <div get="/files/{path}">...</div>  <!-- path = "reports/2026" -->
+>
+> <!-- ✅ Workaround — concatenate outside {} -->
+> <div get="'/files/' + path">...</div>
+> ```
+
 ---
 
 ## `post`, `put`, `patch`, `delete` — Mutating Requests

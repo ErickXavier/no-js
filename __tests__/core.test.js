@@ -33,6 +33,7 @@ import {
   _execStatement,
   resolve,
   _interpolate,
+  _exprCache,
 } from '../src/evaluate.js';
 
 describe('Globals', () => {
@@ -208,6 +209,68 @@ describe('Globals', () => {
       _disposeTree(el);
 
       expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('removes $store watcher from Set when element is removed without dispose', async () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      const parent = document.createElement('div');
+      const el = document.createElement('span');
+      parent.appendChild(el);
+      document.body.appendChild(parent);
+
+      _setCurrentEl(el);
+      _watchExpr('$store.cart', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // Remove element externally (bypassing framework dispose)
+      parent.innerHTML = '';
+
+      // Allow MutationObserver microtask to run
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('disconnects MutationObserver via _onDispose when _disposeTree runs (each re-render pattern)', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      const container = document.createElement('div');
+      const itemWrapper = document.createElement('div');
+      container.appendChild(itemWrapper);
+      document.body.appendChild(container);
+
+      // Simulate processElement binding a $store watcher on itemWrapper
+      _setCurrentEl(itemWrapper);
+      _watchExpr('$store.cart.items', ctx, fn);
+      _setCurrentEl(null);
+
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // Simulate each re-render: disposeTree then clear innerHTML
+      _disposeTree(itemWrapper);
+      container.innerHTML = '';
+
+      // Watcher must be removed by the _onDispose path (not the MutationObserver callback)
+      expect(_storeWatchers.has(fn)).toBe(false);
+    });
+
+    test('does not throw when element has no parentElement', () => {
+      const ctx = createContext({});
+      const fn = jest.fn();
+
+      // Element with no parent
+      const el = document.createElement('div');
+
+      _setCurrentEl(el);
+      expect(() => _watchExpr('$store.x', ctx, fn)).not.toThrow();
+      _setCurrentEl(null);
+
+      _storeWatchers.delete(fn);
     });
   });
 });
@@ -385,6 +448,32 @@ describe('Reactive Context', () => {
       const { vals } = _collectKeys(child);
       expect(vals.x).toBe('child');
     });
+
+    test('returns cached result when context has not changed', () => {
+      const ctx = createContext({ a: 1 });
+      const first = _collectKeys(ctx);
+      const second = _collectKeys(ctx);
+      expect(second).toBe(first); // same object reference — cache hit
+    });
+
+    test('returns fresh result after context mutation', () => {
+      const ctx = createContext({ a: 1 });
+      const before = _collectKeys(ctx);
+      ctx.a = 99;
+      const after = _collectKeys(ctx);
+      expect(after).not.toBe(before); // different object reference — cache invalidated
+      expect(after.vals.a).toBe(99);
+    });
+
+    test('invalidates child cache when parent context changes', () => {
+      const parent = createContext({ x: 1 });
+      const child = createContext({ y: 2 }, parent);
+      const before = _collectKeys(child);
+      parent.x = 42;
+      const after = _collectKeys(child);
+      expect(after).not.toBe(before);
+      expect(after.vals.x).toBe(42);
+    });
   });
 });
 
@@ -552,6 +641,28 @@ describe('Expression Evaluator', () => {
       const ctx = createContext({});
       expect(_interpolate('/users/{id}', ctx)).toBe('/users/');
     });
+
+    test('encodes path traversal sequences in interpolated values', () => {
+      const ctx = createContext({ id: '../admin' });
+      const result = _interpolate('/api/users/{id}', ctx);
+      expect(result).not.toContain('../');
+      expect(result).toBe('/api/users/..%2Fadmin');  // .. + encoded /
+    });
+
+    test('encodes spaces and special characters in interpolated values', () => {
+      const ctx = createContext({ q: 'hello world' });
+      expect(_interpolate('/search?q={q}', ctx)).toBe('/search?q=hello%20world');
+    });
+
+    test('encodes slashes inside interpolated values', () => {
+      const ctx = createContext({ path: 'a/b/c' });
+      expect(_interpolate('/api/{path}', ctx)).toBe('/api/a%2Fb%2Fc');
+    });
+
+    test('does not encode plain numeric IDs', () => {
+      const ctx = createContext({ id: 123 });
+      expect(_interpolate('/api/users/{id}', ctx)).toBe('/api/users/123');
+    });
   });
 
   describe('_execStatement', () => {
@@ -710,6 +821,35 @@ describe('index.js — config()', () => {
     expect(_config.router.mode).toBeUndefined();
 
     _config.router.useHash = false;
+  });
+
+  test('emits warning when sanitize is set to false', async () => {
+    const { default: No } = await import('../src/index.js');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    No.config({ sanitize: false });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('sanitize: false')
+    );
+
+    warnSpy.mockRestore();
+    _config.sanitize = true;
+  });
+
+  test('does not emit warning when sanitize is explicitly set to true', async () => {
+    const { default: No } = await import('../src/index.js');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    No.config({ sanitize: true });
+
+    const sanitizeWarningCalled = warnSpy.mock.calls.some(
+      (args) => args.some((a) => typeof a === 'string' && a.includes('sanitize'))
+    );
+    expect(sanitizeWarningCalled).toBe(false);
+
+    warnSpy.mockRestore();
   });
 });
 
@@ -1475,6 +1615,13 @@ describe('Statement Interpreter', () => {
       _execStatement('msg = $event.type', ctx, { $event: { type: 'click' } });
       expect(ctx.msg).toBe('click');
     });
+
+    test('extraVars keys are not written back to the context', () => {
+      // __val is used by the model directive; it must not leak into the reactive context
+      _execStatement('count = __val', ctx, { __val: 42 });
+      expect(ctx.count).toBe(42);            // assignment succeeded
+      expect('__val' in ctx.__raw).toBe(false); // __val must not persist
+    });
   });
 
   describe('$refs Method Call', () => {
@@ -1502,5 +1649,38 @@ describe('Statement Interpreter', () => {
       _execStatement('count = count + 1', child);
       expect(parent.count).toBe(1);
     });
+  });
+});
+
+describe('evaluate.js — expression cache (LRU)', () => {
+  test('cache does not grow beyond 500 entries', () => {
+    const ctx = createContext({});
+
+    for (let i = 0; i < 510; i++) {
+      evaluate(`__lru_test_${i}__ || 0`, ctx);
+    }
+
+    expect(_exprCache.size).toBeLessThanOrEqual(500);
+  });
+
+  test('evicts the LRU entry when the cache is full', () => {
+    const ctx = createContext({});
+
+    // Fill to the limit with known keys
+    for (let i = 0; i < 500; i++) {
+      evaluate(`__evict_test_${i}__ || 0`, ctx);
+    }
+
+    const firstKey = `__evict_test_0__ || 0`;
+
+    // Re-access the first key so it becomes the most-recently-used
+    evaluate(firstKey, ctx);
+
+    // Adding one more should evict the LRU entry (entry 1, not entry 0)
+    evaluate(`__evict_overflow__ || 0`, ctx);
+
+    // The recently-accessed entry must be retained
+    expect(_exprCache.has(firstKey)).toBe(true);
+    expect(_exprCache.size).toBeLessThanOrEqual(500);
   });
 });
