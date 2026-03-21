@@ -109,6 +109,95 @@ describe('DOM Helpers', () => {
       expect(_sanitizeHtml(html)).toBe(html);
       _config.sanitize = true;
     });
+
+    // ── Vectors that bypass regex sanitizers but are caught by DOMParser ──
+
+    test('removes onerror on img tag (regex-bypass vector)', () => {
+      // A naive `on\w+=` regex can be fooled by extra whitespace or newlines.
+      // DOMParser always parses the attribute properly before cleaning.
+      const html = '<img src="x" onerror="alert(1)">';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('onerror');
+    });
+
+    test('removes SVG event handlers (onbegin, onend, etc.)', () => {
+      const html = '<svg><animate onbegin="alert(1)"></animate></svg>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('onbegin');
+    });
+
+    test('removes iframe tags (srcdoc nesting vector)', () => {
+      const html = '<div>Safe<iframe srcdoc="<script>evil()</script>"></iframe></div>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('iframe');
+      expect(result).toContain('Safe');
+    });
+
+    test('removes base tags (URL rewrite vector)', () => {
+      const html = '<base href="http://evil.com"><p>Content</p>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('<base');
+      expect(result).toContain('Content');
+    });
+
+    test('removes HTML-entity-encoded javascript: href', () => {
+      // DOMParser resolves &#x6A;avascript: to javascript: before the walk.
+      const html = '<a href="&#x6A;avascript:alert(1)">Link</a>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('javascript:');
+    });
+
+    test('removes vbscript: protocol', () => {
+      const html = '<a href="vbscript:msgbox(1)">Link</a>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('vbscript:');
+    });
+
+    test('preserves safe nested elements and class attributes', () => {
+      const html = '<div class="card"><h2>Title</h2><p>Body <strong>text</strong></p></div>';
+      const result = _sanitizeHtml(html);
+      expect(result).toContain('class="card"');
+      expect(result).toContain('<h2>Title</h2>');
+      expect(result).toContain('<strong>text</strong>');
+    });
+
+    test('calls custom sanitizeHtml hook and returns its output', () => {
+      const mock = jest.fn().mockReturnValue('<p>sanitized</p>');
+      _config.sanitizeHtml = mock;
+      const result = _sanitizeHtml('<script>evil()</script>');
+      expect(mock).toHaveBeenCalledWith('<script>evil()</script>');
+      expect(result).toBe('<p>sanitized</p>');
+      _config.sanitizeHtml = null;
+    });
+
+    test('custom hook is bypassed when sanitize is false', () => {
+      const mock = jest.fn();
+      _config.sanitizeHtml = mock;
+      _config.sanitize = false;
+      _sanitizeHtml('<b>hi</b>');
+      expect(mock).not.toHaveBeenCalled();
+      _config.sanitize = true;
+      _config.sanitizeHtml = null;
+    });
+
+    test('strips non-image data: URIs from href (e.g. data:text/html)', () => {
+      const html = '<a href="data:text/html,<script>alert(1)</script>">Click</a>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('data:text/html');
+      expect(result).toContain('Click');
+    });
+
+    test('strips non-image data: URIs from src', () => {
+      const html = '<img src="data:text/javascript,alert(1)">';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('data:text/javascript');
+    });
+
+    test('preserves safe image data: URIs in src', () => {
+      const html = '<img src="data:image/png;base64,abc123" alt="pic">';
+      const result = _sanitizeHtml(html);
+      expect(result).toContain('data:image/png;base64,abc123');
+    });
   });
 });
 

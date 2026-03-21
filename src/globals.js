@@ -17,6 +17,7 @@ export const _config = {
   debug: false,
   devtools: false,
   sanitize: true,
+  sanitizeHtml: null,
   exprCacheSize: 500,
 };
 

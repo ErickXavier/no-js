@@ -33,14 +33,48 @@ export function _cloneTemplate(id) {
   return tpl.content ? tpl.content.cloneNode(true) : null;
 }
 
-// Simple HTML sanitizer
+// Structural HTML sanitizer — uses DOMParser to parse the markup before cleaning.
+// Regex-based sanitizers are bypassable via SVG/MathML event handlers, nested
+// srcdoc attributes, and HTML entity encoding (e.g. &#x6A;avascript:).
+// DOMParser resolves entities and builds a real DOM tree, making all vectors
+// uniformly detectable by a single attribute-name/value check.
+//
+// Custom hook: set _config.sanitizeHtml to a function to plug in an external
+// sanitizer (e.g. DOMPurify) without bundling it as a hard dependency.
+const _BLOCKED_TAGS = new Set([
+  'script', 'style', 'iframe', 'object', 'embed',
+  'base', 'form', 'meta', 'link', 'noscript',
+]);
+
 export function _sanitizeHtml(html) {
   if (!_config.sanitize) return html;
-  const safe = html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/on\w+\s*=/gi, "data-blocked=")
-    .replace(/javascript:/gi, "");
-  return safe;
+  if (typeof _config.sanitizeHtml === 'function') return _config.sanitizeHtml(html);
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  function _clean(node) {
+    for (const child of [...node.childNodes]) {
+      if (child.nodeType !== 1) continue; // text and comment nodes are safe
+      if (_BLOCKED_TAGS.has(child.tagName.toLowerCase())) {
+        child.remove();
+        continue;
+      }
+      for (const attr of [...child.attributes]) {
+        const n = attr.name.toLowerCase();
+        const v = attr.value.toLowerCase().trimStart();
+        const isUrlAttr = n === 'href' || n === 'src' || n === 'action' || n === 'xlink:href';
+        const isDangerousScheme = v.startsWith('javascript:') || v.startsWith('vbscript:');
+        const isDangerousData = isUrlAttr && v.startsWith('data:') && !/^data:image\//.test(v);
+        if (n.startsWith('on') || isDangerousScheme || isDangerousData) {
+          child.removeAttribute(attr.name);
+        }
+      }
+      _clean(child);
+    }
+  }
+
+  _clean(doc.body);
+  return doc.body.innerHTML;
 }
 
 // Resolve a template src path.
