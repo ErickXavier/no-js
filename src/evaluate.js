@@ -781,6 +781,11 @@ const _safeDocument = typeof globalThis !== 'undefined' && typeof globalThis.doc
         if (prop === 'defaultView') return _safeWindow;
         return Reflect.get(target, prop, receiver);
       },
+      set(target, prop, value) {
+        if (typeof prop === 'string' && _BLOCKED_DOCUMENT_PROPS.has(prop)) return true;
+        target[prop] = value;
+        return true;
+      },
     })
   : undefined;
 
@@ -843,6 +848,7 @@ const _safeNavigator = typeof globalThis !== 'undefined' && typeof globalThis.na
         if (typeof prop === 'string' && _BLOCKED_NAVIGATOR_PROPS.has(prop)) return undefined;
         return Reflect.get(target, prop, receiver);
       },
+      set() { return true; }, // navigator props are browser-enforced read-only
     })
   : undefined;
 
