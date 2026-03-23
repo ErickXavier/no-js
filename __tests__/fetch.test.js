@@ -294,6 +294,57 @@ describe('Cache', () => {
       expect(_cacheGet('skey', 'session')).toEqual({ y: 2 });
     });
   });
+
+  describe('LRU eviction (max 200 entries)', () => {
+    test('cache does not grow beyond 200 entries', () => {
+      _cache.clear();
+      for (let i = 0; i < 210; i++) {
+        _cacheSet(`/test-${i}`, { data: i }, 'memory');
+      }
+      expect(_cache.size).toBeLessThanOrEqual(200);
+    });
+
+    test('oldest cache entry is evicted first', () => {
+      _cache.clear();
+      for (let i = 0; i < 200; i++) {
+        _cacheSet(`/fill-${i}`, { data: i }, 'memory');
+      }
+      // First entry exists
+      expect(_cache.has('/fill-0')).toBe(true);
+      // Add one more — should evict /fill-0
+      _cacheSet('/overflow', { data: 'new' }, 'memory');
+      expect(_cache.has('/fill-0')).toBe(false);
+      expect(_cache.has('/overflow')).toBe(true);
+    });
+
+    test('reading an entry promotes it (LRU refresh)', () => {
+      _cache.clear();
+      for (let i = 0; i < 200; i++) {
+        _cacheSet(`/lru-${i}`, { data: i }, 'memory');
+      }
+      // Read the first entry to promote it to most-recently-used
+      expect(_cacheGet('/lru-0', 'memory')).toEqual({ data: 0 });
+      // Add a new entry — should evict /lru-1 (now the oldest), not /lru-0
+      _cacheSet('/lru-new', { data: 'new' }, 'memory');
+      expect(_cache.has('/lru-0')).toBe(true);
+      expect(_cache.has('/lru-1')).toBe(false);
+      expect(_cache.has('/lru-new')).toBe(true);
+    });
+
+    test('re-setting an existing key refreshes its position', () => {
+      _cache.clear();
+      for (let i = 0; i < 200; i++) {
+        _cacheSet(`/pos-${i}`, { data: i }, 'memory');
+      }
+      // Re-set the first entry to refresh its position
+      _cacheSet('/pos-0', { data: 'updated' }, 'memory');
+      // Add a new entry — should evict /pos-1 (now the oldest), not /pos-0
+      _cacheSet('/pos-new', { data: 'new' }, 'memory');
+      expect(_cache.has('/pos-0')).toBe(true);
+      expect(_cache.has('/pos-1')).toBe(false);
+      expect(_cache.size).toBe(200);
+    });
+  });
 });
 
 describe('fetch.js — string body that is valid JSON', () => {

@@ -208,6 +208,8 @@ function _handleDevtoolsCommand(event) {
       break;
     case "get:config":
       result = { ..._config };
+      if (result.csrf) result.csrf = { ...result.csrf, token: '[REDACTED]' };
+      if (result.headers) result.headers = '[REDACTED]';
       break;
     case "get:routes":
       result = _routerInstance ? _routerInstance.routes || [] : [];

@@ -324,6 +324,42 @@ describe('DevTools Protocol', () => {
       expect(result.baseApiUrl).toBe('');
     });
 
+    test('get:config redacts csrf.token but preserves other csrf fields', async () => {
+      _config.csrf = { token: 'secret-token-123', header: 'X-CSRF-Token' };
+
+      const result = await sendCommand('get:config');
+
+      expect(result.csrf.token).toBe('[REDACTED]');
+      expect(result.csrf.header).toBe('X-CSRF-Token');
+
+      delete _config.csrf;
+    });
+
+    test('get:config redacts headers', async () => {
+      _config.headers = { Authorization: 'Bearer secret' };
+
+      const result = await sendCommand('get:config');
+
+      expect(result.headers).toBe('[REDACTED]');
+
+      delete _config.headers;
+    });
+
+    test('get:config still returns non-sensitive config values', async () => {
+      _config.csrf = { token: 'secret', header: 'X-CSRF' };
+      _config.headers = { Authorization: 'Bearer tok' };
+
+      const result = await sendCommand('get:config');
+
+      expect(result.devtools).toBe(true);
+      expect(result.baseApiUrl).toBe('');
+      expect(result.csrf.token).toBe('[REDACTED]');
+      expect(result.headers).toBe('[REDACTED]');
+
+      delete _config.csrf;
+      delete _config.headers;
+    });
+
     test('get:stats returns stats', async () => {
       createContext({ a: 1 });
       createContext({ b: 2 });

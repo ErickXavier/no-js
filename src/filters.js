@@ -20,7 +20,12 @@ _filters.slugify = (v) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-_filters.nl2br = (v) => String(v ?? "").replace(/\n/g, "<br>");
+_filters.nl2br = (v) =>
+  String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
 _filters.encodeUri = (v) => encodeURIComponent(String(v ?? ""));
 
 // Numbers

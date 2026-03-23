@@ -48,8 +48,18 @@ describe('Built-in Filters', () => {
       expect(_filters.slugify('Special @#$ Characters')).toBe('special-characters');
     });
 
-    test('nl2br', () => {
+    test('nl2br still converts newlines to br', () => {
       expect(_filters.nl2br('line1\nline2\nline3')).toBe('line1<br>line2<br>line3');
+    });
+
+    test('nl2br encodes HTML entities before converting newlines', () => {
+      expect(_filters.nl2br('<script>alert(1)</script>\nHello')).toBe(
+        '&lt;script&gt;alert(1)&lt;/script&gt;<br>Hello'
+      );
+    });
+
+    test('nl2br encodes ampersands', () => {
+      expect(_filters.nl2br('A & B\nC')).toBe('A &amp; B<br>C');
     });
 
     test('encodeUri', () => {

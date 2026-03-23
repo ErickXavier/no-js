@@ -736,7 +736,103 @@ const _SAFE_GLOBALS = {
 // network and storage APIs — fetch, XMLHttpRequest, localStorage, sessionStorage,
 // WebSocket, indexedDB — are unreachable from template code by default, closing
 // the surface where interpolated external data could trigger unintended requests.
-// window.fetch / window.localStorage remain accessible via the window object.
+// window, document, and location are further wrapped in Proxy objects below
+// to block sensitive sub-properties (fetch, cookie, navigation, etc.).
+
+// ── Security proxies for window, document, and location ─────────────────
+// Even though window/document are on the allow-list, we wrap them in Proxy
+// objects that block access to sensitive sub-properties (network, storage,
+// cookie, eval, etc.) while still allowing safe DOM / measurement APIs.
+
+const _BLOCKED_WINDOW_PROPS = new Set([
+  'fetch', 'XMLHttpRequest', 'localStorage', 'sessionStorage',
+  'WebSocket', 'indexedDB', 'eval', 'Function', 'importScripts',
+  'open', 'postMessage',
+]);
+// Props on window that must return safe proxies instead of raw objects
+const _WINDOW_PROXY_OVERRIDES = {}; // populated after proxy creation below
+
+const _BLOCKED_DOCUMENT_PROPS = new Set([
+  'cookie', 'domain', 'write', 'writeln', 'execCommand',
+]);
+
+const _safeWindow = typeof globalThis !== 'undefined' && typeof globalThis.window !== 'undefined'
+  ? new Proxy(globalThis.window, {
+      get(target, prop, receiver) {
+        if (typeof prop === 'string' && _BLOCKED_WINDOW_PROPS.has(prop)) return undefined;
+        if (typeof prop === 'string' && prop in _WINDOW_PROXY_OVERRIDES) return _WINDOW_PROXY_OVERRIDES[prop];
+        return Reflect.get(target, prop, receiver);
+      },
+    })
+  : undefined;
+
+const _safeDocument = typeof globalThis !== 'undefined' && typeof globalThis.document !== 'undefined'
+  ? new Proxy(globalThis.document, {
+      get(target, prop, receiver) {
+        if (typeof prop === 'string' && _BLOCKED_DOCUMENT_PROPS.has(prop)) return undefined;
+        if (prop === 'defaultView') return _safeWindow;
+        return Reflect.get(target, prop, receiver);
+      },
+    })
+  : undefined;
+
+// Read-only location wrapper — exposes common getters via a plain object with
+// property descriptors that read from the real location. Navigation methods are
+// replaced with no-ops. Using a plain object avoids Proxy invariant violations
+// on non-configurable properties (like location.assign).
+const _LOCATION_READ_PROPS = [
+  'href', 'pathname', 'search', 'hash', 'origin',
+  'hostname', 'port', 'protocol', 'host',
+];
+const _locationNoop = () => {};
+
+const _safeLocation = typeof globalThis !== 'undefined' && typeof globalThis.location !== 'undefined'
+  ? (() => {
+      const loc = {};
+      for (const prop of _LOCATION_READ_PROPS) {
+        Object.defineProperty(loc, prop, {
+          get() { return globalThis.location[prop]; },
+          set() { /* silently ignore writes */ },
+          enumerable: true, configurable: false,
+        });
+      }
+      loc.assign = _locationNoop;
+      loc.replace = _locationNoop;
+      loc.reload = _locationNoop;
+      loc.toString = () => globalThis.location.href;
+      return Object.freeze(loc);
+    })()
+  : undefined;
+
+// Read-only history wrapper — exposes state and length as read-only getters,
+// replaces navigation methods with no-ops. Prevents expressions from
+// manipulating browser history (pushState, back, forward, etc.).
+const _HISTORY_READ_PROPS = ['length', 'state', 'scrollRestoration'];
+
+const _safeHistory = typeof globalThis !== 'undefined' && typeof globalThis.history !== 'undefined'
+  ? (() => {
+      const h = {};
+      for (const prop of _HISTORY_READ_PROPS) {
+        Object.defineProperty(h, prop, {
+          get() { return globalThis.history[prop]; },
+          enumerable: true, configurable: false,
+        });
+      }
+      h.pushState = _locationNoop;
+      h.replaceState = _locationNoop;
+      h.back = _locationNoop;
+      h.forward = _locationNoop;
+      h.go = _locationNoop;
+      return Object.freeze(h);
+    })()
+  : undefined;
+
+// Wire window.location → _safeLocation, window.document → _safeDocument,
+// window.history → _safeHistory so accessing via the window proxy returns safe versions
+if (_safeLocation) _WINDOW_PROXY_OVERRIDES.location = _safeLocation;
+if (_safeDocument) _WINDOW_PROXY_OVERRIDES.document = _safeDocument;
+if (_safeHistory) _WINDOW_PROXY_OVERRIDES.history = _safeHistory;
+
 const _BROWSER_GLOBALS = new Set([
   'window', 'document', 'console', 'location', 'history',
   'navigator', 'screen', 'performance', 'crypto',
@@ -764,7 +860,13 @@ function _evalNode(node, scope) {
       case 'Identifier':
         if (node.name in scope) return scope[node.name];
         if (node.name in _SAFE_GLOBALS) return _SAFE_GLOBALS[node.name];
-        if (_BROWSER_GLOBALS.has(node.name) && typeof globalThis !== 'undefined') return globalThis[node.name];
+        if (_BROWSER_GLOBALS.has(node.name) && typeof globalThis !== 'undefined') {
+          if (node.name === 'window') return _safeWindow;
+          if (node.name === 'document') return _safeDocument;
+          if (node.name === 'location') return _safeLocation;
+          if (node.name === 'history') return _safeHistory;
+          return globalThis[node.name];
+        }
         return undefined;
 
       case 'Forbidden':

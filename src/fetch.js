@@ -4,6 +4,8 @@
 
 import { _config, _interceptors, _cache } from "./globals.js";
 
+const _MAX_CACHE = 200;
+
 export function resolveUrl(url, el) {
   if (
     url.startsWith("http://") ||
@@ -128,8 +130,12 @@ export function _cacheGet(key, strategy) {
   if (strategy === "none") return null;
   if (strategy === "memory") {
     const entry = _cache.get(key);
-    if (entry && Date.now() - entry.time < (_config.cache.ttl || 300000))
+    if (entry && Date.now() - entry.time < (_config.cache.ttl || 300000)) {
+      // Move to end (most-recently-used) for LRU eviction
+      _cache.delete(key);
+      _cache.set(key, entry);
       return entry.data;
+    }
     return null;
   }
   const store =
@@ -156,6 +162,11 @@ export function _cacheSet(key, data, strategy) {
   if (strategy === "none") return;
   const entry = { data, time: Date.now() };
   if (strategy === "memory") {
+    if (_cache.has(key)) {
+      _cache.delete(key); // refresh position before re-inserting
+    } else if (_cache.size >= _MAX_CACHE) {
+      _cache.delete(_cache.keys().next().value); // evict LRU (insertion-order first)
+    }
     _cache.set(key, entry);
     return;
   }
