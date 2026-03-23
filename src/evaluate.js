@@ -763,6 +763,14 @@ const _safeWindow = typeof globalThis !== 'undefined' && typeof globalThis.windo
         if (typeof prop === 'string' && prop in _WINDOW_PROXY_OVERRIDES) return _WINDOW_PROXY_OVERRIDES[prop];
         return Reflect.get(target, prop, receiver);
       },
+      set(target, prop, value) {
+        // Block writes to dangerous window properties from expressions;
+        // allow writing user-defined properties (e.g. window.__myHelper)
+        if (typeof prop === 'string' && _BLOCKED_WINDOW_PROPS.has(prop)) return true;
+        if (prop === 'name' || prop === 'status') return true; // anti-exfiltration
+        target[prop] = value;
+        return true;
+      },
     })
   : undefined;
 
@@ -827,11 +835,24 @@ const _safeHistory = typeof globalThis !== 'undefined' && typeof globalThis.hist
     })()
   : undefined;
 
+// Navigator proxy — blocks sendBeacon (data exfiltration) and credentials
+const _BLOCKED_NAVIGATOR_PROPS = new Set(['sendBeacon', 'credentials']);
+const _safeNavigator = typeof globalThis !== 'undefined' && typeof globalThis.navigator !== 'undefined'
+  ? new Proxy(globalThis.navigator, {
+      get(target, prop, receiver) {
+        if (typeof prop === 'string' && _BLOCKED_NAVIGATOR_PROPS.has(prop)) return undefined;
+        return Reflect.get(target, prop, receiver);
+      },
+    })
+  : undefined;
+
 // Wire window.location → _safeLocation, window.document → _safeDocument,
-// window.history → _safeHistory so accessing via the window proxy returns safe versions
+// window.history → _safeHistory, window.navigator → _safeNavigator
+// so accessing via the window proxy returns safe versions
 if (_safeLocation) _WINDOW_PROXY_OVERRIDES.location = _safeLocation;
 if (_safeDocument) _WINDOW_PROXY_OVERRIDES.document = _safeDocument;
 if (_safeHistory) _WINDOW_PROXY_OVERRIDES.history = _safeHistory;
+if (_safeNavigator) _WINDOW_PROXY_OVERRIDES.navigator = _safeNavigator;
 
 const _BROWSER_GLOBALS = new Set([
   'window', 'document', 'console', 'location', 'history',
@@ -865,6 +886,7 @@ function _evalNode(node, scope) {
           if (node.name === 'document') return _safeDocument;
           if (node.name === 'location') return _safeLocation;
           if (node.name === 'history') return _safeHistory;
+          if (node.name === 'navigator') return _safeNavigator;
           return globalThis[node.name];
         }
         return undefined;

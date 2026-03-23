@@ -1834,6 +1834,44 @@ describe('evaluate — browser globals allow-list', () => {
     expect(h.pushState).toBeDefined();
     expect(() => h.pushState({}, '', '/evil')).not.toThrow();
   });
+
+  // ── Navigator proxy ─────────────────────────────────────────────────
+
+  test('navigator.sendBeacon is blocked', () => {
+    expect(evaluate('navigator.sendBeacon', ctx)).toBeUndefined();
+  });
+
+  test('navigator.userAgent is still accessible', () => {
+    expect(evaluate('navigator.userAgent', ctx)).toBeDefined();
+  });
+
+  test('window.navigator returns safe navigator proxy', () => {
+    const nav = evaluate('window.navigator', ctx);
+    if (nav) {
+      expect(nav.sendBeacon).toBeUndefined();
+      expect(nav.userAgent).toBeDefined();
+    }
+  });
+
+  // ── Window set trap ─────────────────────────────────────────────────
+
+  test('window.name writes are blocked (anti-exfiltration)', () => {
+    const original = window.name;
+    _execStatement("window.name = 'evil'", createContext({}));
+    expect(window.name).toBe(original);
+  });
+
+  test('window.fetch writes are blocked', () => {
+    const original = window.fetch;
+    _execStatement("window.fetch = null", createContext({}));
+    expect(window.fetch).toBe(original);
+  });
+
+  test('window user-defined property writes are allowed', () => {
+    _execStatement("window.__testProp = 42", createContext({}));
+    expect(window.__testProp).toBe(42);
+    delete window.__testProp;
+  });
 });
 
 describe('evaluate.js — expression cache (LRU)', () => {
