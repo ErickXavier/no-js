@@ -1,0 +1,1953 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "x1DOs",
+      "x": 0,
+      "y": 0,
+      "name": "No.JS Landing Page",
+      "width": 1440,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "XXm7s",
+          "name": "Header",
+          "width": "fill_container",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#E2E8F0"
+          },
+          "padding": [
+            20,
+            80
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "4pmvo",
+              "name": "logoArea",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "173yz",
+                  "name": "logoText",
+                  "fill": "#0F172A",
+                  "content": "No.JS",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 20,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "frame",
+                  "id": "jcuym",
+                  "name": "versionBadge",
+                  "cornerRadius": 4,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#E2E8F0"
+                  },
+                  "padding": [
+                    2,
+                    8
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cVjYi",
+                      "name": "versionText",
+                      "fill": "#94A3B8",
+                      "content": "v1.9.1",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 9,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uyHXn",
+              "name": "navArea",
+              "gap": 32,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Qi8IU",
+                  "name": "navResources",
+                  "fill": "#64748B",
+                  "content": "Resources",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LCQ4E",
+                  "name": "navExamples",
+                  "fill": "#64748B",
+                  "content": "Examples",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "z5hTc",
+                  "name": "navPlayground",
+                  "fill": "#64748B",
+                  "content": "Playground",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "lvJqY",
+                  "name": "navDocs",
+                  "fill": "#64748B",
+                  "content": "Docs",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "jhuhV",
+                  "name": "navGithub",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "github",
+                  "iconFontFamily": "lucide",
+                  "fill": "#64748B"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "4TOpf",
+          "name": "Hero Section",
+          "width": "fill_container",
+          "height": 560,
+          "fill": "#0F172A",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#1E293B"
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "hFsJv",
+              "x": 22,
+              "y": 20,
+              "name": "heroAnnotation",
+              "fill": "#475569",
+              "content": "state=\"{ ready: true }\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "Wz82X",
+              "x": 80,
+              "y": 100,
+              "name": "heroContent",
+              "width": 800,
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IuB9W",
+                  "name": "heroBadge",
+                  "cornerRadius": 20,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#475569"
+                  },
+                  "padding": [
+                    6,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cEA0D",
+                      "name": "heroBadgeText",
+                      "fill": "#94A3B8",
+                      "content": "HTML-first reactive framework",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "uxB6w",
+                  "name": "heroHeadline",
+                  "fill": "#FFFFFF",
+                  "content": "Build reactive apps\nwithout JavaScript.",
+                  "lineHeight": 1.05,
+                  "fontFamily": "Newsreader",
+                  "fontSize": 64,
+                  "fontWeight": "500",
+                  "letterSpacing": -1
+                },
+                {
+                  "type": "text",
+                  "id": "ToxLS",
+                  "name": "heroSub",
+                  "fill": "#94A3B8",
+                  "textGrowth": "fixed-width",
+                  "width": 620,
+                  "content": "No.JS transforms HTML attributes into a complete reactive engine.\n~24 KB gzipped. Zero dependencies. No build step.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "FC05w",
+                  "name": "ctaRow",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "vaHy4",
+                      "name": "ctaStart",
+                      "fill": "#0EA5E9",
+                      "cornerRadius": 6,
+                      "padding": [
+                        12,
+                        28
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "2hGe7",
+                          "name": "ctaStartTxt",
+                          "fill": "#FFFFFF",
+                          "content": "Get Started",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UwzAR",
+                      "name": "ctaPlayground",
+                      "cornerRadius": 6,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#475569"
+                      },
+                      "padding": [
+                        12,
+                        28
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ITO19",
+                          "name": "ctaPlayTxt",
+                          "fill": "#CBD5E1",
+                          "content": "Playground",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AI14R",
+                  "name": "cdnSnippet",
+                  "fill": "#1E293B",
+                  "cornerRadius": 6,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#334155"
+                  },
+                  "gap": 8,
+                  "padding": [
+                    12,
+                    20
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "CCino",
+                      "name": "cdnIcon",
+                      "fill": "#64748B",
+                      "content": "CDN",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "93P5g",
+                      "name": "cdnCode",
+                      "fill": "#E2E8F0",
+                      "content": "<script src=\"https://cdn.no-js.dev/\"></script>",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "BeDe5",
+              "x": 80,
+              "y": 135,
+              "name": "heroAnnotH1",
+              "fill": "#475569",
+              "content": "t=\"hero.headline\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "XdsZj",
+              "x": 80,
+              "y": 293,
+              "name": "heroAnnotSub",
+              "fill": "#475569",
+              "content": "t=\"hero.subtitle\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "line",
+              "id": "hwShs",
+              "x": 60,
+              "y": 0,
+              "name": "vertLine",
+              "width": 0,
+              "height": 560,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#1E293B"
+              }
+            },
+            {
+              "type": "line",
+              "id": "Hd3z7",
+              "x": 0,
+              "y": 90,
+              "name": "horzLine1",
+              "width": 1440,
+              "height": 0,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#1E293B"
+              }
+            },
+            {
+              "type": "text",
+              "id": "eUVxk",
+              "x": 80,
+              "y": 370,
+              "name": "heroAnnotH1",
+              "fill": "#475569",
+              "content": "route=\"/get-started\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "SGWMG",
+              "x": 230,
+              "y": 370,
+              "name": "heroAnnotH1",
+              "fill": "#475569",
+              "content": "route=\"/playgorund\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NTdru",
+          "name": "Comparison Section",
+          "width": "fill_container",
+          "height": 650,
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#E2E8F0"
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "oDJ3K",
+              "x": 80,
+              "y": 101,
+              "name": "compAnnot",
+              "fill": "#94A3B8",
+              "content": "state=\"{ view: 'split' }\"  bind:class=\"comparison\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "line",
+              "id": "D6DlK",
+              "x": 60,
+              "y": 0,
+              "name": "compVLine",
+              "width": 0,
+              "height": 520,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              }
+            },
+            {
+              "type": "line",
+              "id": "rakaP",
+              "x": 0,
+              "y": 50,
+              "name": "compHLine",
+              "width": 1440,
+              "height": 0,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "aEbCt",
+              "x": 80,
+              "y": 48,
+              "name": "compTitle",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "6N4gT",
+                  "name": "compLabel",
+                  "fill": "#94A3B8",
+                  "content": "THE SAME APP. THE REAL DIFFERENCE.",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "y7ouM",
+                  "name": "compSubtitle",
+                  "fill": "#64748B",
+                  "content": "A reactive search box — the most common real-world pattern.",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ETwzd",
+              "x": 80,
+              "y": 120,
+              "name": "compCards",
+              "width": 1280,
+              "gap": 40,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IQ4KB",
+                  "name": "reactCard",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#E2E8F0"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Cv8oy",
+                      "name": "reactHeader",
+                      "width": "fill_container",
+                      "stroke": {
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#F1F5F9"
+                      },
+                      "padding": [
+                        12,
+                        20
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "PTcQk",
+                          "name": "reactLabel",
+                          "fill": "#64748B",
+                          "content": "React",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "c906k",
+                          "name": "reactMeta",
+                          "fill": "#94A3B8",
+                          "content": "25 lines · react, react-dom, useState, useEffect",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Uyvqs",
+                      "name": "reactCode",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        16,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "t8AJx",
+                          "name": "reactCodeTxt",
+                          "fill": "#64748B",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "import { useState, useEffect } from 'react';\n\nconst Search = () => {\n  const [query, setQuery] = useState('');\n  const [results, setResults] = useState([]);\n\n  useEffect(() => {\n    if (!query) return;\n    fetch(`/api/search?q=${query}`)\n      .then(r => r.json())\n      .then(setResults);\n  }, [query]);\n\n  return (\n    <div>\n      <input\n        value={query}\n        onChange={e => setQuery(e.target.value)}\n      />\n      {results.map(r => (\n        <li key={r.id}>{r.name}</li>\n      ))}\n    </div>\n  );\n};",
+                          "lineHeight": 1.5,
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KkoxH",
+                  "name": "nojsCard",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#0EA5E944"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "RUkqb",
+                      "name": "nojsHeader",
+                      "width": "fill_container",
+                      "fill": "#0EA5E908",
+                      "stroke": {
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#0EA5E922"
+                      },
+                      "padding": [
+                        12,
+                        20
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tMimW",
+                          "name": "nojsLabel",
+                          "fill": "#0EA5E9",
+                          "content": "No.JS",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rC1jz",
+                          "name": "nojsMeta",
+                          "fill": "#0EA5E9AA",
+                          "content": "4 lines · 0 imports",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rWp91",
+                      "name": "nojsCode",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "padding": [
+                        16,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fDG6R",
+                          "name": "nojsCodeTxt",
+                          "fill": "#0EA5E9",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "<div state=\"{ query: '' }\"\n     get=\"/api/search?q={{ query }}\"\n     as=\"results\">\n  <input model=\"query\" />\n  <li each=\"r in results\" bind=\"r.name\"></li>\n</div>",
+                          "lineHeight": 1.5,
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WItIp",
+                      "name": "nojsTags",
+                      "width": "fill_container",
+                      "fill": "#0EA5E906",
+                      "stroke": {
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "#0EA5E922"
+                      },
+                      "gap": 16,
+                      "padding": [
+                        10,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rVeii",
+                          "name": "tag1",
+                          "fill": "#0EA5E9",
+                          "content": "✓ Reactive",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "S1MBh",
+                          "name": "tag2",
+                          "fill": "#0EA5E9",
+                          "content": "✓ Auto-fetch",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "EqRyl",
+                          "name": "tag3",
+                          "fill": "#0EA5E9",
+                          "content": "✓ No build",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "iMzXp",
+          "name": "Features Section",
+          "width": "fill_container",
+          "height": "fit_content(700)",
+          "fill": "#F8FAFC",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#E2E8F0"
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "Ym0I0",
+              "x": 80,
+              "y": 194,
+              "name": "featAnnot",
+              "fill": "#94A3B8",
+              "content": "each=\"feature in features\"  get=\"/api/features\" as=\"features\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "line",
+              "id": "wANx8",
+              "x": 60,
+              "y": 0,
+              "name": "featVLine",
+              "width": 0,
+              "height": 700,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E8E8E8"
+              }
+            },
+            {
+              "type": "line",
+              "id": "SEtlR",
+              "x": 0,
+              "y": 50,
+              "name": "featHLine",
+              "width": 1440,
+              "height": 0,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E8E8E8"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "6zxAd",
+              "x": 80,
+              "y": 56,
+              "name": "featContent",
+              "width": 1280,
+              "layout": "vertical",
+              "gap": 40,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gg440",
+                  "name": "featHeader",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KSsem",
+                      "name": "featTitle",
+                      "fill": "#0F172A",
+                      "content": "Everything your app needs.\nNothing it doesn't.",
+                      "lineHeight": 1.1,
+                      "fontFamily": "Newsreader",
+                      "fontSize": 40,
+                      "fontWeight": "500",
+                      "letterSpacing": -0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "dJlVD",
+                      "name": "featSubtitle",
+                      "fill": "#64748B",
+                      "content": "40+ directives, built-in routing, i18n, forms, fetch, animations — all via HTML attributes.",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "CxfBZ",
+                  "name": "featGrid",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Gyl5m",
+                      "name": "row1",
+                      "width": "fill_container",
+                      "gap": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Q3wWs",
+                          "name": "card1",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 8,
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E2E8F0"
+                          },
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 24,
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "6u1uZ",
+                              "name": "card1icon",
+                              "width": 20,
+                              "height": 20,
+                              "iconFontName": "zap",
+                              "iconFontFamily": "lucide",
+                              "fill": "#0EA5E9"
+                            },
+                            {
+                              "type": "text",
+                              "id": "evlNF",
+                              "name": "card1title",
+                              "fill": "#0F172A",
+                              "content": "Reactive State",
+                              "fontFamily": "Newsreader",
+                              "fontSize": 18,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mZ2Sx",
+                              "name": "card1desc",
+                              "fill": "#64748B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Declare state with a single attribute. Two-way binding, computed values and watchers — all without writing JavaScript.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SFcsS",
+                          "name": "card2",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 8,
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E2E8F0"
+                          },
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 24,
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "bKFFt",
+                              "name": "card2icon",
+                              "width": 20,
+                              "height": 20,
+                              "iconFontName": "compass",
+                              "iconFontFamily": "lucide",
+                              "fill": "#0EA5E9"
+                            },
+                            {
+                              "type": "text",
+                              "id": "EUTOg",
+                              "name": "card2title",
+                              "fill": "#0F172A",
+                              "content": "SPA Router",
+                              "fontFamily": "Newsreader",
+                              "fontSize": 18,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "RsVo2",
+                              "name": "card2desc",
+                              "fill": "#64748B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Client-side routing with route params, wildcards, guards, nested routes and lazy-loaded templates. No config files.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XzgOn",
+                          "name": "card3",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 8,
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E2E8F0"
+                          },
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 24,
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "whLli",
+                              "name": "card3icon",
+                              "width": 20,
+                              "height": 20,
+                              "iconFontName": "globe",
+                              "iconFontFamily": "lucide",
+                              "fill": "#0EA5E9"
+                            },
+                            {
+                              "type": "text",
+                              "id": "3KPgc",
+                              "name": "card3title",
+                              "fill": "#0F172A",
+                              "content": "Built-in i18n",
+                              "fontFamily": "Newsreader",
+                              "fontSize": 18,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "QAOeC",
+                              "name": "card3desc",
+                              "fill": "#64748B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Language switching, namespace loading, pluralization and RTL support. All driven by a single t attribute.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XRMbp",
+                      "name": "row2",
+                      "width": "fill_container",
+                      "gap": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "UF1VD",
+                          "name": "card4",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 8,
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E2E8F0"
+                          },
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 24,
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "PmsCF",
+                              "name": "card4icon",
+                              "width": 20,
+                              "height": 20,
+                              "iconFontName": "download",
+                              "iconFontFamily": "lucide",
+                              "fill": "#0EA5E9"
+                            },
+                            {
+                              "type": "text",
+                              "id": "AavG0",
+                              "name": "card4title",
+                              "fill": "#0F172A",
+                              "content": "Declarative Fetch",
+                              "fontFamily": "Newsreader",
+                              "fontSize": 18,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "0wILm",
+                              "name": "card4desc",
+                              "fill": "#64748B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "GET, POST, PUT, DELETE — just add the attribute. Auto-binding to state, loading indicators and error handling included.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ORtf5",
+                          "name": "card5",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 8,
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E2E8F0"
+                          },
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 24,
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "HYqud",
+                              "name": "card5icon",
+                              "width": 20,
+                              "height": 20,
+                              "iconFontName": "square-check",
+                              "iconFontFamily": "lucide",
+                              "fill": "#0EA5E9"
+                            },
+                            {
+                              "type": "text",
+                              "id": "GPkSM",
+                              "name": "card5title",
+                              "fill": "#0F172A",
+                              "content": "Form Validation",
+                              "fontFamily": "Newsreader",
+                              "fontSize": 18,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "V96Wi",
+                              "name": "card5desc",
+                              "fill": "#64748B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "15+ built-in validators with custom error messages, conditional validation and real-time feedback. Pure HTML.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "nIyg8",
+                          "name": "card6",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 8,
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E2E8F0"
+                          },
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 24,
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "UjfBj",
+                              "name": "card6icon",
+                              "width": 20,
+                              "height": 20,
+                              "iconFontName": "sparkles",
+                              "iconFontFamily": "lucide",
+                              "fill": "#0EA5E9"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Ekagg",
+                              "name": "card6title",
+                              "fill": "#0F172A",
+                              "content": "Animations",
+                              "fontFamily": "Newsreader",
+                              "fontSize": 18,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "C8CgV",
+                              "name": "card6desc",
+                              "fill": "#64748B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "CSS class transitions with stagger support. Enter, exit and movement animations controlled entirely by attributes.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "GkaFI",
+              "x": 80,
+              "y": 43,
+              "name": "featAnnotTitle",
+              "fill": "#94A3B8",
+              "content": "bind:text=\"features.title\"  t=\"features.heading\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "Bk3ko",
+              "x": 216,
+              "y": 269,
+              "name": "card1annot",
+              "fill": "#94A3B8",
+              "content": "state=\"{ count: 0 }\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "Tt4hi",
+              "x": 641,
+              "y": 269,
+              "name": "card2annot",
+              "fill": "#94A3B8",
+              "content": "route=\"/users/:id\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "EYxay",
+              "x": 1087,
+              "y": 269,
+              "name": "card3annot",
+              "fill": "#94A3B8",
+              "content": "t=\"welcome.title\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "zjlcT",
+              "x": 245,
+              "y": 462,
+              "name": "card4annot",
+              "fill": "#94A3B8",
+              "content": "get=\"/api/users\" as=\"users\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "BMvyh",
+              "x": 671,
+              "y": 462,
+              "name": "card5annot",
+              "fill": "#94A3B8",
+              "content": "validate=\"required|email\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "YPD63",
+              "x": 1087,
+              "y": 462,
+              "name": "card6annot",
+              "fill": "#94A3B8",
+              "content": "transition=\"fade\" duration=\"300\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KhHdD",
+          "name": "Bundle Size Section",
+          "width": "fill_container",
+          "height": 380,
+          "fill": "#FFFFFF",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#E2E8F0"
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "ygEsv",
+              "x": 80,
+              "y": 67,
+              "name": "bundleAnnot",
+              "fill": "#94A3B8",
+              "content": "state=\"{ ours: 24, theirs: 2300 }\"  animate",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "line",
+              "id": "SRym6",
+              "x": 60,
+              "y": 0,
+              "name": "bundleVLine",
+              "width": 0,
+              "height": 380,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              }
+            },
+            {
+              "type": "line",
+              "id": "p122H",
+              "x": 0,
+              "y": 50,
+              "name": "bundleHLine",
+              "width": 1440,
+              "height": 0,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              }
+            },
+            {
+              "type": "line",
+              "id": "MT8de",
+              "x": 720,
+              "y": 80,
+              "name": "bundleCenterLine",
+              "width": 0,
+              "height": 220,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "0HN7q",
+              "x": 80,
+              "y": 80,
+              "name": "bundleContent",
+              "width": 1280,
+              "height": 220,
+              "gap": 120,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fI3Nc",
+                  "name": "bundleLeft",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "3DH8T",
+                      "name": "bundleLeftNum",
+                      "fill": "#0F172A",
+                      "content": "2.3 MB",
+                      "fontFamily": "Newsreader",
+                      "fontSize": 72,
+                      "fontWeight": "200",
+                      "letterSpacing": -2
+                    },
+                    {
+                      "type": "text",
+                      "id": "Qlbn5",
+                      "name": "bundleLeftLabel",
+                      "fill": "#64748B",
+                      "content": "Your bundle.",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hKkcq",
+                  "name": "bundleRight",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "1UonE",
+                      "name": "bundleRightNum",
+                      "fill": "#0EA5E9",
+                      "content": "24 KB",
+                      "fontFamily": "Newsreader",
+                      "fontSize": 72,
+                      "fontWeight": "700",
+                      "letterSpacing": -2
+                    },
+                    {
+                      "type": "text",
+                      "id": "X7o3g",
+                      "name": "bundleRightLabel",
+                      "fill": "#94A3B8",
+                      "content": "Ours.",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "Nzufk",
+              "x": 540,
+              "y": 330,
+              "name": "bundleTagline",
+              "fill": "#64748B",
+              "content": "No build. No bundler. No excuses.",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "ERxh7",
+              "x": 464,
+              "y": 121,
+              "name": "bundleLeftAnnot",
+              "fill": "#94A3B8",
+              "content": "bind:text=\"theirs + ' KB'\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "GcOux",
+              "x": 790,
+              "y": 121,
+              "name": "bundleRightAnnot",
+              "fill": "#0EA5E988",
+              "content": "bind:text=\"ours + ' KB'\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hIDnZ",
+          "name": "Principles Section",
+          "width": "fill_container",
+          "height": "fit_content(700)",
+          "fill": "#0F172A",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#1E293B"
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "zckAI",
+              "x": 80,
+              "y": 43,
+              "name": "princAnnot",
+              "fill": "#475569",
+              "content": "each=\"p in principles\"  t=\"manifesto.title\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "line",
+              "id": "ijuZ8",
+              "x": 60,
+              "y": 0,
+              "name": "princVLine",
+              "width": 0,
+              "height": 700,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#1E293B"
+              }
+            },
+            {
+              "type": "line",
+              "id": "rdBti",
+              "x": 0,
+              "y": 50,
+              "name": "princHLine",
+              "width": 1440,
+              "height": 0,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#1E293B"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "0F0Gk",
+              "x": 80,
+              "y": 56,
+              "name": "princContent",
+              "width": 1280,
+              "layout": "vertical",
+              "gap": 48,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "xfS16",
+                  "name": "princHeader",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g6xjq",
+                      "name": "princSectionLabel",
+                      "fill": "#64748B",
+                      "content": "OUR PRINCIPLES",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "600",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "text",
+                      "id": "v3cGV",
+                      "name": "princTitle",
+                      "fill": "#FFFFFF",
+                      "content": "The web was already reactive.\nWe just gave HTML the attributes to prove it.",
+                      "lineHeight": 1.1,
+                      "fontFamily": "Newsreader",
+                      "fontSize": 40,
+                      "fontWeight": "500",
+                      "letterSpacing": -0.5
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "eC0m0",
+                  "name": "princGrid",
+                  "width": "fill_container",
+                  "gap": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "jHEhP",
+                      "name": "p1",
+                      "width": "fill_container",
+                      "stroke": {
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "#1E293B"
+                      },
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": [
+                        24,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "84Q1Z",
+                          "name": "p1num",
+                          "fill": "#0EA5E9",
+                          "content": "01",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "OfCWz",
+                          "name": "p1title",
+                          "fill": "#FFFFFF",
+                          "content": "The browser is\nthe platform",
+                          "lineHeight": 1.15,
+                          "fontFamily": "Newsreader",
+                          "fontSize": 22,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "z5OaL",
+                          "name": "p1desc",
+                          "fill": "#94A3B8",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "We don't abstract the browser. We extend HTML to use it fully.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FzvJ0",
+                      "name": "p2",
+                      "width": "fill_container",
+                      "stroke": {
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "#1E293B"
+                      },
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": [
+                        24,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KhtmE",
+                          "name": "p2num",
+                          "fill": "#0EA5E9",
+                          "content": "02",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "4eo69",
+                          "name": "p2title",
+                          "fill": "#FFFFFF",
+                          "content": "Complexity is\nthe enemy",
+                          "lineHeight": 1.15,
+                          "fontFamily": "Newsreader",
+                          "fontSize": 22,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GF0iP",
+                          "name": "p2desc",
+                          "fill": "#94A3B8",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "If a feature needs a build step to exist, it doesn't belong in No.JS.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zGthL",
+                      "name": "p3",
+                      "width": "fill_container",
+                      "stroke": {
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "#1E293B"
+                      },
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": [
+                        24,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ZQMef",
+                          "name": "p3num",
+                          "fill": "#0EA5E9",
+                          "content": "03",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "pfj1W",
+                          "name": "p3title",
+                          "fill": "#FFFFFF",
+                          "content": "HTML-first,\nforever",
+                          "lineHeight": 1.15,
+                          "fontFamily": "Newsreader",
+                          "fontSize": 22,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ESZhp",
+                          "name": "p3desc",
+                          "fill": "#94A3B8",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Every directive is an HTML attribute. Your templates are valid HTML that any browser can read.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rjVGe",
+                      "name": "p4",
+                      "width": "fill_container",
+                      "stroke": {
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "#1E293B"
+                      },
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": [
+                        24,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vZseK",
+                          "name": "p4num",
+                          "fill": "#0EA5E9",
+                          "content": "04",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mMBkQ",
+                          "name": "p4title",
+                          "fill": "#FFFFFF",
+                          "content": "Ship on\nday one",
+                          "lineHeight": 1.15,
+                          "fontFamily": "Newsreader",
+                          "fontSize": 22,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "sgrsE",
+                          "name": "p4desc",
+                          "fill": "#94A3B8",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "The best framework is the one you can use now, without asking permission from a terminal.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hK390",
+          "name": "Footer",
+          "width": "fill_container",
+          "height": 360,
+          "fill": "#0F172A",
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "BTaId",
+              "x": 80,
+              "y": 43,
+              "name": "footerAnnot",
+              "fill": "#475569",
+              "content": "route=\"/\"  t=\"footer.tagline\"  bind:year=\"new Date().getFullYear()\"",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 9,
+              "fontWeight": "500"
+            },
+            {
+              "type": "line",
+              "id": "mDjaU",
+              "x": 60,
+              "y": 0,
+              "name": "footerVLine",
+              "width": 0,
+              "height": 360,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E8E8E8"
+              }
+            },
+            {
+              "type": "line",
+              "id": "c09x8",
+              "x": 0,
+              "y": 50,
+              "name": "footerHLine",
+              "width": 1440,
+              "height": 0,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E8E8E8"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "D0hWX",
+              "x": 80,
+              "y": 56,
+              "name": "footerContent",
+              "width": 1280,
+              "layout": "vertical",
+              "gap": 48,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CJu1x",
+                  "name": "quoteBlock",
+                  "width": 600,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "4JBTb",
+                      "name": "quoteMark",
+                      "fill": "#334155",
+                      "content": "\"",
+                      "lineHeight": 0.5,
+                      "fontFamily": "Newsreader",
+                      "fontSize": 64,
+                      "fontWeight": "300"
+                    },
+                    {
+                      "type": "text",
+                      "id": "1RK0o",
+                      "name": "quoteText",
+                      "fill": "#94A3B8",
+                      "textGrowth": "fixed-width",
+                      "width": 560,
+                      "content": "The best JavaScript is the JavaScript you don't write.",
+                      "lineHeight": 1.3,
+                      "fontFamily": "Newsreader",
+                      "fontSize": 24,
+                      "fontWeight": "normal",
+                      "fontStyle": "italic"
+                    }
+                  ]
+                },
+                {
+                  "type": "line",
+                  "id": "kKeCM",
+                  "name": "footerDivider",
+                  "width": 1280,
+                  "height": 0,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#1E293B"
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "H5gmy",
+                  "name": "footerBottom",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DjvfO",
+                      "name": "footerBrand",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xGPDA",
+                          "name": "footerLogo",
+                          "fill": "#FFFFFF",
+                          "content": "No.JS",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "SXSIz",
+                          "name": "footerTagline",
+                          "fill": "#94A3B8",
+                          "content": "The HTML-first reactive framework",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LKsRK",
+                      "name": "footerLinks",
+                      "gap": 28,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SRUwD",
+                          "name": "fl1",
+                          "fill": "#64748B",
+                          "content": "Resources",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "3FsPp",
+                          "name": "fl2",
+                          "fill": "#64748B",
+                          "content": "Examples",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BjQp2",
+                          "name": "fl3",
+                          "fill": "#64748B",
+                          "content": "Docs",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "SEsDj",
+                          "name": "fl4",
+                          "fill": "#64748B",
+                          "content": "GitHub",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "CPi21",
+                          "name": "fl5",
+                          "fill": "#64748B",
+                          "content": "Discord",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "pEq5j",
+                  "name": "copyright",
+                  "fill": "#475569",
+                  "content": "2026 No.JS — MIT License · v1.9.1",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
