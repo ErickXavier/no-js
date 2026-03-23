@@ -66,7 +66,7 @@
                       "id": "cVjYi",
                       "name": "versionText",
                       "fill": "#94A3B8",
-                      "content": "v1.9.1",
+                      "content": "v1.10.0",
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 9,
                       "fontWeight": "500"
@@ -1938,7 +1938,7 @@
                   "id": "pEq5j",
                   "name": "copyright",
                   "fill": "#475569",
-                  "content": "2026 No.JS — MIT License · v1.9.1",
+                  "content": "2026 No.JS — MIT License · v1.10.0",
                   "fontFamily": "JetBrains Mono",
                   "fontSize": 10,
                   "fontWeight": "normal"

@@ -249,7 +249,7 @@ const NoJS = {
   resolve,
 
   // Version
-  version: "1.9.1",
+  version: "1.10.0",
 };
 
 export default NoJS;

@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0](https://github.com/ErickXavier/no-js/compare/v1.9.1...v1.10.0) — 2026-03-23
+
+### Added
+
+- Key-based reconciliation in `each` and `foreach` directives for efficient list diffing ([#19](https://github.com/ErickXavier/no-js/pull/19))
+- `persist-fields` attribute to limit which state properties get persisted to storage ([#10](https://github.com/ErickXavier/no-js/pull/10))
+- `llms.txt`, `llms-full.txt`, `sitemap.xml`, and inline LLM metadata for AI discoverability
+- OG and Twitter Card metadata with thumbnail image
+
+### Fixed
+
+- Replace `globalThis` deny-list with explicit browser globals allow-list in expression evaluator ([#18](https://github.com/ErickXavier/no-js/pull/18))
+- Replace regex HTML sanitizer with `DOMParser` structural sanitization in `bind-html` ([#17](https://github.com/ErickXavier/no-js/pull/17))
+- Warn in debug mode when sensitive headers (Authorization, Cookie) are set inline ([#16](https://github.com/ErickXavier/no-js/pull/16))
+- Clear outlet and warn when route guard fails without a redirect ([#14](https://github.com/ErickXavier/no-js/pull/14))
+- Warn loudly when `sanitize` is explicitly disabled on `bind-html` ([#15](https://github.com/ErickXavier/no-js/pull/15))
+- Reduce MutationObserver cost with `subtree:false`; register ResizeObserver via `_onDispose` ([#12](https://github.com/ErickXavier/no-js/pull/12))
+- Stop polling and observers when element disconnects from DOM ([#11](https://github.com/ErickXavier/no-js/pull/11))
+- Restrict `window.__NOJS_DEVTOOLS__` to localhost only ([#9](https://github.com/ErickXavier/no-js/pull/9))
+- Sanitize `javascript:` URLs and encode interpolated `href` values ([#8](https://github.com/ErickXavier/no-js/pull/8))
+
+### Changed
+
+- Cap expression caches and fix `_collectKeys` cache mutation leak ([#13](https://github.com/ErickXavier/no-js/pull/13))
+- Fix documentation accuracy across `llms-full.txt` and `llms.txt`
+- Add NoJS LSP link to site navigation
+
 ## [1.9.1](https://github.com/ErickXavier/no-js/compare/v1.9.0...v1.9.1) — 2026-03-18
 
 ### Fixed
