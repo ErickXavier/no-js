@@ -93,6 +93,9 @@ const NoJS = {
       opts.exprCacheSize = (Number.isFinite(n) && n > 0) ? n : 500;
     }
     Object.assign(_config, opts);
+    if (opts.sanitize === false) {
+      _warn('sanitize:false is deprecated — use dangerouslyDisableSanitize:true to make the risk explicit.');
+    }
     if (opts.headers)
       _config.headers = { ...prevHeaders, ...opts.headers };
     if (opts.csrf) _config.csrf = opts.csrf;
@@ -215,6 +218,12 @@ const NoJS = {
   // Event bus
   on(event, fn) {
     if (!_eventBus[event]) _eventBus[event] = [];
+    if (_eventBus[event].length >= _config.maxEventListeners) {
+      _warn(
+        'MaxListenersExceeded: event "' + event + '" has ' + _eventBus[event].length +
+        ' listeners (max ' + _config.maxEventListeners + '). Possible memory leak.'
+      );
+    }
     _eventBus[event].push(fn);
     return () => {
       _eventBus[event] = _eventBus[event].filter((f) => f !== fn);

@@ -47,7 +47,10 @@ const _BLOCKED_TAGS = new Set([
 ]);
 
 export function _sanitizeHtml(html) {
-  if (!_config.sanitize) return html;
+  if (_config.dangerouslyDisableSanitize || !_config.sanitize) {
+    _warn('HTML sanitization is DISABLED. This exposes your app to XSS attacks. Only disable for trusted content.');
+    return html;
+  }
   if (typeof _config.sanitizeHtml === 'function') return _config.sanitizeHtml(html);
 
   const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -98,6 +101,18 @@ function _resolveTemplateSrc(src, tpl) {
   return resolveUrl(src, tpl);
 }
 
+// Warn when a template URL uses plain HTTP from an HTTPS page (mixed content / MITM risk).
+// The optional pageProtocol parameter enables testing without mutating jsdom's
+// non-configurable window.location.protocol property.
+export function _warnIfInsecureTemplateUrl(resolvedUrl, src, pageProtocol) {
+  const proto = pageProtocol !== undefined
+    ? pageProtocol
+    : (typeof window !== 'undefined' && window.location ? window.location.protocol : '');
+  if (resolvedUrl.startsWith('http://') && proto === 'https:') {
+    _warn('Template "' + src + '" is loaded over insecure HTTP from an HTTPS page. Use HTTPS to prevent tampering.');
+  }
+}
+
 export async function _loadRemoteTemplates(root) {
   const scope = root || document;
   const templates = scope.querySelectorAll("template[src]");
@@ -108,6 +123,7 @@ export async function _loadRemoteTemplates(root) {
     tpl.__srcLoaded = true;
     const src = tpl.getAttribute("src");
     const resolvedUrl = _resolveTemplateSrc(src, tpl);
+    _warnIfInsecureTemplateUrl(resolvedUrl, src);
     // Track the folder of this template so children can use "./" paths
     const baseFolder = resolvedUrl.substring(0, resolvedUrl.lastIndexOf("/") + 1);
     try {
@@ -163,6 +179,7 @@ export async function _loadTemplateElement(tpl) {
   _log("[LTE] START fetch:", src, "| route:", tpl.hasAttribute("route"), "| inDOM:", document.contains(tpl), "| loading:", tpl.getAttribute("loading"));
   tpl.__srcLoaded = true;
   const resolvedUrl = _resolveTemplateSrc(src, tpl);
+  _warnIfInsecureTemplateUrl(resolvedUrl, src);
   const baseFolder = resolvedUrl.substring(0, resolvedUrl.lastIndexOf("/") + 1);
 
   // Synchronously insert loading placeholder before the fetch begins

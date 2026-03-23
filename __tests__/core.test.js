@@ -47,6 +47,7 @@ describe('Globals', () => {
       expect(_config.csrf).toBeNull();
       expect(_config.debug).toBe(false);
       expect(_config.sanitize).toBe(true);
+      expect(_config.dangerouslyDisableSanitize).toBe(false);
     });
 
     test('has default cache config', () => {

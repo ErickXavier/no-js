@@ -238,6 +238,80 @@ describe('NoJS.on()', () => {
   });
 });
 
+describe('Event bus listener limits', () => {
+  const eventName = '__test-listener-limit__';
+
+  afterEach(() => {
+    delete _eventBus[eventName];
+    _config.maxEventListeners = 100;
+  });
+
+  test('adding listeners up to the limit works without warnings', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    _config.maxEventListeners = 5;
+    for (let i = 0; i < 5; i++) {
+      NoJS.on(eventName, () => {});
+    }
+    expect(spy).not.toHaveBeenCalled();
+    expect(_eventBus[eventName].length).toBe(5);
+    spy.mockRestore();
+  });
+
+  test('adding listener beyond maxEventListeners logs a warning', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    _config.maxEventListeners = 3;
+    for (let i = 0; i < 3; i++) {
+      NoJS.on(eventName, () => {});
+    }
+    expect(spy).not.toHaveBeenCalled();
+
+    // 4th listener exceeds the limit
+    NoJS.on(eventName, () => {});
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(
+      '[No.JS]',
+      'MaxListenersExceeded: event "' + eventName + '" has 3 listeners (max 3). Possible memory leak.'
+    );
+
+    // 5th listener also triggers a warning
+    NoJS.on(eventName, () => {});
+    expect(spy).toHaveBeenCalledTimes(2);
+    spy.mockRestore();
+  });
+
+  test('unsubscribing reduces the count', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    _config.maxEventListeners = 2;
+
+    const unsub1 = NoJS.on(eventName, () => {});
+    NoJS.on(eventName, () => {});
+    expect(_eventBus[eventName].length).toBe(2);
+    expect(spy).not.toHaveBeenCalled();
+
+    // Unsubscribe one listener
+    unsub1();
+    expect(_eventBus[eventName].length).toBe(1);
+
+    // Adding another should not warn (back under limit)
+    NoJS.on(eventName, () => {});
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  test('custom maxEventListeners config is respected', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    _config.maxEventListeners = 1;
+
+    NoJS.on(eventName, () => {});
+    expect(spy).not.toHaveBeenCalled();
+
+    NoJS.on(eventName, () => {});
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy.mock.calls[0][1]).toContain('max 1');
+    spy.mockRestore();
+  });
+});
+
 describe('NoJS.interceptor()', () => {
   test('adds request interceptor', () => {
     const fn = (cfg) => cfg;
