@@ -2,7 +2,7 @@
 
 > No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. ~24 KB gzipped, zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
 
-No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `each`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP (1) → routing (5) → structural (10) → rendering (20) → side effects (30).
+No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `each`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP/error-boundary (1) → computed/watch (2) → ref (5) → structural (10) → rendering/events (20) → validation (30).
 
 ## Getting Started
 
@@ -108,12 +108,14 @@ Directives run in a defined order:
 | Priority | Directives | Description |
 |----------|-----------|-------------|
 | 0 | `state`, `store` | Initialize local/global state |
-| 1 | `get`, `post`, `put`, `patch`, `delete` | Fetch data |
-| 5 | `route` | SPA routing |
-| 10 | `if`, `switch`, `each`, `foreach` | Structural (add/remove DOM) |
-| 20 | `bind`, `class-*`, `style-*`, `show`, `hide` | Rendering (update existing DOM) |
-| 20 | `on:*` | Event binding |
-| 30 | `validate`, `animate` | Side effects |
+| 1 | `get`, `post`, `put`, `patch`, `delete`, `error-boundary`, `i18n-ns` | Fetch data and error/i18n setup |
+| 2 | `computed`, `watch` | Derive values and observe changes |
+| 5 | `ref` | Element references |
+| 10 | `if`, `else-if`, `else`, `switch`, `each`, `foreach`, `use`, `drag-list` | Structural (add/remove DOM) |
+| 15 | `drag`, `drop` | Drag and drop setup |
+| 16 | `drag-multiple` | Multi-select drag |
+| 20 | `bind`, `bind-*`, `bind-html`, `model`, `class-*`, `style-*`, `on:*`, `show`, `hide`, `t`, `call`, `trigger` | Rendering, events, i18n, actions |
+| 30 | `validate` | Form validation side effects |
 
 ### Expression Syntax
 
@@ -214,6 +216,8 @@ Absolute URLs skip base resolution:
 | `debounce` | `number` | Debounce in ms (useful with reactive URLs) |
 | `headers` | `string` | JSON string of additional headers |
 | `params` | `string` | Expression that resolves to query params object |
+| `retry` | `number` | Override global retry count for this request |
+| `retry-delay` | `number` | Override global retry delay in ms (default: 1000) |
 
 ### Full Example
 
@@ -887,6 +891,14 @@ Persist state across page reloads:
      persist-key="cart">
   ...
 </div>
+
+<!-- Persist only specific fields -->
+<div state="{ theme: 'dark', sidebar: true, tempData: null }"
+     persist="localStorage"
+     persist-key="app-settings"
+     persist-fields="theme, sidebar">
+  <!-- Only theme and sidebar are persisted; tempData is not -->
+</div>
 ```
 
 ## `NoJS.notify()` — Flush Store Updates from JavaScript
@@ -975,9 +987,9 @@ Bind any DOM event directly in HTML:
 <!-- .throttle — throttle the handler -->
 <div on:scroll.throttle.100="handleScroll()">
 
-<!-- Key modifiers -->
+<!-- Key modifiers (predefined: enter, escape, tab, space, delete, backspace, up, down, left, right, ctrl, alt, shift, meta) -->
 <input on:keydown.enter="submit()"
-       on:keydown.ctrl.s="save()"
+       on:keydown.ctrl.enter="save()"
        on:keydown.shift.delete="deleteAll()" />
 
 <!-- Combine modifiers -->
@@ -1505,7 +1517,7 @@ No.JS adds/removes classes during the transition:
 
 No.JS ships with these CSS animations:
 
-`fadeIn`, `fadeOut`, `slideInLeft`, `slideInRight`, `slideInUp`, `slideInDown`, `slideOutLeft`, `slideOutRight`, `slideOutUp`, `slideOutDown`, `zoomIn`, `zoomOut`, `bounceIn`, `flipIn`
+`fadeIn`, `fadeOut`, `fadeInUp`, `fadeInDown`, `fadeOutUp`, `fadeOutDown`, `slideInLeft`, `slideInRight`, `slideOutLeft`, `slideOutRight`, `zoomIn`, `zoomOut`, `bounceIn`, `bounceOut`
 
 # Filters & Pipes
 
@@ -1520,9 +1532,11 @@ Filters transform values in `bind` expressions using the `|` pipe syntax.
 <span bind="name | lowercase"></span>           <!-- john -->
 <span bind="name | capitalize"></span>          <!-- John doe → John Doe -->
 <span bind="text | truncate:100"></span>        <!-- First 100 chars + ... -->
+<span bind="text | trim"></span>                <!-- Trim whitespace -->
 <span bind="text | stripHtml"></span>           <!-- Remove HTML tags -->
 <span bind="slug | slugify"></span>             <!-- hello-world -->
 <span bind="text | nl2br"></span>               <!-- Newlines to <br> -->
+<span bind="value | encodeUri"></span>          <!-- URL-encode string -->
 ```
 
 ### Numbers
@@ -1546,12 +1560,14 @@ Filters transform values in `bind` expressions using the `|` pipe syntax.
 <span bind="items | unique"></span>             <!-- Deduplicated -->
 <span bind="items | pluck:'name'"></span>       <!-- Extract property -->
 <span bind="items | sortBy:'date'"></span>      <!-- Sort by property -->
+<span bind="items | where:'active':true"></span> <!-- Filter by property value -->
 ```
 
 ### Date
 
 ```html
 <span bind="date | date:'short'"></span>        <!-- 02/25/26 -->
+<span bind="date | datetime"></span>            <!-- Full date + time -->
 <span bind="date | relative"></span>            <!-- 3 days ago -->
 <span bind="date | fromNow"></span>             <!-- in 2 hours -->
 ```
@@ -1561,6 +1577,8 @@ Filters transform values in `bind` expressions using the `|` pipe syntax.
 ```html
 <span bind="value | default:'N/A'"></span>      <!-- Fallback for null/undefined -->
 <span bind="obj | json"></span>                 <!-- JSON.stringify -->
+<span bind="obj | keys"></span>                 <!-- Object keys as array -->
+<span bind="obj | values"></span>               <!-- Object values as array -->
 <span bind="items | debug"></span>              <!-- console.log + passthrough -->
 ```
 
@@ -1688,6 +1706,7 @@ Full client-side routing with no page reloads.
 ```html
 <button on:click="$router.push('/users/42')">Go to User</button>
 <button on:click="$router.back()">Go Back</button>
+<button on:click="$router.forward()">Go Forward</button>
 <button on:click="$router.replace('/new-path')">Replace</button>
 ```
 
@@ -2301,11 +2320,13 @@ No.JS directives work on custom elements:
     // Send to error tracking service
   });
 
-  NoJS.on('fetch:error', (url, error) => {
-    if (error.status === 401) {
+  NoJS.on('fetch:error', (data) => {
+    if (data.error.status === 401) {
       NoJS.store.auth.user = null;
       NoJS.router.push('/login');
     }
+    // data.url — the request URL
+    // data.error — the error object
   });
 </script>
 ```
@@ -2728,7 +2749,7 @@ No.JS automatically adds:
 
 # Directive Cheatsheet
 
-Complete reference of every No.JS directive.
+Complete reference of every No.JS directive and its companion attributes. **Directives** (bold in tables) are registered handlers that drive behaviour. **Attributes** are configuration read by those directives — they have no effect on their own.
 
 ## Data
 
@@ -2747,6 +2768,8 @@ Complete reference of every No.JS directive.
 | `cached` | `cached` or `cached="local"` | Cache responses (memory/local/session) |
 | `into` | `into="currentUser"` | Write response to a named global store |
 | `debounce` | `debounce="300"` | Debounce reactive URL refetches (ms) |
+| `retry` | `retry="3"` | Override global retry count for this request |
+| `retry-delay` | `retry-delay="2000"` | Override global retry delay in ms |
 
 ## State
 
@@ -2757,6 +2780,7 @@ Complete reference of every No.JS directive.
 | `computed` | `computed="total" expr="a+b"` | Derived reactive value |
 | `watch` | `watch="search"` | React to value changes |
 | `persist` | `persist="localStorage"` | Persist state to storage |
+| `persist-fields` | `persist-fields="theme, lang"` | Persist only specific state fields |
 | `model` | `model="name"` | Two-way binding for inputs |
 
 ## Rendering
@@ -2799,7 +2823,9 @@ Complete reference of every No.JS directive.
 | `on:submit` | `on:submit.prevent="..."` | Submit handler |
 | `on:input` | `on:input="..."` | Input handler |
 | `on:keydown.*` | `on:keydown.enter="..."` | Key handler |
-| `on:mounted` | `on:mounted="init()"` | Lifecycle: mounted |
+| `on:init` | `on:init="setup()"` | Lifecycle: immediate (sync) |
+| `on:mounted` | `on:mounted="init()"` | Lifecycle: mounted (next frame) |
+| `on:updated` | `on:updated="refresh()"` | Lifecycle: DOM changed |
 | `on:unmounted` | `on:unmounted="cleanup()"` | Lifecycle: unmounted |
 
 ## Styling

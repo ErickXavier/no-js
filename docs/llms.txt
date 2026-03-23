@@ -2,7 +2,7 @@
 
 > No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. ~24 KB gzipped, zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
 
-No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `each`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP (1) → routing (5) → structural (10) → rendering (20) → side effects (30).
+No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `each`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP/error-boundary (1) → computed/watch (2) → ref (5) → structural (10) → rendering/events (20) → validation (30).
 
 ## Getting Started
 
@@ -26,7 +26,7 @@ No.JS replaces JavaScript framework boilerplate with declarative HTML attributes
 ## Presentation
 
 - [Dynamic Styling](https://no-js.dev/#/styling): `class-active="isActive"`, `class-map="{ dark: isDark }"`, `style-color="themeColor"`, `style-map="{ opacity: fade }"`
-- [Animations](https://no-js.dev/#/animations): `animate` attribute with built-in keyframes (fadeIn, slideUp, bounce, etc.), `transition` for enter/leave, stagger for lists
+- [Animations](https://no-js.dev/#/animations): `animate` attribute with built-in keyframes (fadeIn, fadeInUp, slideInLeft, bounceIn, zoomIn, etc.), `transition` for enter/leave, stagger for lists
 - [Filters & Pipes](https://no-js.dev/#/filters): 32 built-in filters via pipe syntax (`value | uppercase | truncate:20`); text, number, array, date, and utility filters; custom filters via `NoJS.filter()`
 
 ## Advanced
