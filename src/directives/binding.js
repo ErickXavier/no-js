@@ -2,7 +2,7 @@
 //  DIRECTIVES: bind, bind-html, bind-*, model
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _watchExpr, _onDispose } from "../globals.js";
+import { _watchExpr, _onDispose, _config, _warn } from "../globals.js";
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext, _sanitizeHtml } from "../dom.js";
 import { registerDirective } from "../registry.js";
@@ -24,6 +24,13 @@ registerDirective("bind-html", {
   priority: 20,
   init(el, name, expr) {
     const ctx = findContext(el);
+    if ((_config.debug || _config.devtools) && !/^['"`]/.test(expr.trim())) {
+      _warn(
+        `[Security] bind-html used with dynamic expression: "${expr}". ` +
+          `Ensure the value is trusted or sanitized — use bind for plain text.`,
+        el
+      );
+    }
     function update() {
       const val = evaluate(expr, ctx);
       if (val != null) el.innerHTML = _sanitizeHtml(String(val));
