@@ -25,7 +25,7 @@ afterEach(() => {
 
 describe('page-title directive', () => {
   test('sets document.title from a string literal expression', () => {
-    document.body.innerHTML = `<meta page-title="'About Us | Site'">`;
+    document.body.innerHTML = `<div hidden page-title="'About Us | Site'"></div>`;
     processTree(document.body);
     expect(document.title).toBe('About Us | Site');
   });
@@ -33,7 +33,7 @@ describe('page-title directive', () => {
   test('evaluates expression against local state context', () => {
     document.body.innerHTML = `
       <div state='{"name":"My Product"}'>
-        <meta page-title="name + ' | Store'">
+        <div hidden page-title="name + ' | Store'"></div>
       </div>
     `;
     processTree(document.body);
@@ -43,7 +43,7 @@ describe('page-title directive', () => {
   test('updates document.title reactively when state changes', async () => {
     document.body.innerHTML = `
       <div state='{"name":"First"}'>
-        <meta page-title="name + ' | Site'">
+        <div hidden page-title="name + ' | Site'"></div>
       </div>
     `;
     processTree(document.body);
@@ -56,7 +56,7 @@ describe('page-title directive', () => {
   });
 
   test('does not throw when expression evaluates to null', () => {
-    document.body.innerHTML = `<meta page-title="missingVar">`;
+    document.body.innerHTML = `<div hidden page-title="missingVar"></div>`;
     expect(() => processTree(document.body)).not.toThrow();
   });
 });
@@ -65,7 +65,7 @@ describe('page-title directive', () => {
 
 describe('page-description directive', () => {
   test('creates <meta name="description"> if not present', () => {
-    document.body.innerHTML = `<meta page-description="'Great product'">`;
+    document.body.innerHTML = `<div hidden page-description="'Great product'"></div>`;
     processTree(document.body);
     const meta = document.querySelector('meta[name="description"]');
     expect(meta).not.toBeNull();
@@ -78,7 +78,7 @@ describe('page-description directive', () => {
     existing.content = 'Old description';
     document.head.appendChild(existing);
 
-    document.body.innerHTML = `<meta page-description="'New description'">`;
+    document.body.innerHTML = `<div hidden page-description="'New description'"></div>`;
     processTree(document.body);
     const metas = document.querySelectorAll('meta[name="description"]');
     expect(metas.length).toBe(1);
@@ -88,7 +88,7 @@ describe('page-description directive', () => {
   test('updates reactively when state changes', async () => {
     document.body.innerHTML = `
       <div state='{"desc":"First desc"}'>
-        <meta page-description="desc">
+        <div hidden page-description="desc"></div>
       </div>
     `;
     processTree(document.body);
@@ -105,7 +105,7 @@ describe('page-description directive', () => {
 
 describe('page-canonical directive', () => {
   test('creates <link rel="canonical"> if not present', () => {
-    document.body.innerHTML = `<meta page-canonical="'/products/sneaker-x'">`;
+    document.body.innerHTML = `<div hidden page-canonical="'/products/sneaker-x'"></div>`;
     processTree(document.body);
     const link = document.querySelector('link[rel="canonical"]');
     expect(link).not.toBeNull();
@@ -118,7 +118,7 @@ describe('page-canonical directive', () => {
     existing.href = '/old';
     document.head.appendChild(existing);
 
-    document.body.innerHTML = `<meta page-canonical="'/new-path'">`;
+    document.body.innerHTML = `<div hidden page-canonical="'/new-path'"></div>`;
     processTree(document.body);
     const links = document.querySelectorAll('link[rel="canonical"]');
     expect(links.length).toBe(1);
@@ -128,7 +128,7 @@ describe('page-canonical directive', () => {
   test('evaluates expression with state', () => {
     document.body.innerHTML = `
       <div state='{"slug":"sneaker-x"}'>
-        <meta page-canonical="'/products/' + slug">
+        <div hidden page-canonical="'/products/' + slug"></div>
       </div>
     `;
     processTree(document.body);
