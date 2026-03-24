@@ -47,6 +47,63 @@ describe('Animations', () => {
       _animateIn(el, 'fadeIn', null);
       expect(el.classList.contains('fadeIn')).toBe(true);
     });
+
+    test('animName: class removed on next tick when animationend never fires', () => {
+      jest.useFakeTimers();
+      const el = document.createElement('div');
+      const child = document.createElement('span');
+      el.appendChild(child);
+      document.body.appendChild(el);
+
+      _animateIn(el, 'fadeIn', null);
+      expect(child.classList.contains('fadeIn')).toBe(true);
+
+      // No animationend — fallback setTimeout(done, 0) fires on next tick
+      jest.runAllTimers();
+      expect(child.classList.contains('fadeIn')).toBe(false);
+
+      jest.useRealTimers();
+    });
+
+    test('animName: class removed exactly once when animationend fires before fallback', () => {
+      jest.useFakeTimers();
+      const el = document.createElement('div');
+      const child = document.createElement('span');
+      el.appendChild(child);
+      document.body.appendChild(el);
+
+      _animateIn(el, 'fadeIn', null);
+
+      // animationend fires synchronously before the timeout ticks
+      child.dispatchEvent(new Event('animationend'));
+      expect(child.classList.contains('fadeIn')).toBe(false);
+
+      // setTimeout(done, 0) fires — classList.remove is idempotent, no error
+      jest.runAllTimers();
+      expect(child.classList.contains('fadeIn')).toBe(false);
+
+      jest.useRealTimers();
+    });
+
+    test('animName: explicit durationMs sets both animationDuration and fallback timeout', () => {
+      jest.useFakeTimers();
+      const el = document.createElement('div');
+      const child = document.createElement('span');
+      el.appendChild(child);
+      document.body.appendChild(el);
+
+      _animateIn(el, 'fadeIn', null, 400);
+      expect(child.style.animationDuration).toBe('400ms');
+      expect(child.classList.contains('fadeIn')).toBe(true);
+
+      jest.advanceTimersByTime(399);
+      expect(child.classList.contains('fadeIn')).toBe(true);
+
+      jest.advanceTimersByTime(1); // 400 ms reached
+      expect(child.classList.contains('fadeIn')).toBe(false);
+
+      jest.useRealTimers();
+    });
   });
 
   describe('_animateOut', () => {
