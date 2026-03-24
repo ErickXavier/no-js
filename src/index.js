@@ -41,6 +41,7 @@ import "./directives/refs.js";
 import "./directives/validation.js";
 import "./directives/i18n.js";
 import "./directives/dnd.js";
+import "./directives/head.js";
 
 // ═══════════════════════════════════════════════════════════════════════
 //  PUBLIC API
