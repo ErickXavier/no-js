@@ -291,6 +291,8 @@ export function _createRouter() {
 
         // Focus management: move focus to the new content when focusBehavior is "auto".
         // Only applied to the default outlet to avoid fighting with secondary outlets.
+        // Placed here — after the awaits for both the main template and all nested
+        // template[src] loads — so focus fires only after all async content is injected.
         // Uses requestAnimationFrame so the focus fires after the browser has painted.
         if (outletName === "default" && _config.router.focusBehavior === "auto") {
           requestAnimationFrame(() => {
