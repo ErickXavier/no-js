@@ -417,6 +417,11 @@ export function _createRouter() {
       entry.outlets[outlet] = templateEl;
     },
     async init() {
+      // Warn when hash mode is active: hash URLs are not indexed as separate pages by search engines.
+      if (_config.router.useHash) {
+        _warn("Router is running in hash mode (useHash: true). URLs like /#/about are not indexed as separate pages by search engines. Use useHash: false with a server-side SPA fallback (try_files) for SEO-friendly routing. See: https://github.com/ErickXavier/no-js/blob/main/docs/md/routing.md#deployment");
+      }
+
       // Collect route templates
       document.querySelectorAll("template[route]").forEach((tpl) => {
         const path = tpl.getAttribute("route");
