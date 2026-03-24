@@ -82,13 +82,13 @@
       <div class="py-2.5 px-4 border-t border-slate-200 flex gap-2 items-center bg-white">
         <div class="relative flex-1 flex gap-2 items-center">
           <!-- model: two-way binding between input value and newMsg state -->
-          <!-- on:keydown: sends message on Enter — appends to messages array and clears input -->
+          <!-- on:keydown.enter: sends message on Enter — appends to messages array and clears input -->
           <input class="flex-1 py-2.5 px-3.5 border border-slate-200 rounded-2xl text-[13px] font-[inherit] outline-none focus:border-sky-500 transition-colors"
             model="newMsg" placeholder="Type a message..."
-            on:keydown="if (event.key === 'Enter' && newMsg.trim()) { contacts[activeChat].messages = [...contacts[activeChat].messages, { text: newMsg.trim(), sent: true, time: new Date().toLocaleTimeString('en', {hour:'2-digit',minute:'2-digit'}) }]; newMsg = ''; }">
+            on:keydown.enter="contacts[activeChat].messages = newMsg.trim() ? [...contacts[activeChat].messages, { text: newMsg.trim(), sent: true, time: window._nowTime() }] : contacts[activeChat].messages; newMsg = newMsg.trim() ? '' : newMsg">
           <!-- on:click: same send logic as Enter key, triggered by button click -->
           <button class="bg-sky-500 text-white border-0 w-8 h-8 rounded-full cursor-pointer text-sm flex items-center justify-center hover:bg-sky-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-            on:click="if (newMsg.trim()) { contacts[activeChat].messages = [...contacts[activeChat].messages, { text: newMsg.trim(), sent: true, time: new Date().toLocaleTimeString('en', {hour:'2-digit',minute:'2-digit'}) }]; newMsg = ''; }"
+            on:click="contacts[activeChat].messages = newMsg.trim() ? [...contacts[activeChat].messages, { text: newMsg.trim(), sent: true, time: window._nowTime() }] : contacts[activeChat].messages; newMsg = newMsg.trim() ? '' : newMsg"
             title="Send">▶</button>
         </div>
       </div>
@@ -97,6 +97,8 @@
 </div>
 
 <script>
+// Helper: returns current time as HH:MM (available in expressions via window._nowTime())
+window._nowTime = () => new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
 // Enable debug logging in the console
 NoJS.config({ debug: true });
 // Initialize No.JS — processes all directives in the DOM

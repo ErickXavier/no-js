@@ -1,5 +1,7 @@
 import { _i18n, _i18nListeners, _watchI18n, _notifyI18n, _loadI18nForLocale, _loadI18nNamespace } from '../src/i18n.js';
 import { _config } from '../src/globals.js';
+import { processTree } from '../src/registry.js';
+import '../src/directives/i18n.js';
 
 describe('i18n System', () => {
   beforeEach(() => {
@@ -588,5 +590,52 @@ describe('_notifyI18n', () => {
     _notifyI18n();
     expect(fn).not.toHaveBeenCalled();
     expect(_i18nListeners.has(fn)).toBe(false);
+  });
+});
+
+describe('t-html sanitization integration', () => {
+  beforeEach(() => {
+    _i18n.locale = 'en';
+    _i18n.locales = {
+      en: {
+        xssScript: '<b>Bold</b><script>alert("xss")</script>',
+        xssOnerror: '<b>Bold</b><img src=x onerror=alert(1)>',
+      },
+    };
+    _config.i18n.fallbackLocale = 'en';
+  });
+
+  afterEach(() => {
+    _i18n.locale = 'en';
+    _i18n.locales = {};
+    document.body.innerHTML = '';
+  });
+
+  test('strips <script> tags from t-html output', () => {
+    const parent = document.createElement('div');
+    const el = document.createElement('span');
+    el.setAttribute('t', 'xssScript');
+    el.setAttribute('t-html', '');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(el.innerHTML).toContain('<b>Bold</b>');
+    expect(el.innerHTML).not.toContain('<script>');
+    expect(el.innerHTML).not.toContain('alert');
+  });
+
+  test('strips onerror attributes from t-html output', () => {
+    const parent = document.createElement('div');
+    const el = document.createElement('span');
+    el.setAttribute('t', 'xssOnerror');
+    el.setAttribute('t-html', '');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(el.innerHTML).toContain('<b>Bold</b>');
+    expect(el.innerHTML).not.toContain('onerror');
+    expect(el.innerHTML).not.toContain('alert');
   });
 });

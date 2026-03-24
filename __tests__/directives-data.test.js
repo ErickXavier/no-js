@@ -850,7 +850,7 @@ describe('HTTP GET with custom headers', () => {
     );
   });
 
-  test('warns in debug mode when a sensitive header is set inline', async () => {
+  test('warns when a sensitive header is set inline', async () => {
     _config.debug = true;
     global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -876,7 +876,7 @@ describe('HTTP GET with custom headers', () => {
     _config.debug = false;
   });
 
-  test('does not warn when debug mode is off', async () => {
+  test('warns about sensitive headers even with debug mode off', async () => {
     _config.debug = false;
     global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -893,7 +893,7 @@ describe('HTTP GET with custom headers', () => {
     processTree(parent);
     await flush();
 
-    expect(warnSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
 
     warnSpy.mockRestore();
   });

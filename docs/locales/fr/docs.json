@@ -322,7 +322,7 @@
       "bindHtml": {
         "title": "bind-html — HTML interne",
         "text": "Affiche l'expression évaluée en HTML. Nettoyé par défaut.",
-        "callout": "⚠️ Utilise un nettoyage intégré basé sur les regex : supprime les balises <script>, bloque les gestionnaires d'événements on*, et retire les URI javascript:."
+        "callout": "⚠️ Utilise un nettoyage structurel intégré basé sur DOMParser : supprime les balises <script>, bloque les gestionnaires d'événements on*, et retire les URI javascript:."
       },
       "bindAttr": {
         "title": "bind-* — Liaison d'attributs",
@@ -1152,7 +1152,7 @@
         "title": "Détails des options de configuration",
         "sanitizeTitle": "sanitize",
         "sanitizeType": "Type : boolean | Par défaut : true",
-        "sanitizeText": "Contrôle si le contenu HTML rendu via bind-html est nettoyé par un sanitizer compatible DOMPurify. Lorsqu'activé, toutes les balises et attributs potentiellement dangereux (ex. <script>, onerror) sont supprimés avant l'insertion dans le DOM.",
+        "sanitizeText": "Contrôle si le contenu HTML rendu via bind-html est nettoyé par un sanitizer structurel basé sur DOMParser. Lorsqu'activé, toutes les balises et attributs potentiellement dangereux (ex. <script>, onerror) sont supprimés avant l'insertion dans le DOM.",
         "devtoolsTitle": "devtools",
         "devtoolsType": "Type : boolean | Par défaut : false",
         "devtoolsText": "Active le panneau devtools No.JS, accessible via window.__NOJS_DEVTOOLS__. Lorsqu'actif, il expose l'état réactif, les directives enregistrées, les routes actives et les arborescences de composants pour l'inspection dans la console du navigateur.",
@@ -1184,7 +1184,7 @@
         "title": "Sécurité",
         "xssTitle": "Protection XSS",
         "xssList1": "bind définit toujours textContent, jamais innerHTML — sûr par défaut.",
-        "xssList2": "bind-html nettoie le contenu en utilisant un sanitizer intégré basé sur les regex (supprime les balises <script>, bloque les gestionnaires d'événements on*, retire les URI javascript:).",
+        "xssList2": "bind-html nettoie le contenu en utilisant un sanitizer structurel intégré basé sur DOMParser (supprime les balises <script>, bloque les gestionnaires d'événements on*, retire les URI javascript:).",
         "xssList3": "Les expressions de template sont évaluées par un parser sandboxé personnalisé — aucun eval() ni Function() n'est utilisé, et les propriétés dangereuses comme __proto__ et constructor sont bloquées.",
         "csrfTitle": "Protection CSRF",
         "cspSecTitle": "Content Security Policy",

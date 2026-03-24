@@ -126,7 +126,7 @@ for (const method of HTTP_METHODS) {
           }
 
           const extraHeaders = headersAttr ? JSON.parse(headersAttr) : {};
-          if (_config.debug && headersAttr) {
+          if (headersAttr) {
             for (const k of Object.keys(extraHeaders)) {
               const lower = k.toLowerCase();
               if (_SENSITIVE_HEADERS.has(lower) || /^x-(auth|api)-/.test(lower)) {
@@ -134,24 +134,16 @@ for (const method of HTTP_METHODS) {
               }
             }
           }
-          const savedRetries = _config.retries;
-          const savedRetryDelay = _config.retryDelay;
-          _config.retries = retryCount;
-          _config.retryDelay = retryDelay;
-          let data;
-          try {
-            data = await _doFetch(
-              resolvedUrl,
-              method,
-              reqBody,
-              extraHeaders,
-              el,
-              _activeAbort.signal,
-            );
-          } finally {
-            _config.retries = savedRetries;
-            _config.retryDelay = savedRetryDelay;
-          }
+          const data = await _doFetch(
+            resolvedUrl,
+            method,
+            reqBody,
+            extraHeaders,
+            el,
+            _activeAbort.signal,
+            retryCount,
+            retryDelay,
+          );
 
           // Cache response
           if (method === "get") _cacheSet(cacheKey, data, cacheStrategy);

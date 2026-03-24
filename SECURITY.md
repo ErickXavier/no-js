@@ -47,8 +47,14 @@ The following are in scope:
 
 No.JS implements the following security measures:
 
-- **Zero `eval()` or `new Function()`** — custom recursive-descent parser for all expression evaluation
+### Expression evaluation sandbox (`src/evaluate.js`)
+
+- **Zero `eval()` or `new Function()`** — custom recursive-descent parser (tokenizer + AST tree-walker) for all expression evaluation
 - **CSP-compliant by default** — no `unsafe-eval` CSP directive required
-- **Deny-list** for dangerous globals (`eval`, `Function`, `process`, `require`, `importScripts`)
-- **Forbidden property access** on `__proto__`, `constructor`, `prototype`
-- **HTML sanitization** for user-rendered content
+- **Allow-list for globals** — template expressions can only access an explicit set of safe globals. `_SAFE_GLOBALS` exposes a curated subset of standard JS built-ins (e.g. `Array`, `Object`, `Math`, `JSON`, `Date`, `console`) while `_BROWSER_GLOBALS` opts in to a limited set of browser APIs (e.g. `window`, `document`, `setTimeout`, `Promise`). Network and storage APIs — `fetch`, `XMLHttpRequest`, `localStorage`, `sessionStorage`, `WebSocket`, `indexedDB` — are **not** on the allow-list, so interpolated external data cannot trigger unintended requests from template code
+- **Double-layer defense for forbidden properties** — access to `__proto__`, `constructor`, and `prototype` is blocked at two independent layers: (1) the **tokenizer** tags these identifiers as `Forbidden` tokens during lexing, and (2) the **evaluator** checks `_FORBIDDEN_PROPS` at every property access, assignment, and spread operation, returning `undefined` for any match. Both layers must be bypassed for an exploit to succeed
+
+### HTML sanitization (`src/dom.js`)
+
+- **DOMParser-based structural sanitizer** — instead of regex-based stripping (which is bypassable via SVG/MathML event handlers, nested `srcdoc` attributes, and HTML entity encoding), No.JS parses untrusted HTML through the browser's `DOMParser` to build a real DOM tree, then walks the tree to remove dangerous elements (`script`, `style`, `iframe`, `object`, `embed`, `base`, `form`, `meta`, `link`, `noscript`) and strips `on*` event-handler attributes, `javascript:`/`vbscript:` scheme URLs, and non-image `data:` URLs
+- **Pluggable sanitizer hook** — set `_config.sanitizeHtml` to a custom function (e.g. DOMPurify) to replace the built-in sanitizer without bundling it as a hard dependency

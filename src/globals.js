@@ -17,8 +17,10 @@ export const _config = {
   debug: false,
   devtools: false,
   sanitize: true,
+  dangerouslyDisableSanitize: false,
   sanitizeHtml: null,
   exprCacheSize: 500,
+  maxEventListeners: 100,
 };
 
 export const _interceptors = { request: [], response: [] };

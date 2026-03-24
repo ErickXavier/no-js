@@ -176,12 +176,12 @@ simultaneously — no event bus, no shared component.
 ## 5. Live Polling
 
 A server-status dashboard that refreshes automatically every 5 seconds using the
-`poll` attribute. Conditional styling reacts instantly to the health state — no
+`refresh` attribute. Conditional styling reacts instantly to the health state — no
 `setInterval`, no fetch loop.
 
 ```html
 <!-- Refetches /api/status every 5 seconds -->
-<div get="/api/status" poll="5000" as="s">
+<div get="/api/status" refresh="5000" as="s">
 
   <!-- Badge: green when healthy, red otherwise -->
   <span class-success="s.healthy"
@@ -197,7 +197,7 @@ A server-status dashboard that refreshes automatically every 5 seconds using the
 </div>
 ```
 
-**Key concepts:** `poll` · `class-*` conditional styling · `bind` expression
+**Key concepts:** `refresh` · `class-*` conditional styling · `bind` expression
 
 ---
 

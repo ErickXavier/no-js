@@ -322,7 +322,7 @@
       "bindHtml": {
         "title": "bind-html — Inner HTML",
         "text": "Renders evaluated expression as HTML. Sanitized by default.",
-        "callout": "⚠️ Uses built-in regex-based sanitization: strips <script> tags, blocks on* event handlers, and removes javascript: URIs."
+        "callout": "⚠️ Uses built-in DOMParser-based structural sanitization: strips <script> tags, blocks on* event handlers, and removes javascript: URIs."
       },
       "bindAttr": {
         "title": "bind-* — Attribute Binding",
@@ -1152,7 +1152,7 @@
         "title": "Config Option Details",
         "sanitizeTitle": "sanitize",
         "sanitizeType": "Type: boolean | Default: true",
-        "sanitizeText": "Controls whether HTML content rendered via bind-html is sanitized through a DOMPurify-compatible sanitizer. When enabled, all potentially dangerous tags and attributes (e.g., <script>, onerror) are stripped before insertion into the DOM.",
+        "sanitizeText": "Controls whether HTML content rendered via bind-html is sanitized through a DOMParser-based structural sanitizer. When enabled, all potentially dangerous tags and attributes (e.g., <script>, onerror) are stripped before insertion into the DOM.",
         "devtoolsTitle": "devtools",
         "devtoolsType": "Type: boolean | Default: false",
         "devtoolsText": "Enables the No.JS devtools panel, accessible via window.__NOJS_DEVTOOLS__. When active, it exposes reactive state, registered directives, active routes, and component trees for inspection in the browser console.",
@@ -1184,7 +1184,7 @@
         "title": "Security",
         "xssTitle": "XSS Protection",
         "xssList1": "bind always sets textContent, never innerHTML — safe by default.",
-        "xssList2": "bind-html sanitizes content using a built-in regex-based sanitizer (strips <script> tags, blocks on* event handlers, removes javascript: URIs).",
+        "xssList2": "bind-html sanitizes content using a built-in DOMParser-based structural sanitizer (strips <script> tags, blocks on* event handlers, removes javascript: URIs).",
         "xssList3": "Template expressions are evaluated by a custom sandboxed parser — no eval() or Function() is used, and dangerous properties like __proto__ and constructor are blocked.",
         "csrfTitle": "CSRF Protection",
         "cspSecTitle": "Content Security Policy",

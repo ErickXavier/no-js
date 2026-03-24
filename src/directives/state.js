@@ -12,9 +12,9 @@ import { _devtoolsEmit } from "../devtools.js";
 registerDirective("state", {
   priority: 0,
   init(el, name, value) {
-    const data = evaluate(value, createContext()) || {};
+    const initialState = evaluate(value, createContext()) || {};
     const parent = el.parentElement ? findContext(el.parentElement) : null;
-    const ctx = createContext(data, parent);
+    const ctx = createContext(initialState, parent);
     el.__ctx = ctx;
 
     // Persistence
@@ -40,13 +40,32 @@ registerDirective("state", {
           const saved = store.getItem("nojs_state_" + persistKey);
           if (saved) {
             const parsed = JSON.parse(saved);
+            const schemaCheck = el.hasAttribute("persist-schema");
             for (const [k, v] of Object.entries(parsed)) {
-              if (!persistFields || persistFields.has(k)) ctx.$set(k, v);
+              if (!persistFields || persistFields.has(k)) {
+                if (schemaCheck) {
+                  if (!(k in initialState)) { _warn('persist-schema: ignoring unknown key "' + k + '"'); continue; }
+                  if (initialState[k] !== null && v !== null && typeof v !== typeof initialState[k]) {
+                    _warn('persist-schema: type mismatch for "' + k + '" (expected ' + typeof initialState[k] + ', got ' + typeof v + ')');
+                    continue;
+                  }
+                }
+                ctx.$set(k, v);
+              }
             }
           }
         } catch {
           /* ignore */
         }
+
+        // Warn about potentially sensitive field names in persisted state
+        const sensitiveNames = ['token', 'password', 'secret', 'key', 'auth', 'credential', 'session'];
+        const stateKeys = Object.keys(initialState);
+        const riskyKeys = stateKeys.filter(k => sensitiveNames.some(s => k.toLowerCase().includes(s)));
+        if (riskyKeys.length > 0) {
+          _warn('State key(s) ' + riskyKeys.map(k => '"' + k + '"').join(', ') + ' may contain sensitive data. Consider using persist-fields to exclude them.');
+        }
+
         ctx.$watch(() => {
           try {
             const raw = ctx.__raw;
@@ -61,7 +80,7 @@ registerDirective("state", {
       }
     }
 
-    _log("state", data);
+    _log("state", initialState);
   },
 });
 

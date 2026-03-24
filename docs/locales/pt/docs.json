@@ -322,7 +322,7 @@
       "bindHtml": {
         "title": "bind-html — HTML Interno",
         "text": "Renderiza a expressão avaliada como HTML. Sanitizado por padrão.",
-        "callout": "⚠️ Usa sanitização integrada baseada em regex: remove tags <script>, bloqueia handlers de evento on* e remove URIs javascript:."
+        "callout": "⚠️ Usa sanitização estrutural integrada baseada em DOMParser: remove tags <script>, bloqueia handlers de evento on* e remove URIs javascript:."
       },
       "bindAttr": {
         "title": "bind-* — Vinculação de Atributos",
@@ -1152,7 +1152,7 @@
         "title": "Detalhes das Opções de Configuração",
         "sanitizeTitle": "sanitize",
         "sanitizeType": "Tipo: boolean | Padrão: true",
-        "sanitizeText": "Controla se o conteúdo HTML renderizado via bind-html é sanitizado através de um sanitizador compatível com DOMPurify. Quando habilitado, todas as tags e atributos potencialmente perigosos (ex: <script>, onerror) são removidos antes da inserção no DOM.",
+        "sanitizeText": "Controla se o conteúdo HTML renderizado via bind-html é sanitizado através de um sanitizador estrutural baseado em DOMParser. Quando habilitado, todas as tags e atributos potencialmente perigosos (ex: <script>, onerror) são removidos antes da inserção no DOM.",
         "devtoolsTitle": "devtools",
         "devtoolsType": "Tipo: boolean | Padrão: false",
         "devtoolsText": "Habilita o painel de devtools do No.JS, acessível via window.__NOJS_DEVTOOLS__. Quando ativo, expõe estado reativo, diretivas registradas, rotas ativas e árvores de componentes para inspeção no console do navegador.",
@@ -1184,7 +1184,7 @@
         "title": "Segurança",
         "xssTitle": "Proteção XSS",
         "xssList1": "bind sempre define textContent, nunca innerHTML — seguro por padrão.",
-        "xssList2": "bind-html sanitiza conteúdo usando um sanitizador integrado baseado em regex (remove tags <script>, bloqueia handlers de evento on*, remove URIs javascript:).",
+        "xssList2": "bind-html sanitiza conteúdo usando um sanitizador estrutural integrado baseado em DOMParser (remove tags <script>, bloqueia handlers de evento on*, remove URIs javascript:).",
         "xssList3": "Expressões de template são avaliadas por um parser sandboxed personalizado — eval() e Function() não são usados, e propriedades perigosas como __proto__ e constructor são bloqueadas.",
         "csrfTitle": "Proteção CSRF",
         "cspSecTitle": "Content Security Policy",

@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replace `globalThis` deny-list with explicit browser globals allow-list in expression evaluator ([#18](https://github.com/ErickXavier/no-js/pull/18))
 - Replace regex HTML sanitizer with `DOMParser` structural sanitization in `bind-html` ([#17](https://github.com/ErickXavier/no-js/pull/17))
-- Warn in debug mode when sensitive headers (Authorization, Cookie) are set inline ([#16](https://github.com/ErickXavier/no-js/pull/16))
+- Warn when sensitive headers (Authorization, Cookie) are set inline ([#16](https://github.com/ErickXavier/no-js/pull/16))
 - Clear outlet and warn when route guard fails without a redirect ([#14](https://github.com/ErickXavier/no-js/pull/14))
 - Warn loudly when `sanitize` is explicitly disabled on `bind-html` ([#15](https://github.com/ErickXavier/no-js/pull/15))
 - Reduce MutationObserver cost with `subtree:false`; register ResizeObserver via `_onDispose` ([#12](https://github.com/ErickXavier/no-js/pull/12))

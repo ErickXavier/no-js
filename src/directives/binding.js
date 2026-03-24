@@ -35,12 +35,37 @@ registerDirective("bind-html", {
 
 const _SAFE_URL_ATTRS = new Set(["href", "src", "action", "formaction", "poster", "data"]);
 
-// Strip JS vectors from raw SVG markup: <script> blocks and on* event handlers.
+// Strip JS vectors from raw SVG markup using DOMParser for robust sanitization.
+// Regex-based approaches are bypassable via entity encoding and nested contexts.
 function _sanitizeSvgContent(svg) {
-  return svg
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s/>]*)/gi, "")
-    .replace(/\s+(?:href|xlink:href)\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, "");
+  const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+  const root = doc.documentElement;
+  // If parsing failed, DOMParser may wrap error in <parsererror> or produce a
+  // non-SVG root. In either case return an empty SVG for safety.
+  if (root.querySelector("parsererror") ||
+      root.nodeName !== "svg" ||
+      root.getElementsByTagNameNS("http://www.mozilla.org/newlayout/xml/parsererror.xml", "parsererror").length) {
+    return "<svg></svg>";
+  }
+
+  function _cleanAttrs(node) {
+    for (const attr of [...node.attributes]) {
+      const name = attr.name.toLowerCase();
+      // Remove on* event handlers
+      if (name.startsWith("on")) { node.removeAttribute(attr.name); continue; }
+      // Remove javascript: in href/xlink:href
+      if ((name === "href" || name === "xlink:href") &&
+          attr.value.trim().toLowerCase().startsWith("javascript:")) {
+        node.removeAttribute(attr.name);
+      }
+    }
+  }
+  // Remove script elements
+  for (const s of [...root.querySelectorAll("script")]) s.remove();
+  // Clean attributes on root and all descendants
+  _cleanAttrs(root);
+  for (const node of root.querySelectorAll("*")) _cleanAttrs(node);
+  return new XMLSerializer().serializeToString(root);
 }
 
 // Sanitize a data:image/svg+xml URI — handles both base64 and URL-encoded forms.

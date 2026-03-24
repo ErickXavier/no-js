@@ -347,6 +347,102 @@ describe('Bind-* Directive', () => {
   });
 });
 
+describe('SVG Data URI Sanitization (DOMParser)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  function svgDataUri(svgContent) {
+    return 'data:image/svg+xml,' + encodeURIComponent(svgContent);
+  }
+
+  function getSrcSvg(el) {
+    const src = el.getAttribute('src');
+    const comma = src.indexOf(',');
+    return decodeURIComponent(src.slice(comma + 1));
+  }
+
+  function bindSrc(dataUri) {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ uri: "" }');
+    const img = document.createElement('img');
+    img.setAttribute('bind-src', 'uri');
+    parent.appendChild(img);
+    document.body.appendChild(parent);
+    processTree(parent);
+    parent.__ctx.uri = dataUri;
+    return img;
+  }
+
+  test('strips <script> tags from SVG', () => {
+    const uri = svgDataUri('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><circle r="5"/></svg>');
+    const img = bindSrc(uri);
+    const svg = getSrcSvg(img);
+    expect(svg).not.toContain('<script');
+    expect(svg).toContain('circle');
+  });
+
+  test('strips onerror attribute from SVG elements', () => {
+    const uri = svgDataUri('<svg xmlns="http://www.w3.org/2000/svg"><image onerror="alert(1)" href="x"/></svg>');
+    const img = bindSrc(uri);
+    const svg = getSrcSvg(img);
+    expect(svg).not.toContain('onerror');
+  });
+
+  test('strips onload attribute from SVG elements', () => {
+    const uri = svgDataUri('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><rect width="1" height="1"/></svg>');
+    const img = bindSrc(uri);
+    const svg = getSrcSvg(img);
+    expect(svg).not.toContain('onload');
+    expect(svg).toContain('rect');
+  });
+
+  test('strips javascript: href from SVG elements', () => {
+    const uri = svgDataUri('<svg xmlns="http://www.w3.org/2000/svg"><a href="javascript:alert(1)"><text>click</text></a></svg>');
+    const img = bindSrc(uri);
+    const svg = getSrcSvg(img);
+    expect(svg).not.toContain('javascript:');
+    expect(svg).toContain('text');
+  });
+
+  test('passes clean SVG through intact', () => {
+    const uri = svgDataUri('<svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="red"/></svg>');
+    const img = bindSrc(uri);
+    const svg = getSrcSvg(img);
+    expect(svg).toContain('circle');
+    expect(svg).toContain('fill="red"');
+    expect(svg).toContain('r="40"');
+  });
+
+  test('returns safe output for malformed SVG input', () => {
+    const uri = svgDataUri('<<<not-valid-xml>>>');
+    const img = bindSrc(uri);
+    const src = img.getAttribute('src');
+    // Should either fall back to "#" (catch in _sanitizeSvgDataUri) or
+    // return an empty/safe SVG — never the raw malformed input
+    if (src === '#') {
+      expect(src).toBe('#');
+    } else {
+      const svg = getSrcSvg(img);
+      expect(svg).not.toContain('<<<');
+      expect(svg).not.toContain('script');
+    }
+  });
+
+  test('sanitizes base64-encoded SVG data URIs', () => {
+    const svgContent = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><rect/></svg>';
+    const uri = 'data:image/svg+xml;base64,' + btoa(svgContent);
+    const img = bindSrc(uri);
+    const src = img.getAttribute('src');
+    // Decode the base64 result
+    const b64Match = src.match(/^data:image\/svg\+xml;base64,(.+)$/);
+    expect(b64Match).not.toBeNull();
+    const decoded = atob(b64Match[1]);
+    expect(decoded).not.toContain('<script');
+    expect(decoded).toContain('rect');
+  });
+});
+
 describe('Model Directive', () => {
   afterEach(() => {
     document.body.innerHTML = '';
@@ -1180,6 +1276,111 @@ describe('state persist directive', () => {
     expect(saved.a).toBe(10);
     expect(saved.c).toBe(3);
     expect(saved.b).toBeUndefined();
+  });
+
+  test('persist-schema rejects unknown keys with warning', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    localStorage.setItem('nojs_state_schema-test1', JSON.stringify({ count: 5, injected: 'evil' }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ count: 0 }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'schema-test1');
+    parent.setAttribute('persist-schema', '');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+    expect(ctx.count).toBe(5);
+    expect('injected' in ctx.__raw).toBe(false);
+    expect(warnSpy).toHaveBeenCalledWith('[No.JS]', expect.stringContaining('ignoring unknown key "injected"'));
+
+    warnSpy.mockRestore();
+  });
+
+  test('persist-schema rejects type mismatches with warning', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    localStorage.setItem('nojs_state_schema-test2', JSON.stringify({ count: 'not-a-number', name: 'ok' }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ count: 0, name: "default" }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'schema-test2');
+    parent.setAttribute('persist-schema', '');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+    expect(ctx.count).toBe(0); // rejected — stays at initial
+    expect(ctx.name).toBe('ok'); // accepted — type matches
+    expect(warnSpy).toHaveBeenCalledWith('[No.JS]', expect.stringContaining('type mismatch for "count"'));
+
+    warnSpy.mockRestore();
+  });
+
+  test('persist-schema allows valid keys with matching types', () => {
+    localStorage.setItem('nojs_state_schema-test3', JSON.stringify({ count: 42, name: 'restored', active: true }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ count: 0, name: "default", active: false }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'schema-test3');
+    parent.setAttribute('persist-schema', '');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+    expect(ctx.count).toBe(42);
+    expect(ctx.name).toBe('restored');
+    expect(ctx.active).toBe(true);
+  });
+
+  test('without persist-schema all keys are restored (backwards compat)', () => {
+    localStorage.setItem('nojs_state_schema-test4', JSON.stringify({ count: 10, extra: 'bonus' }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ count: 0 }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'schema-test4');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+    expect(ctx.count).toBe(10);
+    expect(ctx.extra).toBe('bonus');
+  });
+
+  test('sensitive field names trigger a warning when persist is used', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ username: "bob", authToken: "abc123", password: "secret" }');
+    parent.setAttribute('persist', 'localStorage');
+    parent.setAttribute('persist-key', 'sensitive-test1');
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('may contain sensitive data')
+    );
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('authToken')
+    );
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('password')
+    );
+
+    warnSpy.mockRestore();
   });
 });
 

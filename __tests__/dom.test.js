@@ -1,6 +1,6 @@
 import { _config } from '../src/globals.js';
 import { createContext } from '../src/context.js';
-import { findContext, _clearDeclared, _cloneTemplate, _sanitizeHtml, _loadRemoteTemplates, _loadTemplateElement, _loadRemoteTemplatesPhase1, _loadRemoteTemplatesPhase2, _processTemplateIncludes, _templateHtmlCache } from '../src/dom.js';
+import { findContext, _clearDeclared, _cloneTemplate, _sanitizeHtml, _loadRemoteTemplates, _loadTemplateElement, _loadRemoteTemplatesPhase1, _loadRemoteTemplatesPhase2, _processTemplateIncludes, _templateHtmlCache, _warnIfInsecureTemplateUrl } from '../src/dom.js';
 
 describe('DOM Helpers', () => {
   afterEach(() => {
@@ -103,11 +103,43 @@ describe('DOM Helpers', () => {
       expect(_sanitizeHtml(html)).toBe(html);
     });
 
-    test('skips sanitization when disabled', () => {
+    test('skips sanitization when sanitize is false (backwards compat) and warns', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       _config.sanitize = false;
       const html = '<script>alert(1)</script>';
       expect(_sanitizeHtml(html)).toBe(html);
+      expect(warnSpy).toHaveBeenCalledWith('[No.JS]', expect.stringContaining('sanitization is DISABLED'));
+      warnSpy.mockRestore();
       _config.sanitize = true;
+    });
+
+    test('skips sanitization when dangerouslyDisableSanitize is true and warns', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      _config.dangerouslyDisableSanitize = true;
+      const html = '<script>alert(1)</script>';
+      expect(_sanitizeHtml(html)).toBe(html);
+      expect(warnSpy).toHaveBeenCalledWith('[No.JS]', expect.stringContaining('XSS attacks'));
+      warnSpy.mockRestore();
+      _config.dangerouslyDisableSanitize = false;
+    });
+
+    test('warns every time sanitization runs with it disabled', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      _config.dangerouslyDisableSanitize = true;
+      _sanitizeHtml('<b>a</b>');
+      _sanitizeHtml('<b>b</b>');
+      _sanitizeHtml('<b>c</b>');
+      const xssWarnings = warnSpy.mock.calls.filter(
+        (args) => args.some((a) => typeof a === 'string' && a.includes('DISABLED'))
+      );
+      expect(xssWarnings).toHaveLength(3);
+      warnSpy.mockRestore();
+      _config.dangerouslyDisableSanitize = false;
+    });
+
+    test('default config has sanitization enabled', () => {
+      expect(_config.sanitize).toBe(true);
+      expect(_config.dangerouslyDisableSanitize).toBe(false);
     });
 
     // ── Vectors that bypass regex sanitizers but are caught by DOMParser ──
@@ -171,11 +203,13 @@ describe('DOM Helpers', () => {
     });
 
     test('custom hook is bypassed when sanitize is false', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const mock = jest.fn();
       _config.sanitizeHtml = mock;
       _config.sanitize = false;
       _sanitizeHtml('<b>hi</b>');
       expect(mock).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
       _config.sanitize = true;
       _config.sanitizeHtml = null;
     });
@@ -1165,5 +1199,90 @@ describe('_loadRemoteTemplates — HTTP error handling', () => {
     expect(wrapper.textContent).toBe('');
 
     warnSpy.mockRestore();
+  });
+});
+
+describe('Template integrity — insecure HTTP warning', () => {
+  let warnSpy;
+
+  beforeEach(() => {
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+  });
+
+  test('warns when http:// URL is loaded from an https: page', () => {
+    _warnIfInsecureTemplateUrl('http://cdn.example.com/header.tpl', 'http://cdn.example.com/header.tpl', 'https:');
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      'Template "http://cdn.example.com/header.tpl" is loaded over insecure HTTP from an HTTPS page. Use HTTPS to prevent tampering.'
+    );
+  });
+
+  test('does NOT warn when https:// URL is loaded from an https: page', () => {
+    _warnIfInsecureTemplateUrl('https://cdn.example.com/header.tpl', 'https://cdn.example.com/header.tpl', 'https:');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  test('does NOT warn when loading a relative URL from an https: page', () => {
+    _warnIfInsecureTemplateUrl('/partials/header.tpl', '/partials/header.tpl', 'https:');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  test('does NOT warn when page itself is on http: (not cross-protocol)', () => {
+    _warnIfInsecureTemplateUrl('http://cdn.example.com/header.tpl', 'http://cdn.example.com/header.tpl', 'http:');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  test('_loadRemoteTemplates does not warn for http:// from http: page (same protocol)', async () => {
+    // jsdom defaults to http: protocol, so loading http:// URLs should not warn
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('<p>content</p>'),
+    });
+
+    const wrapper = document.createElement('div');
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', 'http://cdn.example.com/header.tpl');
+    wrapper.appendChild(tpl);
+    document.body.appendChild(wrapper);
+
+    await _loadRemoteTemplates();
+
+    expect(warnSpy).not.toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('insecure HTTP')
+    );
+
+    delete global.fetch;
+    document.body.innerHTML = '';
+    _templateHtmlCache.clear();
+  });
+
+  test('_loadTemplateElement does not warn for https:// URL', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('<p>content</p>'),
+    });
+
+    const wrapper = document.createElement('div');
+    const tpl = document.createElement('template');
+    tpl.setAttribute('src', 'https://cdn.example.com/page.tpl');
+    tpl.setAttribute('route', '/page');
+    wrapper.appendChild(tpl);
+    document.body.appendChild(wrapper);
+
+    await _loadTemplateElement(tpl);
+
+    expect(warnSpy).not.toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('insecure HTTP')
+    );
+
+    delete global.fetch;
+    document.body.innerHTML = '';
+    _templateHtmlCache.clear();
   });
 });

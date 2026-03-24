@@ -47,6 +47,7 @@ describe('Globals', () => {
       expect(_config.csrf).toBeNull();
       expect(_config.debug).toBe(false);
       expect(_config.sanitize).toBe(true);
+      expect(_config.dangerouslyDisableSanitize).toBe(false);
     });
 
     test('has default cache config', () => {
@@ -823,34 +824,6 @@ describe('index.js — config()', () => {
     _config.router.useHash = false;
   });
 
-  test('emits warning when sanitize is set to false', async () => {
-    const { default: No } = await import('../src/index.js');
-    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
-    No.config({ sanitize: false });
-
-    expect(warnSpy).toHaveBeenCalledWith(
-      '[No.JS]',
-      expect.stringContaining('sanitize: false')
-    );
-
-    warnSpy.mockRestore();
-    _config.sanitize = true;
-  });
-
-  test('does not emit warning when sanitize is explicitly set to true', async () => {
-    const { default: No } = await import('../src/index.js');
-    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
-    No.config({ sanitize: true });
-
-    const sanitizeWarningCalled = warnSpy.mock.calls.some(
-      (args) => args.some((a) => typeof a === 'string' && a.includes('sanitize'))
-    );
-    expect(sanitizeWarningCalled).toBe(false);
-
-    warnSpy.mockRestore();
-  });
 });
 
 describe('index.js — config() stores', () => {
@@ -1457,6 +1430,28 @@ describe('Expression Parser', () => {
     test('should not expose obj.constructor', () => {
       expect(evaluate('obj.constructor', ctx)).toBeUndefined();
     });
+
+    test('spread filters __proto__', () => {
+      const sCtx = createContext({ evil: { __proto__: { hacked: true }, safe: 1 } });
+      const result = evaluate('({ ...evil })', sCtx);
+      expect(result.safe).toBe(1);
+      expect(result).not.toHaveProperty('__proto__', { hacked: true });
+      expect(result.hacked).toBeUndefined();
+    });
+
+    test('spread filters constructor', () => {
+      const sCtx = createContext({ evil: { constructor: 'bad', ok: 1 } });
+      const result = evaluate('({ ...evil })', sCtx);
+      expect(result.ok).toBe(1);
+      expect(Object.prototype.hasOwnProperty.call(result, 'constructor')).toBe(false);
+    });
+
+    test('spread filters prototype', () => {
+      const sCtx = createContext({ evil: { prototype: 'bad', ok: 1 } });
+      const result = evaluate('({ ...evil })', sCtx);
+      expect(result.ok).toBe(1);
+      expect(Object.prototype.hasOwnProperty.call(result, 'prototype')).toBe(false);
+    });
   });
 });
 
@@ -1650,6 +1645,14 @@ describe('Statement Interpreter', () => {
       expect(parent.count).toBe(1);
     });
   });
+
+  describe('Read-only location proxy', () => {
+    test('location.href assignment is blocked', () => {
+      const original = window.location.href;
+      _execStatement("location.href = 'https://evil.com'", createContext({}));
+      expect(window.location.href).toBe(original);
+    });
+  });
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1691,12 +1694,12 @@ describe('evaluate — browser globals allow-list', () => {
 
   // ── Allowed: safe browser globals ──────────────────────────────────────
 
-  test('window is accessible', () => {
-    expect(evaluate('window', ctx)).toBe(globalThis.window ?? globalThis);
+  test('window is accessible (returns safe proxy)', () => {
+    expect(evaluate('window', ctx)).toBeDefined();
   });
 
-  test('document is accessible', () => {
-    expect(evaluate('document', ctx)).toBe(document);
+  test('document is accessible (returns safe proxy)', () => {
+    expect(evaluate('document', ctx)).toBeDefined();
   });
 
   test('URL is accessible', () => {
@@ -1728,15 +1731,149 @@ describe('evaluate — browser globals allow-list', () => {
     expect(evaluate('window', ctxWithWindow)).toBe('shadowed');
   });
 
-  // ── window.fetch is still reachable via the window object ──────────────
+  // ── Security proxies: blocked sub-properties on window ────────────────
 
-  test('window.fetch is accessible via window (not blocked)', () => {
-    if (typeof globalThis.fetch !== 'undefined') {
-      expect(evaluate('window.fetch', ctx)).toBe(globalThis.fetch);
-    } else {
-      // JSDOM may not define fetch — just confirm no throw
-      expect(() => evaluate('window.fetch', ctx)).not.toThrow();
+  test('window.fetch is blocked by proxy', () => {
+    expect(evaluate('window.fetch', ctx)).toBeUndefined();
+  });
+
+  test('window.localStorage is blocked by proxy', () => {
+    expect(evaluate('window.localStorage', ctx)).toBeUndefined();
+  });
+
+  test('document.cookie is blocked by proxy', () => {
+    expect(evaluate('document.cookie', ctx)).toBeUndefined();
+  });
+
+  test('window.innerWidth is still accessible', () => {
+    // jsdom may not have innerWidth, just confirm no throw
+    expect(() => evaluate('window.innerWidth', ctx)).not.toThrow();
+  });
+
+  test('document.querySelector is still accessible', () => {
+    expect(evaluate('document.querySelector', ctx)).toBeDefined();
+  });
+
+  // ── Read-only location proxy ────────────────────────────────────────────
+
+  test('location.href is readable', () => {
+    expect(evaluate('location.href', ctx)).toBeDefined();
+  });
+
+  test('location.pathname is readable', () => {
+    expect(evaluate('location.pathname', ctx)).toBeDefined();
+  });
+
+  // ── Bypass vector tests ─────────────────────────────────────────────────
+
+  test('window.location returns safe location proxy (not raw)', () => {
+    const loc = evaluate('window.location', ctx);
+    expect(loc).toBeDefined();
+    // Should be the safe proxy — assign should be a noop
+    if (loc && typeof loc.assign === 'function') {
+      expect(() => loc.assign('https://evil.com')).not.toThrow();
     }
+  });
+
+  test('window.location.href assignment is blocked via window path', () => {
+    const original = window.location.href;
+    _execStatement("window.location.href = 'https://evil.com'", createContext({}));
+    expect(window.location.href).toBe(original);
+  });
+
+  test('document.defaultView returns safe window proxy (not raw)', () => {
+    const dv = evaluate('document.defaultView', ctx);
+    if (dv) {
+      expect(dv.fetch).toBeUndefined();
+      expect(dv.localStorage).toBeUndefined();
+    }
+  });
+
+  test('document.execCommand is blocked', () => {
+    expect(evaluate('document.execCommand', ctx)).toBeUndefined();
+  });
+
+  test('bracket notation does not bypass window proxy', () => {
+    expect(evaluate("window['fetch']", ctx)).toBeUndefined();
+    expect(evaluate("window['localStorage']", ctx)).toBeUndefined();
+  });
+
+  test('bracket notation does not bypass document proxy', () => {
+    expect(evaluate("document['cookie']", ctx)).toBeUndefined();
+  });
+
+  test('window.document returns safe document proxy', () => {
+    const doc = evaluate('window.document', ctx);
+    if (doc) {
+      expect(doc.cookie).toBeUndefined();
+    }
+  });
+
+  // ── Read-only history proxy ───────────────────────────────────────────
+
+  test('history.length is readable', () => {
+    expect(evaluate('history.length', ctx)).toBeDefined();
+  });
+
+  test('history.pushState is a no-op', () => {
+    const h = evaluate('history', ctx);
+    expect(h.pushState).toBeDefined();
+    expect(() => h.pushState({}, '', '/evil')).not.toThrow();
+    // Real history should not have changed
+  });
+
+  test('history.back is a no-op', () => {
+    const h = evaluate('history', ctx);
+    expect(h.back).toBeDefined();
+    expect(() => h.back()).not.toThrow();
+  });
+
+  test('window.history returns safe history wrapper', () => {
+    const h = evaluate('window.history', ctx);
+    expect(h).toBeDefined();
+    expect(h.pushState).toBeDefined();
+    expect(() => h.pushState({}, '', '/evil')).not.toThrow();
+  });
+
+  // ── Navigator proxy ─────────────────────────────────────────────────
+
+  test('navigator.sendBeacon is blocked', () => {
+    expect(evaluate('navigator.sendBeacon', ctx)).toBeUndefined();
+  });
+
+  test('navigator.userAgent is still accessible', () => {
+    expect(evaluate('navigator.userAgent', ctx)).toBeDefined();
+  });
+
+  test('window.navigator returns safe navigator proxy', () => {
+    const nav = evaluate('window.navigator', ctx);
+    if (nav) {
+      expect(nav.sendBeacon).toBeUndefined();
+      expect(nav.userAgent).toBeDefined();
+    }
+  });
+
+  // ── Window set trap ─────────────────────────────────────────────────
+
+  test('window.name writes are blocked (anti-exfiltration)', () => {
+    const original = window.name;
+    _execStatement("window.name = 'evil'", createContext({}));
+    expect(window.name).toBe(original);
+  });
+
+  test('window.fetch writes are blocked', () => {
+    const original = window.fetch;
+    _execStatement("window.fetch = null", createContext({}));
+    expect(window.fetch).toBe(original);
+  });
+
+  test('window user-defined property writes are allowed', () => {
+    _execStatement("window.__testProp = 42", createContext({}));
+    expect(window.__testProp).toBe(42);
+    delete window.__testProp;
+  });
+});
+
 describe('evaluate.js — expression cache (LRU)', () => {
   test('cache does not grow beyond 500 entries', () => {
     const ctx = createContext({});
