@@ -4,17 +4,20 @@
 //
 //  These directives update <head> elements reactively using the same
 //  _watchExpr + evaluate() infrastructure as all other directives.
-//  They are meant for placement in the page body (not inside <head>):
+//  They are meant for placement in the page body (not inside <head>).
+//  Use <div hidden> as the host element — it is invisible, semantically
+//  neutral, and avoids custom attributes on void elements like <meta>:
 //
-//    <meta page-title="product.name + ' | My Store'">
-//    <meta page-description="product.description">
-//    <meta page-canonical="'/products/' + product.slug">
+//    <div hidden page-title="product.name + ' | My Store'"></div>
+//    <div hidden page-title="'About Us | My Store'"></div>
+//    <div hidden page-description="product.description"></div>
+//    <div hidden page-canonical="'/products/' + product.slug"></div>
 //    <div hidden page-jsonld>
 //      { "@type": "Product", "name": "{product.name}" }
 //    </div>
 //
 //  Note: <script> elements are skipped by processTree; use <div hidden>
-//  or <meta> as the host element for page-jsonld.
+//  as the host element for page-jsonld.
 //
 //  Each directive watches its expression and re-applies the side effect
 //  whenever the reactive context changes.
