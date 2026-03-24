@@ -9,6 +9,20 @@ import { findContext, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { _animateOut } from "../animations.js";
 
+// Zero-overlap bailout: when no key in keyMap survives in nextKeySet, a single
+// bulk clear (_disposeChildren + innerHTML = "") is cheaper than n individual
+// wrapper.remove() calls. Returns true if the bailout was applied.
+function _zeroOverlapBailout(keyMap, nextKeySet, el) {
+  if (keyMap.size === 0) return false;
+  for (const key of keyMap.keys()) {
+    if (nextKeySet.has(key)) return false;
+  }
+  _disposeChildren(el);
+  el.innerHTML = "";
+  keyMap.clear();
+  return true;
+}
+
 registerDirective("each", {
   priority: 10,
   init(el, name, expr) {
@@ -101,6 +115,9 @@ registerDirective("each", {
       });
 
       const nextKeySet = new Set(newOrder.map((e) => e.key));
+
+      // Zero-overlap bailout: bulk clear when no key survives.
+      _zeroOverlapBailout(keyMap, nextKeySet, el);
 
       // Remove wrappers whose keys are no longer in the list.
       for (const [key, wrapper] of keyMap) {
@@ -380,6 +397,9 @@ registerDirective("foreach", {
       });
 
       const nextKeySet = new Set(newOrder.map((e) => e.key));
+
+      // Zero-overlap bailout: bulk clear when no key survives.
+      _zeroOverlapBailout(keyMap, nextKeySet, el);
 
       for (const [key, wrapper] of keyMap) {
         if (!nextKeySet.has(key)) {
