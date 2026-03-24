@@ -2682,3 +2682,198 @@ describe('Router — mode→useHash backward compat', () => {
 
 });
 
+
+// ─── Route head attributes (M8) ──────────────────────────────────────────────
+
+describe('Router — route head attributes (page-title, page-description, page-canonical, page-jsonld)', () => {
+  beforeEach(() => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+    document.title = '';
+    window.location.hash = '';
+    window.scrollTo = jest.fn();
+  });
+
+  afterEach(() => {
+    setRouterInstance(null);
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+    document.title = '';
+    window.location.hash = '';
+  });
+
+  test('page-title attribute sets document.title on navigation', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/about" page-title="'About Us | Site'">
+        <h1>About</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/about');
+    expect(document.title).toBe('About Us | Site');
+  });
+
+  test('page-title does not change title when attribute is absent', async () => {
+    document.title = 'Original';
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/home">
+        <h1>Home</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/home');
+    expect(document.title).toBe('Original');
+  });
+
+  test('page-description creates <meta name="description"> in head', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/about" page-description="'Best site ever'">
+        <h1>About</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/about');
+    const meta = document.querySelector('meta[name="description"]');
+    expect(meta).not.toBeNull();
+    expect(meta.content).toBe('Best site ever');
+  });
+
+  test('page-description updates existing <meta name="description"> without duplicating', async () => {
+    const existing = document.createElement('meta');
+    existing.name = 'description';
+    existing.content = 'Old';
+    document.head.appendChild(existing);
+
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/about" page-description="'New description'">
+        <h1>About</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/about');
+    const metas = document.querySelectorAll('meta[name="description"]');
+    expect(metas.length).toBe(1);
+    expect(metas[0].content).toBe('New description');
+  });
+
+  test('page-canonical creates <link rel="canonical"> in head', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/about" page-canonical="'/about'">
+        <h1>About</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/about');
+    const link = document.querySelector('link[rel="canonical"]');
+    expect(link).not.toBeNull();
+    expect(link.href).toContain('/about');
+  });
+
+  test('page-canonical updates existing canonical link without duplicating', async () => {
+    const existing = document.createElement('link');
+    existing.rel = 'canonical';
+    existing.href = '/old';
+    document.head.appendChild(existing);
+
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/new" page-canonical="'/new'">
+        <h1>New</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/new');
+    const links = document.querySelectorAll('link[rel="canonical"]');
+    expect(links.length).toBe(1);
+    expect(links[0].href).toContain('/new');
+  });
+
+  test('page-jsonld creates <script type="application/ld+json" data-nojs> in head', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/about" page-jsonld='{"@type":"WebPage","name":"About Us"}'>
+        <h1>About</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/about');
+    const script = document.querySelector('script[type="application/ld+json"][data-nojs]');
+    expect(script).not.toBeNull();
+    expect(script.textContent).toContain('WebPage');
+    expect(script.textContent).toContain('About Us');
+  });
+
+  test('page-jsonld updates existing managed script without duplicating', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/a" page-jsonld='{"@type":"WebPage","name":"A"}'>
+        <h1>A</h1>
+      </template>
+      <template route="/b" page-jsonld='{"@type":"WebPage","name":"B"}'>
+        <h1>B</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/a');
+    await router.push('/b');
+    const scripts = document.querySelectorAll('script[type="application/ld+json"][data-nojs]');
+    expect(scripts.length).toBe(1);
+    expect(scripts[0].textContent).toContain('"B"');
+  });
+
+  test('all four attributes can be combined on a single template', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/product"
+        page-title="'Sneaker X | Store'"
+        page-description="'Best sneaker around'"
+        page-canonical="'/product'"
+        page-jsonld='{"@type":"Product","name":"Sneaker X"}'>
+        <h1>Product</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/product');
+    expect(document.title).toBe('Sneaker X | Store');
+    expect(document.querySelector('meta[name="description"]').content).toBe('Best sneaker around');
+    expect(document.querySelector('link[rel="canonical"]').href).toContain('/product');
+    expect(document.querySelector('script[type="application/ld+json"][data-nojs]').textContent).toContain('Sneaker X');
+  });
+
+  test('head attributes are updated on each navigation', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/a" page-title="'Page A'" page-description="'Desc A'">
+        <h1>A</h1>
+      </template>
+      <template route="/b" page-title="'Page B'" page-description="'Desc B'">
+        <h1>B</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/a');
+    expect(document.title).toBe('Page A');
+    expect(document.querySelector('meta[name="description"]').content).toBe('Desc A');
+
+    await router.push('/b');
+    expect(document.title).toBe('Page B');
+    expect(document.querySelector('meta[name="description"]').content).toBe('Desc B');
+  });
+});
