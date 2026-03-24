@@ -331,6 +331,25 @@ export function _createRouter() {
     });
   }
 
+  // Inject <link rel="prefetch"> for route templates that declare a src= URL.
+  // Complements the build-time inject-resource-hints.js script: if a route
+  // template src= is not present in the static HTML (e.g. it lives inside a
+  // dynamically loaded template), this runtime pass catches it.
+  // Uses querySelector deduplication so build-time hints are never duplicated.
+  function _injectRoutePrefetchHints() {
+    if (!document.head) return;
+    document.querySelectorAll("template[route][src]").forEach((tpl) => {
+      const src = tpl.getAttribute("src");
+      if (!src || document.head.querySelector(`link[rel="prefetch"][href="${src}"]`)) return;
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.href = src;
+      link.setAttribute("as", "fetch");
+      link.crossOrigin = "anonymous";
+      document.head.appendChild(link);
+    });
+  }
+
   function _prefetchRoutes() {
     const outletEls = document.querySelectorAll("[route-view]");
     for (const outletEl of outletEls) {
@@ -500,6 +519,11 @@ export function _createRouter() {
 
       // Prefetch route templates declared via <a route> links
       _prefetchRoutes();
+
+      // Inject <link rel="prefetch"> hints for route templates with src= that
+      // are not already covered by a build-time inject-resource-hints pass.
+      // Skipped when document.head is unavailable (e.g. SSR or test env without DOM).
+      _injectRoutePrefetchHints();
     },
   };
 

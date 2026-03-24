@@ -2682,3 +2682,57 @@ describe('Router — mode→useHash backward compat', () => {
 
 });
 
+
+describe('Router — _injectRoutePrefetchHints (M7)', () => {
+  beforeEach(() => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+    window.location.hash = '';
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+    window.location.hash = '';
+  });
+
+  test('injects prefetch hint for route templates with src=', async () => {
+    document.body.innerHTML = `
+      <template route="/about" src="/pages/about.html"></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    const hint = document.head.querySelector('link[rel="prefetch"][href="/pages/about.html"]');
+    expect(hint).not.toBeNull();
+    expect(hint.getAttribute("as")).toBe('fetch');
+  });
+
+  test('does not inject duplicate hints when already present', async () => {
+    const existing = document.createElement('link');
+    existing.rel = 'prefetch';
+    existing.href = '/pages/about.html';
+    document.head.appendChild(existing);
+
+    document.body.innerHTML = `
+      <template route="/about" src="/pages/about.html"></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    const hints = document.head.querySelectorAll('link[rel="prefetch"][href="/pages/about.html"]');
+    expect(hints.length).toBe(1);
+  });
+
+  test('does not inject hint for route templates without src=', async () => {
+    document.body.innerHTML = `
+      <template route="/inline"><h1>Inline</h1></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    const hint = document.head.querySelector('link[rel="prefetch"]');
+    expect(hint).toBeNull();
+  });
+});

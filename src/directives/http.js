@@ -20,6 +20,36 @@ import { _devtoolsEmit } from "../devtools.js";
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete"];
 
+// Inject <link rel="preload"> and <link rel="preconnect"> for a static URL.
+// Only called for GET directives with a URL that contains no {interpolation}.
+// Uses querySelector deduplication so build-time hints are never duplicated.
+function _injectHints(url) {
+  if (!url || /[{}]/.test(url) || !document.head) return;
+
+  if (!document.head.querySelector(`link[rel="preload"][href="${url}"]`)) {
+    const preload = document.createElement("link");
+    preload.rel = "preload";
+    preload.href = url;
+    preload.setAttribute("as", "fetch");
+    preload.crossOrigin = "anonymous";
+    document.head.appendChild(preload);
+  }
+
+  try {
+    const origin = new URL(url, location.href).origin;
+    if (
+      origin !== location.origin &&
+      !document.head.querySelector(`link[rel="preconnect"][href="${origin}"]`)
+    ) {
+      const preconnect = document.createElement("link");
+      preconnect.rel = "preconnect";
+      preconnect.href = origin;
+      preconnect.crossOrigin = "anonymous";
+      document.head.appendChild(preconnect);
+    }
+  } catch (_) {}
+}
+
 const _SENSITIVE_HEADERS = new Set([
   'authorization', 'x-api-key', 'x-auth-token', 'cookie',
   'proxy-authorization', 'set-cookie', 'x-csrf-token',
@@ -29,6 +59,11 @@ for (const method of HTTP_METHODS) {
   registerDirective(method, {
     priority: 1,
     init(el, name, url) {
+      // Inject preload/preconnect hints for static GET URLs.
+      // Dynamic URLs (containing {interpolation}) are skipped — they are only
+      // known at runtime after context resolves.
+      if (name === "get") _injectHints(url);
+
       const asKey = el.getAttribute("as") || "data";
       const loadingTpl = el.getAttribute("loading");
       const errorTpl = el.getAttribute("error");

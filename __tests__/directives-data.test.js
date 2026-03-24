@@ -3664,3 +3664,64 @@ describe('Validation Revamp — $form.reset() enhancements', () => {
     expect(ctx.$form.touched).toBe(false);
   });
 });
+
+describe('HTTP directive — resource hints (M7)', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: { get: () => 'application/json' },
+      json: async () => ({}),
+      text: async () => '{}',
+    });
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+  });
+
+  test('injects preload hint for a static get= URL', async () => {
+    document.body.innerHTML = '<div get="/api/items" as="items"></div>';
+    processTree(document.body);
+    await new Promise(r => setTimeout(r, 20));
+    const hint = document.head.querySelector('link[rel="preload"][href="/api/items"]');
+    expect(hint).not.toBeNull();
+    expect(hint.getAttribute('as')).toBe('fetch');
+  });
+
+  test('does not inject preload hint for dynamic get= URLs containing {interpolation}', async () => {
+    document.body.innerHTML = `
+      <div state='{"id":1}'>
+        <div get="/api/items/{id}" as="item"></div>
+      </div>
+    `;
+    processTree(document.body);
+    await new Promise(r => setTimeout(r, 20));
+    const hint = document.head.querySelector('link[rel="preload"]');
+    expect(hint).toBeNull();
+  });
+
+  test('does not inject preload for non-GET HTTP directives (post)', async () => {
+    document.body.innerHTML = '<button post="/api/items">Submit</button>';
+    processTree(document.body);
+    await new Promise(r => setTimeout(r, 20));
+    const hint = document.head.querySelector('link[rel="preload"]');
+    expect(hint).toBeNull();
+  });
+
+  test('does not inject duplicate preload hints when hint is already present', async () => {
+    const existing = document.createElement('link');
+    existing.rel = 'preload';
+    existing.href = '/api/items';
+    document.head.appendChild(existing);
+
+    document.body.innerHTML = '<div get="/api/items" as="items"></div>';
+    processTree(document.body);
+    await new Promise(r => setTimeout(r, 20));
+    const hints = document.head.querySelectorAll('link[rel="preload"][href="/api/items"]');
+    expect(hints.length).toBe(1);
+  });
+});
