@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1](https://github.com/ErickXavier/no-js/compare/v1.10.0...v1.10.1) — 2026-03-23
+
+### Security
+
+- Add `set` traps to `document` and `navigator` proxies preventing sandbox escape via property assignment ([`d763d2f`](https://github.com/ErickXavier/no-js/commit/d763d2f))
+- Block `navigator.sendBeacon` and add targeted `window` set trap to prevent data exfiltration ([`0faf54a`](https://github.com/ErickXavier/no-js/commit/0faf54a))
+- Sanitize flag enforcement, event bus limits, SVG DOMParser hardening, template integrity checks, persist schema validation ([`e0c72ec`](https://github.com/ErickXavier/no-js/commit/e0c72ec))
+- Proxy sandbox hardening, expression cache LRU eviction, `nl2br` filter sanitization, devtools redaction ([`6c2d68a`](https://github.com/ErickXavier/no-js/commit/6c2d68a))
+
+### Fixed
+
+- Security hardening across expression evaluator, fetch proxy, DOM binding, and state persistence ([`1f44849`](https://github.com/ErickXavier/no-js/commit/1f44849))
+- Documentation accuracy and playground bug fixes ([`1f44849`](https://github.com/ErickXavier/no-js/commit/1f44849))
+
 ## [1.10.0](https://github.com/ErickXavier/no-js/compare/v1.9.1...v1.10.0) — 2026-03-23
 
 ### Added
