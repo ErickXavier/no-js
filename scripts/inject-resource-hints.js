@@ -19,6 +19,16 @@
 //
 //  Add to package.json:
 //    "build": "node build.js && node scripts/inject-resource-hints.js"
+//
+//  Dependencies:
+//    jsdom and glob are already devDependencies (used by the test suite).
+//
+//  Note on crossorigin:
+//    All injected hints use crossorigin="anonymous". This is correct for
+//    same-origin and public cross-origin APIs. For APIs that require
+//    credentials (cookies, Authorization header), the hint must use
+//    crossorigin="use-credentials"; in that case, write the hint manually
+//    in <head> rather than relying on this script.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { readFileSync, writeFileSync } from "fs";

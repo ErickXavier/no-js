@@ -23,6 +23,13 @@ const HTTP_METHODS = ["get", "post", "put", "patch", "delete"];
 // Inject <link rel="preload"> and <link rel="preconnect"> for a static URL.
 // Only called for GET directives with a URL that contains no {interpolation}.
 // Uses querySelector deduplication so build-time hints are never duplicated.
+//
+// crossorigin="anonymous" is correct for same-origin and public cross-origin APIs.
+// For cross-origin APIs that require credentials (cookies, Authorization header),
+// the preload hint must use crossorigin="use-credentials" to avoid a CORS mismatch
+// that would cause the browser to discard the prefetched response. In that case,
+// the hint should be injected manually in the <head> rather than relying on this
+// automatic path (which always emits "anonymous").
 function _injectHints(url) {
   if (!url || /[{}]/.test(url) || !document.head) return;
 
