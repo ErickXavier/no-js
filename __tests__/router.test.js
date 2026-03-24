@@ -2682,3 +2682,70 @@ describe('Router — mode→useHash backward compat', () => {
 
 });
 
+
+describe('Router — page-title attribute', () => {
+  beforeEach(() => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
+    document.body.innerHTML = '';
+    window.location.hash = '';
+    document.title = '';
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+    window.location.hash = '';
+    document.title = '';
+  });
+
+  test('updates document.title from a static page-title expression', async () => {
+    document.body.innerHTML = `
+      <template route="/about" page-title="'About Us | My Site'">
+        <h1>About</h1>
+      </template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/about');
+    expect(document.title).toBe('About Us | My Site');
+  });
+
+  test('updates document.title using $route.params', async () => {
+    document.body.innerHTML = `
+      <template route="/products/:id" page-title="'Product ' + $route.params.id + ' | Store'">
+        <h1>Product</h1>
+      </template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/products/42');
+    expect(document.title).toBe('Product 42 | Store');
+  });
+
+  test('updates document.title on each navigation', async () => {
+    document.body.innerHTML = `
+      <template route="/home" page-title="'Home | Site'"><h1>Home</h1></template>
+      <template route="/about" page-title="'About | Site'"><h1>About</h1></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/home');
+    expect(document.title).toBe('Home | Site');
+    await router.push('/about');
+    expect(document.title).toBe('About | Site');
+  });
+
+  test('does not update document.title when page-title is absent', async () => {
+    document.title = 'Original Title';
+    document.body.innerHTML = `
+      <template route="/no-title"><h1>No title</h1></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/no-title');
+    expect(document.title).toBe('Original Title');
+  });
+});

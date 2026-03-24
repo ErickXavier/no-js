@@ -287,6 +287,20 @@ export function _createRouter() {
 
         _clearDeclared(wrapper);
         processTree(wrapper);
+
+        // page-title: update document.title if the route template declares one.
+        // Only applied from the "default" outlet to avoid overwriting with a
+        // secondary outlet's (e.g. sidebar) title.
+        if (outletName === "default") {
+          const pageTitleExpr = tpl.getAttribute("page-title");
+          if (pageTitleExpr) {
+            const titleCtx = createContext({}, null);
+            titleCtx.__raw.$route = current;
+            titleCtx.__raw.$store = _stores;
+            const title = evaluate(pageTitleExpr, titleCtx);
+            if (title != null) document.title = String(title);
+          }
+        }
       } else if (!matched || tpl?.__loadFailed) {
         // No route matched and no wildcard — inject built-in 404
         outletEl.innerHTML = _BUILTIN_404_HTML;
