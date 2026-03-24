@@ -3047,3 +3047,86 @@ describe('key reconciliation — disposal of removed items', () => {
     expect(disposed).toHaveLength(0);
   });
 });
+
+describe('bind-html — D1 dynamic expression warning', () => {
+  let warnSpy;
+
+  beforeEach(() => {
+    _config.debug = false;
+    _config.devtools = false;
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    _config.debug = false;
+    _config.devtools = false;
+    warnSpy.mockRestore();
+  });
+
+  test('warns when debug is true and expression is dynamic', () => {
+    _config.debug = true;
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ html: "<b>hi</b>" }');
+    const el = document.createElement('div');
+    el.setAttribute('bind-html', 'html');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('[Security] bind-html used with dynamic expression'),
+      el
+    );
+    document.body.removeChild(parent);
+  });
+
+  test('warns when devtools is true and expression is dynamic', () => {
+    _config.devtools = true;
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ html: "<b>hi</b>" }');
+    const el = document.createElement('div');
+    el.setAttribute('bind-html', 'html');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('[Security] bind-html used with dynamic expression'),
+      el
+    );
+    document.body.removeChild(parent);
+  });
+
+  test('does not warn when expression is a string literal', () => {
+    _config.debug = true;
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('bind-html', '"<b>static</b>"');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+    expect(warnSpy).not.toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('[Security] bind-html used with dynamic expression'),
+      expect.anything()
+    );
+    document.body.removeChild(parent);
+  });
+
+  test('does not warn when debug and devtools are both false', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ html: "<b>hi</b>" }');
+    const el = document.createElement('div');
+    el.setAttribute('bind-html', 'html');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+    expect(warnSpy).not.toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('[Security] bind-html used with dynamic expression'),
+      expect.anything()
+    );
+    document.body.removeChild(parent);
+  });
+});

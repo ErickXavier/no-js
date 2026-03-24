@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `bind-html` now emits a `console.warn` in `debug` or `devtools` mode when given a non-literal (dynamic) expression, prompting developers to ensure the value is trusted or sanitized.
+
 ### Fixed
 
 - Replace hardcoded `|| 2000` / `|| 1000` animation fallback timeouts with `|| 0` in `_animateOut`, `_animateIn`, and the `each` / `foreach` animate-leave branches ([#7](https://github.com/ErickXavier/no-js/issues/7))
