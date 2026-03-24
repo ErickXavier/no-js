@@ -288,6 +288,23 @@ export function _createRouter() {
 
         _clearDeclared(wrapper);
         processTree(wrapper);
+
+        // Focus management: move focus to the new content when focusBehavior is "auto".
+        // Only applied to the default outlet to avoid fighting with secondary outlets.
+        // Uses requestAnimationFrame so the focus fires after the browser has painted.
+        if (outletName === "default" && _config.router.focusBehavior === "auto") {
+          requestAnimationFrame(() => {
+            const focusTarget =
+              outletEl.querySelector("[autofocus]") ||
+              outletEl.querySelector('[tabindex="-1"]') ||
+              outletEl.querySelector("h1") ||
+              outletEl;
+            if (!focusTarget.hasAttribute("tabindex")) {
+              focusTarget.setAttribute("tabindex", "-1");
+            }
+            focusTarget.focus({ preventScroll: true });
+          });
+        }
       } else if (!matched || tpl?.__loadFailed) {
         // No route matched and no wildcard — inject built-in 404
         outletEl.innerHTML = _BUILTIN_404_HTML;

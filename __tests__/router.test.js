@@ -2824,3 +2824,78 @@ describe('Router — destroy() removes global listeners', () => {
   });
 });
 
+describe('Router — focusBehavior (M2)', () => {
+  beforeEach(() => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top', focusBehavior: 'none' };
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
+    window.location.hash = '';
+    window.scrollTo = jest.fn();
+    // jsdom does not implement requestAnimationFrame by default — stub it
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => { cb(); return 0; });
+  });
+
+  afterEach(() => {
+    _config.router = { useHash: false, base: '/', scrollBehavior: 'top', focusBehavior: 'none' };
+    document.body.innerHTML = '';
+    window.location.hash = '';
+    jest.restoreAllMocks();
+  });
+
+  test('does not move focus when focusBehavior is "none" (default)', async () => {
+    document.body.innerHTML = `
+      <template route="/page"><h1>Page</h1></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/page');
+    // Focus should NOT be on the h1
+    const h1 = document.querySelector('h1');
+    expect(document.activeElement).not.toBe(h1);
+  });
+
+  test('moves focus to first h1 in the outlet when focusBehavior is "auto"', async () => {
+    _config.router.focusBehavior = 'auto';
+    document.body.innerHTML = `
+      <template route="/page"><h1>Page Heading</h1></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/page');
+    const h1 = document.querySelector('h1');
+    expect(h1).not.toBeNull();
+    expect(h1.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(h1);
+  });
+
+  test('prefers [autofocus] element over h1', async () => {
+    _config.router.focusBehavior = 'auto';
+    document.body.innerHTML = `
+      <template route="/form">
+        <h1>Form</h1>
+        <input autofocus type="text">
+      </template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/form');
+    const input = document.querySelector('input[autofocus]');
+    expect(document.activeElement).toBe(input);
+  });
+
+  test('falls back to the outlet element when no h1 or autofocus', async () => {
+    _config.router.focusBehavior = 'auto';
+    document.body.innerHTML = `
+      <template route="/plain"><p>No headings</p></template>
+      <div route-view></div>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/plain');
+    const outlet = document.querySelector('[route-view]');
+    expect(document.activeElement).toBe(outlet);
+  });
+});
