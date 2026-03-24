@@ -289,6 +289,10 @@ export function _createRouter() {
         processTree(wrapper);
 
         // page-title: update document.title if the route template declares one.
+        // Accepts both a static string literal and a full No.JS expression:
+        //   page-title="'About Us | Site'"          ← static
+        //   page-title="'Product ' + $route.params.id + ' | Store'"  ← expression
+        // $route and $store are available as implicit variables.
         // Only applied from the "default" outlet to avoid overwriting with a
         // secondary outlet's (e.g. sidebar) title.
         if (outletName === "default") {
