@@ -264,6 +264,41 @@ The skeleton is hidden automatically when:
 </div>
 ```
 
+### Using `skeleton=` alongside `loading=`
+
+`skeleton=` and `loading=` are complementary and can be used on the same
+element. They serve different purposes:
+
+- `skeleton=` shows/hides an **existing DOM element** (the skeleton).
+- `loading=` **clones a template** into the fetch container.
+
+Both can be active simultaneously. If you want only one loading indicator,
+use either `skeleton=` or `loading=`, not both.
+
+### Skeleton element visibility
+
+The skeleton element (`id="skeleton"`) should start **visible** in the HTML
+(no `display: none` in CSS). `_hideSkeleton` sets `display: none` as an
+inline style, and `_showSkeleton` removes that inline style. If the
+skeleton has `display: none` in a CSS rule, removing the inline style will
+reveal the CSS `display: none` again — effectively keeping it hidden.
+
+Start the skeleton visible and let No.JS control its visibility:
+
+```html
+<!-- Correct: starts visible, No.JS hides after response -->
+<div id="skeleton" class="skeleton-pulse">…placeholder…</div>
+
+<!-- Incorrect: display:none in CSS conflicts with No.JS show/hide logic -->
+<div id="skeleton" class="hidden skeleton-pulse">…placeholder…</div>
+```
+
+### Accessibility
+
+Consider adding `aria-busy="true"` on the fetch container while the request
+is in progress and `aria-hidden="true"` on the skeleton element when it is
+hidden. These attributes are not injected automatically in the current release.
+
 ---
 
 **Next:** [Data Binding →](data-binding.md)
