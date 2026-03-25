@@ -88,6 +88,43 @@ The script scans every `.html` file in `dist/`, parses it with jsdom (already a
 devDependency for tests), and injects the same three hint types listed above.
 Existing hints are never duplicated.
 
+### CI/CD integration
+
+Run the script as a post-build step in your pipeline. The `&&` ensures it only
+runs when the bundler succeeds:
+
+```sh
+# npm scripts (package.json)
+"build": "your-bundler && node scripts/inject-resource-hints.js"
+
+# GitHub Actions
+- name: Build
+  run: npm run build
+
+# GitLab CI
+build:
+  script:
+    - npm run build
+```
+
+For monorepos or custom output directories, pass a glob explicitly:
+
+```sh
+node scripts/inject-resource-hints.js "public/**/*.html"
+```
+
+### Hints and component lifecycle
+
+Resource hints injected by the build-time script (or at runtime) are **not
+removed** if the route or component that triggered them is later destroyed.
+This is intentional — hints are advisory signals to the browser, not DOM state
+tied to a component. Leaving them in `<head>` is harmless: the browser ignores
+hints for resources it has already fetched or that are no longer needed.
+
+If you dynamically swap large portions of the route config and want to prevent
+stale hints from accumulating, remove the relevant `<link>` elements manually
+via JavaScript after navigation.
+
 ---
 
 ## `crossorigin` and credentialed APIs
