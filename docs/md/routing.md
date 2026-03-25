@@ -507,6 +507,36 @@ The title is updated on every navigation. If the attribute is absent on a
 template, `document.title` is not changed — allowing a default title set in
 `<head>` to persist for that route.
 
+### Template literal syntax
+
+String literals inside HTML attributes must use **single quotes** inside the
+outer double-quote attribute delimiters. Backtick template literals are not
+supported inside HTML attributes:
+
+```html
+<!-- ✅ Correct -->
+<template route="/about" page-title="'About Us | My Store'">
+
+<!-- ❌ Backtick not valid inside HTML attribute -->
+<template route="/about" page-title="`About Us | My Store`">
+```
+
+### Reactivity
+
+`page-title` is evaluated **once per navigation**, not continuously. If your
+`$store` changes after navigation (e.g. the user logs in), `document.title`
+is **not** automatically updated. For continuous reactivity, place a
+`<div hidden page-title="...">` body directive alongside the route template —
+it uses `_watchExpr` and updates whenever the expression changes.
+
+### Precedence with body directives
+
+If both a `<div hidden page-title="...">` body directive and a route template
+`page-title` attribute are present, whichever runs last wins. Body directives
+run when the element is processed; route `page-title` runs on each navigation.
+For SPAs with a router, prefer route attributes — they update automatically on
+every navigation.
+
 > **Tip:** For full head management (description, canonical URL, JSON-LD) from
 > route templates see [Route Head Attributes →](#route-head-attributes).
 > For non-routing pages see [Head Management →](head-management.md).
