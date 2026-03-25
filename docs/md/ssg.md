@@ -40,6 +40,10 @@ layout: base.html
 </div>
 ```
 
+> `{{ product | dump }}` is a Nunjucks filter that serializes the `product`
+> object to a JSON string. Equivalent filters exist in other template engines:
+> `{{ product | to_json }}` in Jinja2, `{{ product | json }}` in Liquid.
+
 The `state=` value is set at build time from the template data. No.JS boots, reads it, and makes the "Add to cart" button interactive — but `<h1>` and `<p>` were already in the HTML.
 
 ### Server-side rendering (SSR)
@@ -173,6 +177,25 @@ const stateJson = JSON.stringify(product).replace(/</g, '\\u003c').replace(/>/g,
 ```
 
 Most template engines (Jinja2, Nunjucks, Twig, Liquid) escape attribute values by default. Verify that your SSG does not disable escaping for `state=` values.
+
+---
+
+## Managing `<head>` in SSG pages
+
+When your SSG renders each page with its own `<title>` and
+`<meta name="description">` server-side, those tags are already in the
+initial HTML — no client-side directive is needed for static content.
+
+For **SPA routing** (single `index.html` with a No.JS router), the server
+renders only one HTML file and the router handles navigation. Use the
+`page-title`, `page-description`, `page-canonical`, and `page-jsonld`
+attributes directly on `<template route>` elements to update `<head>` on
+each navigation — see [Route Head Attributes →](routing.md#route-head-attributes).
+
+For **non-routing pages** (product pages, landing pages without a router),
+the `page-title` and `page-description` directives from
+[Head Management →](head-management.md) provide the same capability as
+a body directive with full reactive support.
 
 ---
 
