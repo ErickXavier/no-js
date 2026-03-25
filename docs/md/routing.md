@@ -537,18 +537,39 @@ attributes are evaluated on every navigation and update the corresponding
 
 ### JSON-LD
 
-`page-jsonld` is injected verbatim — no expression evaluation. Write the
-JSON-LD object directly as the attribute value:
+`page-jsonld` supports `{placeholder}` interpolation for dynamic values.
+The same JSON-safe regex used by the body `page-jsonld` directive is applied —
+it skips `{` starting with `"` or `'` so JSON structural braces are not consumed:
 
 ```html
+<!-- Static JSON-LD -->
 <template route="/about"
-  page-jsonld='{"@context":"https://schema.org","@type":"WebPage","name":"About Us","url":"https://mystore.com/about"}'>
+  page-jsonld='{"@context":"https://schema.org","@type":"WebPage","name":"About Us"}'>
   <h1>About</h1>
+</template>
+
+<!-- Dynamic JSON-LD — {placeholder} values are evaluated -->
+<template route="/products/:id"
+  page-jsonld='{"@context":"https://schema.org","@type":"Product","name":"{$route.params.id}","url":"https://mystore.com/products/{$route.params.id}"}'>
+  <h1>Product</h1>
 </template>
 ```
 
 The `data-nojs` marker on the injected script tag distinguishes it from
 hand-written JSON-LD blocks — both can coexist in `<head>`.
+
+### Precedence with body directives
+
+If both a `<div hidden page-title="...">` body directive (from the Head
+Management feature) and a `<template route page-title="...">` attribute are
+active at the same time, whichever executes last will overwrite the previous
+value. In practice:
+
+- Body directives are evaluated once when the element is processed.
+- Route attributes are evaluated on every navigation.
+
+For SPAs with a router, prefer route attributes — they automatically update
+metadata on each navigation without needing a separate `<div hidden>`.
 
 ### Notes
 
@@ -557,6 +578,8 @@ hand-written JSON-LD blocks — both can coexist in `<head>`.
 - Existing `<head>` nodes (from server-rendered HTML) are updated in place —
   never duplicated.
 - If an attribute is absent, the corresponding `<head>` node is left unchanged.
+- `$store` and `$route` are in scope, but changes to `$store` after navigation
+  do **not** automatically re-run — metadata is evaluated once per navigation.
 
 > For non-routing pages (product pages, landing pages without a router), see
 > [Head Management →](head-management.md).

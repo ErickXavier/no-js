@@ -5,6 +5,18 @@
 import { _config, _stores, _log, _warn } from "./globals.js";
 import { createContext } from "./context.js";
 import { evaluate } from "./evaluate.js";
+
+// Interpolates {expr} placeholders in a raw string (used for page-jsonld).
+// Uses the same JSON-safe regex as the head-management directive — skips
+// { starting with " or ' to avoid consuming JSON structural braces.
+function _interpolateRaw(str, ctx) {
+  return str.replace(/\{([^}"'{][^}]*)\}/g, (_, expr) => {
+    try {
+      const val = evaluate(expr.trim(), ctx);
+      return val != null ? String(val) : "";
+    } catch (_) { return ""; }
+  });
+}
 import { findContext, _clearDeclared, _loadTemplateElement, _processTemplateIncludes } from "./dom.js";
 import { processTree, _disposeTree } from "./registry.js";
 import { _animateIn } from "./animations.js";
@@ -219,6 +231,8 @@ export function _createRouter() {
     }
 
     // page-jsonld → <script type="application/ld+json" data-nojs>
+    // Supports {placeholder} interpolation for dynamic values (e.g. $route.params.id).
+    // Uses the JSON-safe regex that skips { starting with " or ' to preserve JSON structure.
     const jsonldAttr = tpl.getAttribute("page-jsonld");
     if (jsonldAttr) {
       let script = document.querySelector('script[type="application/ld+json"][data-nojs]');
@@ -228,7 +242,7 @@ export function _createRouter() {
         script.setAttribute("data-nojs", "");
         document.head.appendChild(script);
       }
-      script.textContent = jsonldAttr;
+      script.textContent = _interpolateRaw(jsonldAttr, ctx);
     }
   }
 

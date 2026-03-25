@@ -2876,4 +2876,21 @@ describe('Router — route head attributes (page-title, page-description, page-c
     expect(document.title).toBe('Page B');
     expect(document.querySelector('meta[name="description"]').content).toBe('Desc B');
   });
+
+  test('page-jsonld supports {placeholder} interpolation with $route.params', async () => {
+    document.body.innerHTML = `
+      <div route-view></div>
+      <template route="/products/:id"
+        page-jsonld='{"@type":"Product","productId":"{$route.params.id}"}'>
+        <h1>Product</h1>
+      </template>
+    `;
+    const router = _createRouter();
+    await router.init();
+    await router.push('/products/42');
+    const script = document.querySelector('script[type="application/ld+json"][data-nojs]');
+    expect(script).not.toBeNull();
+    expect(script.textContent).toContain('"42"');
+    expect(script.textContent).not.toContain('{$route.params.id}');
+  });
 });
