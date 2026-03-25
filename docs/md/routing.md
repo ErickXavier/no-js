@@ -479,4 +479,38 @@ The failed HTTP response is **not** cached — subsequent navigations to other p
 
 ---
 
+---
+
+## Per-Route Document Title (`page-title`)
+
+Set `document.title` declaratively on each `<template route>` element. The
+value is a No.JS expression; `$route` and `$store` are available in scope.
+
+```html
+<!-- Static string literal -->
+<template route="/about" page-title="'About Us | My Store'">
+  <h1>About</h1>
+</template>
+
+<!-- Expression using route params -->
+<template route="/products/:id" page-title="'Product ' + $route.params.id + ' | Store'">
+  <h1>Product Detail</h1>
+</template>
+
+<!-- Expression using global store (e.g. after login) -->
+<template route="/account" page-title="$store.user.name + ' — My Account'">
+  <h1>Account</h1>
+</template>
+```
+
+The title is updated on every navigation. If the attribute is absent on a
+template, `document.title` is not changed — allowing a default title set in
+`<head>` to persist for that route.
+
+> **Tip:** For full head management (description, canonical URL, JSON-LD) from
+> route templates see [Route Head Attributes →](#route-head-attributes).
+> For non-routing pages see [Head Management →](head-management.md).
+
+---
+
 **Next:** [Animations →](animations.md)
