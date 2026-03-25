@@ -418,7 +418,8 @@ export function _createRouter() {
     },
     async init() {
       // Warn when hash mode is active: hash URLs are not indexed as separate pages by search engines.
-      if (_config.router.useHash) {
+      // Suppress with: NoJS.config({ router: { suppressHashWarning: true } })
+      if (_config.router.useHash && !_config.router.suppressHashWarning) {
         _warn("Router is running in hash mode (useHash: true). URLs like /#/about are not indexed as separate pages by search engines. Use useHash: false with a server-side SPA fallback (try_files) for SEO-friendly routing. See: https://github.com/ErickXavier/no-js/blob/main/docs/md/routing.md#deployment");
       }
 

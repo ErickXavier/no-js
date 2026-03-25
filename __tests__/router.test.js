@@ -2716,4 +2716,14 @@ describe('Router — useHash SEO warning', () => {
     );
     expect(hashWarning).toBeUndefined();
   });
+
+  test('does not warn when suppressHashWarning: true', async () => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top', suppressHashWarning: true };
+    const router = _createRouter();
+    await router.init();
+    const hashWarning = warnSpy.mock.calls.find(
+      (call) => call[1] && call[1].includes('hash mode'),
+    );
+    expect(hashWarning).toBeUndefined();
+  });
 });

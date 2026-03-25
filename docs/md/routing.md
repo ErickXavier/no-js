@@ -537,6 +537,35 @@ Create a `vercel.json` in your project root:
 }
 ```
 
+### Cloudflare Pages
+
+Create a `_redirects` file in your project's output directory:
+
+```
+/*  /index.html  200
+```
+
+Or add a `_headers` file if you need finer control:
+
+```
+_redirects
+/*  /index.html  200
+```
+
+### Firebase Hosting
+
+In `firebase.json`:
+
+```json
+{
+  "hosting": {
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
+```
+
 ### Hash mode
 
 If you cannot configure your server (e.g., static file hosting without rewrite rules), you can use hash mode:
@@ -546,6 +575,15 @@ NoJS.config({ router: { useHash: true } });
 ```
 
 Hash mode produces URLs like `https://your-site.com/#/about`. These work on any server without configuration, but **search engines do not index hash fragments as separate pages** — all routes appear as a single URL to Googlebot. Use hash mode only when History API routing is not possible.
+
+> **Note:** No.JS emits a console warning when `useHash: true` is detected. If you are intentionally using hash mode (e.g. GitHub Pages) and want to suppress the warning, add:
+> ```js
+> NoJS.config({ router: { useHash: true, suppressHashWarning: true } });
+> ```
+
+---
+
+> **See also:** For SEO-optimised routing without a server, consider generating static HTML per route at build time — see [SSG & Pre-Rendering →](ssg.md).
 
 ---
 
