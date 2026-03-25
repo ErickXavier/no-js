@@ -47,7 +47,8 @@
       "dragAndDrop": "Drag & Drop",
       "animations": "Animazioni",
       "filters": "Filtri",
-      "i18n": "i18n"
+      "i18n": "i18n",
+      "plugins": "Plugin"
     },
     "langSwitcher": {
       "en": "EN",

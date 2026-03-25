@@ -12,6 +12,7 @@
       <a href="#cheatsheet" class="sidebar-link" t="shell.sidebar.directives"></a>
       <a href="#actions-refs" class="sidebar-link" t="shell.sidebar.actionsRefs"></a>
       <a href="#custom-directives" class="sidebar-link" t="shell.sidebar.customDirectives"></a>
+      <a href="#plugins" class="sidebar-link" t="shell.sidebar.plugins"></a>
       <a href="#error-handling" class="sidebar-link" t="shell.sidebar.errorHandling"></a>
       <a href="#configuration" class="sidebar-link" t="shell.sidebar.configuration"></a>
     </div>

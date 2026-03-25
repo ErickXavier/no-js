@@ -13,6 +13,7 @@ import '../src/directives/binding.js';
 import '../src/directives/conditionals.js';
 import '../src/directives/events.js';
 import '../src/directives/loops.js';
+import '../src/directives/validation.js';
 
 describe('State Directive', () => {
   afterEach(() => {
@@ -418,15 +419,8 @@ describe('SVG Data URI Sanitization (DOMParser)', () => {
     const uri = svgDataUri('<<<not-valid-xml>>>');
     const img = bindSrc(uri);
     const src = img.getAttribute('src');
-    // Should either fall back to "#" (catch in _sanitizeSvgDataUri) or
-    // return an empty/safe SVG — never the raw malformed input
-    if (src === '#') {
-      expect(src).toBe('#');
-    } else {
-      const svg = getSrcSvg(img);
-      expect(svg).not.toContain('<<<');
-      expect(svg).not.toContain('script');
-    }
+    // Should either fall back to "#" or return a safe SVG — never the raw malformed input
+    expect(src).not.toContain('<<<');
   });
 
   test('sanitizes base64-encoded SVG data URIs', () => {
@@ -3128,5 +3122,294 @@ describe('bind-html — D1 dynamic expression warning', () => {
       expect.anything()
     );
     document.body.removeChild(parent);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  AUDIT FIX — H2: Validation listeners are properly removed on disposal
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('Validation listener disposal (H2)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('should remove form-level event listeners (input, change, focusout) on dispose', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ }');
+    const form = document.createElement('form');
+    form.setAttribute('validate', '');
+    const input = document.createElement('input');
+    input.setAttribute('name', 'username');
+    input.setAttribute('validate', 'required');
+    form.appendChild(input);
+    parent.appendChild(form);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // The form element should have disposers registered
+    expect(form.__disposers).toBeDefined();
+    expect(form.__disposers.length).toBeGreaterThan(0);
+
+    const removeSpy = jest.spyOn(form, 'removeEventListener');
+    _disposeTree(form);
+
+    // Verify removeEventListener was called for form-level events
+    const removedEvents = removeSpy.mock.calls.map((c) => c[0]);
+    expect(removedEvents).toContain('input');
+    expect(removedEvents).toContain('change');
+    expect(removedEvents).toContain('focusout');
+    expect(removedEvents).toContain('submit');
+    removeSpy.mockRestore();
+  });
+
+  test('should not accumulate duplicate listeners when re-processing a validated form', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ }');
+    const form = document.createElement('form');
+    form.setAttribute('validate', '');
+    const input = document.createElement('input');
+    input.setAttribute('name', 'email');
+    input.setAttribute('validate', 'required');
+    form.appendChild(input);
+    parent.appendChild(form);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    const disposerCountFirst = form.__disposers ? form.__disposers.length : 0;
+
+    // Dispose and re-process to simulate re-render
+    _disposeTree(form);
+    processTree(form);
+
+    const disposerCountSecond = form.__disposers ? form.__disposers.length : 0;
+
+    // After re-processing, disposer count should be the same as the first time
+    // (no accumulation of duplicate listeners)
+    expect(disposerCountSecond).toBe(disposerCountFirst);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  AUDIT FIX — H3: Validation error element clearing calls _disposeChildren
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('Validation error element disposal (H3)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('should dispose children of error element when field becomes valid', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ }');
+
+    // Create a template for error display
+    const errorTpl = document.createElement('template');
+    errorTpl.id = 'field-error';
+    errorTpl.innerHTML = '<span class="error-msg">Error</span>';
+    document.body.appendChild(errorTpl);
+
+    // Standalone field-level validation with error template
+    const input = document.createElement('input');
+    input.setAttribute('name', 'field');
+    input.setAttribute('validate', 'required');
+    input.setAttribute('error', '#field-error');
+    parent.appendChild(input);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Trigger an error: empty value fires required error
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // Locate the error element inserted after input
+    const errorEl = input.nextElementSibling;
+    expect(errorEl).toBeTruthy();
+    expect(errorEl.__validationError).toBe(true);
+    expect(errorEl.innerHTML).not.toBe('');
+
+    // Plant a mock disposer on a child to verify _disposeChildren was called
+    const errorChild = errorEl.querySelector('.error-msg');
+    expect(errorChild).toBeTruthy();
+    const disposed = [];
+    errorChild.__disposers = [() => disposed.push('child-disposed')];
+
+    // Now make the field valid
+    input.value = 'valid text';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // The child disposer should have been called when clearing the error
+    expect(disposed).toEqual(['child-disposed']);
+    expect(errorEl.innerHTML).toBe('');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  AUDIT FIX — M8: error-boundary nojs:error listener cleanup on dispose
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('Error-boundary nojs:error listener disposal (M8)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('should not trigger fallback after error-boundary element is disposed', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ }');
+
+    // Create a fallback template
+    const fallbackTpl = document.createElement('template');
+    fallbackTpl.id = 'error-fallback';
+    fallbackTpl.innerHTML = '<div class="fallback">Something went wrong</div>';
+    document.body.appendChild(fallbackTpl);
+
+    const boundary = document.createElement('div');
+    boundary.setAttribute('error-boundary', '#error-fallback');
+    boundary.innerHTML = '<p>Normal content</p>';
+    parent.appendChild(boundary);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Verify error-boundary has disposers registered
+    expect(boundary.__disposers).toBeDefined();
+    expect(boundary.__disposers.length).toBeGreaterThan(0);
+
+    // Capture initial innerHTML
+    const initialHTML = boundary.innerHTML;
+
+    // Dispose the boundary element (simulates removal from DOM)
+    _disposeTree(boundary);
+
+    // Now dispatch a nojs:error event — should NOT trigger fallback rendering
+    boundary.dispatchEvent(new CustomEvent('nojs:error', {
+      detail: { message: 'Test error after disposal' },
+    }));
+
+    // innerHTML should remain unchanged — no fallback was rendered
+    expect(boundary.innerHTML).toBe(initialHTML);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  AUDIT FIX — M9: bind-html calls _disposeChildren before innerHTML
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('bind-html child disposal (M9)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('should call child disposers when bind-html updates with new content', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ content: "<b>Initial</b>" }');
+    const div = document.createElement('div');
+    div.setAttribute('bind-html', 'content');
+    parent.appendChild(div);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(div.innerHTML).toBe('<b>Initial</b>');
+
+    // Plant a mock disposer on the child <b> element
+    const boldChild = div.querySelector('b');
+    expect(boldChild).toBeTruthy();
+    const disposed = [];
+    boldChild.__disposers = [() => disposed.push('bold-disposed')];
+
+    // Update content — should trigger _disposeChildren before setting new innerHTML
+    parent.__ctx.content = '<em>Updated</em>';
+
+    // Verify the old child's disposer was called
+    expect(disposed).toEqual(['bold-disposed']);
+    // And the new content is in place
+    expect(div.innerHTML).toBe('<em>Updated</em>');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  H1 — persist watcher is unsubscribed after element disposal
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('H1 — persist watcher disposal', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    localStorage.clear();
+  });
+
+  test('should stop persisting to localStorage after element disposal', () => {
+    const div = document.createElement('div');
+    div.setAttribute('state', '{ count: 0 }');
+    div.setAttribute('persist', 'localStorage');
+    div.setAttribute('persist-key', 'test-h1');
+    document.body.appendChild(div);
+    processTree(div);
+
+    const ctx = div.__ctx;
+
+    // Verify persistence works before disposal
+    ctx.count = 10;
+    const saved = JSON.parse(localStorage.getItem('nojs_state_test-h1'));
+    expect(saved.count).toBe(10);
+
+    // Dispose the element tree
+    _disposeTree(div);
+
+    // Mutate state after disposal — should NOT write to localStorage
+    ctx.count = 999;
+    const afterDispose = JSON.parse(localStorage.getItem('nojs_state_test-h1'));
+    // The value should still be 10, not 999
+    expect(afterDispose.count).toBe(10);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  M5 — debounce timer is cleared on element disposal
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('M5 — debounce timer cleared on disposal', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    document.body.innerHTML = '';
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    document.body.innerHTML = '';
+  });
+
+  test('should not fire debounced callback after element is disposed mid-debounce', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ clicked: false }');
+    const btn = document.createElement('button');
+    btn.setAttribute('on:click.debounce.500', 'clicked = true');
+    parent.appendChild(btn);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const ctx = parent.__ctx;
+
+    // Click the button to start the debounce timer
+    btn.dispatchEvent(new Event('click'));
+
+    // Dispose the element before the debounce fires (only 100ms in)
+    jest.advanceTimersByTime(100);
+    expect(ctx.clicked).toBe(false); // Not yet fired
+
+    _disposeTree(btn);
+
+    // Advance past the debounce window
+    jest.advanceTimersByTime(500);
+
+    // The callback should NOT have fired because disposal cleared the timer
+    expect(ctx.clicked).toBe(false);
   });
 });

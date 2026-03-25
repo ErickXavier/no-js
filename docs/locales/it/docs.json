@@ -9,13 +9,13 @@
       "introduction": {
         "title": "Introduzione",
         "text": "No.JS è un framework reattivo HTML-first. Costruisci applicazioni web dinamiche e data-driven usando solo attributi HTML — nessun build step, nessun DOM virtuale, nessun JSX.",
-        "callout": "~24KB gzippato · Zero dipendenze · Funziona su tutti i browser moderni · Nessun build step richiesto"
+        "callout": "Zero dipendenze · Funziona su tutti i browser moderni · Nessun build step richiesto"
       },
       "installation": {
         "title": "Installazione",
         "cdnSubtitle": "CDN (consigliato)",
         "selfHostedSubtitle": "Auto-ospitato",
-        "selfHostedText": "Scarica dist/iife/no.js e includilo con un tag <script>. È un singolo file, ~24 KB gzippato."
+        "selfHostedText": "Scarica dist/iife/no.js e includilo con un tag <script>. È un singolo file."
       },
       "quickStart": {
         "title": "Avvio Rapido",
@@ -1189,6 +1189,120 @@
         "csrfTitle": "Protezione CSRF",
         "cspSecTitle": "Content Security Policy",
         "cspSecText1": "No.JS utilizza un parser di espressioni personalizzato completamente compatibile con CSP — eval() e il costruttore Function() non vengono usati. Nessuna direttiva unsafe-eval è richiesta nella tua Content Security Policy."
+      }
+    },
+    "plugins": {
+      "hero": {
+        "badge": "Riferimento API",
+        "title": "Plugin",
+        "subtitle": "Estendi No.JS con pacchetti riutilizzabili — analytics, autenticazione, feature flag e altro"
+      },
+      "use": {
+        "title": "NoJS.use()",
+        "text": "Registra un plugin prima o dopo NoJS.init(). Se l'app è già inizializzata, l'hook init del plugin viene eseguito immediatamente.",
+        "objectFormTitle": "Forma Oggetto",
+        "objectFormText": "Il modo standard per definire un plugin. Fornisci un nome, una funzione install e hook di ciclo di vita opzionali.",
+        "functionTitle": "Scorciatoia Funzione",
+        "functionText": "Per i plugin semplici, passa una funzione con nome. Il nome della funzione diventa il nome del plugin.",
+        "functionCallout": "Le funzioni anonime e le arrow function vengono rifiutate — il plugin deve avere un nome.",
+        "optionsTitle": "Opzioni",
+        "optionsText": "Il secondo argomento di NoJS.use() viene passato alla funzione install del plugin.",
+        "optionsTrustedNote": "L'opzione trusted è speciale — vedi Interceptor Fidati qui sotto."
+      },
+      "interface": {
+        "title": "Interfaccia del Plugin",
+        "thProperty": "Proprietà",
+        "thType": "Tipo",
+        "thRequired": "Obbligatorio",
+        "thDescription": "Descrizione",
+        "yes": "Sì",
+        "no": "No",
+        "nameDesc": "Identificatore univoco. I nomi duplicati vengono rifiutati.",
+        "versionDesc": "Stringa semver per il debug.",
+        "capabilitiesDesc": "Capacità dichiarate (registrate in modalità debug).",
+        "installDesc": "Chiamato in modo sincrono da NoJS.use().",
+        "initDesc": "Chiamato dopo il completamento di NoJS.init() (il DOM è pronto).",
+        "disposeDesc": "Chiamato durante NoJS.dispose() per la pulizia.",
+        "lifecycleTitle": "Ciclo di Vita",
+        "lifecycleInstall": "install viene eseguito immediatamente e in modo sincrono. Usalo per registrare interceptor, globali, direttive, listener di eventi e store.",
+        "lifecycleInit": "init viene eseguito dopo che il DOM è stato elaborato e il router è attivo. Usalo per operazioni che dipendono da elementi renderizzati o dallo stato della rotta.",
+        "lifecycleDispose": "dispose viene eseguito durante la distruzione dell'app. Usalo per chiudere connessioni WebSocket, cancellare intervalli, inviare analytics in sospeso, ecc.",
+        "duplicateTitle": "Rilevamento Duplicati",
+        "duplicateText": "Un nome di plugin può essere registrato una sola volta. Se NoJS.use() viene chiamato di nuovo con lo stesso nome ma un oggetto diverso, viene registrato un avviso e la chiamata viene ignorata.",
+        "freezingTitle": "Congelamento del Registro delle Direttive",
+        "freezingText": "Le direttive principali (state, bind, get, on:*, ecc.) vengono congelate dopo il caricamento del framework. I plugin possono registrare nuove direttive ma non possono sovrascrivere quelle integrate."
+      },
+      "globals": {
+        "title": "NoJS.global()",
+        "text": "Inietta una variabile reattiva accessibile come $name in qualsiasi espressione di template.",
+        "namingTitle": "Convenzioni di Denominazione",
+        "namingPrefix": "I nomi globali sono accessibili con un prefisso $ nei template: NoJS.global('foo', ...) diventa $foo.",
+        "namingNamespace": "Usa il nome del tuo plugin come namespace per evitare collisioni: $analytics, $auth, $featureFlags.",
+        "reservedTitle": "Nomi Riservati",
+        "reservedText": "I seguenti nomi non possono essere usati con NoJS.global():",
+        "reservedProto": "I vettori di inquinamento del prototipo (__proto__, constructor, prototype) sono anch'essi bloccati.",
+        "reactivityTitle": "Reattività",
+        "reactivityText": "I valori oggetto passati a NoJS.global() vengono automaticamente avvolti in un contesto reattivo. Le mutazioni attivano aggiornamenti del DOM proprio come le modifiche a store o state.",
+        "ownershipTitle": "Tracciamento della Proprietà",
+        "ownershipText": "Quando un plugin registra un globale durante la sua fase install, ne diventa il proprietario. Se un plugin diverso sovrascrive quel globale, viene registrato un avviso."
+      },
+      "sentinels": {
+        "title": "Sentinelle degli Interceptor",
+        "text": "Gli interceptor di richiesta possono restituire oggetti speciali con chiave di Symbol sentinella per controllare il pipeline di fetch.",
+        "cancelTitle": "NoJS.CANCEL — Annullare la Richiesta",
+        "cancelText": "Restituisci un oggetto con [NoJS.CANCEL]: true per impedire l'invio della richiesta. Il fetch lancia un AbortError.",
+        "respondTitle": "NoJS.RESPOND — Servire una Risposta dalla Cache",
+        "respondText": "Restituisci un oggetto con [NoJS.RESPOND]: data per cortocircuitare la richiesta e restituire data direttamente come risposta. Nessuna richiesta HTTP viene effettuata.",
+        "replaceTitle": "NoJS.REPLACE — Sostituire i Dati della Risposta",
+        "replaceText": "Restituisci un oggetto con [NoJS.REPLACE]: data da un interceptor di risposta per sostituire il corpo della risposta analizzato con dati personalizzati.",
+        "summaryTitle": "Riepilogo",
+        "thSentinel": "Sentinella",
+        "thUsedIn": "Usato In",
+        "thEffect": "Effetto",
+        "cancelUsedIn": "Interceptor di richiesta",
+        "respondUsedIn": "Interceptor di richiesta",
+        "replaceUsedIn": "Interceptor di risposta",
+        "cancelEffect": "Annulla la richiesta (lancia AbortError)",
+        "respondEffect": "Restituisce i dati direttamente, salta la chiamata HTTP",
+        "replaceEffect": "Sostituisce il corpo della risposta analizzato"
+      },
+      "trusted": {
+        "title": "Interceptor Fidati",
+        "text": "Per impostazione predefinita, gli interceptor ricevono copie censurate delle richieste e risposte — gli header sensibili e i parametri URL vengono rimossi o sostituiti con [REDACTED].",
+        "fullAccess": "I plugin di autenticazione che necessitano di accesso agli header reali possono essere installati con { trusted: true }.",
+        "callout": "Un avviso nella console viene registrato quando un plugin viene installato con accesso fidato. Concedi trusted solo ai plugin che controlli o hai verificato.",
+        "redactedTitle": "Header Censurati",
+        "requestLabel": "Header di richiesta rimossi prima del passaggio agli interceptor non fidati:",
+        "responseLabel": "Header di risposta rimossi dal proxy di risposta:"
+      },
+      "dispose": {
+        "title": "NoJS.dispose()",
+        "text": "Distrugge l'intera applicazione: dispone i plugin, cancella i globali e rimuove gli interceptor.",
+        "orderTitle": "Ordine di Distruzione",
+        "orderStep1": "I plugin vengono distrutti in ordine inverso di installazione (l'ultimo installato viene distrutto per primo).",
+        "orderStep2": "La funzione dispose di ogni plugin ha un timeout di 3 secondi. Se lo supera, viene registrato un errore e la distruzione continua con il plugin successivo.",
+        "orderStep3": "Dopo che tutti i plugin sono stati distrutti, i globali e gli interceptor vengono cancellati.",
+        "asyncTitle": "Dispose Asincrono",
+        "asyncText": "Le funzioni dispose dei plugin possono essere asincrone. Il framework attende ciascuna (soggetta al timeout di 3 secondi).",
+        "callout": "I plugin non possono essere installati durante la distruzione. Le chiamate a NoJS.use() mentre dispose() è in esecuzione vengono ignorate con un avviso."
+      },
+      "security": {
+        "title": "Linee Guida di Sicurezza",
+        "text": "Quando crei plugin, segui queste pratiche per mantenere la tua applicazione sicura.",
+        "namespaceTitle": "Usa il Namespace per Tutto",
+        "namespaceText": "Aggiungi il prefisso del nome del tuo plugin a globali, store e nomi di eventi per evitare collisioni.",
+        "evalTitle": "Non Usare Mai eval o Function",
+        "evalText": "I valori passati a NoJS.global() vengono controllati per riferimenti pericolosi. eval e Function sono bloccati.",
+        "cleanupTitle": "Pulisci in dispose",
+        "cleanupText": "Fornisci sempre un hook dispose che cancelli gli intervalli, chiuda le connessioni e rimuova i listener di eventi.",
+        "overwriteTitle": "Evita di Sovrascrivere i Globali Altrui",
+        "overwriteText": "Se il tuo plugin rileva che un globale appartiene già a un altro plugin, considera di usare un nome diverso piuttosto che sovrascrivere silenziosamente.",
+        "validateTitle": "Valida le Opzioni",
+        "validateText": "Verifica le opzioni obbligatorie in install e avvisa subito."
+      },
+      "example": {
+        "title": "Esempio Completo",
+        "text": "Un plugin di analytics completo che dimostra il ciclo di vita del plugin, globali, interceptor e distruzione."
       }
     }
   }

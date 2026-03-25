@@ -403,6 +403,7 @@
         <div id="cheatsheet"><template src="./docs/cheatsheet.tpl" loading="#doc-skeleton"></template></div>
         <div id="actions-refs"><template src="./docs/actions-refs.tpl" loading="#doc-skeleton"></template></div>
         <div id="custom-directives"><template src="./docs/custom-directives.tpl" loading="#doc-skeleton"></template></div>
+        <div id="plugins"><template src="./docs/plugins.tpl" loading="#doc-skeleton"></template></div>
         <div id="error-handling"><template src="./docs/error-handling.tpl" loading="#doc-skeleton"></template></div>
         <div id="configuration"><template src="./docs/configuration.tpl" loading="#doc-skeleton"></template></div>
         <div id="state-management"><template src="./docs/state-management.tpl" loading="#doc-skeleton"></template></div>

@@ -378,4 +378,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Animation system with `animate` and `transition` directives
 - Scoped context system with parent inheritance
 - Filter system with `|` pipe syntax
-- ~20 KB gzipped, zero dependencies
+- Zero dependencies

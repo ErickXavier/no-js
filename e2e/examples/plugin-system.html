@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plugin System — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    section { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+    .test-label { font-weight: 600; margin: 0 0 0.75rem; color: #555; }
+    .value { display: inline-block; padding: 0.15rem 0.5rem; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; min-width: 1.5rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Plugin lifecycle: global + filter + init hook -->
+  <section id="test-plugin" state="{ x: 0 }">
+    <p class="test-label">Test 1: Plugin lifecycle (global + filter + init)</p>
+    <span data-test="global-value" bind="$demo.message"></span>
+    <span data-test="filtered" bind="'hello' | shout"></span>
+  </section>
+
+  <!-- 2. Global reactivity: $demo.count updates on click -->
+  <section state="{ x: 0 }">
+    <p class="test-label">Test 2: Global reactivity</p>
+    <button data-test="inc-btn" on:click="$demo.count++">Inc</button>
+    <span data-test="counter" bind="$demo.count"></span>
+  </section>
+
+  <!-- 3. Interceptor RESPOND: cache hit returns data without network -->
+  <section>
+    <p class="test-label">Test 3: Interceptor RESPOND (cache hit)</p>
+    <div get="/api/cached" as="cached">
+      <span data-test="cached-data" bind="cached.value"></span>
+    </div>
+  </section>
+
+  <!-- 4. Interceptor CANCEL: button-triggered request is blocked -->
+  <section state="{ cancelStatus: 'idle' }">
+    <p class="test-label">Test 4: Interceptor CANCEL (blocked request)</p>
+    <button data-test="cancel-trigger" post="/api/blocked" as="blocked" error="cancel-err-tpl"
+            then="cancelStatus = 'sent'">Send blocked request</button>
+    <span data-test="cancel-status" bind="cancelStatus"></span>
+    <template id="cancel-err-tpl"><span data-test="cancel-error">Request was blocked</span></template>
+  </section>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    // ── Plugin: demo ──
+    // Registers a global ($demo) and a filter (shout), plus an init hook
+    const DemoPlugin = {
+      name: 'demo',
+      version: '1.0.0',
+      capabilities: ['globals', 'filters'],
+      install(nojs) {
+        nojs.global('demo', { message: 'Plugin loaded!', count: 0 });
+        nojs.filter('shout', v => String(v).toUpperCase() + '!!!');
+      },
+      init(nojs) {
+        document.getElementById('test-plugin').setAttribute('data-init', 'true');
+      }
+    };
+
+    // ── Plugin: cache ──
+    // Demonstrates request interceptors: RESPOND (short-circuit) and CANCEL
+    const CachePlugin = {
+      name: 'cache',
+      version: '1.0.0',
+      capabilities: ['interceptors'],
+      install(nojs) {
+        nojs.interceptor('request', (url, opts) => {
+          if (url.includes('/api/cached')) {
+            return { [nojs.RESPOND]: { value: 'from-cache' } };
+          }
+          if (url.includes('/api/blocked')) {
+            return { [nojs.CANCEL]: true };
+          }
+        });
+      }
+    };
+
+    NoJS.use(DemoPlugin);
+    NoJS.use(CachePlugin);
+    NoJS.init();
+  </script>
+</body>
+</html>

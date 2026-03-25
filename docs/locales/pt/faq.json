@@ -25,7 +25,7 @@
       "title": "Primeiros Passos",
       "q1": {
         "question": "O que é o No.JS?",
-        "answer": "Um framework reativo HTML-first. Estado, fetch de dados, roteamento, validação, i18n, animações: tudo declarado através de atributos HTML. ~24 KB gzipped, zero dependências, sem etapa de build."
+        "answer": "Um framework reativo HTML-first. Estado, fetch de dados, roteamento, validação, i18n, animações: tudo declarado através de atributos HTML. Zero dependências, sem etapa de build."
       },
       "q2": {
         "question": "Como começo?",
@@ -52,7 +52,7 @@
       },
       "q7": {
         "question": "Quais recursos estão incluídos?",
-        "answer": "Tudo vem em um único arquivo de ~24 KB:<br><br>• Estado reativo e propriedades computadas<br>• Roteamento SPA com lazy loading<br>• HTTP declarativo (GET, POST, PUT, PATCH, DELETE)<br>• i18n com arquivos de locale externos<br>• Validação de formulários<br>• Animações e transições<br>• Drag and drop<br>• 30+ filtros integrados"
+        "answer": "Tudo vem em um único arquivo:<br><br>• Estado reativo e propriedades computadas<br>• Roteamento SPA com lazy loading<br>• HTTP declarativo (GET, POST, PUT, PATCH, DELETE)<br>• i18n com arquivos de locale externos<br>• Validação de formulários<br>• Animações e transições<br>• Drag and drop<br>• 30+ filtros integrados"
       },
       "q8": {
         "question": "Qual o caso de uso ideal?",
@@ -71,11 +71,11 @@
       },
       "q11": {
         "question": "No.JS vs React ou Vue?",
-        "answer": "React e Vue exigem etapa de build, virtual DOM e arquivos JavaScript. No.JS não exige nada disso.<br><br>~24 KB vs 100+ KB. Arquivos HTML vs bundles compilados. Deploy é subir HTML, não configurar pipeline."
+        "answer": "React e Vue exigem etapa de build, virtual DOM e arquivos JavaScript. No.JS não exige nada disso.<br><br>Arquivos HTML vs bundles compilados. Deploy é subir HTML, não configurar pipeline."
       },
       "q12": {
         "question": "Isso me lembra o AngularJS. É parecido?",
-        "answer": "Mesma intuição: trazer o desenvolvimento web de volta ao HTML. Execução diferente: ~24 KB, zero dependências, sem espiral de complexidade.<br><br>No.JS permanece intencionalmente pequeno e focado nos casos onde um framework completo é exagero."
+        "answer": "Mesma intuição: trazer o desenvolvimento web de volta ao HTML. Execução diferente: zero dependências, sem espiral de complexidade.<br><br>No.JS permanece intencionalmente pequeno e focado nos casos onde um framework completo é exagero."
       }
     },
     "security": {
@@ -86,7 +86,7 @@
       },
       "q14": {
         "question": "Qual o tamanho do bundle?",
-        "answer": "~24 KB gzipped. Isso inclui reatividade, roteamento, fetch de dados, i18n, animações, drag and drop, validação de formulários e 30+ filtros. Zero dependências."
+        "answer": "Inclui reatividade, roteamento, fetch de dados, i18n, animações, drag and drop, validação de formulários e 30+ filtros. Zero dependências."
       },
       "q15": {
         "question": "Preciso de uma etapa de build?",

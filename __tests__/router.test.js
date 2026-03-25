@@ -2682,3 +2682,145 @@ describe('Router — mode→useHash backward compat', () => {
 
 });
 
+describe('Router — destroy() removes global listeners', () => {
+  let router;
+
+  beforeEach(() => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
+    document.body.innerHTML = '';
+    window.location.hash = '';
+    window.scrollTo = jest.fn();
+    setRouterInstance(null);
+  });
+
+  afterEach(() => {
+    setRouterInstance(null);
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+    document.body.innerHTML = '';
+    window.location.hash = '';
+  });
+
+  test('should register global listeners after init()', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('route', '/');
+    tpl.innerHTML = '<p>Home</p>';
+    document.body.appendChild(tpl);
+
+    router = _createRouter();
+    setRouterInstance(router);
+    await router.init();
+
+    // After init, click handler should be registered on document
+    expect(_trackedDocClickHandlers.length).toBeGreaterThanOrEqual(1);
+    // In hash mode, hashchange handler should be registered on window
+    expect(_trackedWinHashchangeHandlers.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('should remove all global listeners after destroy()', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('route', '/');
+    tpl.innerHTML = '<p>Home</p>';
+    document.body.appendChild(tpl);
+
+    router = _createRouter();
+    setRouterInstance(router);
+    await router.init();
+
+    // Verify listeners are registered
+    const clickCountBefore = _trackedDocClickHandlers.length;
+    const hashCountBefore = _trackedWinHashchangeHandlers.length;
+    expect(clickCountBefore).toBeGreaterThanOrEqual(1);
+    expect(hashCountBefore).toBeGreaterThanOrEqual(1);
+
+    router.destroy();
+
+    // After destroy, all router-registered listeners should be removed
+    expect(_trackedDocClickHandlers.length).toBe(clickCountBefore - 1);
+    expect(_trackedWinHashchangeHandlers.length).toBe(hashCountBefore - 1);
+  });
+
+  test('should not navigate when clicking a [route] link after destroy()', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const homeTpl = document.createElement('template');
+    homeTpl.setAttribute('route', '/');
+    homeTpl.innerHTML = '<p>Home</p>';
+    document.body.appendChild(homeTpl);
+
+    const aboutTpl = document.createElement('template');
+    aboutTpl.setAttribute('route', '/about');
+    aboutTpl.innerHTML = '<p>About</p>';
+    document.body.appendChild(aboutTpl);
+
+    router = _createRouter();
+    setRouterInstance(router);
+    await router.init();
+
+    expect(router.current.path).toBe('/');
+
+    // Destroy the router
+    router.destroy();
+
+    // Create and click a route link
+    const link = document.createElement('a');
+    link.setAttribute('route', '/about');
+    link.textContent = 'About';
+    document.body.appendChild(link);
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    link.dispatchEvent(event);
+
+    await new Promise(r => setTimeout(r, 50));
+
+    // Navigation should NOT have happened because destroy() removed the click handler
+    expect(router.current.path).toBe('/');
+  });
+
+  test('should re-register listeners after destroy() then init()', async () => {
+    const outlet = document.createElement('div');
+    outlet.setAttribute('route-view', '');
+    document.body.appendChild(outlet);
+
+    const tpl = document.createElement('template');
+    tpl.setAttribute('route', '/');
+    tpl.innerHTML = '<p>Home</p>';
+    document.body.appendChild(tpl);
+
+    const aboutTpl = document.createElement('template');
+    aboutTpl.setAttribute('route', '/about');
+    aboutTpl.innerHTML = '<p>About</p>';
+    document.body.appendChild(aboutTpl);
+
+    router = _createRouter();
+    setRouterInstance(router);
+    await router.init();
+
+    // Destroy
+    router.destroy();
+    expect(_trackedDocClickHandlers.length).toBe(0);
+    expect(_trackedWinHashchangeHandlers.length).toBe(0);
+
+    // Re-init
+    window.location.hash = '#/';
+    await router.init();
+
+    // Listeners should be registered again
+    expect(_trackedDocClickHandlers.length).toBeGreaterThanOrEqual(1);
+    expect(_trackedWinHashchangeHandlers.length).toBeGreaterThanOrEqual(1);
+
+    // Navigation should work again
+    await router.push('/about');
+    expect(router.current.path).toBe('/about');
+  });
+});
+
