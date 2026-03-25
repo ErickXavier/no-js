@@ -8,7 +8,14 @@
       "docs": "Docs",
       "faq": "FAQ",
       "getStarted": "Começar",
-      "playground": "Playground"
+      "playground": "Playground",
+      "tools": "Mais",
+      "toolsLsp": "NoJS LSP",
+      "toolsLspDesc": "Extensão VS Code",
+      "toolsMcp": "NoJS MCP",
+      "toolsMcpDesc": "Servidor AI tools",
+      "toolsSkill": "NoJS Skill",
+      "toolsSkillDesc": "Referência AI agent"
     },
     "footer": {
       "desc": "O framework reativo HTML-first",
