@@ -479,4 +479,88 @@ The failed HTTP response is **not** cached — subsequent navigations to other p
 
 ---
 
+---
+
+## Route Head Attributes
+
+Declare SEO metadata directly on `<template route>` elements. All four
+attributes are evaluated on every navigation and update the corresponding
+`<head>` nodes — no extra elements needed inside the template body.
+
+```html
+<template route="/products/:id"
+  page-title="'Product ' + $route.params.id + ' | Store'"
+  page-description="'Shop our full catalogue of products'"
+  page-canonical="'/products/' + $route.params.id"
+  page-jsonld='{"@context":"https://schema.org","@type":"Product","name":"Sneaker X"}'>
+
+  <h1>Product Detail</h1>
+</template>
+```
+
+### Supported attributes
+
+| Attribute | Updates | Value |
+|---|---|---|
+| `page-title` | `document.title` | No.JS expression |
+| `page-description` | `<meta name="description" content="...">` | No.JS expression |
+| `page-canonical` | `<link rel="canonical" href="...">` | No.JS expression |
+| `page-jsonld` | `<script type="application/ld+json" data-nojs>` | JSON string (verbatim) |
+
+`$route` and `$store` are available as implicit variables in all expressions.
+
+### Static and dynamic values
+
+```html
+<!-- Static -->
+<template route="/about"
+  page-title="'About Us | My Store'"
+  page-description="'Learn more about us'"
+  page-canonical="'/about'">
+  <h1>About</h1>
+</template>
+
+<!-- Dynamic — $route.params -->
+<template route="/products/:id"
+  page-title="'Product ' + $route.params.id + ' | Store'"
+  page-canonical="'/products/' + $route.params.id">
+  <h1>Product</h1>
+</template>
+
+<!-- Dynamic — $store -->
+<template route="/account"
+  page-title="$store.user.name + ' — Account'"
+  page-description="'Manage your account settings'">
+  <h1>Account</h1>
+</template>
+```
+
+### JSON-LD
+
+`page-jsonld` is injected verbatim — no expression evaluation. Write the
+JSON-LD object directly as the attribute value:
+
+```html
+<template route="/about"
+  page-jsonld='{"@context":"https://schema.org","@type":"WebPage","name":"About Us","url":"https://mystore.com/about"}'>
+  <h1>About</h1>
+</template>
+```
+
+The `data-nojs` marker on the injected script tag distinguishes it from
+hand-written JSON-LD blocks — both can coexist in `<head>`.
+
+### Notes
+
+- Only fires from the **default** outlet. Named outlets (e.g. sidebar) do not
+  overwrite page metadata.
+- Existing `<head>` nodes (from server-rendered HTML) are updated in place —
+  never duplicated.
+- If an attribute is absent, the corresponding `<head>` node is left unchanged.
+
+> For non-routing pages (product pages, landing pages without a router), see
+> [Head Management →](head-management.md).
+
+---
+
 **Next:** [Animations →](animations.md)
