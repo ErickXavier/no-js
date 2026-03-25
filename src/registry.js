@@ -2,17 +2,28 @@
 //  DIRECTIVE REGISTRY & DOM PROCESSING
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _currentEl, _setCurrentEl, _storeWatchers } from "./globals.js";
+import { _currentEl, _setCurrentEl, _storeWatchers, _warn } from "./globals.js";
 import { _i18nListeners } from "./i18n.js";
 import { _devtoolsEmit, _ctxRegistry } from "./devtools.js";
 
 const _directives = new Map();
+let _frozen = false;
+const _coreDirectives = new Set();
 
 export function registerDirective(name, handler) {
+  if (_frozen && _coreDirectives.has(name)) {
+    _warn(`Cannot override core directive "${name}".`);
+    return;
+  }
   _directives.set(name, {
     priority: handler.priority ?? 50,
     init: handler.init,
   });
+  if (!_frozen) _coreDirectives.add(name);
+}
+
+export function _freezeDirectives() {
+  _frozen = true;
 }
 
 function _matchDirective(attrName) {

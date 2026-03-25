@@ -33,6 +33,51 @@ export function _cloneTemplate(id) {
   return tpl.content ? tpl.content.cloneNode(true) : null;
 }
 
+// ─── SVG data URI deep-sanitization ──────────────────────────────────────────
+// Strip JS vectors from raw SVG markup using DOMParser for robust sanitization.
+// Regex-based approaches are bypassable via entity encoding and nested contexts.
+function _sanitizeSvgContent(svg) {
+  const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+  const root = doc.documentElement;
+  if (root.querySelector("parsererror") ||
+      root.nodeName !== "svg" ||
+      root.getElementsByTagNameNS("http://www.mozilla.org/newlayout/xml/parsererror.xml", "parsererror").length) {
+    return "<svg></svg>";
+  }
+  function cleanAttrs(node) {
+    for (const attr of [...node.attributes]) {
+      const name = attr.name.toLowerCase();
+      if (name.startsWith("on")) { node.removeAttribute(attr.name); continue; }
+      if ((name === "href" || name === "xlink:href") &&
+          attr.value.trim().toLowerCase().startsWith("javascript:")) {
+        node.removeAttribute(attr.name);
+      }
+    }
+  }
+  for (const s of [...root.querySelectorAll("script")]) s.remove();
+  cleanAttrs(root);
+  for (const node of root.querySelectorAll("*")) cleanAttrs(node);
+  return new XMLSerializer().serializeToString(root);
+}
+
+// Sanitize a data:image/svg+xml URI — handles both base64 and URL-encoded forms.
+function _sanitizeSvgDataUri(str) {
+  try {
+    const b64 = str.match(/^data:image\/svg\+xml;base64,(.+)$/i);
+    if (b64) {
+      const clean = _sanitizeSvgContent(atob(b64[1]));
+      return "data:image/svg+xml;base64," + btoa(clean);
+    }
+    const comma = str.indexOf(",");
+    if (comma === -1) return "#";
+    const header = str.slice(0, comma + 1);
+    const clean = _sanitizeSvgContent(decodeURIComponent(str.slice(comma + 1)));
+    return header + encodeURIComponent(clean);
+  } catch (_e) {
+    return "#";
+  }
+}
+
 // Structural HTML sanitizer — uses DOMParser to parse the markup before cleaning.
 // Regex-based sanitizers are bypassable via SVG/MathML event handlers, nested
 // srcdoc attributes, and HTML entity encoding (e.g. &#x6A;avascript:).
@@ -65,11 +110,15 @@ export function _sanitizeHtml(html) {
       for (const attr of [...child.attributes]) {
         const n = attr.name.toLowerCase();
         const v = attr.value.toLowerCase().trimStart();
-        const isUrlAttr = n === 'href' || n === 'src' || n === 'action' || n === 'xlink:href';
+        const isUrlAttr = n === 'href' || n === 'src' || n === 'action' || n === 'xlink:href'
+          || n === 'formaction' || n === 'poster' || n === 'data';
         const isDangerousScheme = v.startsWith('javascript:') || v.startsWith('vbscript:');
         const isDangerousData = isUrlAttr && v.startsWith('data:') && !/^data:image\//.test(v);
         if (n.startsWith('on') || isDangerousScheme || isDangerousData) {
           child.removeAttribute(attr.name);
+        } else if (isUrlAttr && v.startsWith('data:image/svg+xml')) {
+          // Deep-sanitize SVG data URIs to strip embedded <script> and on* handlers
+          child.setAttribute(attr.name, _sanitizeSvgDataUri(attr.value));
         }
       }
       _clean(child);

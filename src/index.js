@@ -17,6 +17,17 @@ import {
   _log,
   _warn,
   _notifyStoreWatchers,
+  _plugins,
+  _globals,
+  _globalOwners,
+  _disposing,
+  _setDisposing,
+  _currentPluginName,
+  _setCurrentPluginName,
+  _emitEvent,
+  _CANCEL,
+  _RESPOND,
+  _REPLACE,
 } from "./globals.js";
 import { _i18n, _loadI18nForLocale } from "./i18n.js";
 import { createContext } from "./context.js";
@@ -24,7 +35,7 @@ import { evaluate, resolve } from "./evaluate.js";
 import { findContext, _loadRemoteTemplates, _loadRemoteTemplatesPhase1, _loadRemoteTemplatesPhase2, _processTemplateIncludes } from "./dom.js";
 import { registerDirective, processTree } from "./registry.js";
 import { _createRouter } from "./router.js";
-import { initDevtools, _devtoolsEmit } from "./devtools.js";
+import { initDevtools, destroyDevtools, _devtoolsEmit } from "./devtools.js";
 
 // Side-effect imports: register built-in filters
 import "./filters.js";
@@ -41,6 +52,46 @@ import "./directives/refs.js";
 import "./directives/validation.js";
 import "./directives/i18n.js";
 import "./directives/dnd.js";
+
+// Lock core directives — plugins can only register NEW names
+import { _freezeDirectives } from "./registry.js";
+_freezeDirectives();
+
+// ═══════════════════════════════════════════════════════════════════════
+//  PLUGIN SYSTEM INTERNALS
+// ═══════════════════════════════════════════════════════════════════════
+
+let _initPromise = null;
+
+// Keep in sync with context.js proxy handler $xxx variables.
+// Any new $xxx context variable requires adding xxx to this list.
+const _RESERVED_GLOBAL_NAMES = new Set([
+  "store", "route", "router", "i18n", "refs", "form", "parent",
+  "watch", "set", "notify", "raw", "isProxy", "listeners",
+  "app", "config", "env", "debug", "version", "plugins", "globals",
+  "el", "event", "self", "this", "super", "window", "document",
+  "toString", "valueOf", "hasOwnProperty",
+]);
+
+const _DANGEROUS_REFS = typeof window !== "undefined"
+  ? new Set([eval, Function, window.eval, window.Function].filter(Boolean))
+  : new Set();
+
+function _isUnsafeGlobalValue(value) {
+  return _DANGEROUS_REFS.has(value);
+}
+
+function _deepCheckUnsafe(obj, seen = new Set()) {
+  if (!obj || typeof obj !== "object" || seen.has(obj)) return;
+  seen.add(obj);
+  for (const val of Object.values(obj)) {
+    if (_isUnsafeGlobalValue(val)) {
+      _warn("NoJS.global(): value contains a forbidden reference (eval/Function).");
+      throw new Error("unsafe_global");
+    }
+    if (val && typeof val === "object") _deepCheckUnsafe(val, seen);
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════════════
 //  PUBLIC API
@@ -128,45 +179,221 @@ const NoJS = {
     }
   },
 
+  // ─── Plugin registration ──────────────────────────────────────────────
+  use(plugin, options = {}) {
+    if (_disposing) {
+      _warn("Cannot install plugins during dispose.");
+      return;
+    }
+
+    // Normalize function shorthand (named functions only)
+    if (typeof plugin === "function") {
+      if (!plugin.name || plugin.name === "anonymous") {
+        _warn('Plugin must have a unique, non-empty name. Use { name: "my-plugin", install: fn }.');
+        return;
+      }
+      plugin = { name: plugin.name, install: plugin };
+    }
+
+    // Validate name
+    if (!plugin.name || typeof plugin.name !== "string" || plugin.name === "anonymous") {
+      _warn('Plugin must have a unique, non-empty name.');
+      return;
+    }
+
+    // Duplicate detection with object identity comparison
+    if (_plugins.has(plugin.name)) {
+      const existing = _plugins.get(plugin.name);
+      if (existing.plugin !== plugin) {
+        _warn(`Plugin "${plugin.name}" name collision: a different plugin with this name is already installed.`);
+      }
+      return;
+    }
+
+    // Log declared capabilities in debug mode
+    if (plugin.capabilities && _config.debug) {
+      _log(`Plugin "${plugin.name}" declares capabilities:`, plugin.capabilities);
+    }
+
+    // Warn on trusted access
+    if (options.trusted === true) {
+      _warn(`WARNING: Plugin "${plugin.name}" installed with trusted access to sensitive HTTP headers.`);
+    }
+
+    // Set current plugin name for interceptor tracking
+    _setCurrentPluginName(plugin.name);
+    try {
+      plugin.install(NoJS, options);
+    } finally {
+      _setCurrentPluginName(null);
+    }
+
+    _plugins.set(plugin.name, { plugin, options });
+
+    // If already initialized and plugin has init, await then call
+    if (_initPromise && plugin.init) {
+      _initPromise.then(() => plugin.init(NoJS)).catch(e => _warn(`Plugin "${plugin.name}" init error:`, e.message));
+    }
+
+    _log(`Plugin "${plugin.name}" installed.`);
+  },
+
+  // ─── Plugin globals ───────────────────────────────────────────────────
+  global(name, value) {
+    if (typeof name !== "string" || !name) {
+      _warn("NoJS.global() requires a non-empty string name.");
+      return;
+    }
+
+    // Block prototype pollution vectors
+    if (name === "__proto__" || name === "constructor" || name === "prototype") {
+      _warn(`NoJS.global(): "${name}" is a forbidden name.`);
+      return;
+    }
+
+    // Block reserved names
+    if (_RESERVED_GLOBAL_NAMES.has(name)) {
+      _warn(`NoJS.global(): "${name}" is reserved and cannot be used.`);
+      return;
+    }
+
+    // Validate identifier characters
+    if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(name)) {
+      _warn(`NoJS.global(): "${name}" is not a valid identifier.`);
+      return;
+    }
+
+    // Block dangerous function references
+    if (_isUnsafeGlobalValue(value)) {
+      _warn(`NoJS.global(): value for "${name}" is a forbidden reference (eval/Function).`);
+      return;
+    }
+
+    // Warn on overwrite by a different plugin
+    if (name in _globals && _globalOwners[name] && _globalOwners[name] !== _currentPluginName) {
+      _warn(`Global "$${name}" owned by "${_globalOwners[name]}" is being overwritten.`);
+    }
+
+    // Sanitize object values to strip __proto__ keys
+    if (value && typeof value === "object" && !value.__isProxy) {
+      try {
+        value = JSON.parse(JSON.stringify(value));
+      } catch {
+        // Non-serializable objects — check for dangerous function references
+        try {
+          _deepCheckUnsafe(value);
+        } catch (safetyErr) {
+          if (safetyErr.message === "unsafe_global") return;
+          // Other errors pass through
+        }
+      }
+      // Wrap in reactive context for deep reactivity
+      value = createContext(value);
+    }
+
+    _globals[name] = value;
+    if (_currentPluginName) _globalOwners[name] = _currentPluginName;
+
+    // Notify all store watchers since globals are scope-wide
+    _notifyStoreWatchers();
+
+    _devtoolsEmit("global:set", { name, hasValue: value != null });
+    _log(`Global "$${name}" registered.`);
+  },
+
+  // ─── App teardown ─────────────────────────────────────────────────────
+  async dispose() {
+    _setDisposing(true);
+    try {
+      // Dispose plugins in reverse installation order
+      const entries = [..._plugins.entries()].reverse();
+      for (const [name, { plugin }] of entries) {
+        if (plugin.dispose) {
+          try {
+            let timeoutId;
+            await Promise.race([
+              Promise.resolve(plugin.dispose(NoJS)).finally(() => clearTimeout(timeoutId)),
+              new Promise((_, reject) => {
+                timeoutId = setTimeout(() => reject(new Error("Dispose timeout")), 3000);
+              }),
+            ]);
+          } catch (e) {
+            _warn(`Plugin "${name}" dispose error:`, e.message);
+          }
+        }
+      }
+      _plugins.clear();
+      for (const k in _globals) delete _globals[k];
+      for (const k in _globalOwners) delete _globalOwners[k];
+
+      // Clear interceptors
+      _interceptors.request.length = 0;
+      _interceptors.response.length = 0;
+
+      // Destroy router listeners
+      if (_routerInstance && _routerInstance.destroy) {
+        _routerInstance.destroy();
+      }
+      setRouterInstance(null);
+
+      // Clean up devtools listener
+      destroyDevtools();
+
+      _initPromise = null;
+      _log("Disposed.");
+    } finally {
+      _setDisposing(false);
+    }
+  },
+
+  // ─── Init (Promise-based lifecycle) ───────────────────────────────────
   async init(root) {
     if (typeof document === "undefined") return;
-    if (NoJS._initialized) return;
-    NoJS._initialized = true;
-    root = root || document.body;
-    _log("Initializing...");
+    if (_initPromise) return _initPromise;
+    _initPromise = (async () => {
+      root = root || document.body;
+      _log("Initializing...");
 
-    // Load external locale files (blocking — translations must be available for first paint)
-    if (_config.i18n.loadPath) {
-      const locales = new Set([_i18n.locale, _config.i18n.fallbackLocale]);
-      await Promise.all([...locales].map((l) => _loadI18nForLocale(l)));
-    }
+      // Load external locale files (blocking — translations must be available for first paint)
+      if (_config.i18n.loadPath) {
+        const locales = new Set([_i18n.locale, _config.i18n.fallbackLocale]);
+        await Promise.all([...locales].map((l) => _loadI18nForLocale(l)));
+      }
 
-    // Inline template includes (e.g. skeletons) — synchronous, before any fetch
-    _processTemplateIncludes(root);
+      // Inline template includes (e.g. skeletons) — synchronous, before any fetch
+      _processTemplateIncludes(root);
 
-    // Determine active route path for phase 1 prioritization
-    const defaultRoutePath = _getDefaultRoutePath();
+      // Determine active route path for phase 1 prioritization
+      const defaultRoutePath = _getDefaultRoutePath();
 
-    // Phase 1 (blocking): priority + non-route + default route templates
-    await _loadRemoteTemplatesPhase1(defaultRoutePath);
+      // Phase 1 (blocking): priority + non-route + default route templates
+      await _loadRemoteTemplatesPhase1(defaultRoutePath);
 
-    // Check for route-view outlets to activate router
-    if (document.querySelector("[route-view]")) {
-      setRouterInstance(_createRouter());
-    }
+      // Check for route-view outlets to activate router
+      if (document.querySelector("[route-view]")) {
+        setRouterInstance(_createRouter());
+      }
 
-    processTree(root); // ← first paint happens here
+      processTree(root); // ← first paint happens here
 
-    // Init router after tree is processed
-    if (_routerInstance) await _routerInstance.init();
+      // Init router after tree is processed
+      if (_routerInstance) await _routerInstance.init();
 
-    _log("Initialized.");
+      _log("Initialized.");
 
-    // Phase 2 (non-blocking): background preload remaining route templates
-    _loadRemoteTemplatesPhase2();
+      // Phase 2 (non-blocking): background preload remaining route templates
+      _loadRemoteTemplatesPhase2();
 
-    // DevTools integration
-    initDevtools(NoJS);
+      // DevTools integration
+      initDevtools(NoJS);
+
+      // Plugin init hooks
+      for (const [, { plugin }] of _plugins) {
+        if (plugin.init) await plugin.init(NoJS);
+      }
+      _emitEvent("plugins:ready");
+    })();
+    return _initPromise;
   },
 
   // Register custom directive
@@ -230,9 +457,13 @@ const NoJS = {
     };
   },
 
-  // Request interceptors
+  // Request/response interceptors (with plugin tracking)
   interceptor(type, fn) {
-    if (_interceptors[type]) _interceptors[type].push(fn);
+    if (_interceptors[type]) {
+      _interceptors[type].push(
+        _currentPluginName ? { fn, pluginName: _currentPluginName } : fn
+      );
+    }
   },
 
   // Access global stores
@@ -260,5 +491,17 @@ const NoJS = {
   // Version
   version: "1.10.1",
 };
+
+// Expose sentinel symbols as read-only properties
+Object.defineProperty(NoJS, "CANCEL",  { value: _CANCEL,  writable: false, configurable: false });
+Object.defineProperty(NoJS, "RESPOND", { value: _RESPOND, writable: false, configurable: false });
+Object.defineProperty(NoJS, "REPLACE", { value: _REPLACE, writable: false, configurable: false });
+
+// Backward-compat: _initialized getter/setter (tests use `NoJS._initialized = false` to reset)
+Object.defineProperty(NoJS, "_initialized", {
+  get() { return _initPromise !== null; },
+  set(v) { if (!v) _initPromise = null; },
+  configurable: true,
+});
 
 export default NoJS;

@@ -42,7 +42,7 @@
       "configuration": "Configuração",
       "guides": "Guias",
       "stateManagement": "Gerenciamento de Estado",
-      "eventHandling": "Tratamento de Eventos",
+      "eventHandling": "Eventos",
       "dataBinding": "Data Binding",
       "conditionals": "Condicionais",
       "loops": "Loops",
@@ -54,7 +54,8 @@
       "dragAndDrop": "Drag & Drop",
       "animations": "Animações",
       "filters": "Filtros",
-      "i18n": "i18n"
+      "i18n": "i18n",
+      "plugins": "Plugins"
     },
     "langSwitcher": {
       "en": "EN",

@@ -232,6 +232,64 @@ describe('DOM Helpers', () => {
       const result = _sanitizeHtml(html);
       expect(result).toContain('data:image/png;base64,abc123');
     });
+
+    // ── H5: formaction, poster, data URL attrs + SVG data URI sanitization ──
+
+    test('strips javascript: from formaction attribute', () => {
+      const html = '<button formaction="javascript:alert(1)">Submit</button>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('javascript:');
+      expect(result).toContain('Submit');
+    });
+
+    test('strips javascript: from poster attribute', () => {
+      const html = '<video poster="javascript:alert(1)"></video>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('javascript:');
+    });
+
+    test('strips javascript: from data attribute', () => {
+      const html = '<object data="javascript:alert(1)"></object>';
+      const result = _sanitizeHtml(html);
+      expect(result).not.toContain('javascript:');
+    });
+
+    test('deep-sanitizes data:image/svg+xml URIs containing script tags', () => {
+      const maliciousSvg = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><rect width="10" height="10"/></svg>';
+      const dataUri = 'data:image/svg+xml,' + encodeURIComponent(maliciousSvg);
+      const html = '<img src="' + dataUri + '">';
+      const result = _sanitizeHtml(html);
+      // The sanitized result should still have the src with a data:image/svg+xml URI
+      expect(result).toContain('data:image/svg+xml');
+      // But the <script> tag must be removed from the SVG content
+      const srcMatch = result.match(/src="([^"]+)"/);
+      expect(srcMatch).not.toBeNull();
+      const decodedSvg = decodeURIComponent(srcMatch[1].split(',')[1]);
+      expect(decodedSvg).not.toContain('<script');
+      expect(decodedSvg).toContain('rect');
+    });
+
+    test('deep-sanitizes base64 data:image/svg+xml URIs containing onload attributes', () => {
+      const maliciousSvg = '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><rect width="10" height="10"/></svg>';
+      const dataUri = 'data:image/svg+xml;base64,' + btoa(maliciousSvg);
+      const html = '<img src="' + dataUri + '">';
+      const result = _sanitizeHtml(html);
+      expect(result).toContain('data:image/svg+xml;base64,');
+      // Decode the base64 SVG and verify onload is stripped
+      const srcMatch = result.match(/src="data:image\/svg\+xml;base64,([^"]+)"/);
+      expect(srcMatch).not.toBeNull();
+      const decodedSvg = atob(srcMatch[1]);
+      expect(decodedSvg).not.toContain('onload');
+      expect(decodedSvg).toContain('rect');
+    });
+
+    test('allows safe data:image/png URIs unchanged', () => {
+      const safeUri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA';
+      const html = '<img src="' + safeUri + '" alt="safe">';
+      const result = _sanitizeHtml(html);
+      expect(result).toContain(safeUri);
+      expect(result).toContain('alt="safe"');
+    });
   });
 });
 

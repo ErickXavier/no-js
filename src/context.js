@@ -2,7 +2,7 @@
 //  REACTIVE CONTEXT
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _refs, _routerInstance, _currentEl } from "./globals.js";
+import { _config, _stores, _refs, _routerInstance, _currentEl, _globals } from "./globals.js";
 import { _i18n } from "./i18n.js";
 import { _devtoolsEmit, _ctxRegistry } from "./devtools.js";
 
@@ -95,6 +95,10 @@ export function createContext(data = {}, parent = null) {
       if (key === "$router") return _routerInstance;
       if (key === "$i18n") return _i18n;
       if (key === "$form") return target.$form || null;
+      // Plugin globals fallback (after all core $ checks)
+      if (key.startsWith("$") && key.slice(1) in _globals) {
+        return _globals[key.slice(1)];
+      }
       if (key in target) return target[key];
       if (parent && parent.__isProxy) return parent[key];
       return undefined;
@@ -116,6 +120,7 @@ export function createContext(data = {}, parent = null) {
     },
     has(target, key) {
       if (key in target) return true;
+      if (typeof key === "string" && key.startsWith("$") && key.slice(1) in _globals) return true;
       if (parent && parent.__isProxy) return key in parent;
       return false;
     },
