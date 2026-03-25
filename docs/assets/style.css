@@ -237,6 +237,99 @@ input, select, textarea { font: inherit; }
   background: var(--primary-surface);
   font-weight: 600;
 }
+/* ── Tools Dropdown (Popover API) ── */
+.tools-dropdown {
+  position: relative;
+  anchor-name: --tools-anchor;
+}
+.tools-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.tools-dropdown-btn:hover {
+  color: var(--primary);
+}
+.tools-chevron {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s;
+  color: var(--text-muted);
+}
+.tools-dropdown-menu {
+  /* Popover resets */
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  /* Positioning */
+  position: fixed;
+  position-anchor: --tools-anchor;
+  inset: unset;
+  top: anchor(bottom);
+  right: anchor(right);
+  margin-top: 6px;
+  /* Appearance */
+  min-width: 200px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  z-index: 100;
+}
+.tools-dropdown-menu:popover-open {
+  animation: toolsFadeIn 0.15s ease;
+}
+@keyframes toolsFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tools-dropdown-menu::backdrop {
+  background: transparent;
+}
+.tools-option {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s;
+  cursor: pointer;
+}
+.tools-option:hover {
+  background: var(--primary-surface);
+}
+.tools-option-name {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.tools-option-desc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+/* ── Mobile Nav Group Label ── */
+.mobile-nav-group-label {
+  display: block;
+  padding: 8px 12px 4px;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+}
 /* ── Mobile Menu Button ── */
 .mobile-menu-btn {
   display: none;

@@ -66,7 +66,26 @@
       <a route="/faq" t="shell.header.faq"></a>
       <a route="/playground" t="shell.header.playground" lazy="ondemand"></a>
       <a route="/docs" t="shell.header.docs" lazy="priority"></a>
-      <a href="https://lsp.no-js.dev/" target="_blank">NoJS LSP</a>
+      <div class="tools-dropdown">
+        <button class="tools-dropdown-btn" popovertarget="tools-menu">
+          <span t="shell.header.tools"></span>
+          <svg class="tools-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+        </button>
+        <div id="tools-menu" class="tools-dropdown-menu" popover>
+          <a href="https://lsp.no-js.dev/" target="_blank" rel="noopener noreferrer" class="tools-option" popovertarget="tools-menu" popovertargetaction="hide">
+            <span class="tools-option-name" t="shell.header.toolsLsp"></span>
+            <span class="tools-option-desc" t="shell.header.toolsLspDesc"></span>
+          </a>
+          <a href="https://www.npmjs.com/package/@erickxavier/nojs-mcp" target="_blank" rel="noopener noreferrer" class="tools-option" popovertarget="tools-menu" popovertargetaction="hide">
+            <span class="tools-option-name" t="shell.header.toolsMcp"></span>
+            <span class="tools-option-desc" t="shell.header.toolsMcpDesc"></span>
+          </a>
+          <a href="https://github.com/ErickXavier/nojs-skill" target="_blank" rel="noopener noreferrer" class="tools-option" popovertarget="tools-menu" popovertargetaction="hide">
+            <span class="tools-option-name" t="shell.header.toolsSkill"></span>
+            <span class="tools-option-desc" t="shell.header.toolsSkillDesc"></span>
+          </a>
+        </div>
+      </div>
       <a href="https://github.com/ErickXavier/no-js" target="_blank" class="github-link">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
@@ -97,7 +116,11 @@
     <a route="/examples" t="shell.header.examples" on:click="document.getElementById('mobile-nav').hidePopover()"></a>
     <a route="/faq" t="shell.header.faq" on:click="document.getElementById('mobile-nav').hidePopover()"></a>
     <a route="/docs" t="shell.header.docs" on:click="document.getElementById('mobile-nav').hidePopover()" lazy="priority"></a>
-    <a href="https://lsp.no-js.dev/" target="_blank" on:click="document.getElementById('mobile-nav').hidePopover()">NoJS LSP</a>
+    <div class="mobile-nav-divider"></div>
+    <span class="mobile-nav-group-label" t="shell.header.tools"></span>
+    <a href="https://lsp.no-js.dev/" target="_blank" rel="noopener noreferrer" on:click="document.getElementById('mobile-nav').hidePopover()">NoJS LSP</a>
+    <a href="https://www.npmjs.com/package/@erickxavier/nojs-mcp" target="_blank" rel="noopener noreferrer" on:click="document.getElementById('mobile-nav').hidePopover()">NoJS MCP</a>
+    <a href="https://github.com/ErickXavier/nojs-skill" target="_blank" rel="noopener noreferrer" on:click="document.getElementById('mobile-nav').hidePopover()">NoJS Skill</a>
     <div class="mobile-nav-divider"></div>
     <div class="mobile-nav-row">
       <a href="https://github.com/ErickXavier/no-js" target="_blank" class="mobile-nav-icon-link">
@@ -155,7 +178,9 @@
             <a route="/docs" t="shell.header.docs"></a>
             <a href="https://github.com/ErickXavier/no-js" target="_blank">GitHub</a>
             <a href="https://discord.gg/CaSbGYg3xY" target="_blank">Discord</a>
-            <a href="https://lsp.no-js.dev/" target="_blank">NoJS LSP</a>
+            <a href="https://lsp.no-js.dev/" target="_blank" rel="noopener noreferrer">NoJS LSP</a>
+            <a href="https://www.npmjs.com/package/@erickxavier/nojs-mcp" target="_blank" rel="noopener noreferrer">NoJS MCP</a>
+            <a href="https://github.com/ErickXavier/nojs-skill" target="_blank" rel="noopener noreferrer">NoJS Skill</a>
           </div>
         </div>
       </div>
