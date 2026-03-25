@@ -134,4 +134,29 @@ JSON-LD blocks already in `<head>` — they coexist safely.
 
 ---
 
+## Notes and edge cases
+
+### Multiple directives competing for the same element
+
+If two `<div hidden page-description>` elements exist on the same page, both
+write to the same `<meta name="description">` tag — the last one processed
+wins. Keep one directive per head element per page.
+
+### Cleanup on unmount
+
+Head elements (`<title>`, `<meta name="description">`, etc.) injected by
+these directives are **not removed** if the host `<div hidden>` is later
+removed from the DOM (e.g. via an `if=` directive). The head element remains
+with its last value. This is by design for the common case (always-present
+host element), but worth noting for conditional page-metadata patterns.
+
+### `page-jsonld` template capture
+
+The `page-jsonld` watcher captures the element's `innerHTML` as a static
+template string once at directive init time. `{placeholder}` expressions
+inside the JSON are re-evaluated on every reactive update, but structural
+changes to the element's children after init are not picked up.
+
+---
+
 **Next:** [Data Fetching →](data-fetching.md)
