@@ -527,6 +527,31 @@ per-app when accessibility is a requirement.
 Focus fires after `processTree` and after all async `src=` templates in the
 route have finished loading — the user is never focused into an empty container.
 
+### Side effects
+
+When the focus target does not already have `tabindex`, No.JS automatically
+injects `tabindex="-1"` to make programmatic focus possible. This attribute
+persists across subsequent navigations (it is not removed after the first
+navigation). For the route outlet, this is harmless — `tabindex="-1"` keeps
+the element out of the tab order while remaining focusable programmatically.
+
+### Future values
+
+Currently only `'auto'` and `'none'` are supported. Future releases may add
+additional modes such as `'first-heading'` (focus first `<h1>` or `<h2>` in
+the outlet) or `'custom'` (developer-supplied selector). Set `'auto'` now and
+you will benefit from those improvements automatically.
+
+### Aria live region
+
+For users who keep `focusBehavior: 'none'` (the default), consider adding
+`aria-live="polite"` to the `[route-view]` outlet so screen readers announce
+content changes without requiring focus movement:
+
+```html
+<div route-view aria-live="polite" aria-atomic="true"></div>
+```
+
 ---
 
 **Next:** [Animations →](animations.md)
