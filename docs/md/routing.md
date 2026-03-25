@@ -479,4 +479,54 @@ The failed HTTP response is **not** cached — subsequent navigations to other p
 
 ---
 
+---
+
+## Accessibility — Focus Management (`focusBehavior`)
+
+By default, SPA navigation does not move keyboard focus — the browser's native
+focus restoration only applies to full-page loads. Screen-reader users may not
+notice that the page content has changed.
+
+Enable automatic focus management with:
+
+```js
+NoJS.config({
+  router: { focusBehavior: 'auto' }
+});
+```
+
+When set to `'auto'`, after each route render No.JS moves focus to the first
+suitable target in the new content, in this priority order:
+
+1. `[autofocus]` — explicit opt-in by the developer
+2. `[tabindex="-1"]` — element programmatically marked as a focus target
+3. `h1` — the page heading (most common landmark)
+4. The outlet element itself (fallback)
+
+```html
+<!-- Option 1: explicit autofocus on the primary action -->
+<template route="/login">
+  <h1>Login</h1>
+  <input type="email" autofocus />
+</template>
+
+<!-- Option 2: focus the heading (default fallback) -->
+<template route="/about">
+  <h1>About Us</h1>
+  <p>...</p>
+</template>
+```
+
+### Default
+
+`focusBehavior` defaults to `'none'` — no change to existing behaviour. Opt in
+per-app when accessibility is a requirement.
+
+### Timing
+
+Focus fires after `processTree` and after all async `src=` templates in the
+route have finished loading — the user is never focused into an empty container.
+
+---
+
 **Next:** [Animations →](animations.md)
