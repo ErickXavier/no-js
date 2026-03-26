@@ -182,7 +182,7 @@ export function _createRouter() {
       if (!tpl && (outletEl.hasAttribute("src") || configTemplates)) {
         const rawSrc = outletEl.getAttribute("src") || configTemplates;
         const baseSrc = rawSrc.replace(/\/?$/, "/");
-        const ext = outletEl.getAttribute("ext") || _config.router.ext || ".html";
+        const ext = outletEl.getAttribute("ext") || _config.router.ext || ".tpl" || ".html";
         const indexName = outletEl.getAttribute("route-index") || "index";
         const segment = current.path === "/" ? indexName : current.path.replace(/^\//, "");
         const fullSrc = baseSrc + segment + ext;
@@ -338,7 +338,7 @@ export function _createRouter() {
       const rawSrc = outletEl.getAttribute("src") || _config.router.templates || "";
       if (!rawSrc) continue;
       const baseSrc = rawSrc.replace(/\/?$/, "/");
-      const ext = outletEl.getAttribute("ext") || _config.router.ext || ".html";
+      const ext = outletEl.getAttribute("ext") || _config.router.ext || ".tpl" || ".html";
       const indexName = outletEl.getAttribute("route-index") || "index";
       const outletName = (outletEl.getAttribute("route-view") || "").trim() || "default";
 
