@@ -3665,6 +3665,82 @@ describe('Validation Revamp — $form.reset() enhancements', () => {
   });
 });
 
+describe('HTTP directive — skeleton= attribute (M3)', () => {
+  let fetchMock;
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    fetchMock = jest.fn();
+    global.fetch = fetchMock;
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+    jest.restoreAllMocks();
+  });
+
+  test('skeleton element is hidden after a successful fetch', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true, status: 200,
+      headers: { get: () => 'application/json' },
+      json: async () => ({ name: 'Test' }),
+      text: async () => '{"name":"Test"}',
+    });
+    document.body.innerHTML = `
+      <div id="my-skeleton" style="height:80px;background:#eee;"></div>
+      <div get="/api/product" as="product" skeleton="my-skeleton"></div>
+    `;
+    processTree(document.body);
+    await new Promise(r => setTimeout(r, 30));
+    const skeleton = document.getElementById('my-skeleton');
+    expect(skeleton.style.display).toBe('none');
+  });
+
+  test('skeleton element is hidden after a fetch error', async () => {
+    fetchMock.mockRejectedValue(new Error('Network error'));
+    document.body.innerHTML = `
+      <div id="err-skeleton" style="height:40px;"></div>
+      <div get="/api/fail" as="data" skeleton="err-skeleton"></div>
+    `;
+    processTree(document.body);
+    await new Promise(r => setTimeout(r, 30));
+    const skeleton = document.getElementById('err-skeleton');
+    expect(skeleton.style.display).toBe('none');
+  });
+
+  test('skeleton element is visible before the fetch completes', async () => {
+    let resolveFetch;
+    fetchMock.mockReturnValue(new Promise(resolve => { resolveFetch = resolve; }));
+    document.body.innerHTML = `
+      <div id="pending-skeleton" style="height:40px;"></div>
+      <div get="/api/pending" as="data" skeleton="pending-skeleton"></div>
+    `;
+    processTree(document.body);
+    // Tick just enough for doRequest to start but not resolve
+    await new Promise(r => setTimeout(r, 5));
+    const skeleton = document.getElementById('pending-skeleton');
+    expect(skeleton.style.display).not.toBe('none');
+    // Resolve to clean up
+    resolveFetch({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({}), text: async () => '{}' });
+  });
+
+  test('does not throw when skeleton id does not match any element', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true, status: 200,
+      headers: { get: () => 'application/json' },
+      json: async () => ({}),
+      text: async () => '{}',
+    });
+    document.body.innerHTML = `
+      <div get="/api/data" as="data" skeleton="nonexistent-skeleton"></div>
+    `;
+    await expect(async () => {
+      processTree(document.body);
+      await new Promise(r => setTimeout(r, 30));
+    }).not.toThrow();
+  });
+});
+
 // ═══════════════════════════════════════════════════════════════════════
 //  M6 — call directive warns about sensitive headers in HTML attributes
 // ═══════════════════════════════════════════════════════════════════════

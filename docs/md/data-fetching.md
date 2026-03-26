@@ -78,6 +78,7 @@ Absolute URLs skip base resolution:
 | `debounce` | `number` | Debounce in ms (useful with reactive URLs) |
 | `headers` | `string` | JSON string of additional headers |
 | `params` | `string` | Expression that resolves to query params object |
+| `skeleton` | `string` | ID of a DOM element to show while loading and hide when done |
 
 ### Full Example
 
@@ -211,6 +212,92 @@ Used on forms or triggered via `call`.
                     exec `then`  log to console
                     `redirect`
 ```
+
+---
+
+## Skeleton Placeholders (`skeleton=`)
+
+The `skeleton` attribute keeps a pre-rendered placeholder element visible while
+a request is in flight, then hides it once the response arrives. This prevents
+Cumulative Layout Shift (CLS) — the page holds its shape during loading instead
+of collapsing and re-expanding.
+
+```html
+<!-- Skeleton lives in the DOM (SSG-friendly, no JS needed to render it) -->
+<div id="product-skeleton" class="skeleton-card">
+  <div class="skeleton-line"></div>
+  <div class="skeleton-line short"></div>
+</div>
+
+<!-- skeleton= points to the element's id (without #) -->
+<div get="/api/products/42" as="product" skeleton="product-skeleton">
+  <h1 bind="product.name"></h1>
+  <p bind="product.description"></p>
+</div>
+```
+
+The skeleton is hidden automatically when:
+- The response arrives (success)
+- A cached response is used
+- The response is empty (before rendering the `empty=` template)
+- The request fails (before rendering the `error=` template)
+
+### Combined with `loading=`
+
+`skeleton=` and `loading=` serve different purposes and can be used together:
+
+| | `skeleton=` | `loading=` |
+|---|---|---|
+| Content | Pre-rendered element already in the DOM | Template cloned into the fetch element |
+| Visibility | Shown before JS, hidden after response | Injected by JS, replaced after response |
+| CLS impact | None — space is already reserved | May cause layout shift |
+| SSG-friendly | Yes | No |
+
+```html
+<div id="skeleton" class="skeleton-pulse"><!-- pre-rendered placeholder --></div>
+
+<div get="/api/feed" as="items"
+     skeleton="skeleton"
+     loading="#spinnerTpl"
+     empty="#emptyTpl">
+  <div each="item in items" template="feedItem"></div>
+</div>
+```
+
+### Using `skeleton=` alongside `loading=`
+
+`skeleton=` and `loading=` are complementary and can be used on the same
+element. They serve different purposes:
+
+- `skeleton=` shows/hides an **existing DOM element** (the skeleton).
+- `loading=` **clones a template** into the fetch container.
+
+Both can be active simultaneously. If you want only one loading indicator,
+use either `skeleton=` or `loading=`, not both.
+
+### Skeleton element visibility
+
+The skeleton element (`id="skeleton"`) should start **visible** in the HTML
+(no `display: none` in CSS). `_hideSkeleton` sets `display: none` as an
+inline style, and `_showSkeleton` removes that inline style. If the
+skeleton has `display: none` in a CSS rule, removing the inline style will
+reveal the CSS `display: none` again — effectively keeping it hidden.
+
+Start the skeleton visible and let No.JS control its visibility:
+
+```html
+<!-- Correct: starts visible, No.JS hides after response -->
+<div id="skeleton" class="skeleton-pulse">…placeholder…</div>
+
+<!-- Incorrect: display:none in CSS conflicts with No.JS show/hide logic -->
+<div id="skeleton" class="hidden skeleton-pulse">…placeholder…</div>
+```
+
+### Accessibility
+
+Consider adding `aria-busy="true"` on the fetch container while the request
+is in progress and `aria-hidden="true"` on the skeleton element when it is
+hidden. These attributes are not injected automatically in the current release.
 
 ---
 
