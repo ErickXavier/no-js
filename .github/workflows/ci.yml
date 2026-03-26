@@ -7,9 +7,14 @@ name: CI
 #     branches: [main]
 on: workflow_dispatch
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
