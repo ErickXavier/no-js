@@ -587,6 +587,24 @@ Hash mode produces URLs like `https://your-site.com/#/about`. These work on any 
 
 ---
 
+## Per-Route Document Title (`page-title`)
+
+Set `document.title` declaratively on each `<template route>` element. The
+value is a No.JS expression; `$route` and `$store` are available in scope.
+
+```html
+<!-- Static string literal -->
+<template route="/about" page-title="'About Us | My Store'">
+  <h1>About</h1>
+</template>
+
+<!-- Expression using route params -->
+<template route="/products/:id" page-title="'Product ' + $route.params.id + ' | Store'">
+  <h1>Product Detail</h1>
+</template>
+
+<!-- Expression using global store (e.g. after login) -->
+<template route="/account" page-title="$store.user.name + ' — My Account'">
 ## Route Head Attributes
 
 Declare SEO metadata directly on `<template route>` elements. All four
@@ -641,6 +659,43 @@ attributes are evaluated on every navigation and update the corresponding
 </template>
 ```
 
+The title is updated on every navigation. If the attribute is absent on a
+template, `document.title` is not changed — allowing a default title set in
+`<head>` to persist for that route.
+
+### Template literal syntax
+
+String literals inside HTML attributes must use **single quotes** inside the
+outer double-quote attribute delimiters. Backtick template literals are not
+supported inside HTML attributes:
+
+```html
+<!-- ✅ Correct -->
+<template route="/about" page-title="'About Us | My Store'">
+
+<!-- ❌ Backtick not valid inside HTML attribute -->
+<template route="/about" page-title="`About Us | My Store`">
+```
+
+### Reactivity
+
+`page-title` is evaluated **once per navigation**, not continuously. If your
+`$store` changes after navigation (e.g. the user logs in), `document.title`
+is **not** automatically updated. For continuous reactivity, place a
+`<div hidden page-title="...">` body directive alongside the route template —
+it uses `_watchExpr` and updates whenever the expression changes.
+
+### Precedence with body directives
+
+If both a `<div hidden page-title="...">` body directive and a route template
+`page-title` attribute are present, whichever runs last wins. Body directives
+run when the element is processed; route `page-title` runs on each navigation.
+For SPAs with a router, prefer route attributes — they update automatically on
+every navigation.
+
+> **Tip:** For full head management (description, canonical URL, JSON-LD) from
+> route templates see [Route Head Attributes →](#route-head-attributes).
+> For non-routing pages see [Head Management →](head-management.md).
 ### JSON-LD
 
 `page-jsonld` supports `{placeholder}` interpolation for dynamic values.

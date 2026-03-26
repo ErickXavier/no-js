@@ -369,6 +369,23 @@ export function _createRouter() {
         _clearDeclared(wrapper);
         processTree(wrapper);
 
+        // page-title: update document.title if the route template declares one.
+        // Accepts both a static string literal and a full No.JS expression:
+        //   page-title="'About Us | Site'"          ← static
+        //   page-title="'Product ' + $route.params.id + ' | Store'"  ← expression
+        // $route and $store are available as implicit variables.
+        // Only applied from the "default" outlet to avoid overwriting with a
+        // secondary outlet's (e.g. sidebar) title.
+        if (outletName === "default") {
+          const pageTitleExpr = tpl.getAttribute("page-title");
+          if (pageTitleExpr) {
+            const titleCtx = createContext({}, null);
+            titleCtx.__raw.$route = current;
+            titleCtx.__raw.$store = _stores;
+            const title = evaluate(pageTitleExpr, titleCtx);
+            if (title != null) document.title = String(title);
+          }
+        }
         // Update <head> metadata from route template attributes.
         if (outletName === "default") _applyRouteHeadAttrs(tpl, current);
 
