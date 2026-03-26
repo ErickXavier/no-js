@@ -182,7 +182,7 @@ export function _createRouter() {
       if (!tpl && (outletEl.hasAttribute("src") || configTemplates)) {
         const rawSrc = outletEl.getAttribute("src") || configTemplates;
         const baseSrc = rawSrc.replace(/\/?$/, "/");
-        const ext = outletEl.getAttribute("ext") || _config.router.ext || ".html";
+        const ext = outletEl.getAttribute("ext") || _config.router.ext || ".tpl" || ".html";
         const indexName = outletEl.getAttribute("route-index") || "index";
         const segment = current.path === "/" ? indexName : current.path.replace(/^\//, "");
         const fullSrc = baseSrc + segment + ext;
@@ -288,6 +288,25 @@ export function _createRouter() {
 
         _clearDeclared(wrapper);
         processTree(wrapper);
+
+        // Focus management: move focus to the new content when focusBehavior is "auto".
+        // Only applied to the default outlet to avoid fighting with secondary outlets.
+        // Placed here — after the awaits for both the main template and all nested
+        // template[src] loads — so focus fires only after all async content is injected.
+        // Uses requestAnimationFrame so the focus fires after the browser has painted.
+        if (outletName === "default" && _config.router.focusBehavior === "auto") {
+          requestAnimationFrame(() => {
+            const focusTarget =
+              outletEl.querySelector("[autofocus]") ||
+              outletEl.querySelector('[tabindex="-1"]') ||
+              outletEl.querySelector("h1") ||
+              outletEl;
+            if (!focusTarget.hasAttribute("tabindex")) {
+              focusTarget.setAttribute("tabindex", "-1");
+            }
+            focusTarget.focus({ preventScroll: true });
+          });
+        }
       } else if (!matched || tpl?.__loadFailed) {
         // No route matched and no wildcard — inject built-in 404
         outletEl.innerHTML = _BUILTIN_404_HTML;
@@ -338,7 +357,7 @@ export function _createRouter() {
       const rawSrc = outletEl.getAttribute("src") || _config.router.templates || "";
       if (!rawSrc) continue;
       const baseSrc = rawSrc.replace(/\/?$/, "/");
-      const ext = outletEl.getAttribute("ext") || _config.router.ext || ".html";
+      const ext = outletEl.getAttribute("ext") || _config.router.ext || ".tpl" || ".html";
       const indexName = outletEl.getAttribute("route-index") || "index";
       const outletName = (outletEl.getAttribute("route-view") || "").trim() || "default";
 

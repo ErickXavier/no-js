@@ -52,6 +52,47 @@ import "./directives/refs.js";
 import "./directives/validation.js";
 import "./directives/i18n.js";
 import "./directives/dnd.js";
+import "./directives/head.js";
+
+// Lock core directives — plugins can only register NEW names
+import { _freezeDirectives } from "./registry.js";
+_freezeDirectives();
+
+// ═══════════════════════════════════════════════════════════════════════
+//  PLUGIN SYSTEM INTERNALS
+// ═══════════════════════════════════════════════════════════════════════
+
+let _initPromise = null;
+
+// Keep in sync with context.js proxy handler $xxx variables.
+// Any new $xxx context variable requires adding xxx to this list.
+const _RESERVED_GLOBAL_NAMES = new Set([
+  "store", "route", "router", "i18n", "refs", "form", "parent",
+  "watch", "set", "notify", "raw", "isProxy", "listeners",
+  "app", "config", "env", "debug", "version", "plugins", "globals",
+  "el", "event", "self", "this", "super", "window", "document",
+  "toString", "valueOf", "hasOwnProperty",
+]);
+
+const _DANGEROUS_REFS = typeof window !== "undefined"
+  ? new Set([eval, Function, window.eval, window.Function].filter(Boolean))
+  : new Set();
+
+function _isUnsafeGlobalValue(value) {
+  return _DANGEROUS_REFS.has(value);
+}
+
+function _deepCheckUnsafe(obj, seen = new Set()) {
+  if (!obj || typeof obj !== "object" || seen.has(obj)) return;
+  seen.add(obj);
+  for (const val of Object.values(obj)) {
+    if (_isUnsafeGlobalValue(val)) {
+      _warn("NoJS.global(): value contains a forbidden reference (eval/Function).");
+      throw new Error("unsafe_global");
+    }
+    if (val && typeof val === "object") _deepCheckUnsafe(val, seen);
+  }
+}
 
 // Lock core directives — plugins can only register NEW names
 import { _freezeDirectives } from "./registry.js";
