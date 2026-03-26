@@ -1,6 +1,7 @@
 import { _i18n, _i18nListeners, _watchI18n, _notifyI18n, _loadI18nForLocale, _loadI18nNamespace } from '../src/i18n.js';
 import { _config } from '../src/globals.js';
-import { processTree } from '../src/registry.js';
+import { processTree, _disposeChildren } from '../src/registry.js';
+import '../src/directives/state.js';
 import '../src/directives/i18n.js';
 
 describe('i18n System', () => {
@@ -637,5 +638,57 @@ describe('t-html sanitization integration', () => {
     expect(el.innerHTML).toContain('<b>Bold</b>');
     expect(el.innerHTML).not.toContain('onerror');
     expect(el.innerHTML).not.toContain('alert');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  AUDIT FIX — M10: t directive with t-html calls _disposeChildren
+//  before setting innerHTML
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('t-html child disposal (M10)', () => {
+  beforeEach(() => {
+    _i18n.locale = 'en';
+    _i18n.locales = {
+      en: {
+        richMsg: '<b>Hello</b>',
+        richMsgUpdated: '<em>Updated</em>',
+      },
+    };
+    _config.i18n.fallbackLocale = 'en';
+  });
+
+  afterEach(() => {
+    _i18n.locale = 'en';
+    _i18n.locales = {};
+    document.body.innerHTML = '';
+  });
+
+  test('should call child disposers when t-html updates with new content', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ }');
+    const el = document.createElement('span');
+    el.setAttribute('t', 'richMsg');
+    el.setAttribute('t-html', '');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(el.innerHTML).toContain('<b>Hello</b>');
+
+    // Plant a mock disposer on the child <b> element
+    const boldChild = el.querySelector('b');
+    expect(boldChild).toBeTruthy();
+    const disposed = [];
+    boldChild.__disposers = [() => disposed.push('bold-disposed')];
+
+    // Trigger an i18n update that changes the content
+    _i18n.locales.en.richMsg = '<em>Changed</em>';
+    _notifyI18n();
+
+    // Verify the old child's disposer was called
+    expect(disposed).toEqual(['bold-disposed']);
+    // And the new content is in place
+    expect(el.innerHTML).toContain('<em>Changed</em>');
   });
 });

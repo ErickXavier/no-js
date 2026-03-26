@@ -2,7 +2,7 @@
 
 ## Overview
 
-No.JS is an HTML-first reactive framework (~24 KB gzipped, zero dependencies). Users build dynamic web apps using HTML attributes only — no JavaScript required. The framework is distributed exclusively via CDN — there is no NPM package or ESM/CJS install path for end users.
+No.JS is an HTML-first reactive framework with zero dependencies. Users build dynamic web apps using HTML attributes only — no JavaScript required. The framework is distributed exclusively via CDN — there is no NPM package or ESM/CJS install path for end users.
 
 ## Architecture
 

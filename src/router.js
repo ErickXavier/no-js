@@ -32,6 +32,7 @@ export function _createRouter() {
   let current = { path: "", params: {}, query: {}, hash: "" };
   const listeners = new Set();
   const _autoTemplateCache = new Map();
+  const _globalHandlers = [];
 
   function _getOrCreateEntry(path) {
     let entry = routes.find((r) => r.path === path);
@@ -181,7 +182,7 @@ export function _createRouter() {
       if (!tpl && (outletEl.hasAttribute("src") || configTemplates)) {
         const rawSrc = outletEl.getAttribute("src") || configTemplates;
         const baseSrc = rawSrc.replace(/\/?$/, "/");
-        const ext = outletEl.getAttribute("ext") || _config.router.ext || ".html";
+        const ext = outletEl.getAttribute("ext") || _config.router.ext || ".tpl" || ".html";
         const indexName = outletEl.getAttribute("route-index") || "index";
         const segment = current.path === "/" ? indexName : current.path.replace(/^\//, "");
         const fullSrc = baseSrc + segment + ext;
@@ -287,6 +288,25 @@ export function _createRouter() {
 
         _clearDeclared(wrapper);
         processTree(wrapper);
+
+        // Focus management: move focus to the new content when focusBehavior is "auto".
+        // Only applied to the default outlet to avoid fighting with secondary outlets.
+        // Placed here — after the awaits for both the main template and all nested
+        // template[src] loads — so focus fires only after all async content is injected.
+        // Uses requestAnimationFrame so the focus fires after the browser has painted.
+        if (outletName === "default" && _config.router.focusBehavior === "auto") {
+          requestAnimationFrame(() => {
+            const focusTarget =
+              outletEl.querySelector("[autofocus]") ||
+              outletEl.querySelector('[tabindex="-1"]') ||
+              outletEl.querySelector("h1") ||
+              outletEl;
+            if (!focusTarget.hasAttribute("tabindex")) {
+              focusTarget.setAttribute("tabindex", "-1");
+            }
+            focusTarget.focus({ preventScroll: true });
+          });
+        }
       } else if (!matched || tpl?.__loadFailed) {
         // No route matched and no wildcard — inject built-in 404
         outletEl.innerHTML = _BUILTIN_404_HTML;
@@ -337,7 +357,7 @@ export function _createRouter() {
       const rawSrc = outletEl.getAttribute("src") || _config.router.templates || "";
       if (!rawSrc) continue;
       const baseSrc = rawSrc.replace(/\/?$/, "/");
-      const ext = outletEl.getAttribute("ext") || _config.router.ext || ".html";
+      const ext = outletEl.getAttribute("ext") || _config.router.ext || ".tpl" || ".html";
       const indexName = outletEl.getAttribute("route-index") || "index";
       const outletName = (outletEl.getAttribute("route-view") || "").trim() || "default";
 
@@ -436,7 +456,7 @@ export function _createRouter() {
       });
 
       // Bind route links
-      document.addEventListener("click", (e) => {
+      const _clickHandler = (e) => {
         const link = e.target.closest("[route]");
         if (link && !link.hasAttribute("route-view")) {
           e.preventDefault();
@@ -464,11 +484,13 @@ export function _createRouter() {
             }
           }
         }
-      });
+      };
+      document.addEventListener("click", _clickHandler);
+      _globalHandlers.push(() => document.removeEventListener("click", _clickHandler));
 
       // Listen for URL changes
       if (_config.router.useHash) {
-        window.addEventListener("hashchange", () => {
+        const _hashchangeHandler = () => {
           const raw = window.location.hash.slice(1) || "/";
           if (!raw.startsWith("/")) {
             const el = document.getElementById(raw);
@@ -482,12 +504,14 @@ export function _createRouter() {
           const [p] = raw.split("?");
           if (p === current.path) return;
           navigate(raw, true);
-        });
+        };
+        window.addEventListener("hashchange", _hashchangeHandler);
+        _globalHandlers.push(() => window.removeEventListener("hashchange", _hashchangeHandler));
         // Initial route
         const path = window.location.hash.slice(1) || "/";
         await navigate(path, true);
       } else {
-        window.addEventListener("popstate", () => {
+        const _popstateHandler = () => {
           const path = _stripBase(window.location.pathname);
           // Guard: don't re-navigate if only the hash changed
           if (path === current.path) {
@@ -499,13 +523,20 @@ export function _createRouter() {
             return;
           }
           navigate(path, true);
-        });
+        };
+        window.addEventListener("popstate", _popstateHandler);
+        _globalHandlers.push(() => window.removeEventListener("popstate", _popstateHandler));
         const path = _stripBase(window.location.pathname);
         await navigate(path, true);
       }
 
       // Prefetch route templates declared via <a route> links
       _prefetchRoutes();
+    },
+    destroy() {
+      _globalHandlers.forEach((fn) => fn());
+      _globalHandlers.length = 0;
+      listeners.clear();
     },
   };
 

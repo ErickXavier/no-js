@@ -805,7 +805,7 @@ registerDirective("drag-list", {
         wrapper.addEventListener("dragend", itemDragend);
 
         // Keyboard DnD on items
-        wrapper.addEventListener("keydown", (e) => {
+        const itemKeydown = (e) => {
           if (e.key === " " && !_dndState.dragging) {
             e.preventDefault();
             _dndState.dragging = {
@@ -842,7 +842,16 @@ registerDirective("drag-list", {
               prevEl.focus();
             }
           }
-        });
+        };
+        wrapper.addEventListener("keydown", itemKeydown);
+
+        // Register cleanup on wrapper so disposers run when _disposeChildren(el) is called
+        wrapper.__disposers = wrapper.__disposers || [];
+        wrapper.__disposers.push(
+          () => wrapper.removeEventListener("dragstart", itemDragstart),
+          () => wrapper.removeEventListener("dragend", itemDragend),
+          () => wrapper.removeEventListener("keydown", itemKeydown),
+        );
 
         processTree(wrapper);
       });

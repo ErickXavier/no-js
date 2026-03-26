@@ -354,5 +354,84 @@
     <p class="doc-text" t="docs.routing.catchAll.fileBasedText2" t-html></p>
   </div>
 
+  <!-- Route Head Attributes -->
+  <div class="doc-section" id="route-head-attributes">
+    <h2 class="doc-title" t="docs.routing.headAttributes.title"></h2>
+    <p class="doc-text" t="docs.routing.headAttributes.text" t-html></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/about"</span>
+          <span class="hl-attr">page-title</span>=<span class="hl-str">"'About Us | My App'"</span>
+          <span class="hl-attr">page-description</span>=<span class="hl-str">"'Learn more about our mission'"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h1&gt;</span>About Us<span class="hl-tag">&lt;/h1&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Dynamic expressions work too --&gt;</span>
+<span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/users/:id"</span>
+          <span class="hl-attr">page-title</span>=<span class="hl-str">"user.name + ' | My App'"</span>
+          <span class="hl-attr">page-description</span>=<span class="hl-str">"user.bio"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/users/{$route.params.id}"</span> <span class="hl-attr">as</span>=<span class="hl-str">"user"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;h1</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user.name"</span><span class="hl-tag">&gt;&lt;/h1&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span></pre></div>
+    <p class="doc-text" t="docs.routing.headAttributes.text2" t-html></p>
+    <table class="doc-table">
+      <thead><tr><th t="docs.routing.headAttributes.colAttr"></th><th t="docs.routing.headAttributes.colDesc"></th></tr></thead>
+      <tbody>
+        <tr><td><code>page-title</code></td><td t="docs.routing.headAttributes.pageTitleDesc"></td></tr>
+        <tr><td><code>page-description</code></td><td t="docs.routing.headAttributes.pageDescriptionDesc"></td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p t="docs.routing.headAttributes.callout" t-html></p>
+    </div>
+  </div>
+
+  <!-- Accessibility — Focus Management -->
+  <div class="doc-section">
+    <h2 class="doc-title" t="docs.routing.focusBehavior.title"></h2>
+    <p class="doc-text" t="docs.routing.focusBehavior.text"></p>
+    <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
+  <span class="hl-attr">router</span>: { <span class="hl-attr">focusBehavior</span>: <span class="hl-str">'auto'</span> }
+});</pre></div>
+    <p class="doc-text" t="docs.routing.focusBehavior.text2"></p>
+    <ol class="doc-list">
+      <li t="docs.routing.focusBehavior.priority1" t-html></li>
+      <li t="docs.routing.focusBehavior.priority2" t-html></li>
+      <li t="docs.routing.focusBehavior.priority3" t-html></li>
+      <li t="docs.routing.focusBehavior.priority4"></li>
+    </ol>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Option 1: explicit autofocus on the primary action --&gt;</span>
+<span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/login"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h1&gt;</span>Login<span class="hl-tag">&lt;/h1&gt;</span>
+  <span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-str">"email"</span> <span class="hl-attr">autofocus</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Option 2: focus the heading (default fallback) --&gt;</span>
+<span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/about"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;h1&gt;</span>About Us<span class="hl-tag">&lt;/h1&gt;</span>
+  <span class="hl-tag">&lt;p&gt;</span>...<span class="hl-tag">&lt;/p&gt;</span>
+<span class="hl-tag">&lt;/template&gt;</span></pre></div>
+
+    <!-- Default -->
+    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.defaultTitle"></h3>
+    <p class="doc-text" t="docs.routing.focusBehavior.defaultText" t-html></p>
+
+    <!-- Timing -->
+    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.timingTitle"></h3>
+    <p class="doc-text" t="docs.routing.focusBehavior.timingText" t-html></p>
+
+    <!-- Side effects -->
+    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.sideEffectsTitle"></h3>
+    <p class="doc-text" t="docs.routing.focusBehavior.sideEffectsText" t-html></p>
+
+    <!-- Future values -->
+    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.futureTitle"></h3>
+    <p class="doc-text" t="docs.routing.focusBehavior.futureText" t-html></p>
+
+    <!-- Aria live region -->
+    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.ariaLiveTitle"></h3>
+    <p class="doc-text" t="docs.routing.focusBehavior.ariaLiveText" t-html></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">route-view</span> <span class="hl-attr">aria-live</span>=<span class="hl-str">"polite"</span> <span class="hl-attr">aria-atomic</span>=<span class="hl-str">"true"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
+  </div>
+
 </div>
 

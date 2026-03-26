@@ -508,3 +508,56 @@ describe('_animateOut double-callback guard', () => {
     jest.useRealTimers();
   });
 });
+
+describe('M1/M2: safety-net timeout uses 0 when no CSS duration', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  test('_animateIn transition safety-net uses 0ms when no durationMs provided', () => {
+    jest.useFakeTimers();
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    _animateIn(el, null, 'fade');
+
+    // Process rAF — this enters the transition flow and schedules setTimeout(done, 0)
+    jest.advanceTimersByTime(16);
+
+    // After rAF, classes are set but the 0ms fallback setTimeout is pending
+    expect(child.classList.contains('fade-enter-active')).toBe(true);
+    expect(child.classList.contains('fade-enter-to')).toBe(true);
+
+    // Flush the pending 0ms safety-net timeout
+    jest.runAllTimers();
+
+    // Now the safety-net has fired and cleaned up the classes
+    expect(child.classList.contains('fade-enter-active')).toBe(false);
+    expect(child.classList.contains('fade-enter-to')).toBe(false);
+
+    jest.useRealTimers();
+  });
+
+  test('_animateOut animation safety-net uses 0ms when no durationMs provided', () => {
+    jest.useFakeTimers();
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const callback = jest.fn();
+    _animateOut(el, 'fadeOut', null, callback);
+
+    expect(child.classList.contains('fadeOut')).toBe(true);
+    expect(callback).not.toHaveBeenCalled();
+
+    // Advance by 0ms (next tick) — the fallback timer should fire
+    jest.advanceTimersByTime(0);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(child.classList.contains('fadeOut')).toBe(false);
+
+    jest.useRealTimers();
+  });
+});
