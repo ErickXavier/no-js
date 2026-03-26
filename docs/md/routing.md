@@ -543,4 +543,76 @@ every navigation.
 
 ---
 
+## Accessibility — Focus Management (`focusBehavior`)
+
+By default, SPA navigation does not move keyboard focus — the browser's native
+focus restoration only applies to full-page loads. Screen-reader users may not
+notice that the page content has changed.
+
+Enable automatic focus management with:
+
+```js
+NoJS.config({
+  router: { focusBehavior: 'auto' }
+});
+```
+
+When set to `'auto'`, after each route render No.JS moves focus to the first
+suitable target in the new content, in this priority order:
+
+1. `[autofocus]` — explicit opt-in by the developer
+2. `[tabindex="-1"]` — element programmatically marked as a focus target
+3. `h1` — the page heading (most common landmark)
+4. The outlet element itself (fallback)
+
+```html
+<!-- Option 1: explicit autofocus on the primary action -->
+<template route="/login">
+  <h1>Login</h1>
+  <input type="email" autofocus />
+</template>
+
+<!-- Option 2: focus the heading (default fallback) -->
+<template route="/about">
+  <h1>About Us</h1>
+  <p>...</p>
+</template>
+```
+
+### Default
+
+`focusBehavior` defaults to `'none'` — no change to existing behaviour. Opt in
+per-app when accessibility is a requirement.
+
+### Timing
+
+Focus fires after `processTree` and after all async `src=` templates in the
+route have finished loading — the user is never focused into an empty container.
+
+### Side effects
+
+When the focus target does not already have `tabindex`, No.JS automatically
+injects `tabindex="-1"` to make programmatic focus possible. This attribute
+persists across subsequent navigations (it is not removed after the first
+navigation). For the route outlet, this is harmless — `tabindex="-1"` keeps
+the element out of the tab order while remaining focusable programmatically.
+
+### Future values
+
+Currently only `'auto'` and `'none'` are supported. Future releases may add
+additional modes such as `'first-heading'` (focus first `<h1>` or `<h2>` in
+the outlet) or `'custom'` (developer-supplied selector). Set `'auto'` now and
+you will benefit from those improvements automatically.
+
+### Aria live region
+
+For users who keep `focusBehavior: 'none'` (the default), consider adding
+`aria-live="polite"` to the `[route-view]` outlet so screen readers announce
+content changes without requiring focus movement:
+
+```html
+<div route-view aria-live="polite" aria-atomic="true"></div>
+```
+---
+
 **Next:** [Animations →](animations.md)

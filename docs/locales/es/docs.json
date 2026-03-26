@@ -9,13 +9,13 @@
       "introduction": {
         "title": "Introducción",
         "text": "No.JS es un framework reactivo HTML-first. Construye aplicaciones web dinámicas y basadas en datos usando únicamente atributos HTML — sin paso de compilación, sin DOM virtual, sin JSX.",
-        "callout": "~24KB gzipped · Cero dependencias · Funciona en todos los navegadores modernos · Sin paso de compilación"
+        "callout": "Cero dependencias · Funciona en todos los navegadores modernos · Sin paso de compilación"
       },
       "installation": {
         "title": "Instalación",
         "cdnSubtitle": "CDN (recomendado)",
         "selfHostedSubtitle": "Auto-alojado",
-        "selfHostedText": "Descarga dist/iife/no.js e inclúyelo con una etiqueta <script>. Es un solo archivo, ~24 KB gzipped."
+        "selfHostedText": "Descarga dist/iife/no.js e inclúyelo con una etiqueta <script>. Es un solo archivo."
       },
       "quickStart": {
         "title": "Inicio Rápido",
@@ -696,6 +696,35 @@
         "fileBasedTitle": "404 en Enrutamiento Basado en Archivos",
         "fileBasedText": "Al usar enrutamiento basado en archivos, navegar a una ruta cuyo archivo <code>.tpl</code> no existe en el servidor (HTTP 404 u otro error) activa automáticamente la cadena de fallback wildcard.",
         "fileBasedText2": "La respuesta HTTP fallida <strong>no</strong> se almacena en caché — las navegaciones posteriores a otras rutas no se ven afectadas."
+      },
+      "headAttributes": {
+        "title": "Atributos Head en Rutas",
+        "text": "Los templates de ruta pueden declarar <code>page-title</code> y <code>page-description</code> directamente en la etiqueta <code>&lt;template&gt;</code>. Cuando la ruta se activa, las etiquetas <code>&lt;head&gt;</code> correspondientes se actualizan automáticamente.",
+        "text2": "Se admiten tanto cadenas estáticas como expresiones dinámicas:",
+        "colAttr": "Atributo",
+        "colDesc": "Descripción",
+        "pageTitleDesc": "Establece <code>document.title</code> cuando la ruta está activa",
+        "pageDescriptionDesc": "Establece el contenido de <code>&lt;meta name=\"description\"&gt;</code> cuando la ruta está activa",
+        "callout": "Para gestión completa del head (URLs canónicas, JSON-LD, Open Graph), consulta la guía de <a href=\"/docs/head-management\">Gestión del Head</a>."
+      },
+      "focusBehavior": {
+        "title": "Accesibilidad — Gestión de Foco",
+        "text": "Después de cada navegación, No.JS mueve el foco a un elemento predecible dentro del contenido de la nueva ruta. Esto garantiza que los lectores de pantalla anuncien el cambio de página y los usuarios de teclado aterricen en un punto útil.",
+        "text2": "Cuando focusBehavior es 'auto' (por defecto), el framework recorre una lista de prioridad:",
+        "priority1": "<code>[autofocus]</code> — un elemento con el atributo <code>autofocus</code> dentro del template de ruta",
+        "priority2": "<code>h1</code> — el primer <code>&lt;h1&gt;</code> dentro del contenido de la ruta",
+        "priority3": "<code>[tabindex=\"-1\"]</code> — un contenedor enfocable manualmente",
+        "priority4": "El propio elemento route-view (último recurso)",
+        "defaultTitle": "Comportamiento por Defecto",
+        "defaultText": "La gestión de foco está <strong>habilitada por defecto</strong> — no necesitas configurar nada. La estrategia <code>'auto'</code> funciona de inmediato.",
+        "timingTitle": "Temporización",
+        "timingText": "El foco se mueve <strong>después</strong> de que el template de ruta esté completamente renderizado y todos los templates remotos dentro de él estén resueltos. Esto garantiza que el elemento destino exista en el DOM.",
+        "sideEffectsTitle": "Efectos Secundarios",
+        "sideEffectsText": "El elemento enfocado recibe <code>tabindex=\"-1\"</code> si no tiene un tabindex, y la página se desplaza para hacerlo visible mediante <code>scrollIntoView({ block: 'nearest' })</code>.",
+        "futureTitle": "Valores Futuros",
+        "futureText": "Actualmente solo se admite <code>'auto'</code>. Versiones futuras pueden agregar <code>'none'</code> (desactivar) y <code>'target'</code> (enfocar un selector específico).",
+        "ariaLiveTitle": "Región ARIA Live",
+        "ariaLiveText": "Para lectores de pantalla que no responden a cambios de foco, agrega <code>aria-live=\"polite\"</code> a tu <code>route-view</code>. El navegador anunciará el nuevo contenido cuando aparezca:"
       }
     },
     "formsValidation": {
@@ -809,7 +838,15 @@
         "subtitle": "Animaciones declarativas de entrada/salida y transiciones CSS"
       },
       "enterLeave": {
-        "title": "animate — Animaciones de Entrada/Salida"
+        "title": "animate — Animaciones de Entrada/Salida",
+        "attrsTitle": "Atributos de Animación",
+        "col1": "Atributo",
+        "col2": "Descripción",
+        "row1": "Clase de animación CSS añadida cuando el elemento entra",
+        "row2": "Clase de animación CSS añadida cuando el elemento sale",
+        "row3": "Duración en milisegundos pasada a animationDuration y usada como timeout de respaldo. Si se omite, el respaldo se ejecuta en el siguiente tick del event-loop (0 ms)",
+        "row4": "Retraso en milisegundos entre cada elemento en un bucle (each / foreach)",
+        "fallbackCallout": "Timeout de respaldo — No.JS escucha animationend / transitionend para limpiar clases y disparar re-renderizados tras las animaciones de salida. Si el evento nunca se dispara (p. ej. CSS ausente, elemento desconectado) un setTimeout actúa como red de seguridad para que el pipeline nunca se bloquee permanentemente. Si se omite animate-duration, el timeout es 0 ms — se ejecuta en el siguiente tick del event-loop sin espera artificial. Pasar un animate-duration=\"300\" explícito establece tanto animation-duration en el elemento como el timeout de seguridad en 300 ms."
       },
       "transition": {
         "title": "transition — Clases de Transición CSS",
@@ -1189,6 +1226,231 @@
         "csrfTitle": "Protección CSRF",
         "cspSecTitle": "Content Security Policy",
         "cspSecText1": "No.JS utiliza un parser de expresiones personalizado totalmente compatible con CSP — no se usa eval() ni el constructor Function(). No se requiere la directiva unsafe-eval en tu Content Security Policy."
+      }
+    },
+    "plugins": {
+      "hero": {
+        "badge": "Referencia de API",
+        "title": "Plugins",
+        "subtitle": "Extiende No.JS con paquetes reutilizables — analíticas, autenticación, feature flags y más"
+      },
+      "use": {
+        "title": "NoJS.use()",
+        "text": "Registra un plugin antes o después de NoJS.init(). Si la app ya está inicializada, el hook init del plugin se ejecuta inmediatamente.",
+        "objectFormTitle": "Forma de Objeto",
+        "objectFormText": "La forma estándar de definir un plugin. Proporciona un nombre, una función install y hooks de ciclo de vida opcionales.",
+        "functionTitle": "Atajo de Función",
+        "functionText": "Para plugins simples, pasa una función con nombre. El nombre de la función se convierte en el nombre del plugin.",
+        "functionCallout": "Las funciones anónimas y las funciones flecha son rechazadas — el plugin debe tener un nombre.",
+        "optionsTitle": "Opciones",
+        "optionsText": "El segundo argumento de NoJS.use() se pasa a la función install del plugin.",
+        "optionsTrustedNote": "La opción trusted es especial — consulta Interceptores de Confianza más abajo."
+      },
+      "interface": {
+        "title": "Interfaz del Plugin",
+        "thProperty": "Propiedad",
+        "thType": "Tipo",
+        "thRequired": "Requerido",
+        "thDescription": "Descripción",
+        "yes": "Sí",
+        "no": "No",
+        "nameDesc": "Identificador único. Los nombres duplicados son rechazados.",
+        "versionDesc": "Cadena semver para depuración.",
+        "capabilitiesDesc": "Capacidades declaradas (registradas en modo debug).",
+        "installDesc": "Se llama sincrónicamente por NoJS.use().",
+        "initDesc": "Se llama después de que NoJS.init() se completa (el DOM está listo).",
+        "disposeDesc": "Se llama durante NoJS.dispose() para limpieza.",
+        "lifecycleTitle": "Ciclo de Vida",
+        "lifecycleInstall": "install se ejecuta inmediatamente y de forma sincrónica. Úsalo para registrar interceptores, globales, directivas, escuchadores de eventos y stores.",
+        "lifecycleInit": "init se ejecuta después de que el DOM es procesado y el router está activo. Úsalo para trabajo que dependa de elementos renderizados o del estado de la ruta.",
+        "lifecycleDispose": "dispose se ejecuta durante la destrucción de la app. Úsalo para cerrar conexiones WebSocket, limpiar intervalos, enviar analíticas pendientes, etc.",
+        "duplicateTitle": "Detección de Duplicados",
+        "duplicateText": "Un nombre de plugin solo puede registrarse una vez. Si NoJS.use() se llama de nuevo con el mismo nombre pero un objeto diferente, se registra una advertencia y la llamada se ignora.",
+        "freezingTitle": "Congelación del Registro de Directivas",
+        "freezingText": "Las directivas principales (state, bind, get, on:*, etc.) se congelan después de que el framework carga. Los plugins pueden registrar nuevas directivas pero no pueden sobrescribir las integradas."
+      },
+      "globals": {
+        "title": "NoJS.global()",
+        "text": "Inyecta una variable reactiva accesible como $name en cualquier expresión de plantilla.",
+        "namingTitle": "Convenciones de Nombres",
+        "namingPrefix": "Los nombres globales se acceden con un prefijo $ en las plantillas: NoJS.global('foo', ...) se convierte en $foo.",
+        "namingNamespace": "Usa el nombre de tu plugin como namespace para evitar colisiones: $analytics, $auth, $featureFlags.",
+        "reservedTitle": "Nombres Reservados",
+        "reservedText": "Los siguientes nombres no pueden usarse con NoJS.global():",
+        "reservedProto": "Los vectores de contaminación de prototipos (__proto__, constructor, prototype) también están bloqueados.",
+        "reactivityTitle": "Reactividad",
+        "reactivityText": "Los valores de objeto pasados a NoJS.global() se envuelven automáticamente en un contexto reactivo. Las mutaciones disparan actualizaciones del DOM igual que los cambios de store o state.",
+        "ownershipTitle": "Seguimiento de Propiedad",
+        "ownershipText": "Cuando un plugin registra un global durante su fase install, se convierte en el propietario. Si un plugin diferente sobrescribe ese global, se registra una advertencia."
+      },
+      "sentinels": {
+        "title": "Centinelas de Interceptores",
+        "text": "Los interceptores de solicitud pueden devolver objetos especiales con clave de Symbols centinela para controlar el pipeline de fetch.",
+        "cancelTitle": "NoJS.CANCEL — Abortar la Solicitud",
+        "cancelText": "Devuelve un objeto con [NoJS.CANCEL]: true para evitar que la solicitud sea enviada. El fetch lanza un AbortError.",
+        "respondTitle": "NoJS.RESPOND — Servir una Respuesta en Caché",
+        "respondText": "Devuelve un objeto con [NoJS.RESPOND]: data para cortocircuitar la solicitud y devolver data directamente como respuesta. No se realiza ninguna solicitud HTTP.",
+        "replaceTitle": "NoJS.REPLACE — Reemplazar Datos de Respuesta",
+        "replaceText": "Devuelve un objeto con [NoJS.REPLACE]: data desde un interceptor de respuesta para reemplazar el cuerpo de respuesta parseado con datos personalizados.",
+        "summaryTitle": "Resumen",
+        "thSentinel": "Centinela",
+        "thUsedIn": "Usado En",
+        "thEffect": "Efecto",
+        "cancelUsedIn": "Interceptor de solicitud",
+        "respondUsedIn": "Interceptor de solicitud",
+        "replaceUsedIn": "Interceptor de respuesta",
+        "cancelEffect": "Aborta la solicitud (lanza AbortError)",
+        "respondEffect": "Devuelve datos directamente, omite la llamada HTTP",
+        "replaceEffect": "Reemplaza el cuerpo de respuesta parseado"
+      },
+      "trusted": {
+        "title": "Interceptores de Confianza",
+        "text": "Por defecto, los interceptores reciben copias redactadas de solicitudes y respuestas — los encabezados sensibles y parámetros de URL se eliminan o reemplazan con [REDACTED].",
+        "fullAccess": "Los plugins de autenticación que necesitan acceso a los encabezados reales pueden instalarse con { trusted: true }.",
+        "callout": "Se registra una advertencia en consola cuando un plugin se instala con acceso de confianza. Solo otorga trusted a plugins que controles o hayas auditado.",
+        "redactedTitle": "Encabezados Redactados",
+        "requestLabel": "Encabezados de solicitud eliminados antes de pasar a interceptores no confiables:",
+        "responseLabel": "Encabezados de respuesta eliminados del proxy de respuesta:"
+      },
+      "dispose": {
+        "title": "NoJS.dispose()",
+        "text": "Destruye toda la aplicación: dispone los plugins, limpia los globales y elimina los interceptores.",
+        "orderTitle": "Orden de Destrucción",
+        "orderStep1": "Los plugins se destruyen en orden inverso de instalación (el último instalado se destruye primero).",
+        "orderStep2": "La función dispose de cada plugin tiene un tiempo límite de 3 segundos. Si lo excede, se registra un error y la destrucción continúa con el siguiente plugin.",
+        "orderStep3": "Después de que todos los plugins son destruidos, los globales e interceptores se limpian.",
+        "asyncTitle": "Dispose Asíncrono",
+        "asyncText": "Las funciones dispose de los plugins pueden ser asíncronas. El framework espera cada una (sujeta al tiempo límite de 3 segundos).",
+        "callout": "Los plugins no pueden instalarse durante la destrucción. Las llamadas a NoJS.use() mientras dispose() se ejecuta son ignoradas con una advertencia."
+      },
+      "security": {
+        "title": "Directrices de Seguridad",
+        "text": "Al crear plugins, sigue estas prácticas para mantener tu aplicación segura.",
+        "namespaceTitle": "Nombra Todo con Namespace",
+        "namespaceText": "Prefija globales, stores y nombres de eventos con el nombre de tu plugin para evitar colisiones.",
+        "evalTitle": "Nunca Uses eval ni Function",
+        "evalText": "Los valores pasados a NoJS.global() se verifican en busca de referencias peligrosas. eval y Function están bloqueados.",
+        "cleanupTitle": "Limpia en dispose",
+        "cleanupText": "Siempre proporciona un hook dispose que limpie intervalos, cierre conexiones y elimine escuchadores de eventos.",
+        "overwriteTitle": "Evita Sobrescribir Globales Ajenos",
+        "overwriteText": "Si tu plugin detecta que un global ya es propiedad de otro plugin, considera usar un nombre diferente en lugar de sobrescribir silenciosamente.",
+        "validateTitle": "Valida las Opciones",
+        "validateText": "Verifica las opciones requeridas en install y advierte temprano."
+      },
+      "example": {
+        "title": "Ejemplo Completo",
+        "text": "Un plugin de analíticas completo que demuestra el ciclo de vida del plugin, globales, interceptores y destrucción."
+      }
+    },
+    "headManagement": {
+      "hero": {
+        "badge": "Guías",
+        "title": "Gestión del Head",
+        "subtitle": "Gestiona el título del documento, meta description, URL canónica y JSON-LD desde cualquier elemento"
+      },
+      "intro": {
+        "text": "No.JS te permite controlar los metadatos del <head> de forma declarativa desde cualquier parte de tu markup. Usa elementos ocultos con atributos page-title, page-description, page-canonical y page-jsonld — se evalúan de forma reactiva y actualizan el head del documento automáticamente.",
+        "routingTip": "Para gestión del head a nivel de ruta, también puedes usar <code>page-title</code> y <code>page-description</code> directamente en etiquetas <code>&lt;template route=\"...\"&gt;</code>. Consulta <a href=\"/docs/routing#route-head-attributes\">Atributos Head en Rutas</a>."
+      },
+      "placement": {
+        "title": "Ubicación",
+        "text": "Coloca los elementos de gestión del head dentro de cualquier scope de state. Deben tener el atributo hidden — nunca se renderizan visualmente.",
+        "reactive": "Todos los valores son reactivos — cuando el state subyacente cambia, el head del documento se actualiza inmediatamente."
+      },
+      "pageTitle": {
+        "title": "page-title",
+        "text": "Establece document.title con el valor de la expresión evaluada.",
+        "expression": "El valor es una expresión estándar de No.JS evaluada contra el contexto del elemento."
+      },
+      "pageDescription": {
+        "title": "page-description",
+        "text": "Establece el atributo content de la etiqueta <meta name=\"description\">. Si la etiqueta no existe, se crea.",
+        "duplicate": "Solo un page-description debería estar activo a la vez. Si hay múltiples presentes, el último procesado gana."
+      },
+      "pageCanonical": {
+        "title": "page-canonical",
+        "text": "Establece el atributo href de la etiqueta <link rel=\"canonical\">. Si la etiqueta no existe, se crea.",
+        "existing": "Si ya existe un enlace canónico en tu HTML, el valor del atributo se actualiza en su lugar."
+      },
+      "pageJsonld": {
+        "title": "page-jsonld",
+        "text": "Inyecta un bloque <script type=\"application/ld+json\"> en el head del documento. El texto interno del elemento se usa como payload JSON-LD.",
+        "scriptNote": "El contenido se inserta tal cual — asegúrate de que sea JSON válido. Usa interpolación <code>{variable}</code> para inyectar valores dinámicos.",
+        "marker": "La etiqueta script generada se marca con <code>data-nojs-jsonld</code> para poder identificarla y limpiarla al desmontar.",
+        "fullExampleTitle": "Ejemplo Completo de Página de Producto"
+      },
+      "notes": {
+        "title": "Notas y Casos Especiales",
+        "competingTitle": "Múltiples Directivas Compitiendo",
+        "competingText": "Si múltiples elementos establecen el mismo atributo head (ej. dos elementos page-title), el último procesado gana. Cuando un elemento se desmonta, su contribución al head se revierte al valor anterior.",
+        "cleanupTitle": "Limpieza al Desmontar",
+        "cleanupText": "Cuando un elemento con una directiva de head se elimina del DOM (ej. dentro de un bloque if o un cambio de ruta), su contribución al head se limpia automáticamente.",
+        "captureTitle": "Captura de Template JSON-LD",
+        "captureText": "El innerHTML del elemento page-jsonld se captura en el momento del procesamiento. Si necesitas JSON-LD reactivo, coloca el elemento dentro de un scope de state y usa interpolación {expresión}."
+      }
+    },
+    "ssg": {
+      "hero": {
+        "badge": "Guías",
+        "title": "SSG y Pre-Renderizado",
+        "subtitle": "Generación de sitios estáticos y patrones de renderizado del lado del servidor con No.JS"
+      },
+      "coreIdea": {
+        "title": "La Idea Central",
+        "text": "No.JS está diseñado para mejorar HTML pre-renderizado. Incrusta tus datos directamente en atributos state= en tiempo de compilación — la página carga con contenido real visible inmediatamente, y No.JS lo hace interactivo.",
+        "text2": "El navegador renderiza el HTML estático instantáneamente. No.JS activa los bindings, eventos y obtención de datos cuando el script carga — sin página en blanco, sin spinners de carga para el contenido inicial."
+      },
+      "patterns": {
+        "title": "Patrones",
+        "staticTitle": "Páginas Estáticas (SSG)",
+        "staticText": "Genera HTML en tiempo de compilación con herramientas como Eleventy, Hugo o Astro. Inyecta datos en atributos state= usando el lenguaje de plantillas de tu SSG.",
+        "staticEleventyLabel": "Eleventy (Nunjucks):",
+        "staticCallout": "El HTML se renderiza completamente en tiempo de compilación — los motores de búsqueda ven contenido real, los usuarios ven cargas de página instantáneas.",
+        "staticText2": "No.JS se activa después de que la página carga: las expresiones bind actualizan el DOM, los manejadores de eventos se conectan y la obtención de datos comienza para contenido dinámico.",
+        "ssrTitle": "Renderizado del Lado del Servidor (SSR)",
+        "ssrText": "Renderiza HTML en el servidor por solicitud. Mismo patrón — inyecta datos en state=, sirve el HTML, y deja que No.JS lo hidrate.",
+        "hybridTitle": "Híbrido: Estructura Estática, Interacción Dinámica",
+        "hybridText": "Pre-renderiza el contenido crítico para SEO en state=, y deja que No.JS maneje las características interactivas (carrito, actualizaciones en tiempo real) vía get= y manejadores de eventos."
+      },
+      "stateVsGet": {
+        "title": "Qué Poner en state= vs get=",
+        "colContentType": "Tipo de Contenido",
+        "colApproach": "Enfoque",
+        "colWhy": "Por qué",
+        "row1Col1": "Nombre del producto, precio, descripción",
+        "row1Col2": "state= (pre-renderizado)",
+        "row1Col3": "Crítico para SEO, visible inmediatamente",
+        "row2Col1": "Datos específicos del usuario (carrito, preferencias)",
+        "row2Col2": "get= (fetch del lado del cliente)",
+        "row2Col3": "Cambia por sesión, no indexable",
+        "row3Col1": "Conteo de stock, disponibilidad en tiempo real",
+        "row3Col2": "get= con refresh=",
+        "row3Col3": "Cambia frecuentemente, necesita polling",
+        "row4Col1": "Texto de UI estático, navegación",
+        "row4Col2": "HTML plano",
+        "row4Col3": "No necesita reactividad"
+      },
+      "ruleOfThumb": {
+        "title": "Regla General",
+        "text": "Si un motor de búsqueda debería verlo, pre-renderízalo en state=. Si es específico del usuario o en tiempo real, obténlo del lado del cliente con get=."
+      },
+      "eleventyQuickStart": {
+        "title": "No.JS + Eleventy — Inicio Rápido",
+        "configTitle": ".eleventy.js",
+        "productTemplateTitle": "Template de Página de Producto (product.njk)",
+        "baseLayoutTitle": "Layout Base (_includes/base.html)",
+        "text": "Ejecuta npx @11ty/eleventy --serve y cada página de producto se pre-renderiza con contenido SEO completo. No.JS lo hace interactivo en el navegador."
+      },
+      "securityNote": {
+        "title": "Nota de Seguridad",
+        "text": "Al incrustar contenido generado por usuarios en atributos state=, siempre escapa las entidades HTML para prevenir XSS:",
+        "text2": "Esto previene que un nombre de producto malicioso como </div><script>alert('xss')</script> rompa fuera del atributo."
+      },
+      "managingHead": {
+        "title": "Gestionando el <head> en Páginas SSG",
+        "text1": "Para páginas SSG, establece <title>, <meta description> y otras etiquetas head en tu template SSG (ej. el layout base de Eleventy) — son parte del HTML estático.",
+        "text2": "Para páginas SPA dinámicas dentro de la misma app, usa las directivas de gestión del head de No.JS (page-title, page-description, page-canonical, page-jsonld) para actualizar el head de forma reactiva.",
+        "text3": "Consulta la guía de Gestión del Head para la API completa."
       }
     }
   }

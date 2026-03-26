@@ -2,7 +2,7 @@
 //  DIRECTIVES: state, store, computed, watch
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _stores, _log, _warn, _watchExpr } from "../globals.js";
+import { _stores, _log, _warn, _watchExpr, _onDispose } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext } from "../dom.js";
@@ -66,7 +66,7 @@ registerDirective("state", {
           _warn('State key(s) ' + riskyKeys.map(k => '"' + k + '"').join(', ') + ' may contain sensitive data. Consider using persist-fields to exclude them.');
         }
 
-        ctx.$watch(() => {
+        const unwatch = ctx.$watch(() => {
           try {
             const raw = ctx.__raw;
             const data = persistFields
@@ -77,6 +77,7 @@ registerDirective("state", {
             /* ignore */
           }
         });
+        _onDispose(() => { if (unwatch) unwatch(); });
       }
     }
 

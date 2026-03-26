@@ -8,7 +8,14 @@
       "docs": "Docs",
       "faq": "FAQ",
       "getStarted": "Começar",
-      "playground": "Playground"
+      "playground": "Playground",
+      "tools": "Mais",
+      "toolsLsp": "NoJS LSP",
+      "toolsLspDesc": "Extensão VS Code",
+      "toolsMcp": "NoJS MCP",
+      "toolsMcpDesc": "Servidor AI tools",
+      "toolsSkill": "NoJS Skill",
+      "toolsSkillDesc": "Referência AI agent"
     },
     "footer": {
       "desc": "O framework reativo HTML-first",
@@ -35,19 +42,21 @@
       "configuration": "Configuração",
       "guides": "Guias",
       "stateManagement": "Gerenciamento de Estado",
-      "eventHandling": "Tratamento de Eventos",
+      "eventHandling": "Eventos",
       "dataBinding": "Data Binding",
       "conditionals": "Condicionais",
       "loops": "Loops",
       "templates": "Templates",
       "fetchApi": "Fetch & API",
       "routing": "Roteamento",
+      "headManagement": "Gerenciamento de head",
       "forms": "Formulários",
       "styling": "Estilização",
       "dragAndDrop": "Drag & Drop",
       "animations": "Animações",
       "filters": "Filtros",
-      "i18n": "i18n"
+      "i18n": "i18n",
+      "plugins": "Plugins"
     },
     "langSwitcher": {
       "en": "EN",

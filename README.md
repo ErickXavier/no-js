@@ -2,6 +2,8 @@
   <img src="docs/logo-dark-round.png" alt="No.JS" width="26" style="vertical-align: middle; margin-top: -6px;"> No.JS
 </h1>
 
+![version](https://img.shields.io/badge/version-1.11.0-blue)
+
 **The HTML-First Reactive Framework**
 
 Build dynamic, reactive web applications using nothing but HTML attributes.
@@ -24,14 +26,18 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 - **Reactive Binding** — `bind`, `bind-*`, `model` for one/two-way data binding
 - **Conditionals & Loops** — `if`, `else-if`, `show`, `hide`, `each`, `foreach`, `switch`
 - **State Management** — `state` (local), `store` (global), `computed`, `watch`, `notify()`
-- **SPA Routing** — `route`, `route-view`, guards, params, nested routes, wildcard catch-all
-- **Forms & Validation** — Built-in validators + `$form` context
+- **Head Management** — `page-title`, `page-description`, `page-canonical`, `page-jsonld` for SEO-friendly SPAs
+- **SPA Routing** — `route`, `route-view`, guards, params, nested routes, wildcard catch-all, `focusBehavior`
+- **Forms & Validation** — Built-in + custom validators, per-rule errors, async support, `$form` context
+- **Plugin System** — Extend with reusable packages: interceptors, globals, directives, lifecycle hooks
 - **Animations** — `animate`, `transition` with stagger support
-- **i18n** — `t` directive with pluralization
+- **i18n** — `t` directive with pluralization, namespaces, browser detection
 - **Filters** — `uppercase`, `currency`, `date`, `truncate`, 32 built-in pipes
-- **Drag & Drop** — `drag`, `drop`, `drag-image`, `drag-data`, `drop-zone`
+- **Drag & Drop** — `drag`, `drop`, `drag-list`, multi-select, keyboard DnD
+- **DevTools** — Built-in inspector with context mutation, store inspection, element highlighting
+- **Security** — DOMParser-based sanitization, CSP-safe (no eval/Function), header redaction, prototype pollution protection
 - **Custom Directives** — Extend with `NoJS.directive()`
-- **~24 KB gzipped** — Zero dependencies
+- **TypeScript Support** — Type definitions for plugin authors (`types/nojs-plugin.d.ts`)
 
 ---
 
@@ -54,6 +60,20 @@ NoJS.config({
   },
 });
 </script>
+```
+
+### NPM
+
+```bash
+npm install no-js-framework
+```
+
+```javascript
+// ESM
+import NoJS from 'no-js-framework';
+
+// CommonJS
+const NoJS = require('no-js-framework');
 ```
 
 ---
@@ -98,6 +118,40 @@ No `app.mount()`. No `createApp()`. No `NgModule`. It just works.
 
 ---
 
+## Plugin System
+
+Extend No.JS with reusable packages — analytics, auth, feature flags, UI libraries — without modifying the core.
+
+```html
+<script>
+  NoJS.use({
+    name: 'analytics',
+    version: '1.0.0',
+    capabilities: ['interceptors', 'globals'],
+
+    install(app, options) {
+      app.global('analytics', { pageViews: 0 });
+      app.interceptor('response', (response, url) => {
+        console.log('API call:', url, response.status);
+        return response;
+      });
+    },
+
+    init(app) {
+      console.log('Analytics ready');
+    },
+
+    dispose(app) {
+      console.log('Analytics cleaned up');
+    }
+  });
+</script>
+```
+
+Plugins have access to the full API: `directive()`, `filter()`, `validator()`, `interceptor()`, `global()`, `on()`, and more.
+
+---
+
 ## Documentation
 
 Full documentation is available in the [docs/](docs/) folder:
@@ -119,6 +173,7 @@ Full documentation is available in the [docs/](docs/) folder:
 | [i18n](docs/md/i18n.md) | Translations, pluralization, formatting |
 | [Filters](docs/md/filters.md) | Built-in filters, chaining, custom filters |
 | [Actions & Refs](docs/md/actions-refs.md) | `call`, `trigger`, `ref`, `$refs` |
+| [Plugins](docs/md/plugins.md) | Plugin API, interceptors, globals, lifecycle |
 | [Custom Directives](docs/md/custom-directives.md) | Extend No.JS |
 | [Error Handling](docs/md/error-handling.md) | Error boundaries, global handler |
 | [Configuration](docs/md/configuration.md) | Global settings, interceptors, template caching, security |
@@ -133,6 +188,18 @@ Full documentation is available in the [docs/](docs/) folder:
 2. **Resolve** — Each attribute maps to a directive, executed by priority
 3. **React** — Data lives in Proxy-backed reactive contexts; changes auto-update the DOM
 4. **Scope** — Contexts inherit from parents, like lexical scoping
+5. **Secure** — Expressions run in a sandboxed evaluator (no eval, no Function); HTML is sanitized via DOMParser
+
+---
+
+## Ecosystem
+
+| Tool | Description |
+|------|-------------|
+| [NoJS-LSP](https://github.com/ErickXavier/nojs-lsp) | VS Code extension — autocomplete, hover docs, diagnostics for No.JS HTML |
+| [NoJS-MCP](https://github.com/ErickXavier/nojs-mcp) | MCP server — AI tools for building No.JS apps |
+| [NoJS-Skill](https://github.com/ErickXavier/nojs-skill) | Claude Code skill — guided No.JS project generation |
+| [NoJS-CLI](https://github.com/ErickXavier/nojs-cli) | CLI tool — scaffold, dev server, build & deploy No.JS apps |
 
 ---
 
@@ -157,5 +224,5 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 <p align="center">
   <strong>No.JS</strong> — Because the best JavaScript is the JavaScript you don't write.<br>
-  <code>~24 KB gzipped</code> · <code>Zero dependencies</code> · <code>MIT License</code>
+  <code>Zero dependencies</code> · <code>MIT License</code>
 </p>

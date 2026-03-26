@@ -23,6 +23,24 @@ const MIME = {
   '.md':   'text/markdown',
 };
 
+function serveFile(filePath, res) {
+  const ext = path.extname(filePath);
+
+  // For HTML files: rewrite CDN URL → local path on-the-fly
+  if (ext === '.html') {
+    fs.readFile(filePath, 'utf8', (err, html) => {
+      if (err) { res.writeHead(500); res.end('Error'); return; }
+      const rewritten = html.replace(CDN_PATTERN, LOCAL_SCRIPT);
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(rewritten);
+    });
+    return;
+  }
+
+  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+  fs.createReadStream(filePath).pipe(res);
+}
+
 const server = http.createServer((req, res) => {
   let url = req.url.split('?')[0];
 
@@ -37,28 +55,34 @@ const server = http.createServer((req, res) => {
   let filePath = path.join(ROOT, url === '/' ? 'docs/index.html' : url);
   if (!path.extname(url)) filePath = path.join(ROOT, 'docs/index.html');
 
+  // Path traversal guard: resolved path must stay within ROOT
+  if (!filePath.startsWith(ROOT)) {
+    res.writeHead(403);
+    res.end('Forbidden');
+    return;
+  }
+
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      res.writeHead(404);
-      res.end('Not Found');
-      return;
-    }
-
-    const ext = path.extname(filePath);
-
-    // ── For HTML files: rewrite CDN URL → local path on-the-fly ──
-    if (ext === '.html') {
-      fs.readFile(filePath, 'utf8', (err, html) => {
-        if (err) { res.writeHead(500); res.end('Error'); return; }
-        const rewritten = html.replace(CDN_PATTERN, LOCAL_SCRIPT);
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(rewritten);
+      // Fallback: try docs/ subdirectory (the docs site assets are under docs/)
+      const docsPath = path.join(ROOT, 'docs', url);
+      if (!docsPath.startsWith(ROOT)) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+      }
+      fs.stat(docsPath, (err2, stats2) => {
+        if (err2 || !stats2?.isFile()) {
+          res.writeHead(404);
+          res.end('Not Found');
+          return;
+        }
+        serveFile(docsPath, res);
       });
       return;
     }
 
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
-    fs.createReadStream(filePath).pipe(res);
+    serveFile(filePath, res);
   });
 });
 

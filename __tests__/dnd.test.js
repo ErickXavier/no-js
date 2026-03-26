@@ -627,6 +627,67 @@ describe('Drag-List Directive', () => {
     el.dispatchEvent(evt);
     expect(spy).not.toHaveBeenCalled();
   });
+
+  test('44 — each drag-list item wrapper has __disposers registered', () => {
+    const { el } = setupDragList('tasks', ['A', 'B', 'C']);
+    const wrappers = el.querySelectorAll('[role="option"]');
+
+    wrappers.forEach((wrapper) => {
+      expect(wrapper.__disposers).toBeDefined();
+      expect(Array.isArray(wrapper.__disposers)).toBe(true);
+      // Should have at least 3 disposers: dragstart, dragend, keydown
+      expect(wrapper.__disposers.length).toBeGreaterThanOrEqual(3);
+      wrapper.__disposers.forEach((fn) => {
+        expect(typeof fn).toBe('function');
+      });
+    });
+  });
+
+  test('45 — calling __disposers removes dragstart, dragend, and keydown listeners', () => {
+    const { el } = setupDragList('tasks', ['A', 'B']);
+    const wrapper = el.children[0];
+
+    // Spy on removeEventListener to verify cleanup
+    const removeSpy = jest.spyOn(wrapper, 'removeEventListener');
+
+    // Run all disposers
+    wrapper.__disposers.forEach((fn) => fn());
+
+    // Should have removed dragstart, dragend, and keydown listeners
+    const removedEvents = removeSpy.mock.calls.map((call) => call[0]);
+    expect(removedEvents).toContain('dragstart');
+    expect(removedEvents).toContain('dragend');
+    expect(removedEvents).toContain('keydown');
+
+    removeSpy.mockRestore();
+  });
+
+  test('46 — after disposal, keydown Space does not trigger drag behavior', () => {
+    const { el } = setupDragList('tasks', ['A']);
+    const wrapper = el.children[0];
+    // dragEl is the first visible child (wrapper has display:contents)
+    const dragEl = wrapper.firstElementChild || wrapper;
+
+    // Clear any leftover drag state from prior tests by using dragstart/dragend cycle
+    wrapper.dispatchEvent(createDragEvent('dragstart'));
+    wrapper.dispatchEvent(createDragEvent('dragend'));
+    expect(dragEl.getAttribute('aria-grabbed')).toBe('false');
+
+    // Now verify keyboard drag works before disposal
+    wrapper.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect(dragEl.getAttribute('aria-grabbed')).toBe('true');
+
+    // Reset via dragend to clear _dndState.dragging
+    wrapper.dispatchEvent(createDragEvent('dragend'));
+    expect(dragEl.getAttribute('aria-grabbed')).toBe('false');
+
+    // Run disposers to clean up all listeners
+    wrapper.__disposers.forEach((fn) => fn());
+
+    // After disposal, pressing Space should NOT set aria-grabbed to true
+    wrapper.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect(dragEl.getAttribute('aria-grabbed')).toBe('false');
+  });
 });
 
 // =======================================================================
