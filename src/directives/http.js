@@ -10,6 +10,7 @@ import {
   _emitEvent,
   _routerInstance,
   _onDispose,
+  _SENSITIVE_HEADERS,
 } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement, _interpolate } from "../evaluate.js";
@@ -19,11 +20,6 @@ import { registerDirective, processTree, _disposeChildren } from "../registry.js
 import { _devtoolsEmit } from "../devtools.js";
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete"];
-
-const _SENSITIVE_HEADERS = new Set([
-  'authorization', 'x-api-key', 'x-auth-token', 'cookie',
-  'proxy-authorization', 'set-cookie', 'x-csrf-token',
-]);
 
 for (const method of HTTP_METHODS) {
   registerDirective(method, {

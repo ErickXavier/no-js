@@ -2,7 +2,7 @@
 //  EXPRESSION EVALUATOR
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _routerInstance, _filters, _warn, _notifyStoreWatchers } from "./globals.js";
+import { _config, _stores, _routerInstance, _filters, _warn, _notifyStoreWatchers, _globals } from "./globals.js";
 import { _i18n } from "./i18n.js";
 import { _collectKeys } from "./context.js";
 
@@ -1311,6 +1311,11 @@ export function evaluate(expr, ctx) {
     if (!("$i18n"   in scope)) scope.$i18n   = _i18n;
     if (!("$refs"   in scope)) scope.$refs   = ctx.$refs;
     if (!("$form"   in scope)) scope.$form   = ctx.$form || null;
+    // Inject plugin globals (cannot shadow local or core $ variables)
+    for (const gk in _globals) {
+      const key = "$" + gk;
+      if (!(key in scope)) scope[key] = _globals[gk];
+    }
 
     // Parse expression into AST (cached)
     let ast = _exprCache.get(mainExpr);
@@ -1347,6 +1352,11 @@ export function _execStatement(expr, ctx, extraVars = {}) {
     if (!("$router" in scope)) scope.$router = _routerInstance;
     if (!("$i18n"   in scope)) scope.$i18n   = _i18n;
     if (!("$refs"   in scope)) scope.$refs   = ctx.$refs;
+    // Inject plugin globals (before extraVars so $event etc. take priority)
+    for (const gk in _globals) {
+      const key = "$" + gk;
+      if (!(key in scope)) scope[key] = _globals[gk];
+    }
     Object.assign(scope, extraVars);
 
     // Snapshot context chain values for write-back comparison

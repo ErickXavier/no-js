@@ -5,7 +5,7 @@
 import { _watchExpr, _onDispose, _config, _warn } from "../globals.js";
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext, _sanitizeHtml } from "../dom.js";
-import { registerDirective } from "../registry.js";
+import { registerDirective, _disposeChildren } from "../registry.js";
 
 registerDirective("bind", {
   priority: 20,
@@ -33,7 +33,10 @@ registerDirective("bind-html", {
     }
     function update() {
       const val = evaluate(expr, ctx);
-      if (val != null) el.innerHTML = _sanitizeHtml(String(val));
+      if (val != null) {
+        _disposeChildren(el);
+        el.innerHTML = _sanitizeHtml(String(val));
+      }
     }
     _watchExpr(expr, ctx, update);
     update();

@@ -3740,3 +3740,102 @@ describe('HTTP directive — skeleton= attribute (M3)', () => {
     }).not.toThrow();
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════
+//  M6 — call directive warns about sensitive headers in HTML attributes
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('M6 — call directive sensitive header warning', () => {
+  let originalFetch;
+
+  beforeEach(() => {
+    originalFetch = global.fetch;
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      headers: { get: () => 'application/json' },
+      text: () => Promise.resolve(JSON.stringify({ ok: true })),
+    });
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    document.body.innerHTML = '';
+  });
+
+  test('should warn when call directive has Authorization in headers attribute', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const btn = document.createElement('button');
+    btn.setAttribute('call', '/api/action');
+    btn.setAttribute('method', 'post');
+    btn.setAttribute('headers', '{"Authorization": "Bearer x"}');
+    parent.appendChild(btn);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    // Trigger the click to exercise the handler which checks headers
+    btn.click();
+    await new Promise((r) => setTimeout(r, 50));
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('Authorization'),
+    );
+
+    warnSpy.mockRestore();
+  });
+
+  test('should warn for x-api-key sensitive header in call directive', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const btn = document.createElement('button');
+    btn.setAttribute('call', '/api/action');
+    btn.setAttribute('headers', '{"X-Api-Key": "secret123"}');
+    parent.appendChild(btn);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    btn.click();
+    await new Promise((r) => setTimeout(r, 50));
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('X-Api-Key'),
+    );
+
+    warnSpy.mockRestore();
+  });
+
+  test('should not warn for non-sensitive headers in call directive', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const btn = document.createElement('button');
+    btn.setAttribute('call', '/api/action');
+    btn.setAttribute('headers', '{"Content-Type": "application/json"}');
+    parent.appendChild(btn);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    btn.click();
+    await new Promise((r) => setTimeout(r, 50));
+
+    // _warn should NOT have been called with anything about sensitive headers
+    const sensitiveWarns = warnSpy.mock.calls.filter(
+      (args) => typeof args[1] === 'string' && args[1].includes('Sensitive header'),
+    );
+    expect(sensitiveWarns).toHaveLength(0);
+
+    warnSpy.mockRestore();
+  });
+});
