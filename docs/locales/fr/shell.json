@@ -49,6 +49,7 @@
       "templates": "Templates",
       "fetchApi": "Fetch & API",
       "routing": "Routage",
+      "headManagement": "Gestion du head",
       "forms": "Formulaires",
       "styling": "Styles",
       "dragAndDrop": "Drag & Drop",
