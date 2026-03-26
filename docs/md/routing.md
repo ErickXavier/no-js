@@ -479,6 +479,112 @@ The failed HTTP response is **not** cached — subsequent navigations to other p
 
 ---
 
+## Deployment
+
+No.JS uses the HTML5 History API by default (`useHash: false`), which produces clean URLs like `/about` and `/products/42`. These are indexable by search engines and shareable — but they require your server to serve the same `index.html` for **every route**, not just `/`.
+
+Without this configuration, a direct visit to `https://your-site.com/about` returns a 404 from the server, because `/about` is only a client-side route that exists in JavaScript — the server has no file at that path.
+
+### nginx
+
+```nginx
+server {
+  listen 80;
+  root /var/www/your-app;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
+```
+
+### Apache
+
+Create a `.htaccess` file in your app's root:
+
+```apache
+Options -MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.html [QSA,L]
+```
+
+### Netlify
+
+Create a `_redirects` file in your publish directory:
+
+```
+/*  /index.html  200
+```
+
+Or use `netlify.toml`:
+
+```toml
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+### Vercel
+
+Create a `vercel.json` in your project root:
+
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+### Cloudflare Pages
+
+Create a `_redirects` file in your project's output directory:
+
+```
+/*  /index.html  200
+```
+
+Or add a `_headers` file if you need finer control:
+
+```
+_redirects
+/*  /index.html  200
+```
+
+### Firebase Hosting
+
+In `firebase.json`:
+
+```json
+{
+  "hosting": {
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
+```
+
+### Hash mode
+
+If you cannot configure your server (e.g., static file hosting without rewrite rules), you can use hash mode:
+
+```js
+NoJS.config({ router: { useHash: true } });
+```
+
+Hash mode produces URLs like `https://your-site.com/#/about`. These work on any server without configuration, but **search engines do not index hash fragments as separate pages** — all routes appear as a single URL to Googlebot. Use hash mode only when History API routing is not possible.
+
+> **Note:** No.JS emits a console warning when `useHash: true` is detected. If you are intentionally using hash mode (e.g. GitHub Pages) and want to suppress the warning, add:
+> ```js
+> NoJS.config({ router: { useHash: true, suppressHashWarning: true } });
+> ```
+
+---
+
+> **See also:** For SEO-optimised routing without a server, consider generating static HTML per route at build time — see [SSG & Pre-Rendering →](ssg.md).
+
 ---
 
 ## Accessibility — Focus Management (`focusBehavior`)

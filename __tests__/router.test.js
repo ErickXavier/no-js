@@ -2682,6 +2682,52 @@ describe('Router — mode→useHash backward compat', () => {
 
 });
 
+
+describe('Router — useHash SEO warning', () => {
+  let warnSpy;
+
+  beforeEach(() => {
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    document.body.innerHTML = '';
+    window.location.hash = '';
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+    _config.router = { useHash: false, base: '/', scrollBehavior: 'top' };
+  });
+
+  test('emits a warning when useHash: true is set on router init', async () => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
+    const router = _createRouter();
+    await router.init();
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('hash mode'),
+    );
+  });
+
+  test('does not warn when useHash: false (default)', async () => {
+    _config.router = { useHash: false, base: '/', scrollBehavior: 'top' };
+    const router = _createRouter();
+    await router.init();
+    const hashWarning = warnSpy.mock.calls.find(
+      (call) => call[1] && call[1].includes('hash mode'),
+    );
+    expect(hashWarning).toBeUndefined();
+  });
+
+  test('does not warn when suppressHashWarning: true', async () => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top', suppressHashWarning: true };
+    const router = _createRouter();
+    await router.init();
+    const hashWarning = warnSpy.mock.calls.find(
+      (call) => call[1] && call[1].includes('hash mode'),
+    );
+    expect(hashWarning).toBeUndefined();
+  });
+});
+
 describe('Router — destroy() removes global listeners', () => {
   let router;
 
