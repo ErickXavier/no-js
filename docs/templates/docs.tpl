@@ -415,6 +415,7 @@
         <div id="templates"><template src="./docs/templates.tpl" loading="#doc-skeleton"></template></div>
         <div id="data-fetching"><template src="./docs/data-fetching.tpl" loading="#doc-skeleton"></template></div>
         <div id="routing"><template src="./docs/routing.tpl" loading="#doc-skeleton"></template></div>
+        <div id="head-management"><template src="./docs/head-management.tpl" loading="#doc-skeleton"></template></div>
         <div id="forms-validation"><template src="./docs/forms-validation.tpl" loading="#doc-skeleton"></template></div>
         <div id="styling"><template src="./docs/styling.tpl" loading="#doc-skeleton"></template></div>
         <div id="drag-and-drop"><template src="./docs/drag-and-drop.tpl" loading="#doc-skeleton"></template></div>
