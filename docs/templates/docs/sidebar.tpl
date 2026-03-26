@@ -27,6 +27,7 @@
       <a href="#templates" class="sidebar-link" t="shell.sidebar.templates"></a>
       <a href="#data-fetching" class="sidebar-link" t="shell.sidebar.fetchApi"></a>
       <a href="#routing" class="sidebar-link" t="shell.sidebar.routing"></a>
+      <a href="#head-management" class="sidebar-link" t="shell.sidebar.headManagement"></a>
       <a href="#forms-validation" class="sidebar-link" t="shell.sidebar.forms"></a>
       <a href="#styling" class="sidebar-link" t="shell.sidebar.styling"></a>
       <a href="#drag-and-drop" class="sidebar-link" t="shell.sidebar.dragAndDrop"></a>

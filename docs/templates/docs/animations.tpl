@@ -21,6 +21,21 @@
      <span class="hl-attr">animate-duration</span>=<span class="hl-str">"300"</span><span class="hl-tag">&gt;</span>
   Content
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
+
+    <h3 class="doc-subtitle" t="docs.animations.enterLeave.attrsTitle"></h3>
+    <table class="doc-table">
+      <thead>
+        <tr><th t="docs.animations.enterLeave.col1"></th><th t="docs.animations.enterLeave.col2"></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>animate</code> / <code>animate-enter</code></td><td t="docs.animations.enterLeave.row1"></td></tr>
+        <tr><td><code>animate-leave</code></td><td t="docs.animations.enterLeave.row2"></td></tr>
+        <tr><td><code>animate-duration</code></td><td t="docs.animations.enterLeave.row3"></td></tr>
+        <tr><td><code>animate-stagger</code></td><td t="docs.animations.enterLeave.row4"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout"><p t="docs.animations.enterLeave.fallbackCallout"></p></div>
   </div>
 
   <!-- transition -->

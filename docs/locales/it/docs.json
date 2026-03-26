@@ -809,7 +809,15 @@
         "subtitle": "Animazioni dichiarative di entrata/uscita e transizioni CSS"
       },
       "enterLeave": {
-        "title": "animate — Animazioni di Entrata/Uscita"
+        "title": "animate — Animazioni di Entrata/Uscita",
+        "attrsTitle": "Attributi di Animazione",
+        "col1": "Attributo",
+        "col2": "Descrizione",
+        "row1": "Classe di animazione CSS aggiunta quando l'elemento entra",
+        "row2": "Classe di animazione CSS aggiunta quando l'elemento esce",
+        "row3": "Durata in millisecondi passata a animationDuration e usata come timeout di fallback. Se omesso, il fallback scatta al prossimo tick dell'event-loop (0 ms)",
+        "row4": "Ritardo in millisecondi tra ogni elemento in un ciclo (each / foreach)",
+        "fallbackCallout": "Timeout di fallback — No.JS ascolta animationend / transitionend per rimuovere le classi e attivare i re-render dopo le animazioni di uscita. Se l'evento non scatta mai (es. CSS assente, elemento disconnesso) un setTimeout di sicurezza garantisce che la pipeline non si blocchi permanentemente. Se animate-duration è omesso, il timeout è 0 ms — scatta al prossimo tick dell'event-loop senza attese artificiali. Passare un animate-duration=\"300\" esplicito imposta sia animation-duration sull'elemento target sia il timeout di sicurezza a 300 ms."
       },
       "transition": {
         "title": "transition — Classi di Transizione CSS",
