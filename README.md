@@ -2,6 +2,8 @@
   <img src="docs/logo-dark-round.png" alt="No.JS" width="26" style="vertical-align: middle; margin-top: -6px;"> No.JS
 </h1>
 
+![version](https://img.shields.io/badge/version-1.11.0-blue)
+
 **The HTML-First Reactive Framework**
 
 Build dynamic, reactive web applications using nothing but HTML attributes.
@@ -24,7 +26,8 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 - **Reactive Binding** — `bind`, `bind-*`, `model` for one/two-way data binding
 - **Conditionals & Loops** — `if`, `else-if`, `show`, `hide`, `each`, `foreach`, `switch`
 - **State Management** — `state` (local), `store` (global), `computed`, `watch`, `notify()`
-- **SPA Routing** — `route`, `route-view`, guards, params, nested routes, wildcard catch-all
+- **Head Management** — `page-title`, `page-description`, `page-canonical`, `page-jsonld` for SEO-friendly SPAs
+- **SPA Routing** — `route`, `route-view`, guards, params, nested routes, wildcard catch-all, `focusBehavior`
 - **Forms & Validation** — Built-in + custom validators, per-rule errors, async support, `$form` context
 - **Plugin System** — Extend with reusable packages: interceptors, globals, directives, lifecycle hooks
 - **Animations** — `animate`, `transition` with stagger support
@@ -195,6 +198,8 @@ Full documentation is available in the [docs/](docs/) folder:
 |------|-------------|
 | [NoJS-LSP](https://github.com/ErickXavier/nojs-lsp) | VS Code extension — autocomplete, hover docs, diagnostics for No.JS HTML |
 | [NoJS-MCP](https://github.com/ErickXavier/nojs-mcp) | MCP server — AI tools for building No.JS apps |
+| [NoJS-Skill](https://github.com/ErickXavier/nojs-skill) | Claude Code skill — guided No.JS project generation |
+| [NoJS-CLI](https://github.com/ErickXavier/nojs-cli) | CLI tool — scaffold, dev server, build & deploy No.JS apps |
 
 ---
 
