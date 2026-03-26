@@ -605,6 +605,56 @@ value is a No.JS expression; `$route` and `$store` are available in scope.
 
 <!-- Expression using global store (e.g. after login) -->
 <template route="/account" page-title="$store.user.name + ' — My Account'">
+## Route Head Attributes
+
+Declare SEO metadata directly on `<template route>` elements. All four
+attributes are evaluated on every navigation and update the corresponding
+`<head>` nodes — no extra elements needed inside the template body.
+
+```html
+<template route="/products/:id"
+  page-title="'Product ' + $route.params.id + ' | Store'"
+  page-description="'Shop our full catalogue of products'"
+  page-canonical="'/products/' + $route.params.id"
+  page-jsonld='{"@context":"https://schema.org","@type":"Product","name":"Sneaker X"}'>
+
+  <h1>Product Detail</h1>
+</template>
+```
+
+### Supported attributes
+
+| Attribute | Updates | Value |
+|---|---|---|
+| `page-title` | `document.title` | No.JS expression |
+| `page-description` | `<meta name="description" content="...">` | No.JS expression |
+| `page-canonical` | `<link rel="canonical" href="...">` | No.JS expression |
+| `page-jsonld` | `<script type="application/ld+json" data-nojs>` | JSON string (verbatim) |
+
+`$route` and `$store` are available as implicit variables in all expressions.
+
+### Static and dynamic values
+
+```html
+<!-- Static -->
+<template route="/about"
+  page-title="'About Us | My Store'"
+  page-description="'Learn more about us'"
+  page-canonical="'/about'">
+  <h1>About</h1>
+</template>
+
+<!-- Dynamic — $route.params -->
+<template route="/products/:id"
+  page-title="'Product ' + $route.params.id + ' | Store'"
+  page-canonical="'/products/' + $route.params.id">
+  <h1>Product</h1>
+</template>
+
+<!-- Dynamic — $store -->
+<template route="/account"
+  page-title="$store.user.name + ' — Account'"
+  page-description="'Manage your account settings'">
   <h1>Account</h1>
 </template>
 ```
@@ -646,6 +696,54 @@ every navigation.
 > **Tip:** For full head management (description, canonical URL, JSON-LD) from
 > route templates see [Route Head Attributes →](#route-head-attributes).
 > For non-routing pages see [Head Management →](head-management.md).
+### JSON-LD
+
+`page-jsonld` supports `{placeholder}` interpolation for dynamic values.
+The same JSON-safe regex used by the body `page-jsonld` directive is applied —
+it skips `{` starting with `"` or `'` so JSON structural braces are not consumed:
+
+```html
+<!-- Static JSON-LD -->
+<template route="/about"
+  page-jsonld='{"@context":"https://schema.org","@type":"WebPage","name":"About Us"}'>
+  <h1>About</h1>
+</template>
+
+<!-- Dynamic JSON-LD — {placeholder} values are evaluated -->
+<template route="/products/:id"
+  page-jsonld='{"@context":"https://schema.org","@type":"Product","name":"{$route.params.id}","url":"https://mystore.com/products/{$route.params.id}"}'>
+  <h1>Product</h1>
+</template>
+```
+
+The `data-nojs` marker on the injected script tag distinguishes it from
+hand-written JSON-LD blocks — both can coexist in `<head>`.
+
+### Precedence with body directives
+
+If both a `<div hidden page-title="...">` body directive (from the Head
+Management feature) and a `<template route page-title="...">` attribute are
+active at the same time, whichever executes last will overwrite the previous
+value. In practice:
+
+- Body directives are evaluated once when the element is processed.
+- Route attributes are evaluated on every navigation.
+
+For SPAs with a router, prefer route attributes — they automatically update
+metadata on each navigation without needing a separate `<div hidden>`.
+
+### Notes
+
+- Only fires from the **default** outlet. Named outlets (e.g. sidebar) do not
+  overwrite page metadata.
+- Existing `<head>` nodes (from server-rendered HTML) are updated in place —
+  never duplicated.
+- If an attribute is absent, the corresponding `<head>` node is left unchanged.
+- `$store` and `$route` are in scope, but changes to `$store` after navigation
+  do **not** automatically re-run — metadata is evaluated once per navigation.
+
+> For non-routing pages (product pages, landing pages without a router), see
+> [Head Management →](head-management.md).
 
 ---
 
