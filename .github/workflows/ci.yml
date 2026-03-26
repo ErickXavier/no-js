@@ -1,11 +1,13 @@
 name: CI
 
-# on:
-#   push:
-#     branches: [main]
-#   pull_request:
-#     branches: [main]
-on: workflow_dispatch
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -18,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18, 20, 22]
+        node-version: [20, 22]
 
     steps:
       - uses: actions/checkout@v4

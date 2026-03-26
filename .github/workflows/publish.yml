@@ -1,20 +1,19 @@
 name: Publish to npm
 
 on:
-  # TODO: enable tag-based trigger after reviewing full release flow
-  # push:
-  #   tags:
-  #     - 'v*'
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
-    permissions:
-      contents: read
-      id-token: write
 
     steps:
       - uses: actions/checkout@v4
