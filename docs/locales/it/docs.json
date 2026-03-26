@@ -696,6 +696,35 @@
         "fileBasedTitle": "404 nel Routing Basato su File",
         "fileBasedText": "Quando si usa il routing basato su file, navigare verso un percorso il cui file <code>.tpl</code> non esiste sul server (HTTP 404 o altro errore) attiva automaticamente la catena di fallback wildcard.",
         "fileBasedText2": "La risposta HTTP fallita <strong>non</strong> viene memorizzata nella cache — le navigazioni successive verso altri percorsi non vengono influenzate."
+      },
+      "headAttributes": {
+        "title": "Attributi Head delle Route",
+        "text": "I template di route possono dichiarare <code>page-title</code> e <code>page-description</code> direttamente sul tag <code>&lt;template&gt;</code>. Quando la route viene attivata, i tag <code>&lt;head&gt;</code> corrispondenti vengono aggiornati automaticamente.",
+        "text2": "Sono supportate sia stringhe statiche che espressioni dinamiche:",
+        "colAttr": "Attributo",
+        "colDesc": "Descrizione",
+        "pageTitleDesc": "Imposta <code>document.title</code> quando la route è attiva",
+        "pageDescriptionDesc": "Imposta il contenuto di <code>&lt;meta name=\"description\"&gt;</code> quando la route è attiva",
+        "callout": "Per una gestione completa dell'head (URL canonici, JSON-LD, Open Graph), consulta la guida <a href=\"/docs/head-management\">Gestione dell'Head</a>."
+      },
+      "focusBehavior": {
+        "title": "Accessibilità — Gestione del Focus",
+        "text": "Dopo ogni navigazione, No.JS sposta il focus su un elemento prevedibile all'interno del contenuto della nuova route. Questo garantisce che i lettori di schermo annuncino il cambio di pagina e che gli utenti da tastiera arrivino in un punto utile.",
+        "text2": "Quando focusBehavior è 'auto' (il default), il framework percorre una lista di priorità:",
+        "priority1": "<code>[autofocus]</code> — un elemento con l'attributo <code>autofocus</code> all'interno del template di route",
+        "priority2": "<code>h1</code> — il primo <code>&lt;h1&gt;</code> all'interno del contenuto della route",
+        "priority3": "<code>[tabindex=\"-1\"]</code> — un contenitore focalizzabile manualmente",
+        "priority4": "L'elemento route-view stesso (ultima risorsa)",
+        "defaultTitle": "Comportamento Predefinito",
+        "defaultText": "La gestione del focus è <strong>abilitata di default</strong> — non è necessario configurare nulla. La strategia <code>'auto'</code> funziona immediatamente.",
+        "timingTitle": "Timing",
+        "timingText": "Il focus viene spostato <strong>dopo</strong> che il template di route è stato completamente renderizzato e tutti i template remoti al suo interno sono stati risolti. Questo garantisce che l'elemento target esista nel DOM.",
+        "sideEffectsTitle": "Effetti Collaterali",
+        "sideEffectsText": "L'elemento focalizzato riceve <code>tabindex=\"-1\"</code> se non ha già un tabindex, e la pagina scorre per renderlo visibile tramite <code>scrollIntoView({ block: 'nearest' })</code>.",
+        "futureTitle": "Valori Futuri",
+        "futureText": "Attualmente è supportato solo <code>'auto'</code>. Le versioni future potrebbero aggiungere <code>'none'</code> (disabilitare) e <code>'target'</code> (focalizzare un selettore specifico).",
+        "ariaLiveTitle": "Regione ARIA Live",
+        "ariaLiveText": "Per i lettori di schermo che non rispondono ai cambiamenti di focus, aggiungi <code>aria-live=\"polite\"</code> al tuo <code>route-view</code>. Il browser annuncerà il nuovo contenuto quando appare:"
       }
     },
     "formsValidation": {
@@ -1311,6 +1340,117 @@
       "example": {
         "title": "Esempio Completo",
         "text": "Un plugin di analytics completo che dimostra il ciclo di vita del plugin, globali, interceptor e distruzione."
+      }
+    },
+    "headManagement": {
+      "hero": {
+        "badge": "Guide",
+        "title": "Gestione dell'Head",
+        "subtitle": "Gestisci il titolo del documento, la meta description, l'URL canonico e il JSON-LD da qualsiasi elemento"
+      },
+      "intro": {
+        "text": "No.JS ti permette di controllare i metadati dell'<head> in modo dichiarativo da qualsiasi punto del tuo markup. Usa elementi nascosti con gli attributi page-title, page-description, page-canonical e page-jsonld — vengono valutati in modo reattivo e aggiornano l'head del documento automaticamente.",
+        "routingTip": "Per la gestione dell'head a livello di route, puoi anche usare <code>page-title</code> e <code>page-description</code> direttamente sui tag <code>&lt;template route=\"...\"&gt;</code>. Vedi <a href=\"/docs/routing#route-head-attributes\">Attributi Head delle Route</a>."
+      },
+      "placement": {
+        "title": "Posizionamento",
+        "text": "Posiziona gli elementi di gestione dell'head all'interno di qualsiasi scope di state. Devono avere l'attributo hidden — non vengono mai renderizzati visivamente.",
+        "reactive": "Tutti i valori sono reattivi — quando lo state sottostante cambia, l'head del documento viene aggiornato immediatamente."
+      },
+      "pageTitle": {
+        "title": "page-title",
+        "text": "Imposta document.title con il valore dell'espressione valutata.",
+        "expression": "Il valore è un'espressione standard di No.JS valutata nel contesto dell'elemento."
+      },
+      "pageDescription": {
+        "title": "page-description",
+        "text": "Imposta l'attributo content del tag <meta name=\"description\">. Se il tag non esiste, viene creato.",
+        "duplicate": "Un solo page-description dovrebbe essere attivo alla volta. Se ne sono presenti multipli, l'ultimo processato vince."
+      },
+      "pageCanonical": {
+        "title": "page-canonical",
+        "text": "Imposta l'attributo href del tag <link rel=\"canonical\">. Se il tag non esiste, viene creato.",
+        "existing": "Se un link canonico esiste già nel tuo HTML, il valore dell'attributo viene aggiornato sul posto."
+      },
+      "pageJsonld": {
+        "title": "page-jsonld",
+        "text": "Inietta un blocco <script type=\"application/ld+json\"> nell'head del documento. Il testo interno dell'elemento viene usato come payload JSON-LD.",
+        "scriptNote": "Il contenuto viene inserito così com'è — assicurati che sia JSON valido. Usa l'interpolazione <code>{variable}</code> per iniettare valori dinamici.",
+        "marker": "Il tag script generato è contrassegnato con <code>data-nojs-jsonld</code> per poterlo identificare e pulire allo smontaggio.",
+        "fullExampleTitle": "Esempio Completo di Pagina Prodotto"
+      },
+      "notes": {
+        "title": "Note e Casi Particolari",
+        "competingTitle": "Direttive Multiple in Competizione",
+        "competingText": "Se più elementi impostano lo stesso attributo head (es. due elementi page-title), l'ultimo processato vince. Quando un elemento viene smontato, il suo contributo all'head viene ripristinato al valore precedente.",
+        "cleanupTitle": "Pulizia allo Smontaggio",
+        "cleanupText": "Quando un elemento con una direttiva head viene rimosso dal DOM (es. all'interno di un blocco if o durante un cambio di route), il suo contributo all'head viene pulito automaticamente.",
+        "captureTitle": "Cattura del Template JSON-LD",
+        "captureText": "L'innerHTML dell'elemento page-jsonld viene catturato al momento dell'elaborazione. Se hai bisogno di JSON-LD reattivo, posiziona l'elemento all'interno di uno scope di state e usa l'interpolazione {espressione}."
+      }
+    },
+    "ssg": {
+      "hero": {
+        "badge": "Guide",
+        "title": "SSG & Pre-Rendering",
+        "subtitle": "Static site generation e pattern di server-side rendering con No.JS"
+      },
+      "coreIdea": {
+        "title": "L'Idea Centrale",
+        "text": "No.JS è progettato per migliorare HTML pre-renderizzato. Incorpora i tuoi dati direttamente negli attributi state= al momento del build — la pagina carica con contenuto reale visibile immediatamente, e No.JS lo rende interattivo.",
+        "text2": "Il browser renderizza l'HTML statico istantaneamente. No.JS attiva i binding, gli eventi e il data fetching quando lo script carica — nessuna pagina bianca, nessuno spinner di caricamento per il contenuto iniziale."
+      },
+      "patterns": {
+        "title": "Pattern",
+        "staticTitle": "Pagine Statiche (SSG)",
+        "staticText": "Genera HTML al momento del build con strumenti come Eleventy, Hugo o Astro. Inietta i dati negli attributi state= usando il linguaggio di template del tuo SSG.",
+        "staticEleventyLabel": "Eleventy (Nunjucks):",
+        "staticCallout": "L'HTML è completamente renderizzato al momento del build — i motori di ricerca vedono contenuto reale, gli utenti vedono caricamenti istantanei.",
+        "staticText2": "No.JS si attiva dopo il caricamento della pagina: le espressioni bind aggiornano il DOM, gli handler degli eventi vengono collegati e il data fetching inizia per il contenuto dinamico.",
+        "ssrTitle": "Server-Side Rendering (SSR)",
+        "ssrText": "Renderizza HTML sul server per richiesta. Stesso pattern — inietta i dati in state=, servi l'HTML, e lascia che No.JS lo idrati.",
+        "hybridTitle": "Ibrido: Struttura Statica, Interazione Dinamica",
+        "hybridText": "Pre-renderizza il contenuto critico per il SEO in state=, e lascia che No.JS gestisca le funzionalità interattive (carrello, aggiornamenti in tempo reale) via get= e handler degli eventi."
+      },
+      "stateVsGet": {
+        "title": "Cosa Mettere in state= vs get=",
+        "colContentType": "Tipo di Contenuto",
+        "colApproach": "Approccio",
+        "colWhy": "Perché",
+        "row1Col1": "Nome del prodotto, prezzo, descrizione",
+        "row1Col2": "state= (pre-renderizzato)",
+        "row1Col3": "Critico per il SEO, visibile immediatamente",
+        "row2Col1": "Dati specifici dell'utente (carrello, preferenze)",
+        "row2Col2": "get= (fetch lato client)",
+        "row2Col3": "Cambia per sessione, non indicizzabile",
+        "row3Col1": "Conteggio scorte, disponibilità in tempo reale",
+        "row3Col2": "get= con refresh=",
+        "row3Col3": "Cambia frequentemente, necessita di polling",
+        "row4Col1": "Testo UI statico, navigazione",
+        "row4Col2": "HTML puro",
+        "row4Col3": "Non necessita di reattività"
+      },
+      "ruleOfThumb": {
+        "title": "Regola Generale",
+        "text": "Se un motore di ricerca dovrebbe vederlo, pre-renderizzalo in state=. Se è specifico dell'utente o in tempo reale, recuperalo lato client con get=."
+      },
+      "eleventyQuickStart": {
+        "title": "No.JS + Eleventy — Avvio Rapido",
+        "configTitle": ".eleventy.js",
+        "productTemplateTitle": "Template Pagina Prodotto (product.njk)",
+        "baseLayoutTitle": "Layout Base (_includes/base.html)",
+        "text": "Esegui npx @11ty/eleventy --serve e ogni pagina prodotto viene pre-renderizzata con contenuto SEO completo. No.JS la rende interattiva nel browser."
+      },
+      "securityNote": {
+        "title": "Nota sulla Sicurezza",
+        "text": "Quando incorpori contenuto generato dagli utenti negli attributi state=, esegui sempre l'escape delle entità HTML per prevenire XSS:",
+        "text2": "Questo impedisce che un nome di prodotto malevolo come </div><script>alert('xss')</script> esca dall'attributo."
+      },
+      "managingHead": {
+        "title": "Gestire l'<head> nelle Pagine SSG",
+        "text1": "Per le pagine SSG, imposta <title>, <meta description> e altri tag head nel tuo template SSG (es. il layout base di Eleventy) — fanno parte dell'HTML statico.",
+        "text2": "Per le pagine SPA dinamiche all'interno della stessa app, usa le direttive di gestione dell'head di No.JS (page-title, page-description, page-canonical, page-jsonld) per aggiornare l'head in modo reattivo.",
+        "text3": "Consulta la guida di Gestione dell'Head per l'API completa."
       }
     }
   }

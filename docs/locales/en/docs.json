@@ -696,6 +696,35 @@
         "fileBasedTitle": "File-Based Routing 404",
         "fileBasedText": "When using file-based routing, navigating to a path whose <code>.tpl</code> file doesn't exist on the server (HTTP 404 or other error) automatically triggers the wildcard fallback chain.",
         "fileBasedText2": "The failed HTTP response is <strong>not</strong> cached — subsequent navigations to other paths are unaffected."
+      },
+      "headAttributes": {
+        "title": "Route Head Attributes",
+        "text": "Route templates can declare <code>page-title</code> and <code>page-description</code> directly on the <code>&lt;template&gt;</code> tag. When the route activates, the corresponding <code>&lt;head&gt;</code> tags are updated automatically.",
+        "text2": "Both static strings and dynamic expressions are supported:",
+        "colAttr": "Attribute",
+        "colDesc": "Description",
+        "pageTitleDesc": "Sets <code>document.title</code> when the route is active",
+        "pageDescriptionDesc": "Sets the <code>&lt;meta name=\"description\"&gt;</code> content when the route is active",
+        "callout": "For full head management (canonical URLs, JSON-LD, Open Graph), see the <a href=\"/docs/head-management\">Head Management</a> guide."
+      },
+      "focusBehavior": {
+        "title": "Accessibility — Focus Management",
+        "text": "After each navigation, No.JS moves focus to a predictable element inside the new route content. This ensures screen readers announce the page change and keyboard users land in a useful spot.",
+        "text2": "When focusBehavior is 'auto' (the default), the framework walks a priority list:",
+        "priority1": "<code>[autofocus]</code> — an element with the <code>autofocus</code> attribute inside the route template",
+        "priority2": "<code>h1</code> — the first <code>&lt;h1&gt;</code> inside the route content",
+        "priority3": "<code>[tabindex=\"-1\"]</code> — a manually focusable container",
+        "priority4": "The route-view element itself (last resort)",
+        "defaultTitle": "Default Behavior",
+        "defaultText": "Focus management is <strong>enabled by default</strong> — you don't need to configure anything. The <code>'auto'</code> strategy works out of the box.",
+        "timingTitle": "Timing",
+        "timingText": "Focus is moved <strong>after</strong> the route template is fully rendered and all remote templates inside it are resolved. This guarantees the target element exists in the DOM.",
+        "sideEffectsTitle": "Side Effects",
+        "sideEffectsText": "The focused element receives a <code>tabindex=\"-1\"</code> if it doesn't already have a tabindex, and the page scrolls to bring it into view via <code>scrollIntoView({ block: 'nearest' })</code>.",
+        "futureTitle": "Future Values",
+        "futureText": "Currently only <code>'auto'</code> is supported. Future versions may add <code>'none'</code> (opt out) and <code>'target'</code> (focus a specific selector).",
+        "ariaLiveTitle": "ARIA Live Region",
+        "ariaLiveText": "For screen readers that don't respond to focus changes, add <code>aria-live=\"polite\"</code> to your <code>route-view</code>. The browser will announce new content as it appears:"
       }
     },
     "formsValidation": {
@@ -1311,6 +1340,117 @@
       "example": {
         "title": "Complete Example",
         "text": "A full analytics plugin demonstrating the plugin lifecycle, globals, interceptors, and disposal."
+      }
+    },
+    "headManagement": {
+      "hero": {
+        "badge": "Guides",
+        "title": "Head Management",
+        "subtitle": "Manage document title, meta description, canonical URL, and JSON-LD from any element"
+      },
+      "intro": {
+        "text": "No.JS lets you control <head> metadata declaratively from anywhere in your markup. Use hidden elements with page-title, page-description, page-canonical, and page-jsonld attributes — they are evaluated reactively and update the document head automatically.",
+        "routingTip": "For route-level head management, you can also use <code>page-title</code> and <code>page-description</code> directly on <code>&lt;template route=\"...\"&gt;</code> tags. See <a href=\"/docs/routing#route-head-attributes\">Route Head Attributes</a>."
+      },
+      "placement": {
+        "title": "Placement",
+        "text": "Place head-management elements inside any state scope. They must have the hidden attribute — they are never rendered visually.",
+        "reactive": "All values are reactive — when the underlying state changes, the document head is updated immediately."
+      },
+      "pageTitle": {
+        "title": "page-title",
+        "text": "Sets document.title to the evaluated expression.",
+        "expression": "The value is a standard No.JS expression evaluated against the element's context."
+      },
+      "pageDescription": {
+        "title": "page-description",
+        "text": "Sets the content attribute of the <meta name=\"description\"> tag. If the tag doesn't exist, it is created.",
+        "duplicate": "Only one page-description should be active at a time. If multiple are present, the last one processed wins."
+      },
+      "pageCanonical": {
+        "title": "page-canonical",
+        "text": "Sets the href attribute of the <link rel=\"canonical\"> tag. If the tag doesn't exist, it is created.",
+        "existing": "If a canonical link already exists in your HTML, the attribute value is updated in place."
+      },
+      "pageJsonld": {
+        "title": "page-jsonld",
+        "text": "Injects a <script type=\"application/ld+json\"> block into the document head. The inner text of the element is used as the JSON-LD payload.",
+        "scriptNote": "The content is inserted as-is — make sure it is valid JSON. Use <code>{variable}</code> interpolation to inject dynamic values.",
+        "marker": "The generated script tag is marked with <code>data-nojs-jsonld</code> so it can be identified and cleaned up on unmount.",
+        "fullExampleTitle": "Full Product Page Example"
+      },
+      "notes": {
+        "title": "Notes & Edge Cases",
+        "competingTitle": "Multiple Directives Competing",
+        "competingText": "If multiple elements set the same head attribute (e.g. two page-title elements), the last one processed wins. When an element is unmounted, its head contribution is reverted to the previous value.",
+        "cleanupTitle": "Cleanup on Unmount",
+        "cleanupText": "When an element with a head directive is removed from the DOM (e.g. inside an if block or a route change), its head contribution is automatically cleaned up.",
+        "captureTitle": "JSON-LD Template Capture",
+        "captureText": "The page-jsonld element's innerHTML is captured at processing time. If you need reactive JSON-LD, place the element inside a state scope and use {expression} interpolation."
+      }
+    },
+    "ssg": {
+      "hero": {
+        "badge": "Guides",
+        "title": "SSG & Pre-Rendering",
+        "subtitle": "Static site generation and server-side rendering patterns with No.JS"
+      },
+      "coreIdea": {
+        "title": "The Core Idea",
+        "text": "No.JS is designed to enhance pre-rendered HTML. Embed your data directly in state= attributes at build time — the page loads with real content visible immediately, and No.JS makes it interactive.",
+        "text2": "The browser renders the static HTML instantly. No.JS activates bindings, events, and data fetching when the script loads — no blank page, no loading spinners for initial content."
+      },
+      "patterns": {
+        "title": "Patterns",
+        "staticTitle": "Static Pages (SSG)",
+        "staticText": "Generate HTML at build time with tools like Eleventy, Hugo, or Astro. Inject data into state= attributes using your SSG's template language.",
+        "staticEleventyLabel": "Eleventy (Nunjucks):",
+        "staticCallout": "The HTML is fully rendered at build time — search engines see real content, users see instant page loads.",
+        "staticText2": "No.JS activates after the page loads: bind expressions update the DOM, event handlers are attached, and data fetching begins for dynamic content.",
+        "ssrTitle": "Server-Side Rendering (SSR)",
+        "ssrText": "Render HTML on the server per request. Same pattern — inject data into state=, serve the HTML, and let No.JS hydrate it.",
+        "hybridTitle": "Hybrid: Static Structure, Dynamic Interaction",
+        "hybridText": "Pre-render the SEO-critical content in state=, and let No.JS handle interactive features (cart, real-time updates) via get= and event handlers."
+      },
+      "stateVsGet": {
+        "title": "What to Put in state= vs get=",
+        "colContentType": "Content Type",
+        "colApproach": "Approach",
+        "colWhy": "Why",
+        "row1Col1": "Product name, price, description",
+        "row1Col2": "state= (pre-rendered)",
+        "row1Col3": "SEO-critical, visible immediately",
+        "row2Col1": "User-specific data (cart, preferences)",
+        "row2Col2": "get= (client-side fetch)",
+        "row2Col3": "Changes per session, not indexable",
+        "row3Col1": "Stock count, real-time availability",
+        "row3Col2": "get= with refresh=",
+        "row3Col3": "Changes frequently, needs polling",
+        "row4Col1": "Static UI text, navigation",
+        "row4Col2": "Plain HTML",
+        "row4Col3": "No reactivity needed"
+      },
+      "ruleOfThumb": {
+        "title": "Rule of Thumb",
+        "text": "If a search engine should see it, pre-render it in state=. If it's user-specific or real-time, fetch it client-side with get=."
+      },
+      "eleventyQuickStart": {
+        "title": "No.JS + Eleventy Quick-Start",
+        "configTitle": ".eleventy.js",
+        "productTemplateTitle": "Product Page Template (product.njk)",
+        "baseLayoutTitle": "Base Layout (_includes/base.html)",
+        "text": "Run npx @11ty/eleventy --serve and every product page is pre-rendered with full SEO content. No.JS makes it interactive in the browser."
+      },
+      "securityNote": {
+        "title": "Security Note",
+        "text": "When embedding user-generated content into state= attributes, always escape HTML entities to prevent XSS:",
+        "text2": "This prevents a malicious product name like </div><script>alert('xss')</script> from breaking out of the attribute."
+      },
+      "managingHead": {
+        "title": "Managing <head> in SSG Pages",
+        "text1": "For SSG pages, set <title>, <meta description>, and other head tags in your SSG template (e.g. the Eleventy base layout) — they are part of the static HTML.",
+        "text2": "For dynamic SPA pages within the same app, use No.JS head management directives (page-title, page-description, page-canonical, page-jsonld) to update the head reactively.",
+        "text3": "See the Head Management guide for the full API."
       }
     }
   }
