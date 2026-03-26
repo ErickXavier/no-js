@@ -127,6 +127,7 @@ registerDirective("on:*", {
         clearTimeout(timer);
         timer = setTimeout(() => original(e), debounceMs);
       };
+      _onDispose(() => clearTimeout(timer));
     }
 
     // Wrap with throttle

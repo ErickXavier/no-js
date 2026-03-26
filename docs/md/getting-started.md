@@ -12,7 +12,7 @@
 
 ### Self-hosted
 
-Download `dist/iife/no.js` and include it with a `<script>` tag. It's a single file, ~24 KB gzipped.
+Download `dist/iife/no.js` and include it with a `<script>` tag.
 
 ---
 

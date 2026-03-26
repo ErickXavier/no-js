@@ -4,7 +4,7 @@
 //  All hooks are guarded by _config.devtools — no cost when disabled.
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _refs, _routerInstance } from "./globals.js";
+import { _config, _stores, _refs, _routerInstance, _plugins, _globals } from "./globals.js";
 import { _i18n } from "./i18n.js";
 
 // ─── Context registry (populated by createContext when devtools enabled) ────
@@ -237,6 +237,15 @@ function _handleDevtoolsCommand(event) {
   );
 }
 
+// ─── Cleanup reference ───────────────────────────────────────────────────────
+
+let _devtoolsCleanup = null;
+
+// Called from NoJS.dispose() to remove the command listener and clean up.
+export function destroyDevtools() {
+  if (_devtoolsCleanup) _devtoolsCleanup();
+}
+
 // ─── Initialization ─────────────────────────────────────────────────────────
 
 export function initDevtools(nojs) {
@@ -247,17 +256,36 @@ export function initDevtools(nojs) {
     return;
   }
 
-  // Listen for commands
+  // Listen for commands (store reference for cleanup)
   window.addEventListener("nojs:devtools:cmd", _handleDevtoolsCommand);
+  _devtoolsCleanup = () => {
+    window.removeEventListener("nojs:devtools:cmd", _handleDevtoolsCommand);
+    delete window.__NOJS_DEVTOOLS__;
+    _devtoolsCleanup = null;
+  };
 
   // Expose public API on window
   window.__NOJS_DEVTOOLS__ = {
-    // Data access
-    stores: _stores,
-    config: _config,
-    refs: _refs,
+    // Data access (read-only snapshots — no live references leak)
+    get stores() {
+      return Object.fromEntries(
+        Object.entries(_stores).map(([k, v]) => [k, _safeSnapshot(v)])
+      );
+    },
+    get config() {
+      const c = { ..._config };
+      if (c.headers) c.headers = { ...c.headers };
+      if (c.router) c.router = { ...c.router };
+      if (c.cache) c.cache = { ...c.cache };
+      if (c.csrf) c.csrf = { ...c.csrf };
+      if (c.i18n) c.i18n = { ...c.i18n };
+      return c;
+    },
+    get refs() { return { ..._refs }; },
     router: _routerInstance,
     version: nojs.version,
+    get plugins() { return new Map(_plugins); },
+    get globals() { return { ..._globals }; },
 
     // Inspect API
     inspect: (selector) => _inspectElement(selector),

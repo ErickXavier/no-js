@@ -214,4 +214,108 @@ Used on forms or triggered via `call`.
 
 ---
 
+## Interceptors
+
+Interceptors hook into the fetch pipeline to modify requests, inspect responses, or short-circuit the entire flow. They support async functions and have a 5-second timeout per interceptor.
+
+### Basic Usage
+
+```html
+<script>
+  // Add a header to every request
+  NoJS.interceptor('request', (url, options) => {
+    options.headers['X-Request-ID'] = crypto.randomUUID();
+    return options;
+  });
+
+  // Handle 401 responses globally
+  NoJS.interceptor('response', (response, url) => {
+    if (response.status === 401) {
+      NoJS.store.auth.user = null;
+      NoJS.notify();
+      NoJS.router.push('/login');
+      throw new Error('Unauthorized');
+    }
+    return response;
+  });
+</script>
+```
+
+### Async Interceptors
+
+Interceptor functions can be async. Each interceptor is given a 5-second timeout — if it does not resolve within that window, it is skipped with a warning and the chain continues.
+
+```html
+<script>
+  NoJS.interceptor('request', async (url, options) => {
+    const token = await refreshTokenIfExpired();
+    options.headers['Authorization'] = 'Bearer ' + token;
+    return options;
+  });
+</script>
+```
+
+### Cancelling Requests with `NoJS.CANCEL`
+
+Return an object keyed by `NoJS.CANCEL` from a request interceptor to abort the fetch. The request throws an `AbortError`, which triggers the element's `error` template if one is set.
+
+```html
+<script>
+  NoJS.interceptor('request', (url, opts) => {
+    if (!navigator.onLine) {
+      return { [NoJS.CANCEL]: true };
+    }
+    return opts;
+  });
+</script>
+```
+
+### Serving Cached Responses with `NoJS.RESPOND`
+
+Return an object keyed by `NoJS.RESPOND` from a request interceptor to skip the HTTP call entirely and return the value directly as the response data.
+
+```html
+<script>
+  const cache = new Map();
+
+  NoJS.interceptor('request', (url, opts) => {
+    if (opts.method === 'GET' && cache.has(url)) {
+      return { [NoJS.RESPOND]: cache.get(url) };
+    }
+    return opts;
+  });
+</script>
+```
+
+### Replacing Response Data with `NoJS.REPLACE`
+
+Return an object keyed by `NoJS.REPLACE` from a response interceptor to replace the parsed response body with custom data.
+
+```html
+<script>
+  NoJS.interceptor('response', (response, url) => {
+    if (url.includes('/users')) {
+      return { [NoJS.REPLACE]: { users: [], normalized: true } };
+    }
+    return response;
+  });
+</script>
+```
+
+### Header Redaction
+
+By default, interceptors receive redacted copies of requests and responses. Sensitive headers (`Authorization`, `Cookie`, `X-API-Key`, `X-CSRF-Token`, etc.) are stripped from the options object before it reaches untrusted interceptors, and sensitive response headers (`Set-Cookie`, `WWW-Authenticate`, etc.) are removed from the response proxy. URL query parameters matching patterns like `token`, `key`, `secret`, `auth`, `password`, or `credential` are replaced with `[REDACTED]`.
+
+Plugins installed with `{ trusted: true }` via `NoJS.use()` receive the full, unredacted request and response objects. See [Plugins → Trusted Interceptors](plugins.md#trusted-interceptors) for details.
+
+### Sentinel Summary
+
+| Sentinel | Interceptor Type | Effect |
+| -------- | ---------------- | ------ |
+| `NoJS.CANCEL` | Request | Aborts the request (`AbortError`) |
+| `NoJS.RESPOND` | Request | Returns data directly, no HTTP call |
+| `NoJS.REPLACE` | Response | Replaces the parsed response body |
+
+---
+
 **Next:** [Data Binding →](data-binding.md)

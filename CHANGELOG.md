@@ -5,21 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.11.0](https://github.com/ErickXavier/no-js/compare/v1.10.1...v1.11.0) — 2026-03-26
 
 ### Added
 
-- `bind-html` now emits a `console.warn` in `debug` or `devtools` mode when given a non-literal (dynamic) expression, prompting developers to ensure the value is trusted or sanitized.
+- Plugin system with lifecycle hooks, interceptors, reactive globals, and security hardening ([`b0c46bc`](https://github.com/ErickXavier/no-js/commit/b0c46bc))
+- Head management directives: `page-title`, `page-description`, `page-canonical`, `page-jsonld` ([`8cd58c2`](https://github.com/ErickXavier/no-js/commit/8cd58c2))
+- `focusBehavior` option for accessible SPA navigation with configurable focus strategy ([`a940f18`](https://github.com/ErickXavier/no-js/commit/a940f18))
+- SSG and pre-rendering guide ([`9fd7bf0`](https://github.com/ErickXavier/no-js/commit/9fd7bf0))
+- `bind-html` now emits a `console.warn` in `debug` or `devtools` mode when given a non-literal (dynamic) expression ([`460b883`](https://github.com/ErickXavier/no-js/commit/460b883))
+- GitHub Actions CI workflow and npm publishing automation ([`762c739`](https://github.com/ErickXavier/no-js/commit/762c739))
 
 ### Fixed
 
-- Replace hardcoded `|| 2000` / `|| 1000` animation fallback timeouts with `|| 0` in `_animateOut`, `_animateIn`, and the `each` / `foreach` animate-leave branches ([#7](https://github.com/ErickXavier/no-js/issues/7))
-  - The fallback `setTimeout(done, 0)` fires on the next event-loop tick instead of blocking for 1–2 s when no CSS animation or transition is present (e.g. JSDOM, missing stylesheet)
-  - Explicit `animate-duration` values are forwarded unchanged — no behavioral change for apps that set an explicit duration
-
-### Documentation
-
-- `docs/md/animations.md`: add animation attributes reference table and a note explaining the `animate-duration` / fallback-timeout relationship
+- Replace hardcoded `|| 2000` / `|| 1000` animation fallback timeouts with `|| 0` in `_animateOut`, `_animateIn`, and the `each` / `foreach` animate-leave branches ([`a77136c`](https://github.com/ErickXavier/no-js/commit/a77136c))
+- Add missing fallback timeout to `_animateIn` animName branch ([`a420735`](https://github.com/ErickXavier/no-js/commit/a420735))
+- Update default template extension to `.tpl` for route rendering ([`69d4fd6`](https://github.com/ErickXavier/no-js/commit/69d4fd6))
+- Remove duplicate declarations in `index.js` from plugin system merge ([`2e4834b`](https://github.com/ErickXavier/no-js/commit/2e4834b))
 
 ## [1.10.1](https://github.com/ErickXavier/no-js/compare/v1.10.0...v1.10.1) — 2026-03-23
 
@@ -378,4 +380,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Animation system with `animate` and `transition` directives
 - Scoped context system with parent inheritance
 - Filter system with `|` pipe syntax
-- ~20 KB gzipped, zero dependencies
+- Zero dependencies

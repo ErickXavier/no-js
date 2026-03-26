@@ -232,4 +232,21 @@ Non-positive or non-numeric values are ignored and the default of 500 is used.
 
 ---
 
+## Plugin System
+
+No.JS includes a plugin system for extending the framework with reusable packages. The following methods are available on the `NoJS` object:
+
+| Method | Description |
+| ------ | ----------- |
+| `NoJS.use(plugin, options?)` | Register a plugin. Accepts an object with `{ name, install }` or a named function |
+| `NoJS.global(name, value)` | Inject a reactive variable accessible as `$name` in templates |
+| `NoJS.dispose()` | Full app teardown — disposes plugins in reverse order, clears globals and interceptors |
+| `NoJS.CANCEL` | Sentinel Symbol — return from a request interceptor to abort the request |
+| `NoJS.RESPOND` | Sentinel Symbol — return from a request interceptor to serve a cached response |
+| `NoJS.REPLACE` | Sentinel Symbol — return from a response interceptor to replace the response data |
+
+See [Plugins →](plugins.md) for the full API reference, plugin lifecycle, security guidelines, and examples.
+
+---
+
 **Next:** [Directive Cheatsheet →](cheatsheet.md)

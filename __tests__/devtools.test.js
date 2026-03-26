@@ -1,6 +1,6 @@
-import { _config, _stores } from '../src/globals.js';
+import { _config, _stores, _refs } from '../src/globals.js';
 import { createContext, _resetCtxId } from '../src/context.js';
-import { _devtoolsEmit, _ctxRegistry, initDevtools, _isLocalHostname } from '../src/devtools.js';
+import { _devtoolsEmit, _ctxRegistry, initDevtools, destroyDevtools, _isLocalHostname } from '../src/devtools.js';
 import { registerDirective, processElement, _disposeTree } from '../src/registry.js';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -238,8 +238,8 @@ describe('DevTools Protocol', () => {
 
       expect(window.__NOJS_DEVTOOLS__).toBeDefined();
       expect(window.__NOJS_DEVTOOLS__.version).toBe('1.5.2');
-      expect(window.__NOJS_DEVTOOLS__.stores).toBe(_stores);
-      expect(window.__NOJS_DEVTOOLS__.config).toBe(_config);
+      expect(window.__NOJS_DEVTOOLS__.stores).toEqual(_stores);
+      expect(window.__NOJS_DEVTOOLS__.config).toEqual(_config);
       expect(typeof window.__NOJS_DEVTOOLS__.inspect).toBe('function');
       expect(typeof window.__NOJS_DEVTOOLS__.inspectStore).toBe('function');
       expect(typeof window.__NOJS_DEVTOOLS__.inspectTree).toBe('function');
@@ -491,18 +491,13 @@ describe('initDevtools — hostname guard', () => {
     });
   });
 
-  test('does not initialize and warns when hostname is not local', () => {
-    // Spy on _isLocalHostname via the module to simulate a remote environment
-    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-    jest.spyOn({ _isLocalHostname }, '_isLocalHostname').mockReturnValue(false);
-
-    // Directly exercise the guard path: pass a non-local hostname so the check fails
+  test('does not initialize when hostname is not local', () => {
+    // Directly verify the guard logic: non-local hostname returns false
     _config.devtools = true;
-    // _isLocalHostname('evil.com') is false — simulate what initDevtools sees
-    const blocked = !_isLocalHostname('evil.com');
-    expect(blocked).toBe(true);
+    expect(_isLocalHostname('evil.com')).toBe(false);
+    // Since JSDOM runs on localhost, initDevtools would pass the check —
+    // we verify the guard function itself rejects non-local hostnames
     expect(window.__NOJS_DEVTOOLS__).toBeUndefined();
-    warnSpy.mockRestore();
   });
 
   test('initDevtools is blocked and warns for non-local hostname (integration)', () => {
@@ -520,5 +515,147 @@ describe('initDevtools — hostname guard', () => {
     _config.devtools = true;
     initDevtools({ version: '1.0.0' });
     expect(window.__NOJS_DEVTOOLS__).toBeDefined();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  H4 — Devtools exposes shallow copies, not live references
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('H4 — Devtools shallow-copy getters', () => {
+  beforeEach(() => {
+    _config.devtools = true;
+    _ctxRegistry.clear();
+    for (const key of Object.keys(_stores)) delete _stores[key];
+    for (const key of Object.keys(_refs)) delete _refs[key];
+    initDevtools({ version: '1.0.0' });
+  });
+
+  afterEach(() => {
+    destroyDevtools();
+    _config.devtools = false;
+  });
+
+  test('should not affect internal _stores when mutating the devtools stores copy', () => {
+    _stores.cart = createContext({ items: 0 });
+
+    const exposed = window.__NOJS_DEVTOOLS__.stores;
+    exposed.injected = 'hacked';
+    delete exposed.cart;
+
+    // Internal _stores must be unmodified
+    expect(_stores.cart).toBeDefined();
+    expect(_stores.injected).toBeUndefined();
+  });
+
+  test('should not affect internal _config when mutating the devtools config copy', () => {
+    const exposed = window.__NOJS_DEVTOOLS__.config;
+    exposed.evilFlag = true;
+    exposed.devtools = false;
+
+    // Internal _config must be unmodified
+    expect(_config.evilFlag).toBeUndefined();
+    expect(_config.devtools).toBe(true);
+  });
+
+  test('should not affect internal _refs when mutating the devtools refs copy', () => {
+    const div = document.createElement('div');
+    _refs.myRef = div;
+
+    const exposed = window.__NOJS_DEVTOOLS__.refs;
+    exposed.injected = document.createElement('span');
+    delete exposed.myRef;
+
+    // Internal _refs must be unmodified
+    expect(_refs.myRef).toBe(div);
+    expect(_refs.injected).toBeUndefined();
+  });
+
+  test('should return a fresh copy on each access (not the same object reference)', () => {
+    _stores.test = createContext({ x: 1 });
+
+    const stores1 = window.__NOJS_DEVTOOLS__.stores;
+    const stores2 = window.__NOJS_DEVTOOLS__.stores;
+    expect(stores1).not.toBe(stores2);
+    // Both copies have the same keys but values are independent snapshots
+    expect(Object.keys(stores1)).toEqual(Object.keys(stores2));
+    expect(stores1.test).not.toBe(stores2.test);
+    expect(stores1.test).toEqual(stores2.test);
+
+    const config1 = window.__NOJS_DEVTOOLS__.config;
+    const config2 = window.__NOJS_DEVTOOLS__.config;
+    expect(config1).not.toBe(config2);
+    expect(Object.keys(config1).sort()).toEqual(Object.keys(config2).sort());
+
+    const refs1 = window.__NOJS_DEVTOOLS__.refs;
+    const refs2 = window.__NOJS_DEVTOOLS__.refs;
+    expect(refs1).not.toBe(refs2);
+    expect(Object.keys(refs1)).toEqual(Object.keys(refs2));
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  M12 — Devtools command listener is removed after cleanup
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('M12 — destroyDevtools cleanup', () => {
+  beforeEach(() => {
+    _config.devtools = true;
+    _ctxRegistry.clear();
+    for (const key of Object.keys(_stores)) delete _stores[key];
+  });
+
+  afterEach(() => {
+    _config.devtools = false;
+    delete window.__NOJS_DEVTOOLS__;
+  });
+
+  test('should stop command handler from firing after destroyDevtools()', async () => {
+    initDevtools({ version: '1.0.0' });
+    expect(window.__NOJS_DEVTOOLS__).toBeDefined();
+
+    destroyDevtools();
+
+    // Send a command — the handler should no longer respond
+    const responseReceived = { value: false };
+    const handler = () => { responseReceived.value = true; };
+    window.addEventListener('nojs:devtools:response', handler);
+
+    window.dispatchEvent(
+      new CustomEvent('nojs:devtools:cmd', {
+        detail: { command: 'get:stats', args: {} },
+      }),
+    );
+
+    // Give the event loop a tick
+    await new Promise((r) => setTimeout(r, 10));
+
+    window.removeEventListener('nojs:devtools:response', handler);
+    expect(responseReceived.value).toBe(false);
+  });
+
+  test('should delete window.__NOJS_DEVTOOLS__ after destroyDevtools()', () => {
+    initDevtools({ version: '1.0.0' });
+    expect(window.__NOJS_DEVTOOLS__).toBeDefined();
+
+    destroyDevtools();
+
+    expect(window.__NOJS_DEVTOOLS__).toBeUndefined();
+  });
+
+  test('should allow re-initialization after destroyDevtools()', () => {
+    initDevtools({ version: '1.0.0' });
+    expect(window.__NOJS_DEVTOOLS__).toBeDefined();
+    expect(window.__NOJS_DEVTOOLS__.version).toBe('1.0.0');
+
+    destroyDevtools();
+    expect(window.__NOJS_DEVTOOLS__).toBeUndefined();
+
+    initDevtools({ version: '2.0.0' });
+    expect(window.__NOJS_DEVTOOLS__).toBeDefined();
+    expect(window.__NOJS_DEVTOOLS__.version).toBe('2.0.0');
+
+    // Clean up
+    destroyDevtools();
   });
 });
