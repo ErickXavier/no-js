@@ -47,6 +47,7 @@ for (const method of HTTP_METHODS) {
       const retryDelay =
         parseInt(el.getAttribute("retry-delay")) || _config.retryDelay || 1000;
       const paramsAttr = el.getAttribute("params");
+      const skeletonId = el.getAttribute("skeleton");
 
       const parentCtx = el.parentElement
         ? findContext(el.parentElement)
@@ -60,6 +61,19 @@ for (const method of HTTP_METHODS) {
 
       let _activeAbort = null;
 
+      // skeleton= helpers: show/hide a referenced DOM element by ID while
+      // the request is in flight, preventing CLS from content appearing late.
+      function _showSkeleton() {
+        if (!skeletonId) return;
+        const skeleton = document.getElementById(skeletonId);
+        if (skeleton) skeleton.style.removeProperty("display");
+      }
+      function _hideSkeleton() {
+        if (!skeletonId) return;
+        const skeleton = document.getElementById(skeletonId);
+        if (skeleton) skeleton.style.display = "none";
+      }
+
       async function doRequest() {
         // SwitchMap: abort previous in-flight request
         if (_activeAbort) _activeAbort.abort();
@@ -67,6 +81,8 @@ for (const method of HTTP_METHODS) {
 
         // Confirmation
         if (confirmMsg && !window.confirm(confirmMsg)) return;
+
+        _showSkeleton();
 
         let resolvedUrl = _interpolate(url, ctx);
 
@@ -86,6 +102,7 @@ for (const method of HTTP_METHODS) {
         if (method === "get") {
           const cached = _cacheGet(cacheKey, cacheStrategy);
           if (cached != null) {
+            _hideSkeleton();
             ctx.$set(asKey, cached);
             _clearDeclared(el);
             processTree(el);
@@ -149,6 +166,7 @@ for (const method of HTTP_METHODS) {
             emptyTpl &&
             (data == null || (Array.isArray(data) && data.length === 0))
           ) {
+            _hideSkeleton();
             const clone = _cloneTemplate(emptyTpl);
             if (clone) {
               _disposeChildren(el);
@@ -159,6 +177,7 @@ for (const method of HTTP_METHODS) {
             return;
           }
 
+          _hideSkeleton();
           ctx.$set(asKey, data);
 
           // Write to global store if into attribute is present
@@ -210,6 +229,7 @@ for (const method of HTTP_METHODS) {
           // SwitchMap: silently ignore aborted requests
           if (err.name === "AbortError") return;
 
+          _hideSkeleton();
           _warn(
             `${method.toUpperCase()} ${resolvedUrl} failed:`,
             err.message,

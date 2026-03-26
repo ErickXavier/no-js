@@ -1,7 +1,3 @@
-
-
-
-
 import { _config, _stores, setRouterInstance } from '../src/globals.js';
 import { _createRouter } from '../src/router.js';
 import { _templateHtmlCache } from '../src/dom.js';
@@ -394,10 +390,6 @@ describe('Router', () => {
   });
 });
 
-
-
-
-
 describe('router.js — hash mode hashchange', () => {
   test('navigates on hashchange event in hash mode', () => {
     _config.router = { useHash: true, base: '' };
@@ -422,10 +414,6 @@ describe('router.js — hash mode hashchange', () => {
   });
 });
 
-
-
-
-
 describe('router.js — history mode popstate', () => {
   test('navigates on popstate event in history mode', () => {
     _config.router = { useHash: false, base: '' };
@@ -449,10 +437,6 @@ describe('router.js — history mode popstate', () => {
     expect(router.current.path).toBe('/contact');
   });
 });
-
-
-
-
 
 describe('Router — history mode', () => {
   beforeEach(() => {
@@ -491,10 +475,6 @@ describe('Router — history mode', () => {
   });
 });
 
-
-
-
-
 describe('Router — back and forward', () => {
   test('back calls history.back', () => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
@@ -514,10 +494,6 @@ describe('Router — back and forward', () => {
     forwardSpy.mockRestore();
   });
 });
-
-
-
-
 
 describe('Router — route-active-exact', () => {
   beforeEach(() => {
@@ -550,10 +526,6 @@ describe('Router — route-active-exact', () => {
   });
 });
 
-
-
-
-
 describe('Router — route link click delegation', () => {
   beforeEach(() => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
@@ -585,10 +557,6 @@ describe('Router — route link click delegation', () => {
   });
 });
 
-
-
-
-
 describe('Router — transition on outlet', () => {
   beforeEach(() => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
@@ -614,10 +582,6 @@ describe('Router — transition on outlet', () => {
   });
 });
 
-
-
-
-
 describe('Router — scroll behavior none', () => {
   test('does not scroll when scrollBehavior is not "top"', () => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'none' };
@@ -637,10 +601,6 @@ describe('Router — scroll behavior none', () => {
     expect(window.scrollTo).not.toHaveBeenCalled();
   });
 });
-
-
-
-
 
 describe('Router — init with history mode', () => {
   test('init reads pathname in history mode', () => {
@@ -664,10 +624,6 @@ describe('Router — init with history mode', () => {
     expect(router.current).toBeDefined();
   });
 });
-
-
-
-
 
 describe('Router — guard with null templateEl', () => {
   beforeEach(() => {
@@ -693,10 +649,6 @@ describe('Router — guard with null templateEl', () => {
     expect(outlet.innerHTML).toBe('');
   });
 });
-
-
-
-
 
 describe('Router — popstate handler with base stripping', () => {
   beforeEach(() => {
@@ -743,10 +695,6 @@ describe('Router — popstate handler with base stripping', () => {
     expect(router.current.path).toBe('/settings');
   });
 });
-
-
-
-
 
 describe('Router — init collects routes and reads initial path', () => {
   afterEach(() => {
@@ -998,10 +946,6 @@ describe('Router — prefetch routes from <a route> links', () => {
   });
 });
 
-
-
-
-
 describe('Router — popstate handler in history mode (L173-177)', () => {
   beforeEach(() => {
     _config.router = { useHash: false, base: '/', scrollBehavior: 'top' };
@@ -1085,10 +1029,6 @@ describe('Router — popstate handler in history mode (L173-177)', () => {
   });
 });
 
-
-
-
-
 describe('Router — scrollBehavior smooth', () => {
   beforeEach(() => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'smooth' };
@@ -1152,10 +1092,6 @@ describe('Router — scrollBehavior preserve', () => {
     expect(window.scrollTo).not.toHaveBeenCalled();
   });
 });
-
-
-
-
 
 describe('on-demand template loading', () => {
   beforeEach(() => {
@@ -1638,10 +1574,6 @@ describe('File-based routing', () => {
   });
 });
 
-
-
-
-
 describe('Router — Named Outlets', () => {
   beforeEach(() => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
@@ -2016,10 +1948,6 @@ describe('Router — anchor links in hash mode', () => {
     expect(router.current.path).toBe('/');
   });
 });
-
-
-
-
 
 describe('Router — wildcard 404 catch-all', () => {
   beforeEach(() => {
@@ -2682,7 +2610,6 @@ describe('Router — mode→useHash backward compat', () => {
 
 });
 
-
 describe('Router — page-title attribute', () => {
   beforeEach(() => {
     _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
@@ -2747,6 +2674,51 @@ describe('Router — page-title attribute', () => {
     await router.init();
     await router.push('/no-title');
     expect(document.title).toBe('Original Title');
+  });
+});
+
+describe('Router — useHash SEO warning', () => {
+  let warnSpy;
+
+  beforeEach(() => {
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    document.body.innerHTML = '';
+    window.location.hash = '';
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+    _config.router = { useHash: false, base: '/', scrollBehavior: 'top' };
+  });
+
+  test('emits a warning when useHash: true is set on router init', async () => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top' };
+    const router = _createRouter();
+    await router.init();
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[No.JS]',
+      expect.stringContaining('hash mode'),
+    );
+  });
+
+  test('does not warn when useHash: false (default)', async () => {
+    _config.router = { useHash: false, base: '/', scrollBehavior: 'top' };
+    const router = _createRouter();
+    await router.init();
+    const hashWarning = warnSpy.mock.calls.find(
+      (call) => call[1] && call[1].includes('hash mode'),
+    );
+    expect(hashWarning).toBeUndefined();
+  });
+
+  test('does not warn when suppressHashWarning: true', async () => {
+    _config.router = { useHash: true, base: '/', scrollBehavior: 'top', suppressHashWarning: true };
+    const router = _createRouter();
+    await router.init();
+    const hashWarning = warnSpy.mock.calls.find(
+      (call) => call[1] && call[1].includes('hash mode'),
+    );
+    expect(hashWarning).toBeUndefined();
   });
 });
 
