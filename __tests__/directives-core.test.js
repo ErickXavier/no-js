@@ -2317,20 +2317,18 @@ describe('foreach with animation attributes', () => {
     processTree(parent);
 
     
-    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(3);
 
-    
+
     wrappers.forEach((wrapper) => {
-      const firstChild = wrapper.firstElementChild;
-      expect(firstChild.classList.contains('fadeIn')).toBe(true);
+      expect(wrapper.classList.contains('fadeIn')).toBe(true);
     });
 
-    
-    const wrappersArr = [...wrappers];
-    expect(wrappersArr[0].firstElementChild.style.animationDelay).toBe('0ms');
-    expect(wrappersArr[1].firstElementChild.style.animationDelay).toBe('100ms');
-    expect(wrappersArr[2].firstElementChild.style.animationDelay).toBe('200ms');
+
+    expect(wrappers[0].style.animationDelay).toBe('0ms');
+    expect(wrappers[1].style.animationDelay).toBe('100ms');
+    expect(wrappers[2].style.animationDelay).toBe('200ms');
   });
 });
 
@@ -2352,10 +2350,10 @@ describe('foreach with inline template (no external template)', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(3);
 
-    const texts = [...wrappers].map(
+    const texts = wrappers.map(
       (w) => w.querySelector('span').textContent,
     );
     expect(texts).toEqual(['a', 'b', 'c']);
@@ -2372,41 +2370,24 @@ describe('foreach with inline template (no external template)', () => {
     parent.appendChild(list);
     document.body.appendChild(parent);
 
-    // Track how many times the foreach directive initializes.
-    // With the bug, cloneNode preserves foreach/from on the clone,
-    // so processTree on the wrapper re-triggers the directive infinitely.
-    let foreachInitCount = 0;
-    const origProcessTree = processTree;
-    const observer = new MutationObserver(() => {
-      // Count display:contents wrappers nested more than 1 level deep
-      // which would indicate recursive foreach initialization
-      const nestedWrappers = list.querySelectorAll(
-        'div[style*="contents"] div[style*="contents"]',
-      );
-      if (nestedWrappers.length > 0) {
-        foreachInitCount++;
-      }
-    });
-
     processTree(parent);
 
-    // After processing, there should be exactly 2 wrappers (one per item),
-    // and no nested wrappers (which would indicate recursion)
-    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    // After processing, there should be exactly 2 children (one per item),
+    // and no extra nesting (which would indicate recursion)
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
 
-    const nestedWrappers = list.querySelectorAll(
-      'div[style*="contents"] div[style*="contents"]',
-    );
-    expect(nestedWrappers.length).toBe(0);
+    // No child should itself contain foreach/from-generated children
+    // (which would indicate recursive foreach initialization)
+    wrappers.forEach((child) => {
+      // Children with foreach would re-trigger the directive
+      expect(child.querySelectorAll('[foreach]').length).toBe(0);
+    });
 
-    // The cloned elements inside wrappers should NOT have foreach/from attributes
+    // The rendered elements should NOT have foreach/from attributes
     wrappers.forEach((wrapper) => {
-      const clonedEl = wrapper.firstElementChild;
-      if (clonedEl) {
-        expect(clonedEl.hasAttribute('foreach')).toBe(false);
-        expect(clonedEl.hasAttribute('from')).toBe(false);
-      }
+      expect(wrapper.hasAttribute('foreach')).toBe(false);
+      expect(wrapper.hasAttribute('from')).toBe(false);
     });
   });
 
@@ -2431,7 +2412,7 @@ describe('foreach with inline template (no external template)', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(3);
 
     // First item: index=0, count=3, first=true, last=false, even=true, odd=false
@@ -2481,7 +2462,7 @@ describe('foreach with inline template (no external template)', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    const wrappers = [...list.children];
     // Filtered: Charlie(30), Bob(35), Diana(28) — ages >= 28
     // Sorted by name: Bob, Charlie, Diana
     // Limit 2: Bob, Charlie
@@ -2504,7 +2485,7 @@ describe('foreach with inline template (no external template)', () => {
     processTree(parent);
 
     // Initial: 2 items
-    let wrappers = list.querySelectorAll('div[style*="contents"]');
+    let wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
 
     // Mutate the array via the reactive context
@@ -2512,10 +2493,10 @@ describe('foreach with inline template (no external template)', () => {
     ctx.items = ['x', 'y', 'z'];
 
     // After mutation: 3 items
-    wrappers = list.querySelectorAll('div[style*="contents"]');
+    wrappers = [...list.children];
     expect(wrappers.length).toBe(3);
 
-    const texts = [...wrappers].map(
+    const texts = wrappers.map(
       (w) => w.querySelector('span').textContent,
     );
     expect(texts).toEqual(['x', 'y', 'z']);
@@ -2534,7 +2515,7 @@ describe('foreach with inline template (no external template)', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
     expect(wrappers[0].querySelector('span').textContent).toBe('0');
     expect(wrappers[1].querySelector('span').textContent).toBe('1');
@@ -2552,7 +2533,7 @@ describe('foreach with inline template (no external template)', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = list.querySelectorAll('div[style*="contents"]');
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(0);
   });
 
@@ -2570,7 +2551,7 @@ describe('foreach with inline template (no external template)', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = [...list.querySelectorAll('div[style*="contents"]')];
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
 
     const texts = wrappers.map((w) => w.querySelector('span').textContent);
@@ -2939,7 +2920,7 @@ describe('key reconciliation — disposal of removed items', () => {
 
     const tpl = document.createElement('template');
     tpl.id = 'dispose-row-tpl';
-    tpl.innerHTML = '<span class="row"></span>';
+    tpl.innerHTML = '<div class="row"><span class="inner"></span></div>';
     document.body.appendChild(tpl);
 
     const list = document.createElement('div');
@@ -2949,8 +2930,8 @@ describe('key reconciliation — disposal of removed items', () => {
     state.appendChild(list);
     processTree(state);
 
-    // Plant a disposer on the span inside the second wrapper (item id=2)
-    const spanToDispose = list.children[1].querySelector('.row');
+    // Plant a disposer on the span inside the second item (item id=2)
+    const spanToDispose = list.children[1].querySelector('.inner');
     const disposed = [];
     spanToDispose.__disposers = [() => disposed.push('id2-disposed')];
 
@@ -2968,7 +2949,7 @@ describe('key reconciliation — disposal of removed items', () => {
 
     const tpl = document.createElement('template');
     tpl.id = 'fc-dispose-tpl';
-    tpl.innerHTML = '<span class="fc-row"></span>';
+    tpl.innerHTML = '<div class="fc-row"><span class="inner"></span></div>';
     document.body.appendChild(tpl);
 
     const list = document.createElement('div');
@@ -2979,7 +2960,7 @@ describe('key reconciliation — disposal of removed items', () => {
     state.appendChild(list);
     processTree(state);
 
-    const spanToDispose = list.children[1].querySelector('.fc-row');
+    const spanToDispose = list.children[1].querySelector('.inner');
     const disposed = [];
     spanToDispose.__disposers = [() => disposed.push('b-disposed')];
 
@@ -2998,11 +2979,11 @@ describe('key reconciliation — disposal of removed items', () => {
     list.setAttribute('foreach', 'item');
     list.setAttribute('from', 'items');
     list.setAttribute('key', 'item.id');
-    list.innerHTML = '<span class="inline-dispose"></span>';
+    list.innerHTML = '<div class="inline-dispose"><span class="inner"></span></div>';
     state.appendChild(list);
     processTree(state);
 
-    const spanToDispose = list.children[0].querySelector('.inline-dispose');
+    const spanToDispose = list.children[0].querySelector('.inner');
     const disposed = [];
     spanToDispose.__disposers = [() => disposed.push('id1-disposed')];
 
@@ -3030,7 +3011,7 @@ describe('key reconciliation — disposal of removed items', () => {
     state.appendChild(list);
     processTree(state);
 
-    const preserved = list.children[0].querySelector('.nd-row');
+    const preserved = list.children[0];
     const disposed = [];
     preserved.__disposers = [() => disposed.push('id1-wrongly-disposed')];
 

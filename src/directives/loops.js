@@ -9,6 +9,46 @@ import { findContext, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { _animateOut } from "../animations.js";
 
+// Creates the item node for a loop iteration.
+// Single-root templates: attaches __ctx directly to the root element (no wrapper div).
+// Multi-root templates: wraps in a div[display:contents] to host __ctx.
+function _makeLoopItem(source, childCtx, animEnter, stagger, i) {
+  const isFragment = source.nodeType === 11; // Node.DOCUMENT_FRAGMENT_NODE
+  let node, animTarget;
+
+  if (isFragment) {
+    const roots = source.children;
+    if (roots.length === 1) {
+      node = roots[0];
+      node.__ctx = childCtx;
+      animTarget = node;
+    } else {
+      node = document.createElement("div");
+      node.style.display = "contents";
+      node.__ctx = childCtx;
+      node.appendChild(source);
+      animTarget = node.firstElementChild || node;
+    }
+  } else {
+    node = source;
+    node.__ctx = childCtx;
+    animTarget = node;
+  }
+
+  function applyAnim() {
+    if (!animEnter) return;
+    animTarget.classList.add(animEnter);
+    animTarget.addEventListener(
+      "animationend",
+      () => animTarget.classList.remove(animEnter),
+      { once: true },
+    );
+    if (stagger) animTarget.style.animationDelay = i * stagger + "ms";
+  }
+
+  return { node, applyAnim };
+}
+
 registerDirective("each", {
   priority: 10,
   init(el, name, expr) {
@@ -25,7 +65,7 @@ registerDirective("each", {
     const stagger = parseInt(el.getAttribute("animate-stagger")) || 0;
     const animDuration = parseInt(el.getAttribute("animate-duration")) || 0;
     let prevList = null;
-    // key → wrapper div; only populated when the `key` attribute is set.
+    // key → item node (root element or wrapper div for multi-root templates).
     const keyMap = new Map();
 
     function update() {
@@ -125,26 +165,11 @@ registerDirective("each", {
 
         if (!keyMap.has(key)) {
           const clone = tpl.content.cloneNode(true);
-          const wrapper = document.createElement("div");
-          wrapper.style.display = "contents";
-          wrapper.__ctx = createContext(childData, ctx);
-          wrapper.appendChild(clone);
-          keyMap.set(key, wrapper);
-          el.appendChild(wrapper); // placed at end; reordered below
-          processTree(wrapper);
-
-          if (animEnter) {
-            const firstChild = wrapper.firstElementChild;
-            if (firstChild) {
-              firstChild.classList.add(animEnter);
-              firstChild.addEventListener(
-                "animationend",
-                () => firstChild.classList.remove(animEnter),
-                { once: true },
-              );
-              if (stagger) firstChild.style.animationDelay = i * stagger + "ms";
-            }
-          }
+          const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
+          keyMap.set(key, node);
+          el.appendChild(node); // placed at end; reordered below
+          processTree(node);
+          applyAnim();
         } else {
           // Existing item: update positional metadata and notify watchers.
           Object.assign(keyMap.get(key).__ctx.__raw, childData);
@@ -154,8 +179,8 @@ registerDirective("each", {
 
       // Reorder DOM to match the new list using a single forward pass.
       for (let i = 0; i < newOrder.length; i++) {
-        const wrapper = keyMap.get(newOrder[i].key);
-        if (wrapper !== el.children[i]) el.insertBefore(wrapper, el.children[i] ?? null);
+        const itemNode = keyMap.get(newOrder[i].key);
+        if (itemNode !== el.children[i]) el.insertBefore(itemNode, el.children[i] ?? null);
       }
     }
 
@@ -176,26 +201,11 @@ registerDirective("each", {
           $even: i % 2 === 0,
           $odd: i % 2 !== 0,
         };
-        const childCtx = createContext(childData, ctx);
-
         const clone = tpl.content.cloneNode(true);
-        const wrapper = document.createElement("div");
-        wrapper.style.display = "contents";
-        wrapper.__ctx = childCtx;
-        wrapper.appendChild(clone);
-        el.appendChild(wrapper);
-        processTree(wrapper);
-
-        if (animEnter) {
-          const firstChild = wrapper.firstElementChild;
-          if (firstChild) {
-            firstChild.classList.add(animEnter);
-            firstChild.addEventListener("animationend", () => firstChild.classList.remove(animEnter), { once: true });
-            if (stagger) {
-              firstChild.style.animationDelay = i * stagger + "ms";
-            }
-          }
-        }
+        const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
+        el.appendChild(node);
+        processTree(node);
+        applyAnim();
       });
     }
 
@@ -247,7 +257,7 @@ registerDirective("foreach", {
       templateContent.removeAttribute("animate-duration");
     }
 
-    // key → wrapper div; only populated when the `key` attribute is set.
+    // key → item node (root element or wrapper div for multi-root templates).
     const keyMap = new Map();
 
     function update() {
@@ -315,32 +325,11 @@ registerDirective("foreach", {
             $even: i % 2 === 0,
             $odd: i % 2 !== 0,
           };
-          const childCtx = createContext(childData, ctx);
-
-          let clone;
-          if (tpl) {
-            clone = tpl.content.cloneNode(true);
-          } else {
-            clone = templateContent.cloneNode(true);
-          }
-
-          const wrapper = document.createElement("div");
-          wrapper.style.display = "contents";
-          wrapper.__ctx = childCtx;
-          wrapper.appendChild(clone);
-          el.appendChild(wrapper);
-          processTree(wrapper);
-
-          if (animEnter) {
-            const firstChild = wrapper.firstElementChild;
-            if (firstChild) {
-              firstChild.classList.add(animEnter);
-              firstChild.addEventListener("animationend", () => firstChild.classList.remove(animEnter), { once: true });
-              if (stagger) {
-                firstChild.style.animationDelay = (i * stagger) + "ms";
-              }
-            }
-          }
+          const clone = tpl ? tpl.content.cloneNode(true) : templateContent.cloneNode(true);
+          const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
+          el.appendChild(node);
+          processTree(node);
+          applyAnim();
         });
       }
 
@@ -402,32 +391,12 @@ registerDirective("foreach", {
         };
 
         if (!keyMap.has(key)) {
-          let clone;
-          if (tpl) {
-            clone = tpl.content.cloneNode(true);
-          } else {
-            clone = templateContent.cloneNode(true);
-          }
-          const wrapper = document.createElement("div");
-          wrapper.style.display = "contents";
-          wrapper.__ctx = createContext(childData, ctx);
-          wrapper.appendChild(clone);
-          keyMap.set(key, wrapper);
-          el.appendChild(wrapper);
-          processTree(wrapper);
-
-          if (animEnter) {
-            const firstChild = wrapper.firstElementChild;
-            if (firstChild) {
-              firstChild.classList.add(animEnter);
-              firstChild.addEventListener(
-                "animationend",
-                () => firstChild.classList.remove(animEnter),
-                { once: true },
-              );
-              if (stagger) firstChild.style.animationDelay = i * stagger + "ms";
-            }
-          }
+          const clone = tpl ? tpl.content.cloneNode(true) : templateContent.cloneNode(true);
+          const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
+          keyMap.set(key, node);
+          el.appendChild(node);
+          processTree(node);
+          applyAnim();
         } else {
           Object.assign(keyMap.get(key).__ctx.__raw, childData);
           keyMap.get(key).__ctx.$notify();
@@ -435,8 +404,8 @@ registerDirective("foreach", {
       });
 
       for (let i = 0; i < newOrder.length; i++) {
-        const wrapper = keyMap.get(newOrder[i].key);
-        if (wrapper !== el.children[i]) el.insertBefore(wrapper, el.children[i] ?? null);
+        const itemNode = keyMap.get(newOrder[i].key);
+        if (itemNode !== el.children[i]) el.insertBefore(itemNode, el.children[i] ?? null);
       }
     }
 

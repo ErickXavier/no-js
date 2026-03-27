@@ -55,10 +55,10 @@ describe('Each Directive', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = list.querySelectorAll('[style*="contents"]');
+    const wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
 
-    
+
     const ctx0 = wrappers[0].__ctx;
     expect(ctx0.$index).toBe(0);
     expect(ctx0.$count).toBe(2);
@@ -205,7 +205,7 @@ describe('Foreach Directive', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = list.querySelectorAll('[style*="contents"]');
+    const wrappers = [...list.children];
     expect(wrappers[0].__ctx.item.name).toBe('Alice');
     expect(wrappers[1].__ctx.item.name).toBe('Bob');
     expect(wrappers[2].__ctx.item.name).toBe('Charlie');
@@ -227,7 +227,7 @@ describe('Foreach Directive', () => {
     document.body.appendChild(parent);
     processTree(parent);
 
-    const wrappers = list.querySelectorAll('[style*="contents"]');
+    const wrappers = [...list.children];
     expect(wrappers[0].__ctx.$first).toBe(true);
     expect(wrappers[0].__ctx.$last).toBe(false);
     expect(wrappers[1].__ctx.$first).toBe(false);
@@ -979,12 +979,11 @@ describe('stagger and enter animation', () => {
     const wrappers = el.children;
     expect(wrappers.length).toBe(3);
 
-    expect(wrappers[0].firstElementChild.style.animationDelay).toBe('0ms');
-    expect(wrappers[1].firstElementChild.style.animationDelay).toBe('100ms');
-    expect(wrappers[2].firstElementChild.style.animationDelay).toBe('200ms');
+    expect(wrappers[0].style.animationDelay).toBe('0ms');
+    expect(wrappers[1].style.animationDelay).toBe('100ms');
+    expect(wrappers[2].style.animationDelay).toBe('200ms');
 
-    const firstChild0 = wrappers[0].firstElementChild;
-    expect(firstChild0.classList.contains('fadeIn')).toBe(true);
+    expect(wrappers[0].classList.contains('fadeIn')).toBe(true);
   });
 });
 
@@ -1039,7 +1038,7 @@ describe('foreach with external template', () => {
 
     processTree(parent);
 
-    const wrappers = el.querySelectorAll('[style*="contents"]');
+    const wrappers = [...el.children];
     expect(wrappers.length).toBe(2);
   });
 });
@@ -1091,8 +1090,8 @@ describe('each directive — uncovered branches', () => {
     const wrappers = el.children;
     expect(wrappers.length).toBe(2);
     
-    expect(wrappers[0].firstElementChild.classList.contains('slideIn')).toBe(true);
-    expect(wrappers[1].firstElementChild.classList.contains('slideIn')).toBe(true);
+    expect(wrappers[0].classList.contains('slideIn')).toBe(true);
+    expect(wrappers[1].classList.contains('slideIn')).toBe(true);
   });
 
   test('each when list value is not an array does nothing', () => {
@@ -1178,7 +1177,7 @@ describe('foreach directive — uncovered branches', () => {
 
     processTree(parent);
 
-    const wrappers = el.querySelectorAll('[style*="contents"]');
+    const wrappers = [...el.children];
     expect(wrappers[0].__ctx.item.name).toBe('Charlie');
     expect(wrappers[1].__ctx.item.name).toBe('Bob');
     expect(wrappers[2].__ctx.item.name).toBe('Alice');
