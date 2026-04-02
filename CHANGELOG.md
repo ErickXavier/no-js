@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/ErickXavier/no-js/compare/v1.11.0...v2.0.0) — 2026-04-02
+
+### Added
+
+- SSR hydration helpers `_hasSSR` and `_getSSRType` in compiled output and globals for SSG hydration detection
+- Hydration skip logic in `binding.js`, `conditionals.js`, `loops.js`, and `styling.js` to preserve server-rendered DOM
+- 25 new tests covering SSR hydration helpers and hydration skip behavior
+- CLI reference updates across documentation locales (`prebuild` → `build`, `dev` → `serve`)
+- Compilation documentation updates for v2.0.0
+
+### Changed
+
+- Logo and asset files reorganized under `docs/assets/`
+- Dist bundles removed from version control (now build-only artifacts)
+
 ## [1.11.0](https://github.com/ErickXavier/no-js/compare/v1.10.1...v1.11.0) — 2026-03-26
 
 ### Added

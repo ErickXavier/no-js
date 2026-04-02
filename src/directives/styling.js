@@ -7,7 +7,7 @@ import { evaluate } from "../evaluate.js";
 import { findContext } from "../dom.js";
 import { registerDirective } from "../registry.js";
 import { _watchI18n } from "../i18n.js";
-import { _getCompiledIndex } from "../compiled.js";
+import { _getCompiledIndex, _hasSSR, _getSSRType } from "../compiled.js";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -56,6 +56,10 @@ registerDirective("class-*", {
         }
       }
       _watchExpr(expr, ctx, update);
+      if (_hasSSR(el) && _getSSRType(el) === "class") {
+        el.removeAttribute("data-nojs-ssr");
+        return;
+      }
       update();
       return;
     }
@@ -75,6 +79,10 @@ registerDirective("class-*", {
         }
       }
       _watchExpr(expr, ctx, update);
+      if (_hasSSR(el) && _getSSRType(el) === "class") {
+        el.removeAttribute("data-nojs-ssr");
+        return;
+      }
       update();
       return;
     }
@@ -85,6 +93,10 @@ registerDirective("class-*", {
     }
     _watchExpr(expr, ctx, update);
     if (expr.includes("$i18n") || expr.includes("NoJS.locale") || expr.includes("window.NoJS.locale")) _watchI18n(update);
+    if (_hasSSR(el) && _getSSRType(el) === "class") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });
@@ -110,6 +122,10 @@ registerDirective("style-*", {
         }
       }
       _watchExpr(expr, ctx, update);
+      if (_hasSSR(el) && _getSSRType(el) === "style") {
+        el.removeAttribute("data-nojs-ssr");
+        return;
+      }
       update();
       return;
     }
@@ -125,6 +141,10 @@ registerDirective("style-*", {
       el.style[cssProp] = resolved;
     }
     _watchExpr(expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "style") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });

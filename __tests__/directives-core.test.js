@@ -3394,3 +3394,124 @@ describe('M5 — debounce timer cleared on disposal', () => {
     expect(ctx.clicked).toBe(false);
   });
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+//  Phase 6: SSG Hydration Skip Tests
+// ══════════════════════════════════════════════════════════════════════════
+
+describe('SSG Bind Skip', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  test('bind skips initial textContent when data-nojs-ssr="bind" is present', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ name: "Alice" }');
+    const span = document.createElement('span');
+    span.setAttribute('bind', 'name');
+    span.setAttribute('data-nojs-ssr', 'bind');
+    span.textContent = 'Pre-rendered';
+    parent.appendChild(span);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Initial textContent should NOT be overwritten by the bind directive
+    expect(span.textContent).toBe('Pre-rendered');
+    // SSR attribute should be removed after hydration
+    expect(span.hasAttribute('data-nojs-ssr')).toBe(false);
+  });
+
+  test('bind still reacts to state changes after SSG skip', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ name: "Alice" }');
+    const span = document.createElement('span');
+    span.setAttribute('bind', 'name');
+    span.setAttribute('data-nojs-ssr', 'bind');
+    span.textContent = 'Pre-rendered';
+    parent.appendChild(span);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Reactivity should still work
+    parent.__ctx.name = 'Bob';
+    expect(span.textContent).toBe('Bob');
+  });
+
+  test('bind without SSG marker still sets textContent normally', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ name: "Alice" }');
+    const span = document.createElement('span');
+    span.setAttribute('bind', 'name');
+    span.textContent = 'Loading...';
+    parent.appendChild(span);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Without SSG marker, textContent should be overwritten
+    expect(span.textContent).toBe('Alice');
+  });
+});
+
+describe('SSG Conditional Skip', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  test('if directive skips initial render when data-nojs-ssr="if" is present', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ show: true }');
+    const p = document.createElement('p');
+    p.setAttribute('if', 'show');
+    p.setAttribute('data-nojs-ssr', 'if');
+    p.textContent = 'Pre-rendered content';
+    parent.appendChild(p);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // The element should still be in the DOM (not re-evaluated)
+    expect(p.textContent).toBe('Pre-rendered content');
+    expect(p.hasAttribute('data-nojs-ssr')).toBe(false);
+  });
+
+  test('show directive skips initial display toggle when data-nojs-ssr="show" is present', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ visible: true }');
+    const p = document.createElement('p');
+    p.setAttribute('show', 'visible');
+    p.setAttribute('data-nojs-ssr', 'show');
+    parent.appendChild(p);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    expect(p.hasAttribute('data-nojs-ssr')).toBe(false);
+  });
+});
+
+describe('SSG Loop Skip', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  test('each directive skips initial render when data-nojs-ssr="loop" is present', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["A","B","C"] }');
+    const ul = document.createElement('ul');
+    ul.setAttribute('each', 'item in items');
+    ul.setAttribute('data-nojs-ssr', 'loop');
+
+    // Pre-rendered children (simulating SSG output)
+    for (const text of ['A', 'B', 'C']) {
+      const li = document.createElement('li');
+      li.textContent = text;
+      ul.appendChild(li);
+    }
+    parent.appendChild(ul);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Pre-rendered children should still be there
+    expect(ul.children.length).toBe(3);
+    expect(ul.children[0].textContent).toBe('A');
+    expect(ul.hasAttribute('data-nojs-ssr')).toBe(false);
+  });
+});

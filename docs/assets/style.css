@@ -1,8 +1,3 @@
-/* ══════════════════════════════════════════════════════════════════
-   No.JS Design System — 100% from design.pen
-   Fonts: Space Grotesk (headings), Inter (body), JetBrains Mono (code)
-   ══════════════════════════════════════════════════════════════════ */
-
 /* ── Variables ── */
 :root {
   --white: #FFFFFF;
@@ -33,8 +28,15 @@
 }
 
 /* ── Reset ── */
+:root {
+  interpolate-size: allow-keywords;
+  transition-behavior: allow-discrete;
+}
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
 body {
   font-family: var(--font-body);
   font-size: 16px;
@@ -1047,11 +1049,9 @@ button:not([class]):disabled {
   min-width: var(--sidebar-w);
   background: var(--white);
   border-right: 1px solid var(--border);
-  overflow-y: auto;
+  overflow-y: clip;
   padding: 24px 0;
   align-self: flex-start;
-  position: sticky;
-  top: var(--header-h);
   max-height: calc(100vh - var(--header-h));
 }
 .sidebar-nav {
@@ -1059,6 +1059,8 @@ button:not([class]):disabled {
   flex-direction: column;
   gap: 4px;
   padding: 0 16px;
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
 }
 .sidebar-group {
   margin-bottom: 16px;

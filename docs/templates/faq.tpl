@@ -119,6 +119,14 @@ details[open] > .faq-question .faq-chevron::after {
   opacity: 0;
   background: var(--primary);
 }
+details::details-content {
+  transition: block-size 0.5s ease-out, content-visibility 0.5s allow-discrete;
+  overflow: hidden;
+  block-size: 0; /* Starts closed */
+}
+details[open]::details-content {
+  block-size: auto; /* Animates to open */
+}
 .faq-question {
   transition: color 0.3s ease;
 }

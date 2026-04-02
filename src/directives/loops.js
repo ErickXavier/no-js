@@ -8,6 +8,7 @@ import { evaluate, resolve, _evalFast, _parseAndCache } from "../evaluate.js";
 import { findContext, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeChildren, _compileTemplate, processTreeFromDescriptor } from "../registry.js";
 import { _animateOut } from "../animations.js";
+import { _hasSSR, _getSSRType } from "../compiled.js";
 
 // Task 2.1: O(n log n) Longest Increasing Subsequence algorithm.
 // Returns indices of `arr` that form the LIS.  Used to minimise DOM moves
@@ -474,6 +475,10 @@ registerDirective("each", {
     }
 
     _watchExpr(expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "loop") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });
@@ -828,6 +833,10 @@ registerDirective("foreach", {
     }
 
     _watchExpr(fromPath, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "loop") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });

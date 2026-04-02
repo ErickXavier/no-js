@@ -718,3 +718,58 @@ describe('fetch.js — explicit _doFetch retry params override _config', () => {
     expect(callCount).toBe(3);
   });
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+//  Phase 6.4: Verify fetch directives remain runtime-only
+//  SSG markers should never interfere with HTTP directive behavior.
+// ══════════════════════════════════════════════════════════════════════════
+
+describe('Fetch is runtime-only (no SSG interference)', () => {
+  let originalFetch;
+
+  beforeEach(() => {
+    originalFetch = global.fetch;
+    _config.retries = 0;
+    _config.timeout = 10000;
+    _config.headers = {};
+    _config.csrf = null;
+    _config.credentials = 'same-origin';
+    _interceptors.request.length = 0;
+    _interceptors.response.length = 0;
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  test('GET request executes at runtime even if parent has SSR marker', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(JSON.stringify({ id: 1 })),
+    });
+
+    const result = await _doFetch('/api/data', 'GET');
+    expect(global.fetch).toHaveBeenCalled();
+    expect(result).toEqual({ id: 1 });
+  });
+
+  test('POST request executes at runtime regardless of SSG context', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(JSON.stringify({ created: true })),
+    });
+
+    const result = await _doFetch('/api/items', 'POST', { name: 'test' });
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ method: 'POST' })
+    );
+    expect(result).toEqual({ created: true });
+  });
+
+  test('resolveUrl works independently of SSG state', () => {
+    _config.baseApiUrl = 'https://api.test.com';
+    const url = resolveUrl('/users', null);
+    expect(url).toBe('https://api.test.com/users');
+  });
+});

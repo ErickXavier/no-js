@@ -7,7 +7,7 @@ import { evaluate } from "../evaluate.js";
 import { findContext, _clearDeclared, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeChildren } from "../registry.js";
 import { _animateIn, _animateOut } from "../animations.js";
-import { _getCompiledIndex } from "../compiled.js";
+import { _getCompiledIndex, _hasSSR, _getSSRType } from "../compiled.js";
 
 registerDirective("if", {
   priority: 10,
@@ -84,6 +84,10 @@ registerDirective("if", {
     }
 
     _watchExpr(expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "if") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });
@@ -221,6 +225,10 @@ registerDirective("show", {
       }
     }
     _watchExpr(expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "show") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });
@@ -256,6 +264,10 @@ registerDirective("hide", {
       }
     }
     _watchExpr(expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "show") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });

@@ -1,5 +1,5 @@
 <h1>
-  <img src="docs/logo-dark-round.png" alt="No.JS" width="26" style="vertical-align: middle; margin-top: -6px;"> No.JS
+  <img src="docs/assets/logo-dark-round.png" alt="No.JS" width="26" style="vertical-align: middle; margin-top: -6px;"> No.JS
 </h1>
 
 ![version](https://img.shields.io/badge/version-1.11.0-blue)
@@ -157,7 +157,7 @@ Plugins have access to the full API: `directive()`, `filter()`, `validator()`, `
 Full documentation is available in the [docs/](docs/) folder:
 
 | Guide | Description |
-|-------|-------------|
+| ----- | ----------- |
 | [Getting Started](docs/md/getting-started.md) | Installation, core concepts, how it works |
 | [Data Fetching](docs/md/data-fetching.md) | `get`, `post`, `put`, `patch`, `delete`, caching, polling |
 | [Data Binding](docs/md/data-binding.md) | `bind`, `bind-html`, `bind-*`, `model` |
@@ -195,7 +195,7 @@ Full documentation is available in the [docs/](docs/) folder:
 ## Ecosystem
 
 | Tool | Description |
-|------|-------------|
+| ---- | ----------- |
 | [NoJS-LSP](https://github.com/ErickXavier/nojs-lsp) | VS Code extension — autocomplete, hover docs, diagnostics for No.JS HTML |
 | [NoJS-MCP](https://github.com/ErickXavier/nojs-mcp) | MCP server — AI tools for building No.JS apps |
 | [NoJS-Skill](https://github.com/ErickXavier/nojs-skill) | Claude Code skill — guided No.JS project generation |

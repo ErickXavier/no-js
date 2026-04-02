@@ -6,7 +6,7 @@ import { _watchExpr, _onDispose, _config, _warn, _compiledFns } from "../globals
 import { evaluate, _execStatement } from "../evaluate.js";
 import { findContext, _sanitizeHtml } from "../dom.js";
 import { registerDirective, _disposeChildren } from "../registry.js";
-import { _getCompiledIndex } from "../compiled.js";
+import { _getCompiledIndex, _hasSSR, _getSSRType } from "../compiled.js";
 
 registerDirective("bind", {
   priority: 20,
@@ -20,6 +20,10 @@ registerDirective("bind", {
       if (el.__t !== text) { el.__t = text; el.textContent = text; }
     }
     _watchExpr(_compiledFn || expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "bind") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });
@@ -168,6 +172,10 @@ registerDirective("bind-*", {
       }
     }
     _watchExpr(_compiledFn || expr, ctx, update);
+    if (_hasSSR(el) && _getSSRType(el) === "bind") {
+      el.removeAttribute("data-nojs-ssr");
+      return;
+    }
     update();
   },
 });

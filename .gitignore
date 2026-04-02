@@ -25,3 +25,6 @@ test-results
 .github/specs
 .github/reviews
 .github/agents
+
+# Misc
+dist/

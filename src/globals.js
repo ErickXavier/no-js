@@ -225,6 +225,9 @@ export const _CANCEL  = Symbol("nojs.cancel");
 export const _RESPOND = Symbol("nojs.respond");
 export const _REPLACE = Symbol("nojs.replace");
 
+// ─── SSR / SSG marker attribute ─────────────────────────────────────────────
+export const _SSR_ATTR = "data-nojs-ssr";
+
 // ─── Compiler namespace (Task 2.4 / 2.5 / 2.7) ────────────────────────────
 // Shared arrays for pre-compiled expressions and template factories.
 // Populated by compiler-generated <script> tags; consumed by directives.

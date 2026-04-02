@@ -3,6 +3,8 @@
 //  Helpers for reading pre-compiled directive indices from elements
 // ═══════════════════════════════════════════════════════════════════════
 
+import { _SSR_ATTR } from "./globals.js";
+
 const COMPILED_ATTR = "data-nojs-e";
 const CACHE_KEY = "__nojs_compiled_map";
 
@@ -40,4 +42,28 @@ export function _getCompiledIndex(el, directiveName) {
 
   const idx = map[directiveName];
   return typeof idx === "number" ? idx : null;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SSR / SSG DETECTION HELPERS
+//  Used by directives to detect pre-rendered (SSG) content and skip
+//  the initial render pass, deferring to hydration instead.
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Returns true if the element carries an SSR hydration marker.
+ * @param {Element} el
+ * @returns {boolean}
+ */
+export function _hasSSR(el) {
+  return !!(el && el.hasAttribute && el.hasAttribute(_SSR_ATTR));
+}
+
+/**
+ * Returns the SSR type string from the hydration marker attribute.
+ * @param {Element} el
+ * @returns {string|null}  e.g. "bind", "class", "style", "show", "loop", "if"
+ */
+export function _getSSRType(el) {
+  return el && el.getAttribute ? el.getAttribute(_SSR_ATTR) : null;
 }
