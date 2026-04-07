@@ -31,7 +31,6 @@
       <a href="#head-management" class="sidebar-link" t="shell.sidebar.headManagement"></a>
       <a href="#forms-validation" class="sidebar-link" t="shell.sidebar.forms"></a>
       <a href="#styling" class="sidebar-link" t="shell.sidebar.styling"></a>
-      <a href="#drag-and-drop" class="sidebar-link" t="shell.sidebar.dragAndDrop"></a>
       <a href="#animations" class="sidebar-link" t="shell.sidebar.animations"></a>
       <a href="#filters" class="sidebar-link" t="shell.sidebar.filters"></a>
       <a href="#i18n" class="sidebar-link" t="shell.sidebar.i18n"></a>

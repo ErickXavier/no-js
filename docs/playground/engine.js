@@ -114,7 +114,7 @@
     function pgPrompt(message, dflt) { return _showDialog({ title: '', message: message, input: true, inputValue: dflt || '', showCancel: true, okLabel: 'OK', cancelLabel: 'Cancel' }); }
 
     // ── Default examples (fetched from separate files) ──
-    var EXAMPLE_FILES = ['kanban.html', 'chat.html', 'settings.html'];
+    var EXAMPLE_FILES = ['chat.html', 'settings.html'];
     var EXAMPLE_BASE = 'playground/examples/';
     var defaultFiles = {};
     var defaultTabs = EXAMPLE_FILES.slice();
@@ -268,7 +268,7 @@
     function buildPreview(files) {
       revokeBlobs();
 
-      var mainFile = ctx.activeFile || 'kanban.html';
+      var mainFile = ctx.activeFile || 'chat.html';
       var mainHtml = files[mainFile] ? files[mainFile].content : '';
 
       // Create Blob URLs for each non-main file
@@ -550,13 +550,13 @@
         return fetchDefaults().then(function() {
           ctx.files = JSON.parse(JSON.stringify(defaultFiles));
           ctx.openTabs = defaultTabs.slice();
-          ctx.activeFile = 'kanban.html';
+          ctx.activeFile = 'chat.html';
           ctx.tabScrollPositions = {};
           ctx.history = [JSON.parse(JSON.stringify(defaultFiles))];
           ctx.historyIndex = 0;
           ctx.consoleLines = [];
           requestAnimationFrame(function() {
-            renderHighlighted(ctx.files['kanban.html'].content, 'html');
+            renderHighlighted(ctx.files['chat.html'].content, 'html');
             iframe.srcdoc = buildPreview(ctx.files);
           });
         });
@@ -698,7 +698,7 @@
             // Fallback to defaults
             ctx.files = JSON.parse(JSON.stringify(defaultFiles));
             ctx.openTabs = defaultTabs.slice();
-            ctx.activeFile = 'kanban.html';
+            ctx.activeFile = 'chat.html';
           }
         } else {
           var saved = loadFromLocalStorage();
@@ -709,7 +709,7 @@
           } else {
             ctx.files = JSON.parse(JSON.stringify(defaultFiles));
             ctx.openTabs = defaultTabs.slice();
-            ctx.activeFile = 'kanban.html';
+            ctx.activeFile = 'chat.html';
           }
         }
 

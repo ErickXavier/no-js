@@ -33,7 +33,6 @@ No.JS replaces JavaScript framework boilerplate with declarative HTML attributes
 
 - [Routing](https://no-js.dev/#/routing): SPA navigation with `route="/path/:param"`, `route-view` outlet, route guards, nested routes, query params, hash navigation, redirects, 404 handling
 - [Internationalization](https://no-js.dev/#/i18n): `t="key"` directive, pluralization, locale switching, async locale loading, fallback chains, interpolation
-- [Drag and Drop](https://no-js.dev/#/drag-and-drop): `drag` source, `drop` zone, `drag-list` for sortable reordering, multi-select, custom placeholders, event handlers
 - [Custom Directives](https://no-js.dev/#/custom-directives): Extend the framework via `NoJS.directive(name, { priority, init(el, value, ctx) })` with full access to the reactive context
 - [Error Handling](https://no-js.dev/#/error-handling): Per-element `error` templates, `error-boundary` for subtree isolation, global error handler via `NoJS.config({ onError })`
 - [Configuration](https://no-js.dev/#/configuration): `NoJS.config()` for global settings (baseApiUrl, headers, timeout, retries), request/response interceptors, CSRF token support

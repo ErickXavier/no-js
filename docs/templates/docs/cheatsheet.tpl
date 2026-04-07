@@ -188,41 +188,6 @@
     </table>
   </div>
 
-  <!-- Drag and Drop -->
-  <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.dnd.title"></h2>
-    <table class="doc-table">
-      <thead><tr><th t="docs.cheatsheet.dnd.col1"></th><th t="docs.cheatsheet.dnd.col2"></th><th t="docs.cheatsheet.dnd.col3"></th></tr></thead>
-      <tbody>
-        <tr><td><code>drag</code></td><td><code>drag</code></td><td t="docs.cheatsheet.dnd.drag"></td></tr>
-        <tr><td><code>drag-type</code></td><td><code>drag-type="task"</code></td><td t="docs.cheatsheet.dnd.dragType"></td></tr>
-        <tr><td><code>drag-effect</code></td><td><code>drag-effect="move"</code></td><td t="docs.cheatsheet.dnd.dragEffect"></td></tr>
-        <tr><td><code>drag-handle</code></td><td><code>drag-handle=".handle"</code></td><td t="docs.cheatsheet.dnd.dragHandle"></td></tr>
-        <tr><td><code>drag-disabled</code></td><td><code>drag-disabled="locked"</code></td><td t="docs.cheatsheet.dnd.dragDisabled"></td></tr>
-        <tr><td><code>drag-class</code></td><td><code>drag-class="dragging"</code></td><td t="docs.cheatsheet.dnd.dragClass"></td></tr>
-        <tr><td><code>drag-group</code></td><td><code>drag-group="board"</code></td><td t="docs.cheatsheet.dnd.dragGroup"></td></tr>
-        <tr><td><code>drop</code></td><td><code>drop</code></td><td t="docs.cheatsheet.dnd.drop"></td></tr>
-        <tr><td><code>drop-accept</code></td><td><code>drop-accept="task"</code></td><td t="docs.cheatsheet.dnd.dropAccept"></td></tr>
-        <tr><td><code>drop-effect</code></td><td><code>drop-effect="move"</code></td><td t="docs.cheatsheet.dnd.dropEffect"></td></tr>
-        <tr><td><code>drop-class</code></td><td><code>drop-class="over"</code></td><td t="docs.cheatsheet.dnd.dropClass"></td></tr>
-        <tr><td><code>drop-reject-class</code></td><td><code>drop-reject-class="nope"</code></td><td t="docs.cheatsheet.dnd.dropRejectClass"></td></tr>
-        <tr><td><code>drop-disabled</code></td><td><code>drop-disabled="full"</code></td><td t="docs.cheatsheet.dnd.dropDisabled"></td></tr>
-        <tr><td><code>drop-max</code></td><td><code>drop-max="5"</code></td><td t="docs.cheatsheet.dnd.dropMax"></td></tr>
-        <tr><td><code>drop-sort</code></td><td><code>drop-sort</code></td><td t="docs.cheatsheet.dnd.dropSort"></td></tr>
-        <tr><td><code>drop-placeholder</code></td><td><code>drop-placeholder="#ph"</code></td><td t="docs.cheatsheet.dnd.dropPlaceholder"></td></tr>
-        <tr><td><code>drop-settle-class</code></td><td><code>drop-settle-class="my-settle"</code></td><td t="docs.cheatsheet.dnd.dropSettleClass"></td></tr>
-        <tr><td><code>drop-empty-class</code></td><td><code>drop-empty-class="empty"</code></td><td t="docs.cheatsheet.dnd.dropEmptyClass"></td></tr>
-        <tr><td><code>drag-list</code></td><td><code>drag-list="items"</code></td><td t="docs.cheatsheet.dnd.dragList"></td></tr>
-        <tr><td><code>drag-list-key</code></td><td><code>drag-list-key="id"</code></td><td t="docs.cheatsheet.dnd.dragListKey"></td></tr>
-        <tr><td><code>drag-list-item</code></td><td><code>drag-list-item="task"</code></td><td t="docs.cheatsheet.dnd.dragListItem"></td></tr>
-        <tr><td><code>drag-list-copy</code></td><td><code>drag-list-copy</code></td><td t="docs.cheatsheet.dnd.dragListCopy"></td></tr>
-        <tr><td><code>drag-list-remove</code></td><td><code>drag-list-remove</code></td><td t="docs.cheatsheet.dnd.dragListRemove"></td></tr>
-        <tr><td><code>drag-multiple</code></td><td><code>drag-multiple</code></td><td t="docs.cheatsheet.dnd.dragMultiple"></td></tr>
-        <tr><td><code>drag-multiple-class</code></td><td><code>drag-multiple-class="selected"</code></td><td t="docs.cheatsheet.dnd.dragMultipleClass"></td></tr>
-      </tbody>
-    </table>
-  </div>
-
   <!-- i18n -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.cheatsheet.i18n.title"></h2>

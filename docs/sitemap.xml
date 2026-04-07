@@ -110,11 +110,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://no-js.dev/#/docs/drag-and-drop</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://no-js.dev/#/docs/custom-directives</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

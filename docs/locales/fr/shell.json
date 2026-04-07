@@ -15,7 +15,9 @@
       "toolsMcp": "NoJS MCP",
       "toolsMcpDesc": "Serveur AI tools",
       "toolsSkill": "NoJS Skill",
-      "toolsSkillDesc": "Référence AI agent"
+      "toolsSkillDesc": "Référence AI agent",
+      "toolsElements": "NoJS Elements",
+      "toolsElementsDesc": "Composants UI"
     },
     "footer": {
       "desc": "Le framework réactif HTML-first",

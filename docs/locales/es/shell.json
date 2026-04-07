@@ -15,7 +15,9 @@
       "toolsMcp": "NoJS MCP",
       "toolsMcpDesc": "Servidor AI tools",
       "toolsSkill": "NoJS Skill",
-      "toolsSkillDesc": "Referencia AI agent"
+      "toolsSkillDesc": "Referencia AI agent",
+      "toolsElements": "NoJS Elements",
+      "toolsElementsDesc": "Componentes UI"
     },
     "footer": {
       "desc": "El framework reactivo HTML-first",
@@ -53,7 +55,6 @@
       "headManagement": "Gestión del Head",
       "forms": "Formularios",
       "styling": "Estilos",
-      "dragAndDrop": "Drag & Drop",
       "animations": "Animaciones",
       "filters": "Filtros",
       "i18n": "i18n",

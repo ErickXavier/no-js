@@ -28,3 +28,6 @@ test-results
 
 # Misc
 dist/
+jest_dx
+node-compile-cache
+playwright-transform-cache-*
