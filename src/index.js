@@ -22,6 +22,7 @@ import {
   _globalOwners,
   _disposing,
   _setDisposing,
+  _setNoJS,
   _currentPluginName,
   _setCurrentPluginName,
   _emitEvent,
@@ -30,12 +31,13 @@ import {
   _REPLACE,
   _compiledFns,
   _factories,
+  _onDispose,
 } from "./globals.js";
 import { _i18n, _loadI18nForLocale } from "./i18n.js";
 import { createContext } from "./context.js";
-import { evaluate, resolve, _exprCache } from "./evaluate.js";
+import { evaluate, resolve, _exprCache, _execStatement } from "./evaluate.js";
 import { findContext, _loadRemoteTemplates, _loadRemoteTemplatesPhase1, _loadRemoteTemplatesPhase2, _processTemplateIncludes } from "./dom.js";
-import { registerDirective, processTree } from "./registry.js";
+import { registerDirective, processTree, _disposeChildren } from "./registry.js";
 import { _createRouter } from "./router.js";
 import { initDevtools, destroyDevtools, _devtoolsEmit } from "./devtools.js";
 
@@ -53,7 +55,6 @@ import "./directives/events.js";
 import "./directives/refs.js";
 import "./directives/validation.js";
 import "./directives/i18n.js";
-import "./directives/dnd.js";
 import "./directives/head.js";
 
 // Lock core directives — plugins can only register NEW names
@@ -551,6 +552,12 @@ Object.defineProperty(NoJS, "_compiled",  { value: _compiledFns, writable: true,
 Object.defineProperty(NoJS, "_factories", { value: _factories, writable: true, configurable: true });
 Object.defineProperty(NoJS, "_filters",   { value: _filters, writable: false, configurable: false });
 
+// Plugin internals (semi-private API for directive plugins)
+Object.defineProperty(NoJS, "_execStatement",  { value: _execStatement,  writable: false, configurable: false });
+Object.defineProperty(NoJS, "_disposeChildren", { value: _disposeChildren, writable: false, configurable: false });
+Object.defineProperty(NoJS, "_onDispose",      { value: _onDispose,      writable: false, configurable: false });
+Object.defineProperty(NoJS, "_warn",           { value: _warn,           writable: false, configurable: false });
+
 // Backward-compat: _initialized getter/setter (tests use `NoJS._initialized = false` to reset)
 Object.defineProperty(NoJS, "_initialized", {
   get() { return _initPromise !== null; },
@@ -558,4 +565,5 @@ Object.defineProperty(NoJS, "_initialized", {
   configurable: true,
 });
 
+_setNoJS(NoJS);
 export default NoJS;

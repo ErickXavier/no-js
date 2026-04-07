@@ -37,6 +37,8 @@ export let _routerInstance = null;
 export const _plugins = new Map();                    // name → { plugin, options }
 export const _globals = Object.create(null);          // name → reactive value (prototype-free)
 export const _globalOwners = Object.create(null);     // name → plugin name (collision tracking)
+export let _nojs = null;
+export function _setNoJS(ref) { _nojs = ref; }
 export let _disposing = false;
 // Internal: used by index.js dispose() only — plugins receive the NoJS API, not module imports
 export function _setDisposing(v) { _disposing = v; }

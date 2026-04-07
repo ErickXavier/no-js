@@ -161,7 +161,7 @@ registerDirective("call", {
           _stores[intoStore].$set(asKey, data);
           _notifyStoreWatchers();
         }
-        if (thenExpr) _execStatement(thenExpr, ctx, { result: data });
+        if (thenExpr) _execStatement(thenExpr, ctx, { result: data, $el: el });
         if (successTpl) {
           const clone = _cloneTemplate(successTpl);
           if (clone) {

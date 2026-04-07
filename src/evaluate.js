@@ -2,7 +2,7 @@
 //  EXPRESSION EVALUATOR
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _stores, _routerInstance, _filters, _warn, _notifyStoreWatchers, _globals } from "./globals.js";
+import { _stores, _routerInstance, _filters, _warn, _notifyStoreWatchers, _globals, _nojs } from "./globals.js";
 import { _i18n } from "./i18n.js";
 import { _collectKeys } from "./context.js";
 import {
@@ -539,6 +539,7 @@ function _buildScope(ctx) {
     const key = "$" + gk;
     if (!(key in scope)) scope[key] = _globals[gk];
   }
+  if (_nojs) scope.NoJS = _nojs;
   return scope;
 }
 

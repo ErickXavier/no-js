@@ -2,7 +2,7 @@
 //  REACTIVE CONTEXT
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _refs, _routerInstance, _currentEl, _globals, _currentWatcher, _queueWatcher, _runTracked } from "./globals.js";
+import { _config, _stores, _refs, _routerInstance, _currentEl, _globals, _currentWatcher, _queueWatcher, _runTracked, _nojs } from "./globals.js";
 import { _i18n } from "./i18n.js";
 import { _devtoolsEmit, _ctxRegistry } from "./devtools.js";
 
@@ -178,6 +178,7 @@ export function createContext(data = {}, parent = null) {
       if (key === "$router") return _routerInstance;
       if (key === "$i18n") return _i18n;
       if (key === "$form") return null;
+      if (key === "NoJS") return _nojs;
       // Plugin globals fallback (after all core $ checks)
       if (key.startsWith("$") && key.slice(1) in _globals) {
         return _globals[key.slice(1)];
@@ -223,7 +224,8 @@ export function createContext(data = {}, parent = null) {
           key === "$i18n" || key === "$refs" || key === "$form" ||
           key === "$parent" || key === "$watch" || key === "$notify" ||
           key === "$set" || key === "__isProxy" || key === "__raw" ||
-          key === "__listeners" || key === "__keyListeners") return true;
+          key === "__listeners" || key === "__keyListeners" ||
+          key === "NoJS") return true;
       if (typeof key === "string" && key.startsWith("$") && key.slice(1) in _globals) return true;
       if (parent && parent.__isProxy) return key in parent;
       return false;
@@ -398,6 +400,7 @@ export function createLightContext(data, parent) {
       if (key === "$router") return _routerInstance;
       if (key === "$i18n") return _i18n;
       if (key === "$form") return null;
+      if (key === "NoJS") return _nojs;
       if (key.startsWith("$") && key.slice(1) in _globals) {
         return _globals[key.slice(1)];
       }
@@ -433,7 +436,8 @@ export function createLightContext(data, parent) {
           key === "$i18n" || key === "$refs" || key === "$form" ||
           key === "$parent" || key === "$watch" || key === "$notify" ||
           key === "$set" || key === "__isProxy" || key === "__raw" ||
-          key === "__listeners" || key === "__keyListeners") return true;
+          key === "__listeners" || key === "__keyListeners" ||
+          key === "NoJS") return true;
       if (typeof key === "string" && key.startsWith("$") && key.slice(1) in _globals) return true;
       if (parent && parent.__isProxy) return key in parent;
       return false;
