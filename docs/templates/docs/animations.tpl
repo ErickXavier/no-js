@@ -41,6 +41,9 @@
   <!-- transition -->
   <div class="doc-section">
     <h2 class="doc-title" t="docs.animations.transition.title"></h2>
+    <div class="callout">
+      <p t="docs.animations.transition.viewTransitionNote" t-html></p>
+    </div>
     <p class="doc-text" t="docs.animations.transition.text1"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">if</span>=<span class="hl-str">"show"</span> <span class="hl-attr">transition</span>=<span class="hl-str">"fade"</span><span class="hl-tag">&gt;</span>Content<span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
