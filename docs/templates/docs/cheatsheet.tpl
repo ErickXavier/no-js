@@ -169,6 +169,7 @@
         <tr><td><code>$router.forward()</code></td><td><code>$router.forward()</code></td><td t="docs.cheatsheet.routing.routerForward"></td></tr>
         <tr><td><code>$router.on(fn)</code></td><td><code>$router.on(r =&gt; ...)</code></td><td t="docs.cheatsheet.routing.routerOn"></td></tr>
         <tr><td><code>$router.current</code></td><td><code>$router.current.path</code></td><td t="docs.cheatsheet.routing.routerCurrent"></td></tr>
+        <tr><td><code>transition</code> <small>(route-view)</small></td><td><code>&lt;main route-view transition="slide"&gt;</code></td><td t="docs.cheatsheet.routing.transitionVT"></td></tr>
       </tbody>
     </table>
   </div>
@@ -185,6 +186,7 @@
         <tr><td><code>animate-duration</code></td><td><code>animate-duration="300"</code></td><td t="docs.cheatsheet.animation.animateDuration"></td></tr>
         <tr><td><code>animate-stagger</code></td><td><code>animate-stagger="50"</code></td><td t="docs.cheatsheet.animation.animateStagger"></td></tr>
         <tr><td><code>transition</code></td><td><code>transition="fade"</code></td><td t="docs.cheatsheet.animation.transition"></td></tr>
+        <tr><td><code>transition</code> <small>(route-view)</small></td><td><code>&lt;main route-view transition="slide"&gt;</code></td><td t="docs.cheatsheet.animation.transitionVT"></td></tr>
       </tbody>
     </table>
   </div>

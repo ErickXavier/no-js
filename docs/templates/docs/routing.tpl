@@ -433,5 +433,105 @@
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">route-view</span> <span class="hl-attr">aria-live</span>=<span class="hl-str">"polite"</span> <span class="hl-attr">aria-atomic</span>=<span class="hl-str">"true"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
   </div>
 
+  <!-- View Transitions -->
+  <div class="doc-section" id="view-transitions">
+    <h2 class="doc-title" t="docs.routing.viewTransitions.title"></h2>
+    <p class="doc-text" t="docs.routing.viewTransitions.text" t-html></p>
+
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Add a transition preset to your route outlet --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"slide"</span><span class="hl-tag">&gt;&lt;/main&gt;</span></pre></div>
+
+    <!-- Built-in Presets -->
+    <h3 class="doc-subtitle" t="docs.routing.viewTransitions.presetsTitle"></h3>
+    <p class="doc-text" t="docs.routing.viewTransitions.presetsText"></p>
+    <table class="doc-table">
+      <thead><tr><th t="docs.routing.viewTransitions.colPreset"></th><th t="docs.routing.viewTransitions.colEffect"></th></tr></thead>
+      <tbody>
+        <tr><td><code>slide</code></td><td t="docs.routing.viewTransitions.presetSlide"></td></tr>
+        <tr><td><code>fade</code></td><td t="docs.routing.viewTransitions.presetFade"></td></tr>
+        <tr><td><code>scale</code></td><td t="docs.routing.viewTransitions.presetScale"></td></tr>
+        <tr><td><code>none</code></td><td t="docs.routing.viewTransitions.presetNone"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Slide with direction detection --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"slide"</span><span class="hl-tag">&gt;&lt;/main&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Fade crossfade --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"fade"</span><span class="hl-tag">&gt;&lt;/main&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Scale zoom effect --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"scale"</span><span class="hl-tag">&gt;&lt;/main&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Instant swap, no animation --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"none"</span><span class="hl-tag">&gt;&lt;/main&gt;</span></pre></div>
+
+    <!-- Configuration -->
+    <h3 class="doc-subtitle" t="docs.routing.viewTransitions.configTitle"></h3>
+    <p class="doc-text" t="docs.routing.viewTransitions.configText" t-html></p>
+    <div class="code-block"><pre><span class="hl-cmt">// View Transition API is enabled by default</span>
+<span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
+  <span class="hl-attr">router</span>: { <span class="hl-attr">viewTransition</span>: <span class="hl-kw">true</span> }  <span class="hl-cmt">// default</span>
+});
+
+<span class="hl-cmt">// Fall back to legacy class-based transitions</span>
+<span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
+  <span class="hl-attr">router</span>: { <span class="hl-attr">viewTransition</span>: <span class="hl-kw">false</span> }
+});</pre></div>
+
+    <!-- Custom CSS -->
+    <h3 class="doc-subtitle" t="docs.routing.viewTransitions.customCssTitle"></h3>
+    <p class="doc-text" t="docs.routing.viewTransitions.customCssText" t-html></p>
+    <div class="code-block"><pre><span class="hl-cmt">/* Target the route outlet's view transition */</span>
+<span class="hl-kw">::view-transition-old</span>(<span class="hl-str">route-content</span>) {
+  <span class="hl-attr">animation</span>: <span class="hl-num">0.3s</span> ease-out fade-out;
+}
+<span class="hl-kw">::view-transition-new</span>(<span class="hl-str">route-content</span>) {
+  <span class="hl-attr">animation</span>: <span class="hl-num">0.3s</span> ease-in fade-in;
+}
+
+<span class="hl-cmt">/* Direction-aware styles using active-view-transition-type */</span>
+<span class="hl-kw">:active-view-transition-type</span>(<span class="hl-str">forward</span>) {
+  <span class="hl-kw">::view-transition-old</span>(<span class="hl-str">route-content</span>) {
+    <span class="hl-attr">animation</span>: <span class="hl-num">0.3s</span> slide-out-left;
+  }
+  <span class="hl-kw">::view-transition-new</span>(<span class="hl-str">route-content</span>) {
+    <span class="hl-attr">animation</span>: <span class="hl-num">0.3s</span> slide-in-right;
+  }
+}
+
+<span class="hl-cmt">/* Respect reduced motion */</span>
+<span class="hl-kw">@media</span> (prefers-reduced-motion: reduce) {
+  <span class="hl-kw">::view-transition-old</span>(<span class="hl-str">route-content</span>),
+  <span class="hl-kw">::view-transition-new</span>(<span class="hl-str">route-content</span>) {
+    <span class="hl-attr">animation-duration</span>: <span class="hl-num">0.01ms</span>;
+  }
+}</pre></div>
+
+    <!-- How it Works -->
+    <h3 class="doc-subtitle" t="docs.routing.viewTransitions.howItWorksTitle"></h3>
+    <p class="doc-text" t="docs.routing.viewTransitions.howItWorksText" t-html></p>
+    <ol class="doc-list">
+      <li t="docs.routing.viewTransitions.howStep1" t-html></li>
+      <li t="docs.routing.viewTransitions.howStep2" t-html></li>
+      <li t="docs.routing.viewTransitions.howStep3" t-html></li>
+      <li t="docs.routing.viewTransitions.howStep4" t-html></li>
+    </ol>
+
+    <!-- Deprecation -->
+    <h3 class="doc-subtitle" t="docs.routing.viewTransitions.deprecationTitle"></h3>
+    <p class="doc-text" t="docs.routing.viewTransitions.deprecationText" t-html></p>
+    <div class="callout">
+      <p t="docs.routing.viewTransitions.deprecationCallout" t-html></p>
+    </div>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Old approach (still works with viewTransition: false) --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"fade"</span><span class="hl-tag">&gt;&lt;/main&gt;</span>
+<span class="hl-cmt">&lt;!-- + manual CSS: .fade-enter, .fade-enter-active, .fade-leave, ... --&gt;</span>
+
+<span class="hl-cmt">&lt;!-- New approach (default, no extra CSS needed for presets) --&gt;</span>
+<span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">transition</span>=<span class="hl-str">"fade"</span><span class="hl-tag">&gt;&lt;/main&gt;</span>
+<span class="hl-cmt">&lt;!-- Works out of the box — uses View Transition API --&gt;</span></pre></div>
+  </div>
+
 </div>
 

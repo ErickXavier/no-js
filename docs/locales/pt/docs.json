@@ -191,7 +191,8 @@
         "i18nNs": "Auto-derivar namespace i18n do nome do arquivo de rota",
         "routeViewSrc": "Outlet de roteamento baseado em arquivos",
         "routeIndex": "Nome do arquivo para a raiz <code>/</code> (padrão <code>\"index\"</code>)",
-        "routeExt": "Extensão de arquivo (padrão <code>\".tpl\"</code>, fallback <code>\".html\"</code>)"
+        "routeExt": "Extensão de arquivo (padrão <code>\".tpl\"</code>, fallback <code>\".html\"</code>)",
+        "transitionVT": "Preset View Transition API no route-view (slide, fade, scale, none)"
       },
       "animation": {
         "title": "Animação",
@@ -203,7 +204,8 @@
         "animateLeave": "Animação de saída",
         "animateDuration": "Duração em ms",
         "animateStagger": "Atraso escalonado",
-        "transition": "Transição CSS"
+        "transition": "Transição CSS (baseada em classes, para elementos regulares)",
+        "transitionVT": "Preset View Transition API no route-view (slide, fade, scale, none)"
       },
       "dnd": {
         "title": "Drag and Drop",
@@ -740,6 +742,31 @@
         "futureText": "Atualmente apenas <code>'auto'</code> é suportado. Versões futuras podem adicionar <code>'none'</code> (desativar) e <code>'target'</code> (focar um seletor específico).",
         "ariaLiveTitle": "Região ARIA Live",
         "ariaLiveText": "Para leitores de tela que não respondem a mudanças de foco, adicione <code>aria-live=\"polite\"</code> ao seu <code>route-view</code>. O browser anunciará o novo conteúdo quando aparecer:"
+      },
+      "viewTransitions": {
+        "title": "View Transitions",
+        "text": "O atributo <code>transition</code> no <code>route-view</code> agora usa a <strong>View Transition API</strong> por padrão. Basta escolher um nome de preset e as mudanças de rota são animadas nativamente pelo browser — sem CSS manual.",
+        "presetsTitle": "Presets Integrados",
+        "presetsText": "O No.JS inclui quatro presets de transição integrados:",
+        "colPreset": "Preset",
+        "colEffect": "Efeito",
+        "presetSlide": "Slide direcional — o conteúdo desliza para esquerda/direita baseado na direção de navegação (forward/backward)",
+        "presetFade": "Crossfade — o conteúdo antigo desaparece enquanto o novo aparece",
+        "presetScale": "Scale zoom — o conteúdo antigo reduz enquanto o novo amplia",
+        "presetNone": "Troca instantânea — sem animação, o conteúdo é substituído imediatamente",
+        "configTitle": "Configuração",
+        "configText": "A View Transition API está <strong>habilitada por padrão</strong> via <code>router.viewTransition: true</code>. Defina como <code>false</code> para voltar ao sistema legado de transições baseado em classes CSS.",
+        "customCssTitle": "CSS Personalizado",
+        "customCssText": "Para animações personalizadas, utilize os pseudo-elementos <code>::view-transition-old(route-content)</code> e <code>::view-transition-new(route-content)</code>. O <code>view-transition-name: route-content</code> é definido automaticamente em qualquer outlet com atributo <code>transition</code>.",
+        "howItWorksTitle": "Como Funciona",
+        "howItWorksText": "Quando ocorre uma mudança de rota com um preset <code>transition</code>:",
+        "howStep1": "O router detecta a direção de navegação (<strong>forward</strong> ou <strong>backward</strong>) a partir da pilha de histórico",
+        "howStep2": "<code>document.startViewTransition()</code> é chamado, capturando o estado atual do outlet",
+        "howStep3": "O novo conteúdo da rota é renderizado dentro do outlet",
+        "howStep4": "O browser anima entre os snapshots antigo e novo usando as regras CSS do preset",
+        "deprecationTitle": "Migração das Transições Baseadas em Classes",
+        "deprecationText": "O sistema antigo de transição baseado em classes (<code>*-enter</code>, <code>*-enter-active</code>, <code>*-leave</code>, etc.) no <code>route-view</code> está <strong>deprecated</strong>. Ainda funciona quando <code>router.viewTransition</code> está definido como <code>false</code>, mas a View Transition API é a abordagem recomendada.",
+        "deprecationCallout": "<strong>A migração é praticamente automática.</strong> Se você já usa <code>transition=\"fade\"</code> em um <code>route-view</code>, agora usa a View Transition API por padrão — nenhuma alteração de código necessária. Seu CSS customizado <code>.fade-enter</code> / <code>.fade-leave</code> é simplesmente ignorado (a menos que defina <code>viewTransition: false</code>)."
       }
     },
     "formsValidation": {
@@ -865,6 +892,7 @@
       },
       "transition": {
         "title": "transition — Classes de Transição CSS",
+        "viewTransitionNote": "<strong>Nota:</strong> Transições de rota no <code>route-view</code> agora usam a <a href=\"/docs/routing#view-transitions\">View Transition API</a> por padrão. O atributo <code>transition</code> baseado em classes descrito abaixo ainda se aplica a <strong>elementos regulares</strong> (ex: <code>if</code>, <code>show</code>).",
         "text1": "Segue uma convenção similar ao sistema de transição do Vue.",
         "text2": "O No.JS adiciona/remove classes durante a transição:",
         "col1": "Classe",
