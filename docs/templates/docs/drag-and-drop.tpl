@@ -10,7 +10,7 @@
 
   <!-- drag -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.drag.title"></h2>
+    <h2 class="doc-title" id="dnd-drag" t="docs.dnd.drag.title"></h2>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-cmt">&lt;!-- Basic draggable --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">drag</span>=<span class="hl-str">"item"</span><span class="hl-tag">&gt;</span>Drag me<span class="hl-tag">&lt;/div&gt;</span>
@@ -76,7 +76,7 @@
 
   <!-- drop -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.drop.title"></h2>
+    <h2 class="doc-title" id="dnd-drop" t="docs.dnd.drop.title"></h2>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-cmt">&lt;!-- Basic drop zone --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">drop</span>=<span class="hl-str">"items = [...items, $drag]"</span>
@@ -146,7 +146,7 @@
 
   <!-- drag-list -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.dragList.title"></h2>
+    <h2 class="doc-title" id="dnd-drag-list" t="docs.dnd.dragList.title"></h2>
     <p class="doc-text" t-html="docs.dnd.dragList.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ todo: [...], done: [] }"</span><span class="hl-tag">&gt;</span>
@@ -225,7 +225,7 @@
 
   <!-- drag-list events -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.dragListEvents.title"></h2>
+    <h2 class="doc-title" id="dnd-drag-list-events" t="docs.dnd.dragListEvents.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.dnd.dragListEvents.col1"></th><th><code>$event.detail</code></th><th t="docs.dnd.dragListEvents.col3"></th></tr></thead>
       <tbody>
@@ -275,7 +275,7 @@
 
   <!-- drag-multiple -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.dragMultiple.title"></h2>
+    <h2 class="doc-title" id="dnd-drag-multiple" t="docs.dnd.dragMultiple.title"></h2>
     <p class="doc-text" t="docs.dnd.dragMultiple.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">drag</span>=<span class="hl-str">"card"</span>
@@ -343,7 +343,7 @@
 
   <!-- implicit variables -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.implicitVars.title"></h2>
+    <h2 class="doc-title" id="dnd-implicit-vars" t="docs.dnd.implicitVars.title"></h2>
     <p class="doc-text" t-html="docs.dnd.implicitVars.text"></p>
     <table class="doc-table">
       <thead><tr><th t="docs.dnd.implicitVars.col1"></th><th t="docs.dnd.implicitVars.col2"></th><th t="docs.dnd.implicitVars.col3"></th></tr></thead>
@@ -389,7 +389,7 @@
 
   <!-- CSS classes -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.cssClasses.title"></h2>
+    <h2 class="doc-title" id="dnd-css-classes" t="docs.dnd.cssClasses.title"></h2>
     <p class="doc-text" t="docs.dnd.cssClasses.text"></p>
     <table class="doc-table">
       <thead><tr><th t="docs.dnd.cssClasses.col1"></th><th t="docs.dnd.cssClasses.col2"></th></tr></thead>
@@ -444,7 +444,7 @@
 
   <!-- accessibility -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dnd.a11y.title"></h2>
+    <h2 class="doc-title" id="dnd-a11y" t="docs.dnd.a11y.title"></h2>
     <p class="doc-text" t="docs.dnd.a11y.text"></p>
     <table class="doc-table">
       <thead><tr><th t="docs.dnd.a11y.col1"></th><th t="docs.dnd.a11y.col2"></th></tr></thead>

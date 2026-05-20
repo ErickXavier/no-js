@@ -10,14 +10,14 @@
 
   <!-- NoJS.use() -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.use.title"></h2>
+    <h2 class="doc-title" id="plugins-use" t="docs.plugins.use.title"></h2>
     <p class="doc-text" t="docs.plugins.use.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(analyticsPlugin);
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(authPlugin, { <span class="hl-attr">trusted</span>: <span class="hl-kw">true</span> });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.use.objectFormTitle"></h3>
+    <h3 class="doc-title" id="plugins-object-form" t="docs.plugins.use.objectFormTitle"></h3>
     <p class="doc-text" t="docs.plugins.use.objectFormText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-kw">const</span> analyticsPlugin <span class="hl-op">=</span> {
@@ -52,7 +52,7 @@
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(analyticsPlugin);
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.use.functionTitle"></h3>
+    <h3 class="doc-title" id="plugins-function-form" t="docs.plugins.use.functionTitle"></h3>
     <p class="doc-text" t="docs.plugins.use.functionText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-kw">function</span> <span class="hl-fn">myLogger</span>(<span class="hl-attr">app</span>, <span class="hl-attr">options</span>) {
@@ -66,7 +66,7 @@
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
     <div class="callout"><p t="docs.plugins.use.functionCallout"></p></div>
 
-    <h3 class="doc-title" t="docs.plugins.use.optionsTitle"></h3>
+    <h3 class="doc-title" id="plugins-options" t="docs.plugins.use.optionsTitle"></h3>
     <p class="doc-text" t="docs.plugins.use.optionsText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(analyticsPlugin, {
@@ -79,7 +79,7 @@
 
   <!-- Plugin Interface -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.interface.title"></h2>
+    <h2 class="doc-title" id="plugins-interface" t="docs.plugins.interface.title"></h2>
     <table class="doc-table">
       <thead>
         <tr>
@@ -129,7 +129,7 @@
       </tbody>
     </table>
 
-    <h3 class="doc-title" t="docs.plugins.interface.lifecycleTitle"></h3>
+    <h3 class="doc-title" id="plugins-lifecycle" t="docs.plugins.interface.lifecycleTitle"></h3>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(plugin)     <span class="hl-op">=&gt;</span>  plugin.<span class="hl-fn">install</span>(app, options)
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">init</span>()          <span class="hl-op">=&gt;</span>  ... DOM processed ...  <span class="hl-op">=&gt;</span>  plugin.<span class="hl-fn">init</span>(app)
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">dispose</span>()       <span class="hl-op">=&gt;</span>  plugin.<span class="hl-fn">dispose</span>(app)  <span class="hl-op">=&gt;</span>  ... teardown ...</pre></div>
@@ -139,7 +139,7 @@
       <li t="docs.plugins.interface.lifecycleDispose"></li>
     </ul>
 
-    <h3 class="doc-title" t="docs.plugins.interface.duplicateTitle"></h3>
+    <h3 class="doc-title" id="plugins-duplicate" t="docs.plugins.interface.duplicateTitle"></h3>
     <p class="doc-text" t="docs.plugins.interface.duplicateText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(pluginA);     <span class="hl-cmt">// installed</span>
@@ -147,7 +147,7 @@
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(pluginB);     <span class="hl-cmt">// warning: name collision (different object, same name)</span>
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.interface.freezingTitle"></h3>
+    <h3 class="doc-title" id="plugins-freezing" t="docs.plugins.interface.freezingTitle"></h3>
     <p class="doc-text" t="docs.plugins.interface.freezingText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-kw">const</span> myPlugin <span class="hl-op">=</span> {
@@ -165,7 +165,7 @@
 
   <!-- NoJS.global() -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.globals.title"></h2>
+    <h2 class="doc-title" id="plugins-globals" t="docs.plugins.globals.title"></h2>
     <p class="doc-text" t="docs.plugins.globals.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">global</span>(<span class="hl-str">'theme'</span>, { <span class="hl-attr">mode</span>: <span class="hl-str">'dark'</span>, <span class="hl-attr">accent</span>: <span class="hl-str">'blue'</span> });
@@ -176,13 +176,13 @@
   Toggle
 <span class="hl-tag">&lt;/button&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.globals.namingTitle"></h3>
+    <h3 class="doc-title" id="plugins-naming" t="docs.plugins.globals.namingTitle"></h3>
     <ul class="doc-text">
       <li t="docs.plugins.globals.namingPrefix"></li>
       <li t="docs.plugins.globals.namingNamespace"></li>
     </ul>
 
-    <h3 class="doc-title" t="docs.plugins.globals.reservedTitle"></h3>
+    <h3 class="doc-title" id="plugins-reserved" t="docs.plugins.globals.reservedTitle"></h3>
     <p class="doc-text" t="docs.plugins.globals.reservedText"></p>
     <div class="code-block"><pre>store, route, router, i18n, refs, form, parent, watch, set, notify,
 raw, isProxy, listeners, app, config, env, debug, version, plugins,
@@ -190,7 +190,7 @@ globals, el, event, self, this, super, window, document, toString,
 valueOf, hasOwnProperty</pre></div>
     <p class="doc-text" t="docs.plugins.globals.reservedProto"></p>
 
-    <h3 class="doc-title" t="docs.plugins.globals.reactivityTitle"></h3>
+    <h3 class="doc-title" id="plugins-reactivity" t="docs.plugins.globals.reactivityTitle"></h3>
     <p class="doc-text" t="docs.plugins.globals.reactivityText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">global</span>(<span class="hl-str">'user'</span>, { <span class="hl-attr">name</span>: <span class="hl-str">'Guest'</span>, <span class="hl-attr">role</span>: <span class="hl-str">'viewer'</span> });
@@ -199,17 +199,17 @@ valueOf, hasOwnProperty</pre></div>
 <span class="hl-cmt">&lt;!-- Updates reactively when $user.name changes --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"$user.name"</span><span class="hl-tag">&gt;&lt;/span&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.globals.ownershipTitle"></h3>
+    <h3 class="doc-title" id="plugins-ownership" t="docs.plugins.globals.ownershipTitle"></h3>
     <p class="doc-text" t="docs.plugins.globals.ownershipText"></p>
     <div class="code-block"><pre><span class="hl-cmt">// [No.JS] Global "$theme" owned by "ui-kit" is being overwritten.</span></pre></div>
   </div>
 
   <!-- Interceptor Sentinels -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.sentinels.title"></h2>
+    <h2 class="doc-title" id="plugins-sentinels" t="docs.plugins.sentinels.title"></h2>
     <p class="doc-text" t="docs.plugins.sentinels.text"></p>
 
-    <h3 class="doc-title" t="docs.plugins.sentinels.cancelTitle"></h3>
+    <h3 class="doc-title" id="plugins-cancel" t="docs.plugins.sentinels.cancelTitle"></h3>
     <p class="doc-text" t="docs.plugins.sentinels.cancelText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>({
@@ -225,7 +225,7 @@ valueOf, hasOwnProperty</pre></div>
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.sentinels.respondTitle"></h3>
+    <h3 class="doc-title" id="plugins-respond" t="docs.plugins.sentinels.respondTitle"></h3>
     <p class="doc-text" t="docs.plugins.sentinels.respondText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-kw">const</span> cache <span class="hl-op">=</span> <span class="hl-kw">new</span> <span class="hl-fn">Map</span>();
@@ -251,7 +251,7 @@ valueOf, hasOwnProperty</pre></div>
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.sentinels.replaceTitle"></h3>
+    <h3 class="doc-title" id="plugins-replace" t="docs.plugins.sentinels.replaceTitle"></h3>
     <p class="doc-text" t="docs.plugins.sentinels.replaceText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>({
@@ -273,7 +273,7 @@ valueOf, hasOwnProperty</pre></div>
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.sentinels.summaryTitle"></h3>
+    <h3 class="doc-title" id="plugins-summary" t="docs.plugins.sentinels.summaryTitle"></h3>
     <table class="doc-table">
       <thead>
         <tr>
@@ -304,7 +304,7 @@ valueOf, hasOwnProperty</pre></div>
 
   <!-- Trusted Interceptors -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.trusted.title"></h2>
+    <h2 class="doc-title" id="plugins-trusted" t="docs.plugins.trusted.title"></h2>
     <p class="doc-text" t="docs.plugins.trusted.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(authPlugin, { <span class="hl-attr">trusted</span>: <span class="hl-kw">true</span> });
@@ -312,7 +312,7 @@ valueOf, hasOwnProperty</pre></div>
     <p class="doc-text" t="docs.plugins.trusted.fullAccess"></p>
     <div class="callout"><p t="docs.plugins.trusted.callout"></p></div>
 
-    <h3 class="doc-title" t="docs.plugins.trusted.redactedTitle"></h3>
+    <h3 class="doc-title" id="plugins-redacted" t="docs.plugins.trusted.redactedTitle"></h3>
     <p class="doc-text" t="docs.plugins.trusted.requestLabel"></p>
     <div class="code-block"><pre>authorization, x-api-key, x-auth-token, cookie,
 proxy-authorization, set-cookie, x-csrf-token</pre></div>
@@ -323,14 +323,14 @@ www-authenticate, proxy-authenticate</pre></div>
 
   <!-- NoJS.dispose() -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.dispose.title"></h2>
+    <h2 class="doc-title" id="plugins-dispose" t="docs.plugins.dispose.title"></h2>
     <p class="doc-text" t="docs.plugins.dispose.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-cmt">// Full app teardown</span>
   <span class="hl-kw">await</span> <span class="hl-fn">NoJS</span>.<span class="hl-fn">dispose</span>();
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.dispose.orderTitle"></h3>
+    <h3 class="doc-title" id="plugins-dispose-order" t="docs.plugins.dispose.orderTitle"></h3>
     <ul class="doc-text">
       <li t="docs.plugins.dispose.orderStep1"></li>
       <li t="docs.plugins.dispose.orderStep2"></li>
@@ -343,7 +343,7 @@ www-authenticate, proxy-authenticate</pre></div>
   <span class="hl-op">=&gt;</span> clear globals
   <span class="hl-op">=&gt;</span> clear interceptors</pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.dispose.asyncTitle"></h3>
+    <h3 class="doc-title" id="plugins-dispose-async" t="docs.plugins.dispose.asyncTitle"></h3>
     <p class="doc-text" t="docs.plugins.dispose.asyncText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-kw">const</span> analyticsPlugin <span class="hl-op">=</span> {
@@ -359,10 +359,10 @@ www-authenticate, proxy-authenticate</pre></div>
 
   <!-- Security Guidelines -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.security.title"></h2>
+    <h2 class="doc-title" id="plugins-security" t="docs.plugins.security.title"></h2>
     <p class="doc-text" t="docs.plugins.security.text"></p>
 
-    <h3 class="doc-title" t="docs.plugins.security.namespaceTitle"></h3>
+    <h3 class="doc-title" id="plugins-namespace" t="docs.plugins.security.namespaceTitle"></h3>
     <p class="doc-text" t="docs.plugins.security.namespaceText"></p>
     <div class="code-block"><pre><span class="hl-cmt">// Good</span>
 app.<span class="hl-fn">global</span>(<span class="hl-str">'myPlugin'</span>, { ... });
@@ -372,13 +372,13 @@ app.<span class="hl-fn">on</span>(<span class="hl-str">'myPlugin:ready'</span>, 
 app.<span class="hl-fn">global</span>(<span class="hl-str">'data'</span>, { ... });
 app.<span class="hl-fn">on</span>(<span class="hl-str">'ready'</span>, fn);</pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.security.evalTitle"></h3>
+    <h3 class="doc-title" id="plugins-eval" t="docs.plugins.security.evalTitle"></h3>
     <p class="doc-text" t="docs.plugins.security.evalText"></p>
     <div class="code-block"><pre><span class="hl-cmt">// Rejected</span>
 app.<span class="hl-fn">global</span>(<span class="hl-str">'run'</span>, eval);
 app.<span class="hl-fn">global</span>(<span class="hl-str">'exec'</span>, Function);</pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.security.cleanupTitle"></h3>
+    <h3 class="doc-title" id="plugins-cleanup" t="docs.plugins.security.cleanupTitle"></h3>
     <p class="doc-text" t="docs.plugins.security.cleanupText"></p>
     <div class="code-block"><pre><span class="hl-kw">const</span> myPlugin <span class="hl-op">=</span> {
   <span class="hl-attr">name</span>: <span class="hl-str">'heartbeat'</span>,
@@ -391,10 +391,10 @@ app.<span class="hl-fn">global</span>(<span class="hl-str">'exec'</span>, Functi
   }
 };</pre></div>
 
-    <h3 class="doc-title" t="docs.plugins.security.overwriteTitle"></h3>
+    <h3 class="doc-title" id="plugins-overwrite" t="docs.plugins.security.overwriteTitle"></h3>
     <p class="doc-text" t="docs.plugins.security.overwriteText"></p>
 
-    <h3 class="doc-title" t="docs.plugins.security.validateTitle"></h3>
+    <h3 class="doc-title" id="plugins-validate" t="docs.plugins.security.validateTitle"></h3>
     <p class="doc-text" t="docs.plugins.security.validateText"></p>
     <div class="code-block"><pre><span class="hl-fn">install</span>(<span class="hl-attr">app</span>, <span class="hl-attr">options</span>) {
   <span class="hl-kw">if</span> (!options.apiKey) {
@@ -406,7 +406,7 @@ app.<span class="hl-fn">global</span>(<span class="hl-str">'exec'</span>, Functi
 
   <!-- Complete Example -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.plugins.example.title"></h2>
+    <h2 class="doc-title" id="plugins-example" t="docs.plugins.example.title"></h2>
     <p class="doc-text" t="docs.plugins.example.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-kw">const</span> analyticsPlugin <span class="hl-op">=</span> {

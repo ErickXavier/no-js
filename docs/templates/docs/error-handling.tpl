@@ -10,7 +10,7 @@
 
   <!-- Per-Element Error Handling -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.errorHandling.perElement.title"></h2>
+    <h2 class="doc-title" id="error-handling-per-element" t="docs.errorHandling.perElement.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/users"</span>
      <span class="hl-attr">as</span>=<span class="hl-str">"users"</span>
      <span class="hl-attr">error</span>=<span class="hl-str">"#usersError"</span>
@@ -32,7 +32,7 @@
 
   <!-- Global Error Handler -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.errorHandling.globalHandler.title"></h2>
+    <h2 class="doc-title" id="error-handling-global-handler" t="docs.errorHandling.globalHandler.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">on</span>(<span class="hl-str">'error'</span>, (<span class="hl-attr">error</span>, <span class="hl-attr">context</span>) <span class="hl-op">=&gt;</span> {
     console.<span class="hl-fn">error</span>(<span class="hl-str">'[No.JS Error]'</span>, error);
@@ -50,7 +50,7 @@
 
   <!-- error-boundary -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.errorHandling.errorBoundary.title"></h2>
+    <h2 class="doc-title" id="error-handling-error-boundary" t="docs.errorHandling.errorBoundary.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">error-boundary</span>=<span class="hl-str">"#errorFallback"</span><span class="hl-tag">&gt;</span>
   <span class="hl-cmt">&lt;!-- Catches uncaught runtime errors (via window error listener) in this subtree --&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/fragile-endpoint"</span> <span class="hl-attr">as</span>=<span class="hl-str">"data"</span><span class="hl-tag">&gt;</span>

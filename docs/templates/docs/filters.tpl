@@ -10,7 +10,7 @@
 
   <!-- Text Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.text.title"></h2>
+    <h2 class="doc-title" id="filters-text" t="docs.filters.text.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"name | uppercase"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>           <span class="hl-cmt">&lt;!-- JOHN --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"name | lowercase"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>           <span class="hl-cmt">&lt;!-- john --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"name | capitalize"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>          <span class="hl-cmt">&lt;!-- John Doe --&gt;</span>
@@ -23,7 +23,7 @@
 
   <!-- Number Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.number.title"></h2>
+    <h2 class="doc-title" id="filters-number" t="docs.filters.number.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"price | currency"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>           <span class="hl-cmt">&lt;!-- $29.99 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"value | number:2"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>           <span class="hl-cmt">&lt;!-- 1,234.56 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"ratio | percent"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>            <span class="hl-cmt">&lt;!-- 42% --&gt;</span>
@@ -33,7 +33,7 @@
 
   <!-- Array Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.array.title"></h2>
+    <h2 class="doc-title" id="filters-array" t="docs.filters.array.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"items | count"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>              <span class="hl-cmt">&lt;!-- 5 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"items | first"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>              <span class="hl-cmt">&lt;!-- First item --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"items | last"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>               <span class="hl-cmt">&lt;!-- Last item --&gt;</span>
@@ -47,7 +47,7 @@
 
   <!-- Date Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.date.title"></h2>
+    <h2 class="doc-title" id="filters-date" t="docs.filters.date.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"date | date:'short'"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>        <span class="hl-cmt">&lt;!-- 02/25/26 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"date | relative"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>            <span class="hl-cmt">&lt;!-- 3 days ago --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"date | datetime"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>            <span class="hl-cmt">&lt;!-- Feb 25, 2026, 3:30 PM --&gt;</span>
@@ -56,7 +56,7 @@
 
   <!-- Utility Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.utility.title"></h2>
+    <h2 class="doc-title" id="filters-utility" t="docs.filters.utility.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"value | default:'N/A'"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>      <span class="hl-cmt">&lt;!-- Fallback for null/undefined --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"obj | json"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>                <span class="hl-cmt">&lt;!-- JSON.stringify --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"items | debug"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>              <span class="hl-cmt">&lt;!-- console.log + passthrough --&gt;</span>
@@ -65,21 +65,21 @@
 
   <!-- Object Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.object.title"></h2>
+    <h2 class="doc-title" id="filters-object" t="docs.filters.object.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user | keys"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>               <span class="hl-cmt">&lt;!-- ['name', 'email', 'age'] --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user | values"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>             <span class="hl-cmt">&lt;!-- ['John', 'john@ex.com', 30] --&gt;</span></pre></div>
   </div>
 
   <!-- Chaining Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.chaining.title"></h2>
+    <h2 class="doc-title" id="filters-chaining" t="docs.filters.chaining.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user.bio | stripHtml | truncate:200 | capitalize"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"price | number:2 | currency:'USD'"</span><span class="hl-tag">&gt;&lt;/span&gt;</span></pre></div>
   </div>
 
   <!-- Custom Filters -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.custom.title"></h2>
+    <h2 class="doc-title" id="filters-custom" t="docs.filters.custom.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">filter</span>(<span class="hl-str">'initials'</span>, (<span class="hl-attr">fullName</span>) <span class="hl-op">=&gt;</span> {
     <span class="hl-kw">return</span> fullName.<span class="hl-fn">split</span>(<span class="hl-str">' '</span>).<span class="hl-fn">map</span>(n <span class="hl-op">=&gt;</span> n[<span class="hl-num">0</span>]).<span class="hl-fn">join</span>(<span class="hl-str">''</span>).<span class="hl-fn">toUpperCase</span>();
@@ -100,7 +100,7 @@
 
   <!-- Live Demo -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.filters.liveDemo.title"></h2>
+    <h2 class="doc-title" id="filters-live-demo" t="docs.filters.liveDemo.title"></h2>
     <div class="demo-split">
       <div class="demo-code">
         <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ name: 'John Doe' }"</span><span class="hl-tag">&gt;</span>

@@ -10,7 +10,7 @@
 
   <!-- Introduction -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.gettingStarted.introduction.title"></h2>
+    <h2 class="doc-title" id="getting-started-introduction" t="docs.gettingStarted.introduction.title"></h2>
     <p class="doc-text" t="docs.gettingStarted.introduction.text"></p>
     <div class="callout">
       <p t="docs.gettingStarted.introduction.callout"></p>
@@ -19,18 +19,18 @@
 
   <!-- Installation -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.gettingStarted.installation.title"></h2>
+    <h2 class="doc-title" id="getting-started-installation" t="docs.gettingStarted.installation.title"></h2>
 
-    <h3 class="doc-subtitle" t="docs.gettingStarted.installation.cdnSubtitle"></h3>
+    <h3 class="doc-subtitle" id="getting-started-cdn" t="docs.gettingStarted.installation.cdnSubtitle"></h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-str">"https://cdn.no-js.dev/"</span><span class="hl-tag">&gt;&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-subtitle" t="docs.gettingStarted.installation.selfHostedSubtitle"></h3>
+    <h3 class="doc-subtitle" id="getting-started-self-hosted" t="docs.gettingStarted.installation.selfHostedSubtitle"></h3>
     <p class="doc-text" t="docs.gettingStarted.installation.selfHostedText"></p>
   </div>
 
   <!-- Quick Start -->
   <div class="doc-section" id="quick-start">
-    <h2 class="doc-title" t="docs.gettingStarted.quickStart.title"></h2>
+    <h2 class="doc-title" id="getting-started-quick-start" t="docs.gettingStarted.quickStart.title"></h2>
     <p class="doc-text" t="docs.gettingStarted.quickStart.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;!DOCTYPE html&gt;</span>
 <span class="hl-tag">&lt;html&gt;</span>
@@ -50,7 +50,7 @@
 
   <!-- How It Works -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.gettingStarted.howItWorks.title"></h2>
+    <h2 class="doc-title" id="getting-started-how-it-works" t="docs.gettingStarted.howItWorks.title"></h2>
     <p class="doc-text" t="docs.gettingStarted.howItWorks.text"></p>
     <div class="concepts-grid">
       <div class="concept-card">
@@ -74,16 +74,16 @@
 
   <!-- Core Concepts -->
   <div class="doc-section" id="core-concepts">
-    <h2 class="doc-title" t="docs.gettingStarted.coreConcepts.title"></h2>
+    <h2 class="doc-title" id="getting-started-core-concepts" t="docs.gettingStarted.coreConcepts.title"></h2>
 
-    <h3 class="doc-subtitle" t="docs.gettingStarted.coreConcepts.reactiveContextSubtitle"></h3>
+    <h3 class="doc-subtitle" id="getting-started-reactive-context" t="docs.gettingStarted.coreConcepts.reactiveContextSubtitle"></h3>
     <p class="doc-text" t="docs.gettingStarted.coreConcepts.reactiveContextText"></p>
     <div class="code-block"><pre><span class="hl-cmt">body          → context: { baseUrl }</span>
 <span class="hl-cmt">  div[get]    → context: { user: { name, email } }  ← inherits from body</span>
 <span class="hl-cmt">    span[bind="user.name"]                           ← reads from div's context</span>
 <span class="hl-cmt">    div[each] → context: { post: { title } }         ← inherits from div</span></pre></div>
 
-    <h3 class="doc-subtitle" t="docs.gettingStarted.coreConcepts.directivePrioritySubtitle"></h3>
+    <h3 class="doc-subtitle" id="getting-started-directive-priority" t="docs.gettingStarted.coreConcepts.directivePrioritySubtitle"></h3>
     <table class="doc-table">
       <thead>
         <tr><th t="docs.gettingStarted.coreConcepts.tableCol1"></th><th t="docs.gettingStarted.coreConcepts.tableCol2"></th><th t="docs.gettingStarted.coreConcepts.tableCol3"></th></tr>
@@ -99,7 +99,7 @@
       </tbody>
     </table>
 
-    <h3 class="doc-subtitle" t="docs.gettingStarted.coreConcepts.expressionSubtitle"></h3>
+    <h3 class="doc-subtitle" id="getting-started-expressions" t="docs.gettingStarted.coreConcepts.expressionSubtitle"></h3>
     <p class="doc-text" t="docs.gettingStarted.coreConcepts.expressionText"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Simple path --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user.name"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>

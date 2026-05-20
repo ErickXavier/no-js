@@ -10,7 +10,7 @@
 
   <!-- foreach — primary -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.loops.foreach.title"></h2>
+    <h2 class="doc-title" id="loops-foreach" t="docs.loops.foreach.title"></h2>
     <p class="doc-text" t="docs.loops.foreach.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/posts"</span> <span class="hl-attr">as</span>=<span class="hl-str">"posts"</span><span class="hl-tag">&gt;</span>
@@ -39,7 +39,7 @@
 
   <!-- full example with all attributes -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.loops.fullExample.title"></h2>
+    <h2 class="doc-title" id="loops-full-example" t="docs.loops.fullExample.title"></h2>
     <p class="doc-text" t="docs.loops.fullExample.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;ul</span> <span class="hl-attr">foreach</span>=<span class="hl-str">"item in menuItems"</span>
     <span class="hl-attr">index</span>=<span class="hl-str">"idx"</span>
@@ -110,7 +110,7 @@
 
   <!-- loop context variables -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.loops.contextVars.title"></h2>
+    <h2 class="doc-title" id="loops-context-vars" t="docs.loops.contextVars.title"></h2>
     <table class="doc-table">
       <thead>
         <tr><th t="docs.loops.contextVars.col1"></th><th t="docs.loops.contextVars.col2"></th></tr>
@@ -138,7 +138,7 @@
 
   <!-- nested loops -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.loops.nested.title"></h2>
+    <h2 class="doc-title" id="loops-nested" t="docs.loops.nested.title"></h2>
     <p class="doc-text" t="docs.loops.nested.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">foreach</span>=<span class="hl-str">"category in categories"</span>
      <span class="hl-attr">template</span>=<span class="hl-str">"categoryTpl"</span><span class="hl-tag">&gt;&lt;/div&gt;</span>

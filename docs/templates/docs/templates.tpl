@@ -9,7 +9,7 @@
 <div class="doc-content">
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.basic.title"></h2>
+    <h2 class="doc-title" id="templates-basic" t="docs.templates.basic.title"></h2>
     <p class="doc-text" t="docs.templates.basic.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"userCard"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"card"</span><span class="hl-tag">&gt;</span>
@@ -20,7 +20,7 @@
   </div>
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.var.title"></h2>
+    <h2 class="doc-title" id="templates-var" t="docs.templates.var.title"></h2>
     <p class="doc-text" t="docs.templates.var.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;form</span> <span class="hl-attr">post</span>=<span class="hl-str">"/login"</span> <span class="hl-attr">success</span>=<span class="hl-str">"#loginOk"</span> <span class="hl-attr">error</span>=<span class="hl-str">"#loginFail"</span><span class="hl-tag">&gt;</span>
   ...
@@ -36,7 +36,7 @@
   </div>
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.slots.title"></h2>
+    <h2 class="doc-title" id="templates-slots" t="docs.templates.slots.title"></h2>
     <p class="doc-text" t="docs.templates.slots.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"card"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"card"</span><span class="hl-tag">&gt;</span>
@@ -55,14 +55,14 @@
   </div>
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.remote.title"></h2>
+    <h2 class="doc-title" id="templates-remote" t="docs.templates.remote.title"></h2>
     <p class="doc-text" t="docs.templates.remote.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"header"</span> <span class="hl-attr">src</span>=<span class="hl-str">"/templates/header.html"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"footer"</span> <span class="hl-attr">src</span>=<span class="hl-str">"/templates/footer.html"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
   </div>
 
   <div class="doc-section">
-    <h3 class="doc-subtitle" t="docs.templates.recursive.subtitle"></h3>
+    <h3 class="doc-subtitle" id="templates-recursive" t="docs.templates.recursive.subtitle"></h3>
     <p class="doc-text" t="docs.templates.recursive.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- main page --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"layout"</span> <span class="hl-attr">src</span>=<span class="hl-str">"/templates/layout.html"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
@@ -72,12 +72,12 @@
   <span class="hl-tag">&lt;template</span> <span class="hl-attr">src</span>=<span class="hl-str">"/templates/nav.html"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
 <span class="hl-tag">&lt;/nav&gt;</span></pre></div>
 
-    <h3 class="doc-subtitle" t="docs.templates.remoteRoutes.subtitle"></h3>
+    <h3 class="doc-subtitle" id="templates-remote-routes" t="docs.templates.remoteRoutes.subtitle"></h3>
     <p class="doc-text" t="docs.templates.remoteRoutes.text"></p>
   </div>
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.lazy.title"></h2>
+    <h2 class="doc-title" id="templates-lazy" t="docs.templates.lazy.title"></h2>
     <p class="doc-text" t="docs.templates.lazy.text"></p>
     <table class="doc-table">
       <thead><tr><th t="docs.templates.lazy.col1"></th><th t="docs.templates.lazy.col2"></th></tr></thead>
@@ -87,7 +87,7 @@
         <tr><td><code>lazy="ondemand"</code></td><td t="docs.templates.lazy.ondemandDesc"></td></tr>
       </tbody>
     </table>
-    <h3 class="doc-subtitle" t="docs.templates.phases.subtitle"></h3>
+    <h3 class="doc-subtitle" id="templates-phases" t="docs.templates.phases.subtitle"></h3>
     <p class="doc-text" t="docs.templates.phases.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Default: loads in Phase 1, perfect for content includes --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">src</span>=<span class="hl-str">"./components/header.tpl"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
@@ -106,7 +106,7 @@
   </div>
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.loading.title"></h2>
+    <h2 class="doc-title" id="templates-loading" t="docs.templates.loading.title"></h2>
     <p class="doc-text" t="docs.templates.loading.text1"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">src</span>=<span class="hl-str">"./dashboard.tpl"</span> <span class="hl-attr">loading</span>=<span class="hl-str">"#spinner"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
 
@@ -124,7 +124,7 @@
   </div>
 
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.templates.include.title"></h2>
+    <h2 class="doc-title" id="templates-include" t="docs.templates.include.title"></h2>
     <p class="doc-text" t="docs.templates.include.text1"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">include</span>=<span class="hl-str">"#icon-set"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
 

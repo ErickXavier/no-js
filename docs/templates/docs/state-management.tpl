@@ -10,7 +10,7 @@
 
   <!-- state -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.state.title"></h2>
+    <h2 class="doc-title" id="state-state" t="docs.stateManagement.state.title"></h2>
     <p class="doc-text" t="docs.stateManagement.state.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ count: 0, name: 'World' }"</span><span class="hl-tag">&gt;</span>
@@ -33,7 +33,7 @@
 
   <!-- store -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.store.title"></h2>
+    <h2 class="doc-title" id="state-store" t="docs.stateManagement.store.title"></h2>
     <p class="doc-text" t="docs.stateManagement.store.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Define store (once, typically at top of page) --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">store</span>=<span class="hl-str">"app"</span> <span class="hl-attr">value</span>=<span class="hl-str">"{
@@ -51,7 +51,7 @@
 
   <!-- configStores -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.configStores.title"></h2>
+    <h2 class="doc-title" id="state-config-stores" t="docs.stateManagement.configStores.title"></h2>
     <p class="doc-text" t="docs.stateManagement.configStores.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
@@ -70,7 +70,7 @@
 
   <!-- into -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.into.title"></h2>
+    <h2 class="doc-title" id="state-into" t="docs.stateManagement.into.title"></h2>
     <p class="doc-text" t="docs.stateManagement.into.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Define an empty store --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">store</span>=<span class="hl-str">"currentUser"</span> <span class="hl-attr">value</span>=<span class="hl-str">"{}"</span><span class="hl-tag">&gt;&lt;/div&gt;</span>
@@ -87,7 +87,7 @@
 
   <!-- computed -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.computed.title"></h2>
+    <h2 class="doc-title" id="state-computed" t="docs.stateManagement.computed.title"></h2>
     <p class="doc-text" t="docs.stateManagement.computed.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ price: 100, qty: 2, tax: 0.1 }"</span><span class="hl-tag">&gt;</span>
@@ -113,7 +113,7 @@
 
   <!-- watch -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.watch.title"></h2>
+    <h2 class="doc-title" id="state-watch" t="docs.stateManagement.watch.title"></h2>
     <p class="doc-text" t="docs.stateManagement.watch.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ search: '' }"</span>
      <span class="hl-attr">watch</span>=<span class="hl-str">"search"</span>
@@ -124,7 +124,7 @@
 
   <!-- persistence -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.stateManagement.persistence.title"></h2>
+    <h2 class="doc-title" id="state-persistence" t="docs.stateManagement.persistence.title"></h2>
     <p class="doc-text" t="docs.stateManagement.persistence.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Persists to localStorage --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ theme: 'dark', sidebar: true }"</span>

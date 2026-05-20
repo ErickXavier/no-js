@@ -10,7 +10,7 @@
 
   <!-- animate -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.animations.enterLeave.title"></h2>
+    <h2 class="doc-title" id="animations-enter-leave" t="docs.animations.enterLeave.title"></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- CSS animation name on enter --&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">if</span>=<span class="hl-str">"visible"</span> <span class="hl-attr">animate</span>=<span class="hl-str">"fadeIn"</span><span class="hl-tag">&gt;</span>Content<span class="hl-tag">&lt;/div&gt;</span>
 
@@ -22,7 +22,7 @@
   Content
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-subtitle" t="docs.animations.enterLeave.attrsTitle"></h3>
+    <h3 class="doc-subtitle" id="animations-enter-leave-attrs" t="docs.animations.enterLeave.attrsTitle"></h3>
     <table class="doc-table">
       <thead>
         <tr><th t="docs.animations.enterLeave.col1"></th><th t="docs.animations.enterLeave.col2"></th></tr>
@@ -40,7 +40,7 @@
 
   <!-- transition -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.animations.transition.title"></h2>
+    <h2 class="doc-title" id="animations-transition" t="docs.animations.transition.title"></h2>
     <div class="callout">
       <p t="docs.animations.transition.viewTransitionNote" t-html></p>
     </div>
@@ -70,7 +70,7 @@
 
   <!-- Loop Animations -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.animations.loopAnimations.title"></h2>
+    <h2 class="doc-title" id="animations-loop" t="docs.animations.loopAnimations.title"></h2>
     <p class="doc-text" t="docs.animations.loopAnimations.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">each</span>=<span class="hl-str">"item in items"</span>
      <span class="hl-attr">template</span>=<span class="hl-str">"itemTpl"</span>
@@ -82,7 +82,7 @@
 
   <!-- Built-in Animation Names -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.animations.builtIn.title"></h2>
+    <h2 class="doc-title" id="animations-built-in" t="docs.animations.builtIn.title"></h2>
     <p class="doc-text" t="docs.animations.builtIn.text"></p>
     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
       <span class="badge">fadeIn</span>
@@ -104,7 +104,7 @@
 
   <!-- Live Demo -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.animations.liveDemo.title"></h2>
+    <h2 class="doc-title" id="animations-live-demo" t="docs.animations.liveDemo.title"></h2>
     <div class="demo-split">
       <div class="demo-code">
         <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ show: true }"</span><span class="hl-tag">&gt;</span>

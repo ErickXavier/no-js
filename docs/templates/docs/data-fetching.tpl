@@ -10,7 +10,7 @@
 
   <!-- Base URL -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.baseUrl.title"></h2>
+    <h2 class="doc-title" id="data-fetching-base-url" t="docs.dataFetching.baseUrl.title"></h2>
     <p class="doc-text" t="docs.dataFetching.baseUrl.text1"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;body</span> <span class="hl-attr">base</span>=<span class="hl-str">"https://api.myapp.com/v1"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/users"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span>        <span class="hl-cmt">&lt;!-- → https://api.myapp.com/v1/users --&gt;</span>
@@ -28,7 +28,7 @@
 
   <!-- Programmatic Configuration -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.config.title"></h2>
+    <h2 class="doc-title" id="data-fetching-config" t="docs.dataFetching.config.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
     <span class="hl-attr">baseApiUrl</span>: <span class="hl-str">'https://api.myapp.com/v1'</span>,
@@ -45,7 +45,7 @@
 
   <!-- Per-Request Headers -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.headers.title"></h2>
+    <h2 class="doc-title" id="data-fetching-headers" t="docs.dataFetching.headers.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/me"</span>
      <span class="hl-attr">headers</span>=<span class="hl-str">'{"Authorization": "Bearer abc123"}'</span>
      <span class="hl-attr">as</span>=<span class="hl-str">"user"</span><span class="hl-tag">&gt;</span>
@@ -54,12 +54,12 @@
 
   <!-- GET -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.get.title"></h2>
+    <h2 class="doc-title" id="data-fetching-get" t="docs.dataFetching.get.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/users"</span> <span class="hl-attr">as</span>=<span class="hl-str">"users"</span><span class="hl-tag">&gt;</span>
   <span class="hl-cmt">&lt;!-- `users` is now available in this scope --&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.dataFetching.get.attributesTitle"></h3>
+    <h3 class="doc-title" id="data-fetching-get-attributes" t="docs.dataFetching.get.attributesTitle"></h3>
     <table class="doc-table">
       <thead><tr><th t="docs.dataFetching.get.col1"></th><th t="docs.dataFetching.get.col2"></th><th t="docs.dataFetching.get.col3"></th></tr></thead>
       <tbody>
@@ -80,7 +80,7 @@
 
   <!-- Full Example -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.fullExample.title"></h2>
+    <h2 class="doc-title" id="data-fetching-full-example" t="docs.dataFetching.fullExample.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/users"</span>
      <span class="hl-attr">as</span>=<span class="hl-str">"users"</span>
      <span class="hl-attr">loading</span>=<span class="hl-str">"#usersSkeleton"</span>
@@ -108,7 +108,7 @@
 
   <!-- Reactive URLs -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.reactiveUrls.title"></h2>
+    <h2 class="doc-title" id="data-fetching-reactive-urls" t="docs.dataFetching.reactiveUrls.title"></h2>
     <p class="doc-text" t="docs.dataFetching.reactiveUrls.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ page: 1, search: '' }"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-str">"text"</span> <span class="hl-attr">bind-value</span>=<span class="hl-str">"search"</span>
@@ -124,10 +124,10 @@
 
   <!-- POST / PUT / PATCH / DELETE -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.mutations.title"></h2>
+    <h2 class="doc-title" id="data-fetching-mutations" t="docs.dataFetching.mutations.title"></h2>
     <p class="doc-text" t="docs.dataFetching.mutations.text"></p>
 
-    <h3 class="doc-title" t="docs.dataFetching.mutations.formSubmissionTitle"></h3>
+    <h3 class="doc-title" id="data-fetching-form-submission" t="docs.dataFetching.mutations.formSubmissionTitle"></h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;form</span> <span class="hl-attr">post</span>=<span class="hl-str">"/login"</span>
       <span class="hl-attr">success</span>=<span class="hl-str">"#loginSuccess"</span>
       <span class="hl-attr">error</span>=<span class="hl-str">"#loginError"</span>
@@ -145,7 +145,7 @@
   <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-str">"error"</span> <span class="hl-attr">bind</span>=<span class="hl-str">"err.message"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
 <span class="hl-tag">&lt;/template&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.dataFetching.mutations.putPatchDeleteTitle"></h3>
+    <h3 class="doc-title" id="data-fetching-put-patch-delete" t="docs.dataFetching.mutations.putPatchDeleteTitle"></h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;form</span> <span class="hl-attr">put</span>=<span class="hl-str">"/users/{user.id}"</span>
       <span class="hl-attr">body</span>=<span class="hl-str">'{"name": "{user.name}", "role": "{selectedRole}"}'</span>
       <span class="hl-attr">success</span>=<span class="hl-str">"#updateSuccess"</span><span class="hl-tag">&gt;</span>
@@ -163,7 +163,7 @@
 
   <!-- Mutation Attributes -->
   <div class="doc-section">
-    <h3 class="doc-title" t="docs.dataFetching.mutationAttrs.title"></h3>
+    <h3 class="doc-title" id="data-fetching-mutation-attrs" t="docs.dataFetching.mutationAttrs.title"></h3>
     <table class="doc-table">
       <thead><tr><th t="docs.dataFetching.mutationAttrs.col1"></th><th t="docs.dataFetching.mutationAttrs.col2"></th></tr></thead>
       <tbody>
@@ -183,7 +183,7 @@
 
   <!-- Request Lifecycle -->
   <div class="doc-section">
-    <h3 class="doc-title" t="docs.dataFetching.lifecycle.title"></h3>
+    <h3 class="doc-title" id="data-fetching-lifecycle" t="docs.dataFetching.lifecycle.title"></h3>
     <div class="code-block"><pre><span class="hl-cmt">[idle] → [loading] → [success | error]</span>
 <span class="hl-cmt">                        ↓         ↓</span>
 <span class="hl-cmt">                   render tpl   render tpl</span>
@@ -193,7 +193,7 @@
 
   <!-- Live Demo -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataFetching.liveDemo.title"></h2>
+    <h2 class="doc-title" id="data-fetching-live-demo" t="docs.dataFetching.liveDemo.title"></h2>
     <div class="demo-split">
       <div class="demo-code">
         <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"https://jsonplaceholder.typicode.com/users?_limit=3"</span>

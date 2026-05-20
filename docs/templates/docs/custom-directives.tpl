@@ -10,7 +10,7 @@
 
   <!-- NoJS.directive() -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.customDirectives.directive.title"></h2>
+    <h2 class="doc-title" id="custom-directives-directive" t="docs.customDirectives.directive.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">directive</span>(<span class="hl-str">'tooltip'</span>, {
     <span class="hl-attr">priority</span>: <span class="hl-num">25</span>,
@@ -56,14 +56,14 @@
 
   <!-- Usage -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.customDirectives.usage.title"></h2>
+    <h2 class="doc-title" id="custom-directives-usage" t="docs.customDirectives.usage.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;button</span> <span class="hl-attr">tooltip</span>=<span class="hl-str">"'Click to copy'"</span> <span class="hl-attr">clipboard</span>=<span class="hl-str">"user.email"</span><span class="hl-tag">&gt;</span>📋 Copy Email<span class="hl-tag">&lt;/button&gt;</span>
 <span class="hl-tag">&lt;img</span> <span class="hl-attr">lazy-src</span>=<span class="hl-str">"user.avatarUrl"</span> <span class="hl-attr">alt</span>=<span class="hl-str">"avatar"</span> <span class="hl-tag">/&gt;</span></pre></div>
   </div>
 
   <!-- Web Components -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.customDirectives.webComponents.title"></h2>
+    <h2 class="doc-title" id="custom-directives-web-components" t="docs.customDirectives.webComponents.title"></h2>
     <p class="doc-text" t="docs.customDirectives.webComponents.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Pass reactive data to web components --&gt;</span>
 <span class="hl-tag">&lt;user-avatar</span> <span class="hl-attr">bind-prop-name</span>=<span class="hl-str">"user.name"</span>
@@ -84,7 +84,7 @@
 
   <!-- Component-like Patterns -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.customDirectives.componentPatterns.title"></h2>
+    <h2 class="doc-title" id="custom-directives-component-patterns" t="docs.customDirectives.componentPatterns.title"></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Define a reusable "component" --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">id</span>=<span class="hl-str">"counter-component"</span> <span class="hl-attr">var</span>=<span class="hl-str">"config"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ count: config.initial || 0 }"</span><span class="hl-tag">&gt;</span>

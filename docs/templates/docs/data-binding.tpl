@@ -10,7 +10,7 @@
 
   <!-- bind -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataBinding.bind.title"></h2>
+    <h2 class="doc-title" id="data-binding-bind" t="docs.dataBinding.bind.title"></h2>
     <p class="doc-text" t="docs.dataBinding.bind.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user.name"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user.age + ' years old'"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
@@ -19,7 +19,7 @@
 
   <!-- bind-html -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataBinding.bindHtml.title"></h2>
+    <h2 class="doc-title" id="data-binding-bind-html" t="docs.dataBinding.bindHtml.title"></h2>
     <p class="doc-text" t="docs.dataBinding.bindHtml.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">bind-html</span>=<span class="hl-str">"article.content"</span><span class="hl-tag">&gt;&lt;/div&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">bind-html</span>=<span class="hl-str">"`&lt;em&gt;${user.bio}&lt;/em&gt;`"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
@@ -28,7 +28,7 @@
 
   <!-- bind-* -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataBinding.bindAttr.title"></h2>
+    <h2 class="doc-title" id="data-binding-bind-attr" t="docs.dataBinding.bindAttr.title"></h2>
     <p class="doc-text" t="docs.dataBinding.bindAttr.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- src, href, alt, title --&gt;</span>
 <span class="hl-tag">&lt;img</span> <span class="hl-attr">bind-src</span>=<span class="hl-str">"user.avatarUrl"</span>
@@ -48,7 +48,7 @@
 
   <!-- model -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.dataBinding.model.title"></h2>
+    <h2 class="doc-title" id="data-binding-model" t="docs.dataBinding.model.title"></h2>
     <p class="doc-text" t="docs.dataBinding.model.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ name: '', agreed: false }"</span><span class="hl-tag">&gt;</span>

@@ -10,7 +10,7 @@
 
   <!-- Route Definition -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.definition.title"></h2>
+    <h2 class="doc-title" id="routing-definition" t="docs.routing.definition.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;body&gt;</span>
   <span class="hl-tag">&lt;nav&gt;</span>
     <span class="hl-tag">&lt;a</span> <span class="hl-attr">route</span>=<span class="hl-str">"/"</span><span class="hl-tag">&gt;</span>Home<span class="hl-tag">&lt;/a&gt;</span>
@@ -44,7 +44,7 @@
 
   <!-- Route Parameters & Query -->
   <div class="doc-section">
-    <h2 class="doc-title" t-html="docs.routing.params.title"></h2>
+    <h2 class="doc-title" id="routing-params" t-html="docs.routing.params.title"></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Params: /users/42 --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/users/:id"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"$route.params.id"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>    <span class="hl-cmt">&lt;!-- "42" --&gt;</span>
@@ -59,7 +59,7 @@
 
   <!-- $route Context -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.context.title"></h2>
+    <h2 class="doc-title" id="routing-context" t="docs.routing.context.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.routing.context.col1"></th><th t="docs.routing.context.col2"></th></tr></thead>
       <tbody>
@@ -74,7 +74,7 @@
 
   <!-- Active Route Styling -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.activeStyle.title"></h2>
+    <h2 class="doc-title" id="routing-active-style" t="docs.routing.activeStyle.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;a</span> <span class="hl-attr">route</span>=<span class="hl-str">"/"</span> <span class="hl-attr">route-active</span>=<span class="hl-str">"active"</span><span class="hl-tag">&gt;</span>Home<span class="hl-tag">&lt;/a&gt;</span>
 <span class="hl-tag">&lt;a</span> <span class="hl-attr">route</span>=<span class="hl-str">"/about"</span> <span class="hl-attr">route-active</span>=<span class="hl-str">"active"</span><span class="hl-tag">&gt;</span>About<span class="hl-tag">&lt;/a&gt;</span>
 
@@ -84,7 +84,7 @@
 
   <!-- Route Guards -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.guards.title"></h2>
+    <h2 class="doc-title" id="routing-guards" t="docs.routing.guards.title"></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Redirect if not authenticated --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/dashboard"</span>
           <span class="hl-attr">guard</span>=<span class="hl-str">"$store.auth.user"</span>
@@ -102,7 +102,7 @@
 
   <!-- Programmatic Navigation -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.programmatic.title"></h2>
+    <h2 class="doc-title" id="routing-programmatic" t="docs.routing.programmatic.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$router.push('/users/42')"</span><span class="hl-tag">&gt;</span>Go to User<span class="hl-tag">&lt;/button&gt;</span>
 <span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$router.back()"</span><span class="hl-tag">&gt;</span>Go Back<span class="hl-tag">&lt;/button&gt;</span>
 <span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$router.replace('/new-path')"</span><span class="hl-tag">&gt;</span>Replace<span class="hl-tag">&lt;/button&gt;</span></pre></div>
@@ -116,7 +116,7 @@
 
   <!-- Nested Routes -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.nested.title"></h2>
+    <h2 class="doc-title" id="routing-nested" t="docs.routing.nested.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/settings"</span> <span class="hl-attr">id</span>=<span class="hl-str">"settingsPage"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;nav&gt;</span>
     <span class="hl-tag">&lt;a</span> <span class="hl-attr">route</span>=<span class="hl-str">"/settings/profile"</span><span class="hl-tag">&gt;</span>Profile<span class="hl-tag">&lt;/a&gt;</span>
@@ -136,7 +136,7 @@
 
   <!-- Remote Templates in Routes -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.remoteTemplates.title"></h2>
+    <h2 class="doc-title" id="routing-remote-templates" t="docs.routing.remoteTemplates.title"></h2>
     <p class="doc-text" t="docs.routing.remoteTemplates.text1"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/dashboard"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;template</span> <span class="hl-attr">src</span>=<span class="hl-str">"/partials/dash-header.html"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
@@ -148,7 +148,7 @@
 
   <!-- File-Based Routing -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.fileBased.title"></h2>
+    <h2 class="doc-title" id="routing-file-based" t="docs.routing.fileBased.title"></h2>
     <p class="doc-text" t="docs.routing.fileBased.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Traditional (explicit) routing --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/overview.tpl"</span><span class="hl-tag">&gt;&lt;/template&gt;</span>
@@ -157,13 +157,13 @@
 
 <span class="hl-cmt">&lt;!-- File-based routing &mdash; one line replaces all of the above! --&gt;</span>
 <span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/"</span> <span class="hl-attr">route-index</span>=<span class="hl-str">"overview"</span><span class="hl-tag">&gt;&lt;/main&gt;</span></pre></div>
-    <h3 class="doc-subtitle" t="docs.routing.fileBased.howItWorks"></h3>
+    <h3 class="doc-subtitle" id="routing-file-based-how-it-works" t="docs.routing.fileBased.howItWorks"></h3>
     <ol class="doc-list">
       <li t="docs.routing.fileBased.list1"></li>
       <li t="docs.routing.fileBased.list2"></li>
       <li t="docs.routing.fileBased.list3"></li>
     </ol>
-    <h3 class="doc-subtitle" t="docs.routing.fileBased.attributesTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-file-based-attributes" t="docs.routing.fileBased.attributesTitle"></h3>
     <table class="doc-table">
       <thead><tr><th t="docs.routing.fileBased.colAttr"></th><th t="docs.routing.fileBased.colDefault"></th><th t="docs.routing.fileBased.colDesc"></th></tr></thead>
       <tbody>
@@ -176,7 +176,7 @@
     <div class="callout">
       <p t="docs.routing.fileBased.callout"></p>
     </div>
-    <h3 class="doc-subtitle" t="docs.routing.fileBased.exampleTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-file-based-example" t="docs.routing.fileBased.exampleTitle"></h3>
     <div class="code-block"><pre><span class="hl-cmt">pages/</span>
 <span class="hl-cmt">├── overview.tpl    ← /</span>
 <span class="hl-cmt">├── analytics.tpl   ← /analytics</span>
@@ -188,7 +188,7 @@
 
 <span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/"</span> <span class="hl-attr">route-index</span>=<span class="hl-str">"overview"</span><span class="hl-tag">&gt;&lt;/main&gt;</span></pre></div>
     <p class="doc-text" t="docs.routing.fileBased.exampleText"></p>
-    <h3 class="doc-subtitle" t="docs.routing.fileBased.mixingTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-file-based-mixing" t="docs.routing.fileBased.mixingTitle"></h3>
     <p class="doc-text" t="docs.routing.fileBased.mixingText"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- File-based routing handles most pages automatically --&gt;</span>
 <span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/"</span><span class="hl-tag">&gt;&lt;/main&gt;</span>
@@ -199,7 +199,7 @@
 <span class="hl-cmt">&lt;!-- Explicit route with guard --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/admin"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/admin.tpl"</span>
           <span class="hl-attr">guard</span>=<span class="hl-str">"$store.auth.isAdmin"</span> <span class="hl-attr">redirect</span>=<span class="hl-str">"/"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
-    <h3 class="doc-subtitle" t="docs.routing.fileBased.autoI18nTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-file-based-auto-i18n" t="docs.routing.fileBased.autoI18nTitle"></h3>
     <p class="doc-text" t="docs.routing.fileBased.autoI18nText"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Auto-derives namespace: "/" &rarr; "landing", "/features" &rarr; "features", etc. --&gt;</span>
 <span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span> <span class="hl-attr">src</span>=<span class="hl-str">"templates/"</span> <span class="hl-attr">route-index</span>=<span class="hl-str">"landing"</span> <span class="hl-attr">i18n-ns</span><span class="hl-tag">&gt;&lt;/main&gt;</span></pre></div>
@@ -208,7 +208,7 @@
 
   <!-- Lazy Template Loading -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.lazyLoading.title"></h2>
+    <h2 class="doc-title" id="routing-lazy-loading" t="docs.routing.lazyLoading.title"></h2>
     <p class="doc-text" t="docs.routing.lazyLoading.text"></p>
     <table class="doc-table">
       <thead><tr><th t="docs.routing.lazyLoading.col1"></th><th t="docs.routing.lazyLoading.col2"></th><th t="docs.routing.lazyLoading.col3"></th></tr></thead>
@@ -233,7 +233,7 @@
 
   <!-- Anchor Links in Hash Mode -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.anchor.title"></h2>
+    <h2 class="doc-title" id="routing-anchor" t="docs.routing.anchor.title"></h2>
     <p class="doc-text" t="docs.routing.anchor.text1"></p>
     <p class="doc-text" t="docs.routing.anchor.text2"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- These work in hash mode &mdash; no special attributes needed --&gt;</span>
@@ -268,7 +268,7 @@
 
   <!-- Named Outlets (route-view) -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.namedOutlets.title"></h2>
+    <h2 class="doc-title" id="routing-named-outlets" t="docs.routing.namedOutlets.title"></h2>
     <p class="doc-text" t="docs.routing.namedOutlets.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Layout with named outlets --&gt;</span>
 <span class="hl-tag">&lt;main</span> <span class="hl-attr">route-view</span><span class="hl-tag">&gt;&lt;/main&gt;</span>            <span class="hl-cmt">&lt;!-- "default" outlet --&gt;</span>
@@ -299,7 +299,7 @@
 
   <!-- 404 / Catch-All Routes -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.catchAll.title"></h2>
+    <h2 class="doc-title" id="routing-catch-all" t="docs.routing.catchAll.title"></h2>
     <p class="doc-text" t="docs.routing.catchAll.text" t-html></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"*"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;h1&gt;</span>404 &mdash; Page Not Found<span class="hl-tag">&lt;/h1&gt;</span>
@@ -309,14 +309,14 @@
     <p class="doc-text" t="docs.routing.catchAll.text2" t-html></p>
 
     <!-- Automatic 404 Fallback -->
-    <h3 class="doc-subtitle" t="docs.routing.catchAll.fallbackTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-catch-all-fallback" t="docs.routing.catchAll.fallbackTitle"></h3>
     <p class="doc-text" t="docs.routing.catchAll.fallbackText" t-html></p>
     <div class="callout">
       <p t="docs.routing.catchAll.fallbackTip" t-html></p>
     </div>
 
     <!-- Named Outlet Wildcards -->
-    <h3 class="doc-subtitle" t="docs.routing.catchAll.namedTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-catch-all-named" t="docs.routing.catchAll.namedTitle"></h3>
     <p class="doc-text" t="docs.routing.catchAll.namedText"></p>
     <ol class="doc-list">
       <li t="docs.routing.catchAll.namedList1" t-html></li>
@@ -335,7 +335,7 @@
     <p class="doc-text" t="docs.routing.catchAll.namedText2" t-html></p>
 
     <!-- $route.matched -->
-    <h3 class="doc-subtitle" t="docs.routing.catchAll.matchedTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-catch-all-matched" t="docs.routing.catchAll.matchedTitle"></h3>
     <p class="doc-text" t="docs.routing.catchAll.matchedText" t-html></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">show</span>=<span class="hl-str">"!$route.matched"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;p&gt;</span>You seem lost!<span class="hl-tag">&lt;/p&gt;</span>
@@ -343,20 +343,20 @@
     <p class="doc-text" t="docs.routing.catchAll.matchedText2" t-html></p>
 
     <!-- Remote 404 Template -->
-    <h3 class="doc-subtitle" t="docs.routing.catchAll.remoteTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-catch-all-remote" t="docs.routing.catchAll.remoteTitle"></h3>
     <p class="doc-text" t="docs.routing.catchAll.remoteText" t-html></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"*"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/404.tpl"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
     <p class="doc-text" t="docs.routing.catchAll.remoteText2" t-html></p>
 
     <!-- File-Based Routing 404 -->
-    <h3 class="doc-subtitle" t="docs.routing.catchAll.fileBasedTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-catch-all-file-based" t="docs.routing.catchAll.fileBasedTitle"></h3>
     <p class="doc-text" t="docs.routing.catchAll.fileBasedText" t-html></p>
     <p class="doc-text" t="docs.routing.catchAll.fileBasedText2" t-html></p>
   </div>
 
   <!-- Route Head Attributes -->
   <div class="doc-section" id="route-head-attributes">
-    <h2 class="doc-title" t="docs.routing.headAttributes.title"></h2>
+    <h2 class="doc-title" id="routing-head-attributes" t="docs.routing.headAttributes.title"></h2>
     <p class="doc-text" t="docs.routing.headAttributes.text" t-html></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/about"</span>
           <span class="hl-attr">page-title</span>=<span class="hl-str">"'About Us | My App'"</span>
@@ -387,7 +387,7 @@
 
   <!-- Accessibility — Focus Management -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.routing.focusBehavior.title"></h2>
+    <h2 class="doc-title" id="routing-focus-behavior" t="docs.routing.focusBehavior.title"></h2>
     <p class="doc-text" t="docs.routing.focusBehavior.text"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
   <span class="hl-attr">router</span>: { <span class="hl-attr">focusBehavior</span>: <span class="hl-str">'auto'</span> }
@@ -412,23 +412,23 @@
 <span class="hl-tag">&lt;/template&gt;</span></pre></div>
 
     <!-- Default -->
-    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.defaultTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-focus-default" t="docs.routing.focusBehavior.defaultTitle"></h3>
     <p class="doc-text" t="docs.routing.focusBehavior.defaultText" t-html></p>
 
     <!-- Timing -->
-    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.timingTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-focus-timing" t="docs.routing.focusBehavior.timingTitle"></h3>
     <p class="doc-text" t="docs.routing.focusBehavior.timingText" t-html></p>
 
     <!-- Side effects -->
-    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.sideEffectsTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-focus-side-effects" t="docs.routing.focusBehavior.sideEffectsTitle"></h3>
     <p class="doc-text" t="docs.routing.focusBehavior.sideEffectsText" t-html></p>
 
     <!-- Future values -->
-    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.futureTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-focus-future" t="docs.routing.focusBehavior.futureTitle"></h3>
     <p class="doc-text" t="docs.routing.focusBehavior.futureText" t-html></p>
 
     <!-- Aria live region -->
-    <h3 class="doc-subtitle" t="docs.routing.focusBehavior.ariaLiveTitle"></h3>
+    <h3 class="doc-subtitle" id="routing-focus-aria-live" t="docs.routing.focusBehavior.ariaLiveTitle"></h3>
     <p class="doc-text" t="docs.routing.focusBehavior.ariaLiveText" t-html></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">route-view</span> <span class="hl-attr">aria-live</span>=<span class="hl-str">"polite"</span> <span class="hl-attr">aria-atomic</span>=<span class="hl-str">"true"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
   </div>

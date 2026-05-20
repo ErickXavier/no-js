@@ -10,7 +10,7 @@
 
   <!-- Setup -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.i18n.setup.title"></h2>
+    <h2 class="doc-title" id="i18n-setup" t="docs.i18n.setup.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({
     <span class="hl-attr">defaultLocale</span>: <span class="hl-str">'en'</span>,
@@ -46,10 +46,10 @@
 
   <!-- External Locale Files -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.i18n.externalFiles.title"></h2>
+    <h2 class="doc-title" id="i18n-external-files" t="docs.i18n.externalFiles.title"></h2>
     <p class="doc-text" t="docs.i18n.externalFiles.text"></p>
 
-    <h3 class="doc-title" t="docs.i18n.externalFiles.flatSubtitle"></h3>
+    <h3 class="doc-title" id="i18n-flat-mode" t="docs.i18n.externalFiles.flatSubtitle"></h3>
     <p class="doc-text" t="docs.i18n.externalFiles.flatText"></p>
     <div class="code-block"><pre>/locales/en.json
 /locales/es.json
@@ -69,7 +69,7 @@
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.i18n.externalFiles.nsSubtitle"></h3>
+    <h3 class="doc-title" id="i18n-namespace-mode" t="docs.i18n.externalFiles.nsSubtitle"></h3>
     <p class="doc-text" t="docs.i18n.externalFiles.nsText"></p>
     <div class="code-block"><pre>/locales/en/common.json
 /locales/en/dashboard.json
@@ -84,25 +84,25 @@
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.i18n.externalFiles.nsRouteSubtitle"></h3>
+    <h3 class="doc-title" id="i18n-ns-route" t="docs.i18n.externalFiles.nsRouteSubtitle"></h3>
     <p class="doc-text" t="docs.i18n.externalFiles.nsRouteText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/dashboard"</span> <span class="hl-attr">src</span>=<span class="hl-str">"./pages/dashboard.tpl"</span> <span class="hl-attr">i18n-ns</span>=<span class="hl-str">"dashboard"</span><span class="hl-tag">&gt;&lt;/template&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.i18n.externalFiles.nsElementSubtitle"></h3>
+    <h3 class="doc-title" id="i18n-ns-element" t="docs.i18n.externalFiles.nsElementSubtitle"></h3>
     <p class="doc-text" t="docs.i18n.externalFiles.nsElementText"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">i18n-ns</span>=<span class="hl-str">"settings"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;h2</span> <span class="hl-attr">t</span>=<span class="hl-str">"settings.title"</span><span class="hl-tag">&gt;&lt;/h2&gt;</span>
   <span class="hl-tag">&lt;p</span> <span class="hl-attr">t</span>=<span class="hl-str">"settings.desc"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.i18n.externalFiles.cachingSubtitle"></h3>
+    <h3 class="doc-title" id="i18n-caching" t="docs.i18n.externalFiles.cachingSubtitle"></h3>
     <p class="doc-text" t="docs.i18n.externalFiles.cachingText"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({ <span class="hl-attr">loadPath</span>: <span class="hl-str">'/locales/{locale}.json'</span>, <span class="hl-attr">cache</span>: <span class="hl-kw">false</span> });</pre></div>
   </div>
 
   <!-- Usage -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.i18n.usage.title"></h2>
+    <h2 class="doc-title" id="i18n-usage" t="docs.i18n.usage.title"></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Simple translation --&gt;</span>
 <span class="hl-tag">&lt;h1</span> <span class="hl-attr">t</span>=<span class="hl-str">"welcome"</span><span class="hl-tag">&gt;&lt;/h1&gt;</span>
 <span class="hl-cmt">&lt;!-- Output: "Welcome to No.JS" / "Bienvenido a No.JS" / "Bienvenue sur No.JS" --&gt;</span>
@@ -129,7 +129,7 @@
 
   <!-- Number & Date Formatting -->
   <div class="doc-section">
-    <h2 class="doc-title" t-html="docs.i18n.formatting.title"></h2>
+    <h2 class="doc-title" id="i18n-formatting" t-html="docs.i18n.formatting.title"></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Currency --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"price | currency"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>           <span class="hl-cmt">&lt;!-- $1,234.56 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"price | currency:'BRL'"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>     <span class="hl-cmt">&lt;!-- R$ 1.234,56 --&gt;</span>
@@ -148,7 +148,7 @@
 
   <!-- Live Demo -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.i18n.liveDemo.title"></h2>
+    <h2 class="doc-title" id="i18n-live-demo" t="docs.i18n.liveDemo.title"></h2>
     <div class="demo-split">
       <div class="demo-code">
         <div class="code-block"><pre><span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"$i18n.locale = 'en'"</span><span class="hl-tag">&gt;</span>EN<span class="hl-tag">&lt;/button&gt;</span>

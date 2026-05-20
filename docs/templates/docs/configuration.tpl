@@ -10,7 +10,7 @@
 
   <!-- Global Settings -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.configuration.globalSettings.title"></h2>
+    <h2 class="doc-title" id="config-global-settings" t="docs.configuration.globalSettings.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
     <span class="hl-cmt">// API</span>
@@ -72,7 +72,7 @@
 
   <!-- Pre-initializing Stores -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.configuration.configStores.title"></h2>
+    <h2 class="doc-title" id="config-stores" t="docs.configuration.configStores.title"></h2>
     <p class="doc-text" t="docs.configuration.configStores.text"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
   <span class="hl-attr">stores</span>: {
@@ -86,14 +86,14 @@
 
   <!-- Config Option Details -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.configuration.configOptions.title"></h2>
+    <h2 class="doc-title" id="config-options" t="docs.configuration.configOptions.title"></h2>
 
-    <h3 class="doc-title" t="docs.configuration.configOptions.sanitizeTitle"></h3>
+    <h3 class="doc-title" id="config-sanitize" t="docs.configuration.configOptions.sanitizeTitle"></h3>
     <p class="doc-text" t="docs.configuration.configOptions.sanitizeType"></p>
     <p class="doc-text" t="docs.configuration.configOptions.sanitizeText"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">sanitize</span>: <span class="hl-kw">false</span> }); <span class="hl-cmt">// ⚠ Disable at your own risk — allows raw HTML</span></pre></div>
 
-    <h3 class="doc-title" t="docs.configuration.configOptions.devtoolsTitle"></h3>
+    <h3 class="doc-title" id="config-devtools" t="docs.configuration.configOptions.devtoolsTitle"></h3>
     <p class="doc-text" t="docs.configuration.configOptions.devtoolsType"></p>
     <p class="doc-text" t="docs.configuration.configOptions.devtoolsText"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">devtools</span>: <span class="hl-kw">true</span> });
@@ -101,7 +101,7 @@
 <span class="hl-cmt">// window.__NOJS_DEVTOOLS__.state</span>
 <span class="hl-cmt">// window.__NOJS_DEVTOOLS__.routes</span></pre></div>
 
-    <h3 class="doc-title" t="docs.configuration.configOptions.templatesCacheTitle"></h3>
+    <h3 class="doc-title" id="config-templates-cache" t="docs.configuration.configOptions.templatesCacheTitle"></h3>
     <p class="doc-text" t="docs.configuration.configOptions.templatesCacheType"></p>
     <p class="doc-text" t="docs.configuration.configOptions.templatesCacheText1"></p>
     <div class="code-block"><pre><span class="hl-cmt">// Disable template caching (always re-fetch .tpl files)</span>
@@ -111,7 +111,7 @@
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">templates</span>: { <span class="hl-attr">cache</span>: <span class="hl-kw">true</span> } });</pre></div>
     <p class="doc-text" t="docs.configuration.configOptions.templatesCacheText2"></p>
 
-    <h3 class="doc-title" t="docs.configuration.configOptions.loadPathTitle"></h3>
+    <h3 class="doc-title" id="config-load-path" t="docs.configuration.configOptions.loadPathTitle"></h3>
     <p class="doc-text" t="docs.configuration.configOptions.loadPathType"></p>
     <p class="doc-text" t="docs.configuration.configOptions.loadPathText"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({
@@ -119,7 +119,7 @@
   <span class="hl-attr">loadPath</span>: <span class="hl-str">'/locales/{locale}/{ns}.json'</span>   <span class="hl-cmt">// Namespace mode</span>
 });</pre></div>
 
-    <h3 class="doc-title" t="docs.configuration.configOptions.nsTitle"></h3>
+    <h3 class="doc-title" id="config-ns" t="docs.configuration.configOptions.nsTitle"></h3>
     <p class="doc-text" t="docs.configuration.configOptions.nsType"></p>
     <p class="doc-text" t="docs.configuration.configOptions.nsText"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({
@@ -127,7 +127,7 @@
   <span class="hl-attr">ns</span>: [<span class="hl-str">'common'</span>, <span class="hl-str">'auth'</span>]
 });</pre></div>
 
-    <h3 class="doc-title" t="docs.configuration.configOptions.cacheTitle"></h3>
+    <h3 class="doc-title" id="config-cache" t="docs.configuration.configOptions.cacheTitle"></h3>
     <p class="doc-text" t="docs.configuration.configOptions.cacheType"></p>
     <p class="doc-text" t="docs.configuration.configOptions.cacheText"></p>
     <div class="code-block"><pre><span class="hl-fn">NoJS</span>.<span class="hl-fn">i18n</span>({ <span class="hl-attr">cache</span>: <span class="hl-kw">false</span> }); <span class="hl-cmt">// Always re-fetch locale files</span></pre></div>
@@ -135,9 +135,9 @@
 
   <!-- API Properties -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.configuration.apiProperties.title"></h2>
+    <h2 class="doc-title" id="config-api-properties" t="docs.configuration.apiProperties.title"></h2>
 
-    <h3 class="doc-title" t="docs.configuration.apiProperties.baseApiUrlTitle"></h3>
+    <h3 class="doc-title" id="config-base-api-url" t="docs.configuration.apiProperties.baseApiUrlTitle"></h3>
     <p class="doc-text" t="docs.configuration.apiProperties.baseApiUrlText"></p>
     <div class="code-block"><pre><span class="hl-cmt">// Set at init</span>
 <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({ <span class="hl-attr">baseApiUrl</span>: <span class="hl-str">'https://api.myapp.com/v1'</span> });
@@ -148,14 +148,14 @@ console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.baseApiUr
 <span class="hl-cmt">// Update at runtime</span>
 <span class="hl-fn">NoJS</span>.baseApiUrl <span class="hl-op">=</span> <span class="hl-str">'https://staging-api.myapp.com/v1'</span>;</pre></div>
 
-    <h3 class="doc-title" t="docs.configuration.apiProperties.versionTitle"></h3>
+    <h3 class="doc-title" id="config-version" t="docs.configuration.apiProperties.versionTitle"></h3>
     <p class="doc-text" t="docs.configuration.apiProperties.versionText"></p>
     <div class="code-block"><pre>console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.version); <span class="hl-cmt">// e.g. '1.4.0'</span></pre></div>
   </div>
 
   <!-- Request Interceptors -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.configuration.interceptors.title"></h2>
+    <h2 class="doc-title" id="config-interceptors" t="docs.configuration.interceptors.title"></h2>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-cmt">// Before every request</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">interceptor</span>(<span class="hl-str">'request'</span>, (<span class="hl-attr">url</span>, <span class="hl-attr">options</span>) <span class="hl-op">=&gt;</span> {
@@ -177,16 +177,16 @@ console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.baseApiUr
 
   <!-- XSS Protection -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.configuration.security.title"></h2>
+    <h2 class="doc-title" id="config-security" t="docs.configuration.security.title"></h2>
 
-    <h3 class="doc-title" t="docs.configuration.security.xssTitle"></h3>
+    <h3 class="doc-title" id="config-xss" t="docs.configuration.security.xssTitle"></h3>
     <ul class="doc-text">
       <li t="docs.configuration.security.xssList1"></li>
       <li t="docs.configuration.security.xssList2"></li>
       <li t="docs.configuration.security.xssList3"></li>
     </ul>
 
-    <h3 class="doc-title" t="docs.configuration.security.csrfTitle"></h3>
+    <h3 class="doc-title" id="config-csrf" t="docs.configuration.security.csrfTitle"></h3>
     <div class="code-block"><pre><span class="hl-tag">&lt;script&gt;</span>
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">config</span>({
     <span class="hl-attr">csrf</span>: {
@@ -196,7 +196,7 @@ console.<span class="hl-fn">log</span>(<span class="hl-fn">NoJS</span>.baseApiUr
   });
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
-    <h3 class="doc-title" t="docs.configuration.security.cspSecTitle"></h3>
+    <h3 class="doc-title" id="config-csp" t="docs.configuration.security.cspSecTitle"></h3>
     <p class="doc-text" t="docs.configuration.security.cspSecText1"></p>
   </div>
 

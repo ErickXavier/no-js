@@ -10,7 +10,7 @@
 
   <!-- on:* -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.events.handlers.title"></h2>
+    <h2 class="doc-title" id="events-handlers" t="docs.events.handlers.title"></h2>
     <p class="doc-text" t="docs.events.handlers.text"></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-cmt">&lt;!-- Click --&gt;</span>
@@ -42,7 +42,7 @@
 
   <!-- modifiers -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.events.modifiers.title"></h2>
+    <h2 class="doc-title" id="events-modifiers" t="docs.events.modifiers.title"></h2>
     <p class="doc-text" t="docs.events.modifiers.text"></p>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- .prevent — calls preventDefault() --&gt;</span>
 <span class="hl-tag">&lt;form</span> <span class="hl-attr">on:submit.prevent</span>=<span class="hl-str">"handleSubmit()"</span><span class="hl-tag">&gt;</span>
@@ -67,7 +67,7 @@
 
   <!-- $event & $el -->
   <div class="doc-section">
-    <h2 class="doc-title" t-html="docs.events.eventAndEl.title"></h2>
+    <h2 class="doc-title" id="events-event-and-el" t-html="docs.events.eventAndEl.title"></h2>
     <p class="doc-text" t="docs.events.eventAndEl.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;input</span> <span class="hl-attr">on:input</span>=<span class="hl-str">"name = $event.target.value"</span> <span class="hl-tag">/&gt;</span>
 <span class="hl-tag">&lt;input</span> <span class="hl-attr">on:focus</span>=<span class="hl-str">"$el.select()"</span> <span class="hl-tag">/&gt;</span>
@@ -76,7 +76,7 @@
 
   <!-- lifecycle -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.events.lifecycle.title"></h2>
+    <h2 class="doc-title" id="events-lifecycle" t="docs.events.lifecycle.title"></h2>
     <table class="doc-table">
       <thead>
         <tr><th t="docs.events.lifecycle.col1"></th><th t="docs.events.lifecycle.col2"></th></tr>

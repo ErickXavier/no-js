@@ -10,7 +10,7 @@
 
   <!-- Data -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.data.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-data" t="docs.cheatsheet.data.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.data.col1"></th><th t="docs.cheatsheet.data.col2"></th><th t="docs.cheatsheet.data.col3"></th></tr></thead>
       <tbody>
@@ -39,7 +39,7 @@
 
   <!-- State -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.state.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-state" t="docs.cheatsheet.state.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.state.col1"></th><th t="docs.cheatsheet.state.col2"></th><th t="docs.cheatsheet.state.col3"></th></tr></thead>
       <tbody>
@@ -55,7 +55,7 @@
 
   <!-- Rendering -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.rendering.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-rendering" t="docs.cheatsheet.rendering.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.rendering.col1"></th><th t="docs.cheatsheet.rendering.col2"></th><th t="docs.cheatsheet.rendering.col3"></th></tr></thead>
       <tbody>
@@ -77,7 +77,7 @@
 
   <!-- Loops -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.loops.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-loops" t="docs.cheatsheet.loops.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.loops.col1"></th><th t="docs.cheatsheet.loops.col2"></th><th t="docs.cheatsheet.loops.col3"></th></tr></thead>
       <tbody>
@@ -98,7 +98,7 @@
 
   <!-- Events -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.events.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-events" t="docs.cheatsheet.events.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.events.col1"></th><th t="docs.cheatsheet.events.col2"></th><th t="docs.cheatsheet.events.col3"></th></tr></thead>
       <tbody>
@@ -118,7 +118,7 @@
 
   <!-- Styling -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.styling.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-styling" t="docs.cheatsheet.styling.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.styling.col1"></th><th t="docs.cheatsheet.styling.col2"></th><th t="docs.cheatsheet.styling.col3"></th></tr></thead>
       <tbody>
@@ -132,7 +132,7 @@
 
   <!-- Forms -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.forms.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-forms" t="docs.cheatsheet.forms.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.forms.col1"></th><th t="docs.cheatsheet.forms.col2"></th><th t="docs.cheatsheet.forms.col3"></th></tr></thead>
       <tbody>
@@ -148,7 +148,7 @@
 
   <!-- Routing -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.routing.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-routing" t="docs.cheatsheet.routing.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.routing.col1"></th><th t="docs.cheatsheet.routing.col2"></th><th t="docs.cheatsheet.routing.col3"></th></tr></thead>
       <tbody>
@@ -176,7 +176,7 @@
 
   <!-- Animation -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.animation.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-animation" t="docs.cheatsheet.animation.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.animation.col1"></th><th t="docs.cheatsheet.animation.col2"></th><th t="docs.cheatsheet.animation.col3"></th></tr></thead>
       <tbody>
@@ -193,7 +193,7 @@
 
   <!-- Drag and Drop -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.dnd.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-dnd" t="docs.cheatsheet.dnd.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.dnd.col1"></th><th t="docs.cheatsheet.dnd.col2"></th><th t="docs.cheatsheet.dnd.col3"></th></tr></thead>
       <tbody>
@@ -228,7 +228,7 @@
 
   <!-- i18n -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.i18n.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-i18n" t="docs.cheatsheet.i18n.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.i18n.col1"></th><th t="docs.cheatsheet.i18n.col2"></th><th t="docs.cheatsheet.i18n.col3"></th></tr></thead>
       <tbody>
@@ -240,7 +240,7 @@
 
   <!-- Misc -->
   <div class="doc-section">
-    <h2 class="doc-title" t="docs.cheatsheet.misc.title"></h2>
+    <h2 class="doc-title" id="cheatsheet-misc" t="docs.cheatsheet.misc.title"></h2>
     <table class="doc-table">
       <thead><tr><th t="docs.cheatsheet.misc.col1"></th><th t="docs.cheatsheet.misc.col2"></th><th t="docs.cheatsheet.misc.col3"></th></tr></thead>
       <tbody>
