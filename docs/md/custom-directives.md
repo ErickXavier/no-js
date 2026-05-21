@@ -50,6 +50,47 @@ Extend No.JS with your own attribute-driven behaviors.
 
 ---
 
+### Priority Levels
+
+The `priority` number controls when your directive runs relative to built-in directives:
+
+| Priority Range | Category | Example |
+|---------------|----------|---------|
+| 0-1 | State/Fetch | `state`, `get` |
+| 2-5 | Computed/Refs | `computed`, `ref` |
+| 10 | Structural | `if`, `foreach`, `use` |
+| 15-20 | Rendering | `drag`, `bind`, `on:*` |
+| 25+ | Custom | Your directives |
+| 30 | Validation | `validate` |
+
+Default priority when omitted: 50 (runs after all built-in directives).
+
+### Cleanup / Disposal
+
+If your directive adds event listeners, observers, or timers, register cleanup via the element's disposal system. Return a cleanup function or use `_onDispose`:
+
+```html
+<script>
+  NoJS.directive('auto-resize', {
+    priority: 25,
+    init(el, name, value) {
+      const observer = new ResizeObserver(() => {
+        el.style.height = el.scrollHeight + 'px';
+      });
+      observer.observe(el);
+
+      // Cleanup when element is removed from DOM
+      el.__nojs_dispose = el.__nojs_dispose || [];
+      el.__nojs_dispose.push(() => observer.disconnect());
+    }
+  });
+</script>
+```
+
+> **Warning:** Custom directives cannot override built-in (core) directives — they are frozen after framework initialization. See [Plugins](plugins.md) for details.
+
+---
+
 ## Usage
 
 ```html
@@ -101,4 +142,12 @@ No.JS directives work on custom elements:
 
 ---
 
-**Next:** [Error Handling →](error-handling.md)
+---
+
+## See Also
+
+- [Plugins](plugins.md) — full plugin system with lifecycle hooks and globals
+- [Configuration](configuration.md) — `NoJS.directive()` API reference
+- [Filters & Pipes](filters.md) — `NoJS.filter()` for custom data transformations
+
+**Previous:** [Head Management ←](head-management.md) | **Next:** [Plugins →](plugins.md)

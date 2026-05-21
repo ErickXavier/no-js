@@ -26,6 +26,12 @@
 
     <h3 class="doc-subtitle" id="getting-started-self-hosted" t="docs.gettingStarted.installation.selfHostedSubtitle"></h3>
     <p class="doc-text" t="docs.gettingStarted.installation.selfHostedText"></p>
+
+    <h3 class="doc-subtitle" id="getting-started-npm" t="docs.gettingStarted.installation.npmSubtitle"></h3>
+    <div class="code-block"><pre><span class="hl-kw">npm install</span> @erickxavier/no-js</pre></div>
+    <div class="code-block"><pre><span class="hl-kw">import</span> NoJS <span class="hl-kw">from</span> <span class="hl-str">'@erickxavier/no-js'</span>;
+NoJS.init();</pre></div>
+    <p class="doc-text" t="docs.gettingStarted.installation.npmText"></p>
   </div>
 
   <!-- Quick Start -->
@@ -90,12 +96,13 @@
       </thead>
       <tbody>
         <tr><td>0</td><td><code>state</code>, <code>store</code></td><td t="docs.gettingStarted.coreConcepts.tableRow1"></td></tr>
-        <tr><td>1</td><td><code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code></td><td t="docs.gettingStarted.coreConcepts.tableRow2"></td></tr>
-        <tr><td>5</td><td><code>route</code></td><td t="docs.gettingStarted.coreConcepts.tableRow3"></td></tr>
-        <tr><td>10</td><td><code>if</code>, <code>switch</code>, <code>each</code>, <code>foreach</code></td><td t="docs.gettingStarted.coreConcepts.tableRow4"></td></tr>
-        <tr><td>20</td><td><code>bind</code>, <code>class-*</code>, <code>style-*</code>, <code>show</code>, <code>hide</code></td><td t="docs.gettingStarted.coreConcepts.tableRow5"></td></tr>
-        <tr><td>20</td><td><code>on:*</code></td><td t="docs.gettingStarted.coreConcepts.tableRow6"></td></tr>
-        <tr><td>30</td><td><code>validate</code>, <code>animate</code></td><td t="docs.gettingStarted.coreConcepts.tableRow7"></td></tr>
+        <tr><td>1</td><td><code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code>, <code>error-boundary</code>, <code>i18n-ns</code></td><td t="docs.gettingStarted.coreConcepts.tableRow1b"></td></tr>
+        <tr><td>2</td><td><code>computed</code>, <code>watch</code></td><td t="docs.gettingStarted.coreConcepts.tableRow2b"></td></tr>
+        <tr><td>5</td><td><code>ref</code></td><td t="docs.gettingStarted.coreConcepts.tableRow5b"></td></tr>
+        <tr><td>10</td><td><code>if</code>, <code>switch</code>, <code>foreach</code>, <code>each</code>, <code>for</code>, <code>use</code>, <code>drag-list</code></td><td t="docs.gettingStarted.coreConcepts.tableRow4"></td></tr>
+        <tr><td>15</td><td><code>drag</code>, <code>drop</code></td><td t="docs.gettingStarted.coreConcepts.tableRow15"></td></tr>
+        <tr><td>20</td><td><code>bind</code>, <code>bind-*</code>, <code>model</code>, <code>class-*</code>, <code>style-*</code>, <code>on:*</code>, <code>show</code>, <code>hide</code>, <code>t</code>, <code>call</code>, <code>trigger</code></td><td t="docs.gettingStarted.coreConcepts.tableRow5"></td></tr>
+        <tr><td>30</td><td><code>validate</code></td><td t="docs.gettingStarted.coreConcepts.tableRow7"></td></tr>
       </tbody>
     </table>
 

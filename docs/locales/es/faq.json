@@ -3,8 +3,7 @@
     "hero": {
       "badge": "FAQ",
       "title": "Preguntas Frecuentes",
-      "subtitle": "Todo lo que necesitas saber sobre No.JS.",
-      "cta": "Ver Preguntas"
+      "subtitle": "Todo lo que necesitas saber sobre No.JS."
     },
     "search": {
       "placeholder": "Buscar en las FAQ"
@@ -18,7 +17,6 @@
       "resources": "Recursos",
       "documentation": "Documentación",
       "examples": "Ejemplos",
-      "discussions": "GitHub Discussions",
       "discord": "Comunidad Discord"
     },
     "gettingStarted": {
@@ -101,7 +99,6 @@
       "title": "¿Aún tienes dudas?",
       "subtitle": "Consulta la documentación o únete a la comunidad.",
       "docs": "Ver Documentación",
-      "discussions": "GitHub Discussions",
       "discord": "Comunidad Discord"
     }
   }

@@ -156,4 +156,12 @@ Both plain IDs and `#id` syntax are accepted. Each `include` creates a fresh ind
 
 ---
 
-**Next:** [State Management →](state-management.md)
+---
+
+## See Also
+
+- [Loops](loops.md) — `template` attribute for loop item templates
+- [Routing](routing.md) — route templates and file-based routing
+- [Data Fetching](data-fetching.md) — `loading`, `error`, `success` templates
+
+**Previous:** [Loops ←](loops.md) | **Next:** [Events →](events.md)

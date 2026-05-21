@@ -24,11 +24,13 @@ Welcome to the No.JS documentation. Choose a topic to get started.
 - [Events](events.md) — `on:*`, modifiers, lifecycle hooks, `$event`, `$el`
 - [Forms & Validation](forms-validation.md) — `validate`, `$form`, custom validators
 - [Actions & Refs](actions-refs.md) — `call`, `trigger`, `ref`, `$refs`
+- [Drag & Drop](drag-and-drop.md) — `drag`, `drop`, `drag-list`, multi-select
 
 ## Presentation
 
 - [Dynamic Styling](styling.md) — `class-*`, `class-map`, `style-*`, `style-map`
 - [Animations](animations.md) — `animate`, `transition`, stagger, built-in names
+- [Head Management](head-management.md) — `page-title`, `page-description`, `page-canonical`, `page-jsonld`
 - [Filters & Pipes](filters.md) — Built-in filters, chaining, custom filters
 
 ## Advanced
@@ -36,10 +38,13 @@ Welcome to the No.JS documentation. Choose a topic to get started.
 - [Routing](routing.md) — SPA navigation, params, guards, nested routes
 - [Internationalization](i18n.md) — `t`, pluralization, locale switching
 - [Custom Directives](custom-directives.md) — Extend No.JS with your own directives
+- [Plugins](plugins.md) — Plugin system, globals, interceptor sentinels, lifecycle
 - [Error Handling](error-handling.md) — Per-element errors, boundaries, global handler
 - [Configuration](configuration.md) — Global settings, interceptors, CSRF, security
+- [SSG & Pre-Rendering](ssg.md) — Static generation, server rendering, Eleventy
 
 ## Reference
 
 - [Directive Cheatsheet](cheatsheet.md) — Every directive at a glance
 - [Full SPA Example](examples.md) — Complete app with routing, auth, i18n & more
+- [Playground](playground.md) — Interactive code editor and live preview

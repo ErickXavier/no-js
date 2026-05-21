@@ -70,6 +70,50 @@
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user | values"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>             <span class="hl-cmt">&lt;!-- ['John', 'john@ex.com', 30] --&gt;</span></pre></div>
   </div>
 
+  <!-- Complete Reference Table -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="filters-reference" t="docs.filters.referenceTable.title"></h2>
+    <p class="doc-text" t="docs.filters.referenceTable.text"></p>
+    <table class="doc-table">
+      <thead><tr><th t="docs.filters.referenceTable.col1"></th><th t="docs.filters.referenceTable.col2"></th><th t="docs.filters.referenceTable.col3"></th></tr></thead>
+      <tbody>
+        <tr><td><code>uppercase</code></td><td>Text</td><td t="docs.filters.referenceTable.uppercase"></td></tr>
+        <tr><td><code>lowercase</code></td><td>Text</td><td t="docs.filters.referenceTable.lowercase"></td></tr>
+        <tr><td><code>capitalize</code></td><td>Text</td><td t="docs.filters.referenceTable.capitalize"></td></tr>
+        <tr><td><code>truncate</code></td><td>Text</td><td t="docs.filters.referenceTable.truncate"></td></tr>
+        <tr><td><code>initials</code></td><td>Text</td><td t="docs.filters.referenceTable.initials"></td></tr>
+        <tr><td><code>slug</code></td><td>Text</td><td t="docs.filters.referenceTable.slug"></td></tr>
+        <tr><td><code>trim</code></td><td>Text</td><td t="docs.filters.referenceTable.trim"></td></tr>
+        <tr><td><code>padStart</code></td><td>Text</td><td t="docs.filters.referenceTable.padStart"></td></tr>
+        <tr><td><code>padEnd</code></td><td>Text</td><td t="docs.filters.referenceTable.padEnd"></td></tr>
+        <tr><td><code>encodeUri</code></td><td>Text</td><td t="docs.filters.referenceTable.encodeUri"></td></tr>
+        <tr><td><code>currency</code></td><td>Number</td><td t="docs.filters.referenceTable.currency"></td></tr>
+        <tr><td><code>number</code></td><td>Number</td><td t="docs.filters.referenceTable.number"></td></tr>
+        <tr><td><code>percent</code></td><td>Number</td><td t="docs.filters.referenceTable.percent"></td></tr>
+        <tr><td><code>ordinal</code></td><td>Number</td><td t="docs.filters.referenceTable.ordinal"></td></tr>
+        <tr><td><code>bytes</code></td><td>Number</td><td t="docs.filters.referenceTable.bytes"></td></tr>
+        <tr><td><code>round</code></td><td>Number</td><td t="docs.filters.referenceTable.round"></td></tr>
+        <tr><td><code>abs</code></td><td>Number</td><td t="docs.filters.referenceTable.abs"></td></tr>
+        <tr><td><code>reverse</code></td><td>Array</td><td t="docs.filters.referenceTable.reverse"></td></tr>
+        <tr><td><code>unique</code></td><td>Array</td><td t="docs.filters.referenceTable.unique"></td></tr>
+        <tr><td><code>flatten</code></td><td>Array</td><td t="docs.filters.referenceTable.flatten"></td></tr>
+        <tr><td><code>pluck</code></td><td>Array</td><td t="docs.filters.referenceTable.pluck"></td></tr>
+        <tr><td><code>where</code></td><td>Array</td><td t="docs.filters.referenceTable.where"></td></tr>
+        <tr><td><code>sortBy</code></td><td>Array</td><td t="docs.filters.referenceTable.sortBy"></td></tr>
+        <tr><td><code>groupBy</code></td><td>Array</td><td t="docs.filters.referenceTable.groupBy"></td></tr>
+        <tr><td><code>first</code></td><td>Array</td><td t="docs.filters.referenceTable.first"></td></tr>
+        <tr><td><code>last</code></td><td>Array</td><td t="docs.filters.referenceTable.last"></td></tr>
+        <tr><td><code>date</code></td><td>Date</td><td t="docs.filters.referenceTable.date"></td></tr>
+        <tr><td><code>datetime</code></td><td>Date</td><td t="docs.filters.referenceTable.datetime"></td></tr>
+        <tr><td><code>timeago</code></td><td>Date</td><td t="docs.filters.referenceTable.timeago"></td></tr>
+        <tr><td><code>json</code></td><td>Utility</td><td t="docs.filters.referenceTable.json"></td></tr>
+        <tr><td><code>default</code></td><td>Utility</td><td t="docs.filters.referenceTable.default"></td></tr>
+        <tr><td><code>keys</code></td><td>Object</td><td t="docs.filters.referenceTable.keys"></td></tr>
+        <tr><td><code>values</code></td><td>Object</td><td t="docs.filters.referenceTable.values"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Chaining Filters -->
   <div class="doc-section">
     <h2 class="doc-title" id="filters-chaining" t="docs.filters.chaining.title"></h2>

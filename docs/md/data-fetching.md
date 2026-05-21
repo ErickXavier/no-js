@@ -44,6 +44,8 @@ Absolute URLs skip base resolution:
 </script>
 ```
 
+> **Note:** `retries` applies to 5xx server errors and network failures. Client errors (4xx) are not retried.
+
 ### Per-Request Headers
 
 ```html
@@ -264,17 +266,6 @@ The skeleton is hidden automatically when:
 </div>
 ```
 
-### Using `skeleton=` alongside `loading=`
-
-`skeleton=` and `loading=` are complementary and can be used on the same
-element. They serve different purposes:
-
-- `skeleton=` shows/hides an **existing DOM element** (the skeleton).
-- `loading=` **clones a template** into the fetch container.
-
-Both can be active simultaneously. If you want only one loading indicator,
-use either `skeleton=` or `loading=`, not both.
-
 ### Skeleton element visibility
 
 The skeleton element (`id="skeleton"`) should start **visible** in the HTML
@@ -405,4 +396,13 @@ Plugins installed with `{ trusted: true }` via `NoJS.use()` receive the full, un
 
 ---
 
-**Next:** [Data Binding →](data-binding.md)
+## See Also
+
+- [Actions & Refs](actions-refs.md) — `call` directive for click-triggered requests
+- [State Management](state-management.md) — `into` for writing responses to stores
+- [Configuration](configuration.md) — global API settings, CSRF, interceptors
+- [Error Handling](error-handling.md) — per-element and global error handling
+
+---
+
+**Previous:** [Head Management ←](head-management.md) | **Next:** [Data Binding →](data-binding.md)

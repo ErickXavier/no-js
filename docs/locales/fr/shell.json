@@ -17,14 +17,6 @@
     },
     "footer": {
       "desc": "Le framework réactif HTML-first",
-      "resources": "Ressources",
-      "documentation": "Documentation",
-      "examples": "Exemples",
-      "apiReference": "Référence API",
-      "playground": "Playground",
-      "faq": "FAQ",
-      "github": "GitHub",
-      "discord": "Discord",
       "license": "2026 No.JS - Licence MIT"
     },
     "sidebar": {

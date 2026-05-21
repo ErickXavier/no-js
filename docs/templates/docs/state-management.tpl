@@ -139,5 +139,43 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
   </div>
 
+  <!-- persist-schema -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="state-persist-schema" t="docs.stateManagement.persistSchema.title"></h2>
+    <p class="doc-text" t="docs.stateManagement.persistSchema.text"></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ theme: 'light', lang: 'en' }"</span>
+     <span class="hl-attr">persist</span>=<span class="hl-str">"localStorage"</span>
+     <span class="hl-attr">persist-key</span>=<span class="hl-str">"prefs"</span>
+     <span class="hl-attr">persist-fields</span>=<span class="hl-str">"theme,lang"</span>
+     <span class="hl-attr">persist-schema</span><span class="hl-tag">&gt;</span>
+  <span class="hl-cmt">&lt;!-- Old keys not in initial state are discarded on restore --&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+  </div>
+
+  <!-- NoJS.notify() -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="state-notify" t="docs.stateManagement.notify.title"></h2>
+    <p class="doc-text" t="docs.stateManagement.notify.text"></p>
+    <div class="code-block"><pre><span class="hl-cmt">// External JS mutates a store</span>
+<span class="hl-fn">NoJS</span>.<span class="hl-attr">store</span>.<span class="hl-attr">cart</span>.<span class="hl-attr">items</span>.<span class="hl-fn">push</span>({ <span class="hl-attr">id</span>: <span class="hl-num">1</span>, <span class="hl-attr">name</span>: <span class="hl-str">'Widget'</span> });
+<span class="hl-fn">NoJS</span>.<span class="hl-fn">notify</span>();  <span class="hl-cmt">// Flush DOM updates</span></pre></div>
+    <div class="callout"><p t="docs.stateManagement.notify.callout"></p></div>
+  </div>
+
+  <!-- Context Scoping -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="state-scoping" t="docs.stateManagement.scoping.title"></h2>
+    <p class="doc-text" t="docs.stateManagement.scoping.text"></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ color: 'red' }"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;p</span> <span class="hl-attr">bind</span>=<span class="hl-str">"color"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>  <span class="hl-cmt">&lt;!-- red --&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ color: 'blue' }"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">bind</span>=<span class="hl-str">"color"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>  <span class="hl-cmt">&lt;!-- blue (shadowed) --&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+    <div class="callout">
+      <p t="docs.stateManagement.scoping.callout"></p>
+    </div>
+  </div>
+
 </div>
 

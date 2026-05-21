@@ -61,8 +61,8 @@
       <thead><tr><th t="docs.dnd.drag.col1"></th><th t="docs.dnd.drag.col2"></th><th t="docs.dnd.drag.col3"></th><th t="docs.dnd.drag.col4"></th></tr></thead>
       <tbody>
         <tr><td><code>drag</code></td><td>expression</td><td><em>required</em></td><td t="docs.dnd.drag.dragDesc"></td></tr>
-        <tr><td><code>drag-type</code></td><td>string</td><td><code>"default"</code></td><td t-html="docs.dnd.drag.dragTypeDesc"></td></tr>
-        <tr><td><code>drag-effect</code></td><td><code>"copy"</code> | <code>"move"</code> | <code>"link"</code></td><td><code>"move"</code></td><td t-html="docs.dnd.drag.dragEffectDesc"></td></tr>
+        <tr><td><code>drag-type</code></td><td>string</td><td><code>"default"</code></td><td t="docs.dnd.drag.dragTypeDesc" t-html></td></tr>
+        <tr><td><code>drag-effect</code></td><td><code>"copy"</code> | <code>"move"</code> | <code>"link"</code></td><td><code>"move"</code></td><td t="docs.dnd.drag.dragEffectDesc" t-html></td></tr>
         <tr><td><code>drag-handle</code></td><td>CSS selector</td><td>—</td><td t="docs.dnd.drag.dragHandleDesc"></td></tr>
         <tr><td><code>drag-image</code></td><td>CSS selector | <code>"none"</code></td><td>—</td><td t="docs.dnd.drag.dragImageDesc"></td></tr>
         <tr><td><code>drag-image-offset</code></td><td><code>"x,y"</code></td><td><code>"0,0"</code></td><td t="docs.dnd.drag.dragImageOffsetDesc"></td></tr>
@@ -129,8 +129,8 @@
       <thead><tr><th t="docs.dnd.drop.col1"></th><th t="docs.dnd.drop.col2"></th><th t="docs.dnd.drop.col3"></th><th t="docs.dnd.drop.col4"></th></tr></thead>
       <tbody>
         <tr><td><code>drop</code></td><td>statement</td><td><em>required</em></td><td t="docs.dnd.drop.dropDesc"></td></tr>
-        <tr><td><code>drop-accept</code></td><td>string</td><td><code>"default"</code></td><td t-html="docs.dnd.drop.dropAcceptDesc"></td></tr>
-        <tr><td><code>drop-effect</code></td><td><code>"copy"</code> | <code>"move"</code> | <code>"link"</code></td><td><code>"move"</code></td><td t-html="docs.dnd.drop.dropEffectDesc"></td></tr>
+        <tr><td><code>drop-accept</code></td><td>string</td><td><code>"default"</code></td><td t="docs.dnd.drop.dropAcceptDesc" t-html></td></tr>
+        <tr><td><code>drop-effect</code></td><td><code>"copy"</code> | <code>"move"</code> | <code>"link"</code></td><td><code>"move"</code></td><td t="docs.dnd.drop.dropEffectDesc" t-html></td></tr>
         <tr><td><code>drop-class</code></td><td>string</td><td><code>"nojs-drag-over"</code></td><td t="docs.dnd.drop.dropClassDesc"></td></tr>
         <tr><td><code>drop-reject-class</code></td><td>string</td><td><code>"nojs-drop-reject"</code></td><td t="docs.dnd.drop.dropRejectClassDesc"></td></tr>
         <tr><td><code>drop-disabled</code></td><td>expression</td><td><code>false</code></td><td t="docs.dnd.drop.dropDisabledDesc"></td></tr>
@@ -147,7 +147,7 @@
   <!-- drag-list -->
   <div class="doc-section">
     <h2 class="doc-title" id="dnd-drag-list" t="docs.dnd.dragList.title"></h2>
-    <p class="doc-text" t-html="docs.dnd.dragList.text"></p>
+    <p class="doc-text" t="docs.dnd.dragList.text" t-html></p>
     <div class="demo-split">
       <div class="demo-code"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ todo: [...], done: [] }"</span><span class="hl-tag">&gt;</span>
   <span class="hl-cmt">&lt;!-- To Do --&gt;</span>
@@ -291,7 +291,7 @@
           .sel-demo-item:hover { background:color-mix(in srgb, var(--primary) 15%, transparent); }
           .sel-demo-selected { background:var(--primary) !important;color:#fff !important;border-color:var(--primary) !important; }
         </style>
-        <p class="text-sm text-muted mb-2" t-html="docs.dnd.dragMultiple.demoText"></p>
+        <p class="text-sm text-muted mb-2" t="docs.dnd.dragMultiple.demoText" t-html></p>
         <div style="display:flex;gap:16px;">
           <div style="flex:1;">
             <p class="text-sm" style="margin-bottom:8px;font-weight:600;" t="docs.dnd.dragMultiple.availableLabel"></p>
@@ -336,7 +336,7 @@
         <tr><td t="docs.dnd.dragMultiple.selClick"></td><td t="docs.dnd.dragMultiple.selClickResult"></td></tr>
         <tr><td t="docs.dnd.dragMultiple.selCtrlClick"></td><td t="docs.dnd.dragMultiple.selCtrlClickResult"></td></tr>
         <tr><td t="docs.dnd.dragMultiple.selEscape"></td><td t="docs.dnd.dragMultiple.selEscapeResult"></td></tr>
-        <tr><td t="docs.dnd.dragMultiple.selDrag"></td><td t-html="docs.dnd.dragMultiple.selDragResult"></td></tr>
+        <tr><td t="docs.dnd.dragMultiple.selDrag"></td><td t="docs.dnd.dragMultiple.selDragResult" t-html></td></tr>
       </tbody>
     </table>
   </div>
@@ -344,16 +344,16 @@
   <!-- implicit variables -->
   <div class="doc-section">
     <h2 class="doc-title" id="dnd-implicit-vars" t="docs.dnd.implicitVars.title"></h2>
-    <p class="doc-text" t-html="docs.dnd.implicitVars.text"></p>
+    <p class="doc-text" t="docs.dnd.implicitVars.text" t-html></p>
     <table class="doc-table">
       <thead><tr><th t="docs.dnd.implicitVars.col1"></th><th t="docs.dnd.implicitVars.col2"></th><th t="docs.dnd.implicitVars.col3"></th></tr></thead>
       <tbody>
         <tr><td><code>$drag</code></td><td>any</td><td t="docs.dnd.implicitVars.dragDesc"></td></tr>
-        <tr><td><code>$dragType</code></td><td>string</td><td t-html="docs.dnd.implicitVars.dragTypeDesc"></td></tr>
-        <tr><td><code>$dragEffect</code></td><td>string</td><td t-html="docs.dnd.implicitVars.dragEffectDesc"></td></tr>
+        <tr><td><code>$dragType</code></td><td>string</td><td t="docs.dnd.implicitVars.dragTypeDesc" t-html></td></tr>
+        <tr><td><code>$dragEffect</code></td><td>string</td><td t="docs.dnd.implicitVars.dragEffectDesc" t-html></td></tr>
         <tr><td><code>$dropIndex</code></td><td>number</td><td t="docs.dnd.implicitVars.dropIndexDesc"></td></tr>
-        <tr><td><code>$source</code></td><td>object | null</td><td t-html="docs.dnd.implicitVars.sourceDesc"></td></tr>
-        <tr><td><code>$target</code></td><td>object | null</td><td t-html="docs.dnd.implicitVars.targetDesc"></td></tr>
+        <tr><td><code>$source</code></td><td>object | null</td><td t="docs.dnd.implicitVars.sourceDesc" t-html></td></tr>
+        <tr><td><code>$target</code></td><td>object | null</td><td t="docs.dnd.implicitVars.targetDesc" t-html></td></tr>
       </tbody>
     </table>
     <div class="demo-split">
@@ -366,7 +366,7 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       <div class="demo-preview" state="{ info: 'Drop an item here to see its implicit variables', items: [{v:'File', t:'doc'}, {v:'Image', t:'media'}, {v:'Link', t:'link'}] }">
         <div class="demo-result-label" t="docs.dnd.implicitVars.preview"></div>
-        <p class="text-sm text-muted mb-2" t-html="docs.dnd.implicitVars.demoText"></p>
+        <p class="text-sm text-muted mb-2" t="docs.dnd.implicitVars.demoText" t-html></p>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
           <div foreach="it in items" template="iv-item-tpl" style="display:contents"></div>
         </div>
@@ -400,7 +400,7 @@
         <tr><td><code>.nojs-drop-placeholder</code></td><td t="docs.dnd.cssClasses.dropPlaceholderDesc"></td></tr>
         <tr><td><code>.nojs-selected</code></td><td t="docs.dnd.cssClasses.selectedDesc"></td></tr>
         <tr><td><code>.nojs-drop-settle</code></td><td t="docs.dnd.cssClasses.dropSettleDesc"></td></tr>
-        <tr><td><code>.nojs-drag-list-empty</code></td><td t-html="docs.dnd.cssClasses.dragListEmptyDesc"></td></tr>
+        <tr><td><code>.nojs-drag-list-empty</code></td><td t="docs.dnd.cssClasses.dragListEmptyDesc" t-html></td></tr>
       </tbody>
     </table>
     <div class="demo-split">
@@ -425,7 +425,7 @@
         </div>
         <div class="css-demo-zone" drop="cssBin = [...cssBin, $drag]" drop-accept="css-demo" drop-max="2"
              style="min-height:60px;padding:10px;border:2px dashed var(--border);border-radius:8px;display:flex;flex-direction:column;gap:4px;transition:all .2s;">
-          <span style="color:var(--text-dim);font-size:0.85rem;" show="cssBin.length === 0" t-html="docs.dnd.cssClasses.dropZoneHint"></span>
+          <span style="color:var(--text-dim);font-size:0.85rem;" show="cssBin.length === 0" t="docs.dnd.cssClasses.dropZoneHint" t-html></span>
           <div foreach="ci in cssBin" template="css-dropped-tpl" style="display:contents"></div>
         </div>
         <template id="css-item-tpl">
@@ -450,10 +450,10 @@
       <thead><tr><th t="docs.dnd.a11y.col1"></th><th t="docs.dnd.a11y.col2"></th></tr></thead>
       <tbody>
         <tr><td><code>draggable="true"</code></td><td t="docs.dnd.a11y.draggableDesc"></td></tr>
-        <tr><td><code>aria-grabbed</code></td><td t-html="docs.dnd.a11y.ariaGrabbedDesc"></td></tr>
+        <tr><td><code>aria-grabbed</code></td><td t="docs.dnd.a11y.ariaGrabbedDesc" t-html></td></tr>
         <tr><td><code>aria-dropeffect</code></td><td t="docs.dnd.a11y.ariaDropeffectDesc"></td></tr>
-        <tr><td><code>role="listbox"</code></td><td t-html="docs.dnd.a11y.roleListboxDesc"></td></tr>
-        <tr><td><code>role="option"</code></td><td t-html="docs.dnd.a11y.roleOptionDesc"></td></tr>
+        <tr><td><code>role="listbox"</code></td><td t="docs.dnd.a11y.roleListboxDesc" t-html></td></tr>
+        <tr><td><code>role="option"</code></td><td t="docs.dnd.a11y.roleOptionDesc" t-html></td></tr>
         <tr><td><code>tabindex="0"</code></td><td t="docs.dnd.a11y.tabindexDesc"></td></tr>
       </tbody>
     </table>
@@ -482,7 +482,7 @@
 <span class="hl-cmt">&lt;!--   role="option"       --&gt;</span></pre></div>
       <div class="demo-preview" state="{ a11yItems: [{id:1,title:'First item'},{id:2,title:'Second item'},{id:3,title:'Third item'},{id:4,title:'Fourth item'}] }">
         <div class="demo-result-label" t="docs.dnd.a11y.preview"></div>
-        <p class="text-sm text-muted mb-2" t-html="docs.dnd.a11y.demoText"></p>
+        <p class="text-sm text-muted mb-2" t="docs.dnd.a11y.demoText" t-html></p>
         <div drag-list="a11yItems" template="a11y-item-tpl" drag-list-key="id" drop-sort="vertical" drop-placeholder="auto"
              style="padding:8px;border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;gap:6px;">
         </div>

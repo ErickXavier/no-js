@@ -61,7 +61,7 @@
         <div class="demo-result-label" t="docs.dataBinding.model.preview"></div>
         <div class="form-group">
           <label class="form-label" t="docs.dataBinding.model.nameLabel"></label>
-          <input type="text" model="name" class="input" placeholder="Type your name..." />
+          <input type="text" model="name" class="input" bind-placeholder="$i18n.t('docs.dataBinding.model.placeholder')" />
         </div>
         <label class="checkbox-label">
           <input type="checkbox" model="agreed" /> <span t="docs.dataBinding.model.checkbox"></span>
@@ -70,6 +70,39 @@
         <p class="text-sm text-muted"><span t="docs.dataBinding.model.agreedLabel"></span> <span bind="agreed"></span></p>
       </div>
     </div>
+  </div>
+
+  <!-- Radio & Multi-Select -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="binding-radio-select" t="docs.dataBinding.radioSelect.title"></h2>
+    <p class="doc-text" t="docs.dataBinding.radioSelect.text"></p>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Radio group --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ size: 'md' }"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;label&gt;&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-str">"radio"</span> <span class="hl-attr">model</span>=<span class="hl-str">"size"</span> <span class="hl-attr">value</span>=<span class="hl-str">"sm"</span><span class="hl-tag">&gt;</span> Small<span class="hl-tag">&lt;/label&gt;</span>
+  <span class="hl-tag">&lt;label&gt;&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-str">"radio"</span> <span class="hl-attr">model</span>=<span class="hl-str">"size"</span> <span class="hl-attr">value</span>=<span class="hl-str">"md"</span><span class="hl-tag">&gt;</span> Medium<span class="hl-tag">&lt;/label&gt;</span>
+  <span class="hl-tag">&lt;label&gt;&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-str">"radio"</span> <span class="hl-attr">model</span>=<span class="hl-str">"size"</span> <span class="hl-attr">value</span>=<span class="hl-str">"lg"</span><span class="hl-tag">&gt;</span> Large<span class="hl-tag">&lt;/label&gt;</span>
+  <span class="hl-tag">&lt;p&gt;</span>Selected: <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"size"</span><span class="hl-tag">&gt;&lt;/span&gt;&lt;/p&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Multi-select --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ langs: [] }"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;select</span> <span class="hl-attr">model</span>=<span class="hl-str">"langs"</span> <span class="hl-attr">multiple</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-str">"js"</span><span class="hl-tag">&gt;</span>JavaScript<span class="hl-tag">&lt;/option&gt;</span>
+    <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-str">"py"</span><span class="hl-tag">&gt;</span>Python<span class="hl-tag">&lt;/option&gt;</span>
+    <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-str">"go"</span><span class="hl-tag">&gt;</span>Go<span class="hl-tag">&lt;/option&gt;</span>
+  <span class="hl-tag">&lt;/select&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="binding-common-mistakes" t="docs.dataBinding.commonMistakes.title"></h2>
+    <p class="doc-text" t="docs.dataBinding.commonMistakes.text"></p>
+    <ul class="doc-list">
+      <li t="docs.dataBinding.commonMistakes.mistake1"></li>
+      <li t="docs.dataBinding.commonMistakes.mistake2"></li>
+      <li t="docs.dataBinding.commonMistakes.mistake3"></li>
+    </ul>
   </div>
 
 </div>

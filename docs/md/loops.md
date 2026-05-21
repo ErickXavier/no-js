@@ -199,4 +199,36 @@ Child loops can access parent scope variables:
 
 ---
 
-**Next:** [Templates →](templates.md)
+---
+
+## Reactivity
+
+Loop directives are fully reactive. When the source array changes (push, splice, sort, or full reassignment), the loop re-renders automatically. No `$notify()` call is needed when mutations happen inside HTML expressions:
+
+```html
+<div state="{ items: ['A', 'B', 'C'] }">
+  <div foreach="item in items">
+    <span bind="item"></span>
+  </div>
+  <button on:click="items.push('New')">Add Item</button>
+  <!-- Loop updates automatically -->
+</div>
+```
+
+> **Note:** `foreach`/`each`/`for` iterate over arrays only. Object iteration is not directly supported — use the `keys` or `values` filter to convert objects to arrays first:
+> ```html
+> <div foreach="key in settings | keys">
+>   <span bind="key"></span>: <span bind="settings[key]"></span>
+> </div>
+> ```
+
+---
+
+## See Also
+
+- [Templates](templates.md) — external templates referenced by loops
+- [Animations](animations.md) — `animate-stagger` for list enter/leave effects
+- [Filters & Pipes](filters.md) — `count`, `first`, `last`, `reverse`, `sortBy` filters
+- [Drag & Drop](drag-and-drop.md) — `drag-list` for sortable lists
+
+**Previous:** [Conditionals ←](conditionals.md) | **Next:** [Templates →](templates.md)

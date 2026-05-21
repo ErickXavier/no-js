@@ -223,6 +223,18 @@ No.JS automatically adds:
 - `tabindex="0"` for keyboard access
 - **Space** to grab, **Escape** to cancel, **Arrow keys** to navigate, **Enter** to drop
 
+### Touch Devices
+
+Drag and drop uses the HTML Drag and Drop API, which has limited support on touch devices. For mobile-friendly drag interactions, consider using a touch-event polyfill or the `drag-list` directive which provides a higher-level abstraction.
+
 ---
 
-**Next:** [Animations & Transitions →](animations.md)
+## See Also
+
+- [Loops](loops.md) — `foreach`/`each` for rendering list items
+- [Events](events.md) — `on:reorder`, `on:receive`, `on:remove` event handling
+- [Animations](animations.md) — settle animations on drop
+
+---
+
+**Previous:** [Internationalization ←](i18n.md) | **Next:** [Head Management →](head-management.md)

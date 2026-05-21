@@ -129,7 +129,7 @@
 
   <!-- Number & Date Formatting -->
   <div class="doc-section">
-    <h2 class="doc-title" id="i18n-formatting" t-html="docs.i18n.formatting.title"></h2>
+    <h2 class="doc-title" id="i18n-formatting" t="docs.i18n.formatting.title" t-html></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Currency --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"price | currency"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>           <span class="hl-cmt">&lt;!-- $1,234.56 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"price | currency:'BRL'"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>     <span class="hl-cmt">&lt;!-- R$ 1.234,56 --&gt;</span>
@@ -144,6 +144,35 @@
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"value | number"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>              <span class="hl-cmt">&lt;!-- 1,235 (default: 0 decimals) --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"value | number:2"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>            <span class="hl-cmt">&lt;!-- 1,234.56 --&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"value | percent"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>             <span class="hl-cmt">&lt;!-- 45% --&gt;</span></pre></div>
+  </div>
+
+  <!-- Fallback Behavior -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="i18n-fallback" t="docs.i18n.fallback.title"></h2>
+    <p class="doc-text" t="docs.i18n.fallback.text"></p>
+    <div class="code-block"><pre><span class="hl-kw">NoJS</span>.i18n({
+  defaultLocale: <span class="hl-str">'en'</span>,
+  fallbackLocale: <span class="hl-str">'en'</span>,
+  loadPath: <span class="hl-str">'/locales/{locale}.json'</span>
+});</pre></div>
+    <div class="callout">
+      <p t="docs.i18n.fallback.callout"></p>
+    </div>
+  </div>
+
+  <!-- Browser Locale Detection -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="i18n-detection" t="docs.i18n.detection.title"></h2>
+    <p class="doc-text" t="docs.i18n.detection.text"></p>
+    <div class="code-block"><pre><span class="hl-kw">NoJS</span>.i18n({
+  detectBrowser: <span class="hl-kw">true</span>,
+  persist: <span class="hl-kw">true</span>,
+  defaultLocale: <span class="hl-str">'en'</span>,
+  loadPath: <span class="hl-str">'/locales/{locale}.json'</span>
+});</pre></div>
+    <div class="callout">
+      <p t="docs.i18n.detection.callout"></p>
+    </div>
   </div>
 
   <!-- Live Demo -->

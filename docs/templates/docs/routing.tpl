@@ -44,7 +44,7 @@
 
   <!-- Route Parameters & Query -->
   <div class="doc-section">
-    <h2 class="doc-title" id="routing-params" t-html="docs.routing.params.title"></h2>
+    <h2 class="doc-title" id="routing-params" t="docs.routing.params.title" t-html></h2>
     <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Params: /users/42 --&gt;</span>
 <span class="hl-tag">&lt;template</span> <span class="hl-attr">route</span>=<span class="hl-str">"/users/:id"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"$route.params.id"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>    <span class="hl-cmt">&lt;!-- "42" --&gt;</span>

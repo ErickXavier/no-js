@@ -58,6 +58,28 @@
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
   </div>
 
+  <!-- Trigger Attributes -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="actions-trigger-attrs" t="docs.actionsRefs.triggerAttrs.title"></h2>
+    <p class="doc-text" t="docs.actionsRefs.triggerAttrs.text"></p>
+    <table class="doc-table">
+      <thead><tr><th t="docs.actionsRefs.triggerAttrs.col1"></th><th t="docs.actionsRefs.triggerAttrs.col2"></th></tr></thead>
+      <tbody>
+        <tr><td><code>trigger-data</code></td><td t="docs.actionsRefs.triggerAttrs.triggerData"></td></tr>
+        <tr><td><code>trigger-bubbles</code></td><td t="docs.actionsRefs.triggerAttrs.triggerBubbles"></td></tr>
+        <tr><td><code>trigger-once</code></td><td t="docs.actionsRefs.triggerAttrs.triggerOnce"></td></tr>
+      </tbody>
+    </table>
+    <div class="code-block"><pre><span class="hl-tag">&lt;button</span>
+  <span class="hl-attr">trigger</span>=<span class="hl-str">"item-selected"</span>
+  <span class="hl-attr">trigger-data</span>=<span class="hl-str">"{ id: item.id, name: item.name }"</span><span class="hl-tag">&gt;</span>
+  Select
+<span class="hl-tag">&lt;/button&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Listen for the custom event --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">on:item-selected</span>=<span class="hl-str">"selected = $event.detail"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div&gt;</span></pre></div>
+  </div>
+
   <!-- ref -->
   <div class="doc-section">
     <h2 class="doc-title" id="actions-refs-ref" t="docs.actionsRefs.ref.title"></h2>

@@ -132,6 +132,32 @@ click → [confirm?] → [loading] → [success | error]
 </div>
 ```
 
+### Trigger Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `trigger` | `string` | Name of the custom event to emit |
+| `trigger-data` | `expression` | Data to include in `event.detail` |
+
+The event is dispatched as a `CustomEvent` that bubbles up the DOM. Parent elements can listen with `on:{event-name}`:
+
+```html
+<div on:item-selected="selectedItem = $event.detail">
+
+  <div each="item in items">
+    <button on:click
+            trigger="item-selected"
+            trigger-data="item">
+      Select <span bind="item.name"></span>
+    </button>
+  </div>
+
+  <p show="selectedItem">
+    Selected: <span bind="selectedItem.name"></span>
+  </p>
+</div>
+```
+
 ---
 
 ## `ref` — Named References
@@ -160,4 +186,12 @@ All elements with `ref` are accessible via `$refs` in the current scope:
 
 ---
 
-**Next:** [Custom Directives →](custom-directives.md)
+---
+
+## See Also
+
+- [Events](events.md) — `on:*` event handling and modifiers
+- [Data Fetching](data-fetching.md) — HTTP directives that `call` wraps
+- [Templates](templates.md) — `use` for template instantiation with `ref`
+
+**Previous:** [Forms & Validation ←](forms-validation.md) | **Next:** [Dynamic Styling →](styling.md)

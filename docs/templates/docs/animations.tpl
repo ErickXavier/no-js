@@ -102,6 +102,22 @@
     </div>
   </div>
 
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="animations-a11y" t="docs.animations.a11y.title"></h2>
+    <p class="doc-text" t="docs.animations.a11y.text"></p>
+    <div class="code-block"><pre><span class="hl-cmt">/* Built-in — No.JS adds this automatically */</span>
+<span class="hl-sel">@media</span> (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    <span class="hl-prop">animation-duration</span>: <span class="hl-num">0.01ms</span> !important;
+    <span class="hl-prop">transition-duration</span>: <span class="hl-num">0.01ms</span> !important;
+  }
+}</pre></div>
+    <div class="callout">
+      <p t="docs.animations.a11y.callout"></p>
+    </div>
+  </div>
+
   <!-- Live Demo -->
   <div class="doc-section">
     <h2 class="doc-title" id="animations-live-demo" t="docs.animations.liveDemo.title"></h2>
