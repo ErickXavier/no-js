@@ -25,6 +25,9 @@ export function _injectBuiltInStyles() {
 @keyframes bounceOut { 0% { opacity: 1; transform: scale(1); } 20% { transform: scale(0.9); } 50%,55% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(0.3); } }
 
 /* ── View Transition API presets ── */
+::view-transition-group(route-content) {
+  overflow: hidden;
+}
 ::view-transition-old(route-content),
 ::view-transition-new(route-content) {
   animation-duration: 0.3s;
