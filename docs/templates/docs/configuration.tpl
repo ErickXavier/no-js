@@ -2,7 +2,7 @@
 
 <section class="hero-section">
   <span class="badge" t="docs.configuration.hero.badge"></span>
-  <h1 class="hero-title" t-html="docs.configuration.hero.title"></h1>
+  <h1 class="hero-title" t="docs.configuration.hero.title"></h1>
   <p class="hero-subtitle" t="docs.configuration.hero.subtitle"></p>
 </section>
 

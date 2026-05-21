@@ -2,7 +2,7 @@
 
 <section class="hero-section">
   <span class="badge" t="docs.formsValidation.hero.badge"></span>
-  <h1 class="hero-title" t-html="docs.formsValidation.hero.title"></h1>
+  <h1 class="hero-title" t="docs.formsValidation.hero.title"></h1>
   <p class="hero-subtitle" t="docs.formsValidation.hero.subtitle"></p>
 </section>
 
