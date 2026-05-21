@@ -860,12 +860,16 @@
       },
       "classToggle": {
         "title": "class-* — Basculer les classes",
+        "text": "Ajoutez ou supprimez des classes CSS de manière réactive en fonction d'expressions. Utilisez class-{name} pour des toggles individuels ou class-map pour plusieurs classes.",
         "multiObject": "Classes multiples depuis un objet",
+        "multiObjectText": "Utilisez class-map avec une expression objet pour basculer plusieurs classes. Les clés sont des noms de classes, les valeurs des expressions booléennes.",
         "fromArray": "Depuis un tableau"
       },
       "inlineStyles": {
         "title": "style-* — Styles inline",
-        "fromObject": "Depuis un objet"
+        "text": "Définissez des propriétés CSS inline de manière réactive avec des attributs style-{property}. Les noms de propriétés utilisent le kebab-case (ex : style-font-size, style-background-color).",
+        "fromObject": "Depuis un objet",
+        "fromObjectText": "Utilisez style-map avec une expression objet pour définir plusieurs styles inline en une seule fois."
       },
       "liveDemo": {
         "title": "Démo en direct — Styles dynamiques",

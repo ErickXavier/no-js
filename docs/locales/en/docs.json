@@ -860,12 +860,16 @@
       },
       "classToggle": {
         "title": "class-* — Toggle Classes",
+        "text": "Add or remove CSS classes reactively based on expressions. Use class-{name} for individual toggles or class-map for multiple classes at once.",
         "multiObject": "Multiple Classes from Object",
+        "multiObjectText": "Use class-map with an object expression to toggle multiple classes. Keys are class names, values are boolean expressions.",
         "fromArray": "From Array"
       },
       "inlineStyles": {
         "title": "style-* — Inline Styles",
-        "fromObject": "From Object"
+        "text": "Set inline CSS properties reactively using style-{property} attributes. Property names use kebab-case (e.g. style-font-size, style-background-color).",
+        "fromObject": "From Object",
+        "fromObjectText": "Use style-map with an object expression to set multiple inline styles at once."
       },
       "liveDemo": {
         "title": "Live Demo — Dynamic Styling",

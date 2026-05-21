@@ -1150,7 +1150,7 @@ body:has(.docs-layout-wrapper .sidebar-link.active) > .content {
 /* ── Page TOC (sticky right column inside doc-main, below hero) ── */
 .doc-main {
   display: grid;
-  grid-template-columns: 1fr 200px;
+  grid-template-columns: 1fr 30%;
   grid-template-rows: auto 1fr;
 }
 .doc-main .hero-section {
