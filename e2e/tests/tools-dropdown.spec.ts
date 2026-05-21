@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 const TOOL_URLS = {
   lsp: 'https://lsp.no-js.dev/',
-  mcp: 'https://www.npmjs.com/package/@erickxavier/nojs-mcp',
   skill: 'https://github.com/ErickXavier/nojs-skill',
 };
 
@@ -48,7 +47,7 @@ test.describe('Ecosystem Tools Dropdown', () => {
       await expect(toolsMenu).not.toBeVisible();
     });
 
-    test('3 — All three tool links are present with correct hrefs', async ({ page }) => {
+    test('3 — All tool links are present with correct hrefs', async ({ page }) => {
       const toolsBtn = page.locator('.tools-dropdown-btn');
       const toolsMenu = page.locator('#tools-menu');
 
@@ -56,21 +55,20 @@ test.describe('Ecosystem Tools Dropdown', () => {
       await expect(toolsMenu).toBeVisible();
 
       const links = toolsMenu.locator('a.tools-option');
-      await expect(links).toHaveCount(3);
+      await expect(links).toHaveCount(2);
 
       await expect(links.nth(0)).toHaveAttribute('href', TOOL_URLS.lsp);
-      await expect(links.nth(1)).toHaveAttribute('href', TOOL_URLS.mcp);
-      await expect(links.nth(2)).toHaveAttribute('href', TOOL_URLS.skill);
+      await expect(links.nth(1)).toHaveAttribute('href', TOOL_URLS.skill);
     });
 
-    test('4 — All three links open in a new tab (target="_blank")', async ({ page }) => {
+    test('4 — All links open in a new tab (target="_blank")', async ({ page }) => {
       const toolsBtn = page.locator('.tools-dropdown-btn');
       await toolsBtn.click();
 
       const links = page.locator('#tools-menu a.tools-option');
-      await expect(links).toHaveCount(3);
+      await expect(links).toHaveCount(2);
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         await expect(links.nth(i)).toHaveAttribute('target', '_blank');
       }
     });
@@ -79,10 +77,10 @@ test.describe('Ecosystem Tools Dropdown', () => {
       await page.locator('.tools-dropdown-btn').click();
 
       const options = page.locator('#tools-menu a.tools-option');
-      await expect(options).toHaveCount(3);
+      await expect(options).toHaveCount(2);
 
       // Each option should have a non-empty name and description
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         const name = options.nth(i).locator('.tools-option-name');
         const desc = options.nth(i).locator('.tools-option-desc');
         await expect(name).not.toBeEmpty();
@@ -114,7 +112,7 @@ test.describe('Ecosystem Tools Dropdown', () => {
   test.describe('Mobile', () => {
     test.use({ viewport: { width: 768, height: 1024 } });
 
-    test('7 — Three tool links are visible in mobile nav with correct hrefs', async ({ page }) => {
+    test('7 — Tool links are visible in mobile nav with correct hrefs', async ({ page }) => {
       // Open mobile nav
       const menuBtn = page.locator('.mobile-menu-btn');
       await menuBtn.click();
@@ -126,17 +124,14 @@ test.describe('Ecosystem Tools Dropdown', () => {
       const groupLabel = mobileNav.locator('.mobile-nav-group-label');
       await expect(groupLabel).toBeVisible();
 
-      // Verify 3 tool links (external links with target="_blank" inside mobile nav)
+      // Verify tool links (external links with target="_blank" inside mobile nav)
       const lspLink = mobileNav.locator(`a[href="${TOOL_URLS.lsp}"]`);
-      const mcpLink = mobileNav.locator(`a[href="${TOOL_URLS.mcp}"]`);
       const skillLink = mobileNav.locator(`a[href="${TOOL_URLS.skill}"]`);
 
       await expect(lspLink).toBeVisible();
-      await expect(mcpLink).toBeVisible();
       await expect(skillLink).toBeVisible();
 
       await expect(lspLink).toHaveAttribute('target', '_blank');
-      await expect(mcpLink).toHaveAttribute('target', '_blank');
       await expect(skillLink).toHaveAttribute('target', '_blank');
     });
 
@@ -165,19 +160,16 @@ test.describe('Ecosystem Tools Dropdown', () => {
   // ─── Footer Tests ────────────────────────────────────────────────────
 
   test.describe('Footer', () => {
-    test('9 — Footer contains all three tool links', async ({ page }) => {
+    test('9 — Footer contains all tool links', async ({ page }) => {
       const footer = page.locator('footer.footer');
 
       const lspLink = footer.locator(`a[href="${TOOL_URLS.lsp}"]`);
-      const mcpLink = footer.locator(`a[href="${TOOL_URLS.mcp}"]`);
       const skillLink = footer.locator(`a[href="${TOOL_URLS.skill}"]`);
 
       await expect(lspLink).toBeVisible();
-      await expect(mcpLink).toBeVisible();
       await expect(skillLink).toBeVisible();
 
       await expect(lspLink).toHaveAttribute('target', '_blank');
-      await expect(mcpLink).toHaveAttribute('target', '_blank');
       await expect(skillLink).toHaveAttribute('target', '_blank');
     });
   });
@@ -217,8 +209,7 @@ test.describe('Ecosystem Tools Dropdown', () => {
       // Verify descriptions are in Spanish
       const options = page.locator('#tools-menu a.tools-option');
       await expect(options.nth(0).locator('.tools-option-desc')).toHaveText('Extensión VS Code');
-      await expect(options.nth(1).locator('.tools-option-desc')).toHaveText('Servidor AI tools');
-      await expect(options.nth(2).locator('.tools-option-desc')).toHaveText('Referencia AI agent');
+      await expect(options.nth(1).locator('.tools-option-desc')).toHaveText('Referencia AI agent');
     });
   });
 });

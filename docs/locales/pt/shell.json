@@ -12,8 +12,6 @@
       "tools": "Mais",
       "toolsLsp": "NoJS LSP",
       "toolsLspDesc": "Extensão VS Code",
-      "toolsMcp": "NoJS MCP",
-      "toolsMcpDesc": "Servidor AI tools",
       "toolsSkill": "NoJS Skill",
       "toolsSkillDesc": "Referência AI agent"
     },

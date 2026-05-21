@@ -2,7 +2,7 @@
   <img src="docs/logo-dark-round.png" alt="No.JS" width="26" style="vertical-align: middle; margin-top: -6px;"> No.JS
 </h1>
 
-![version](https://img.shields.io/badge/version-1.11.0-blue)
+![version](https://img.shields.io/badge/version-1.11.1-blue)
 
 **The HTML-First Reactive Framework**
 
@@ -197,7 +197,6 @@ Full documentation is available in the [docs/](docs/) folder:
 | Tool | Description |
 |------|-------------|
 | [NoJS-LSP](https://github.com/ErickXavier/nojs-lsp) | VS Code extension — autocomplete, hover docs, diagnostics for No.JS HTML |
-| [NoJS-MCP](https://github.com/ErickXavier/nojs-mcp) | MCP server — AI tools for building No.JS apps |
 | [NoJS-Skill](https://github.com/ErickXavier/nojs-skill) | Claude Code skill — guided No.JS project generation |
 | [NoJS-CLI](https://github.com/ErickXavier/nojs-cli) | CLI tool — scaffold, dev server, build & deploy No.JS apps |
 

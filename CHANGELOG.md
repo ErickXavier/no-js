@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.1](https://github.com/ErickXavier/no-js/compare/v1.11.0...v1.11.1) — 2026-05-20
+
+### Changed
+
+- Unified loop directives in docs — all code examples and live demos now use `foreach` as primary syntax
+- Deprecated NoJS-MCP server — removed all references from docs, tests, and agent configs
+
+### Fixed
+
+- Rebuilt dist bundles with v1.11.1 version string
+
 ## [1.11.0](https://github.com/ErickXavier/no-js/compare/v1.10.1...v1.11.0) — 2026-03-26
 
 ### Added

@@ -12,8 +12,6 @@
       "tools": "More",
       "toolsLsp": "NoJS LSP",
       "toolsLspDesc": "VS Code extension",
-      "toolsMcp": "NoJS MCP",
-      "toolsMcpDesc": "AI tools server",
       "toolsSkill": "NoJS Skill",
       "toolsSkillDesc": "AI agent reference"
     },

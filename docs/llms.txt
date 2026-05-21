@@ -48,6 +48,5 @@ No.JS replaces JavaScript framework boilerplate with declarative HTML attributes
 ## Ecosystem
 
 - [NoJS LSP](https://lsp.no-js.dev): VS Code language server extension — completions for 39+ directives, real-time diagnostics, hover docs, go-to-definition, semantic highlighting, code actions, and 23 built-in snippets
-- [NoJS MCP](https://www.npmjs.com/package/@erickxavier/nojs-mcp): MCP server for AI assistants — template validation, directive explanations, component scaffolding, and full framework documentation access
 - [GitHub](https://github.com/ErickXavier/no-js): Source code, issues, and contributions
 - [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=exs.nojs-lsp): Install the NoJS LSP extension directly
