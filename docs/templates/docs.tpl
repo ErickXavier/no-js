@@ -399,27 +399,6 @@
 
     <div class="doc-main" route-view="docs" src="./docs/" route-index="getting-started" transition="fade"></div>
 
-    <!-- Page TOC skeleton (shown while headings load) -->
-    <div class="page-toc-skeleton">
-        <div class="page-toc-skeleton-inner">
-            <div class="skl-toc-title"></div>
-            <div class="skl-toc-link"></div>
-            <div class="skl-toc-link w75"></div>
-            <div class="skl-toc-link w85"></div>
-            <div class="skl-toc-link w65"></div>
-            <div class="skl-toc-link w55"></div>
-            <div class="skl-toc-link w75"></div>
-            <div class="skl-toc-link w85"></div>
-            <div class="skl-toc-link w65"></div>
-        </div>
-    </div>
-
-    <!-- Right-side "On This Page" table of contents -->
-    <aside class="page-toc" id="page-toc">
-        <div class="page-toc-title" t="shell.sidebar.onThisPage"></div>
-        <nav class="page-toc-nav"></nav>
-    </aside>
-
 </div><!-- /doc-with-sidebar -->
 </div>
 
