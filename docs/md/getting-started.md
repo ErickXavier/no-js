@@ -14,6 +14,26 @@
 
 Download `dist/iife/no.js` and include it with a `<script>` tag.
 
+### npm / ESM
+
+```bash
+npm install @erickxavier/no-js
+```
+
+```javascript
+import NoJS from '@erickxavier/no-js';
+NoJS.init();
+```
+
+Or with CommonJS:
+
+```javascript
+const NoJS = require('@erickxavier/no-js');
+NoJS.init();
+```
+
+> When using npm, you must call `NoJS.init()` manually after the DOM is ready. The CDN script handles this automatically.
+
 ---
 
 ## Minimal Example
@@ -68,12 +88,13 @@ Directives run in a defined order:
 | Priority | Directives | Description |
 |----------|-----------|-------------|
 | 0 | `state`, `store` | Initialize local/global state |
-| 1 | `get`, `post`, `put`, `patch`, `delete` | Fetch data |
-| 5 | `route` | SPA routing |
-| 10 | `if`, `switch`, `each`, `foreach` | Structural (add/remove DOM) |
-| 20 | `bind`, `class-*`, `style-*`, `show`, `hide` | Rendering (update existing DOM) |
-| 20 | `on:*` | Event binding |
-| 30 | `validate`, `animate` | Side effects |
+| 1 | `get`, `post`, `put`, `patch`, `delete`, `error-boundary`, `i18n-ns` | Fetch data, error boundaries, i18n namespace |
+| 2 | `computed`, `watch` | Derived values and side-effect watchers |
+| 5 | `ref` | Element references |
+| 10 | `if`, `switch`, `foreach`, `each`, `for`, `use`, `drag-list` | Structural (add/remove DOM) |
+| 15 | `drag`, `drop` | Drag and drop setup |
+| 20 | `bind`, `bind-*`, `model`, `class-*`, `style-*`, `on:*`, `show`, `hide`, `t`, `call`, `trigger`, `page-title`, `page-description` | Rendering, events, i18n, actions, head |
+| 30 | `validate` | Form validation side effects |
 
 ### Expression Syntax
 
@@ -97,5 +118,11 @@ Most directive values accept **JavaScript expressions** evaluated against the cu
 ```
 
 ---
+
+## See Also
+
+- [Data Fetching](data-fetching.md) — make your first API call
+- [Directive Cheatsheet](cheatsheet.md) — every directive at a glance
+- [Configuration](configuration.md) — global settings and security
 
 **Next:** [Data Fetching →](data-fetching.md)

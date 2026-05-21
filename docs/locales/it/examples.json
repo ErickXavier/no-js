@@ -10,7 +10,6 @@
       "title": "Login con JWT",
       "desc": "Un flusso di login completo: validazione del form, POST verso l'endpoint di autenticazione, salvataggio del JWT in uno store globale e invio automatico del token ad ogni richiesta successiva tramite un interceptor di richiesta.",
       "signIn": "Accedi",
-      "signingIn": "Accesso in corso...",
       "previewHint": "Compila entrambi i campi per provare l'anteprima interattiva",
       "signedIn": "Accesso effettuato!",
       "signOut": "Esci",
@@ -33,7 +32,6 @@
       "badge": "Principiante",
       "title": "Ricerca in Tempo Reale",
       "desc": "Un input di ricerca istantanea che esegue una richiesta GET con debounce ad ogni digitazione, renderizzando i risultati in modo reattivo. Nessun <code>addEventListener</code>, nessun <code>setTimeout</code>, nessuna manipolazione del DOM.",
-      "placeholder": "Cerca prodotti...",
       "noResults": "Nessun risultato"
     },
     "cart": {
@@ -50,7 +48,6 @@
       "title": "Polling in Tempo Reale",
       "desc": "Una dashboard sullo stato del server che si aggiorna automaticamente ogni 5 secondi usando l'attributo <code>refresh</code>. Lo stile condizionale reagisce istantaneamente allo stato di salute corrente — nessun <code>setInterval</code>, nessun ciclo <code>fetch</code>.",
       "serverStatus": "Stato del Server",
-      "online": "Online",
       "cpu": "CPU",
       "reqPerSec": "Req/s",
       "errors": "Errori",

@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0](https://github.com/ErickXavier/no-js/compare/v1.11.1...v1.12.0) — 2026-05-21
+
+### Added
+
+- Route-index auto-load for nested outlets — empty `[route-view][route-index]` outlets automatically load their default template after navigation ([`dea03c2`](https://github.com/ErickXavier/no-js/commit/dea03c2))
+- View Transition API integration for smooth route transitions with presets (`slide`, `fade`, `scale`, `none`) ([`a4db4db`](https://github.com/ErickXavier/no-js/commit/a4db4db))
+- Nested routing with hierarchical segment resolution and layout-aware prefetch ([`aae67d5`](https://github.com/ErickXavier/no-js/commit/aae67d5), [`4f9546c`](https://github.com/ErickXavier/no-js/commit/4f9546c))
+- `skeleton` attribute on `get` directive for CLS prevention ([`9121824`](https://github.com/ErickXavier/no-js/commit/9121824))
+- Route head attributes: `page-title`, `page-description`, `page-canonical`, `page-jsonld` on `<template route>` ([`9cd8605`](https://github.com/ErickXavier/no-js/commit/9cd8605))
+- `suppressHashWarning` router option ([`46bb48b`](https://github.com/ErickXavier/no-js/commit/46bb48b))
+- Right-side table of contents with scroll spy on doc pages ([`92544b9`](https://github.com/ErickXavier/no-js/commit/92544b9))
+
+### Changed
+
+- Docs layout migrated to nested routing architecture ([`e4b7a4a`](https://github.com/ErickXavier/no-js/commit/e4b7a4a))
+- View transitions switched from slide to fade ([`ee25c80`](https://github.com/ErickXavier/no-js/commit/ee25c80))
+- All doc templates synced with markdown sources — expanded sections for state management, data binding, events, error handling, filters, animations, and more ([`2fd1c89`](https://github.com/ErickXavier/no-js/commit/2fd1c89))
+
+### Removed
+
+- SSG documentation page and all related i18n keys — SSG was never a framework feature ([`2fd1c89`](https://github.com/ErickXavier/no-js/commit/2fd1c89))
+- GitHub Discussions links (replaced with Discord) ([`2fd1c89`](https://github.com/ErickXavier/no-js/commit/2fd1c89))
+- 25 dead i18n keys cleaned from all 5 locales ([`2fd1c89`](https://github.com/ErickXavier/no-js/commit/2fd1c89))
+
+### Fixed
+
+- 22 `t-html` attribute misuses across cheatsheet, drag-and-drop, events, i18n, and routing templates ([`2fd1c89`](https://github.com/ErickXavier/no-js/commit/2fd1c89))
+- Hash-only navigation skip re-render and unique view-transition-names ([`19ef85d`](https://github.com/ErickXavier/no-js/commit/19ef85d))
+- Nested outlets skip in prefetch to prevent 404s ([`3870937`](https://github.com/ErickXavier/no-js/commit/3870937))
+- Relative `src` path resolution in nested outlets ([`45e9771`](https://github.com/ErickXavier/no-js/commit/45e9771))
+- Horizontal scrollbar during view transitions ([`5751c55`](https://github.com/ErickXavier/no-js/commit/5751c55))
+- Missing hero titles on 5 doc pages ([`1e34526`](https://github.com/ErickXavier/no-js/commit/1e34526))
+- Styling page broken t-html and heading hierarchy ([`1675a18`](https://github.com/ErickXavier/no-js/commit/1675a18))
+
 ## [1.11.1](https://github.com/ErickXavier/no-js/compare/v1.11.0...v1.11.1) — 2026-05-20
 
 ### Changed

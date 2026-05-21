@@ -77,6 +77,54 @@ No.JS adds/removes classes during the transition:
 
 ---
 
+## View Transitions (Route Navigation)
+
+No.JS uses the [View Transition API](https://developer.chrome.com/docs/web-platform/view-transitions/) for smooth route transitions. This is the recommended approach for route animations — it is enabled by default.
+
+Add a `transition` attribute to your `route-view` outlet:
+
+```html
+<main route-view transition="slide"></main>
+```
+
+### Built-in Presets
+
+| Preset | Effect |
+|--------|--------|
+| `slide` | Slides content left/right (auto-detects forward/backward navigation) |
+| `fade` | Cross-fade between old and new content |
+| `scale` | Scale down old content, scale up new content |
+| `none` | Disables the transition for this outlet |
+
+### Custom CSS
+
+Target the transition pseudo-elements for custom styling:
+
+```css
+::view-transition-old(route-content) {
+  animation: slide-out 0.3s ease-in;
+}
+::view-transition-new(route-content) {
+  animation: slide-in 0.3s ease-out;
+}
+```
+
+### Configuration
+
+View Transitions are enabled by default. Disable them globally:
+
+```javascript
+NoJS.config({ router: { viewTransition: false } });
+```
+
+When disabled, the `transition` attribute on `route-view` falls back to legacy class-based transitions.
+
+### Accessibility
+
+View Transitions automatically respect `prefers-reduced-motion: reduce` — animations are skipped when the user has requested reduced motion.
+
+---
+
 ## Built-in Animation Names
 
 No.JS ships with these CSS animations:
@@ -85,4 +133,16 @@ No.JS ships with these CSS animations:
 
 ---
 
-**Next:** [Internationalization →](i18n.md)
+## Accessibility
+
+No.JS includes a `prefers-reduced-motion: reduce` media query that disables all built-in CSS keyframe animations when the user has reduced motion enabled.
+
+---
+
+## See Also
+
+- [Routing](routing.md) — route-level transitions and navigation
+- [Dynamic Styling](styling.md) — reactive CSS classes for animation triggers
+- [Loops](loops.md) — `animate-stagger` for list enter/leave animations
+
+**Previous:** [Dynamic Styling ←](styling.md) | **Next:** [Internationalization →](i18n.md)

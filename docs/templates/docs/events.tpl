@@ -67,7 +67,7 @@
 
   <!-- $event & $el -->
   <div class="doc-section">
-    <h2 class="doc-title" id="events-event-and-el" t-html="docs.events.eventAndEl.title"></h2>
+    <h2 class="doc-title" id="events-event-and-el" t="docs.events.eventAndEl.title" t-html></h2>
     <p class="doc-text" t="docs.events.eventAndEl.text"></p>
     <div class="code-block"><pre><span class="hl-tag">&lt;input</span> <span class="hl-attr">on:input</span>=<span class="hl-str">"name = $event.target.value"</span> <span class="hl-tag">/&gt;</span>
 <span class="hl-tag">&lt;input</span> <span class="hl-attr">on:focus</span>=<span class="hl-str">"$el.select()"</span> <span class="hl-tag">/&gt;</span>
@@ -93,6 +93,39 @@
   <span class="hl-tag">&lt;canvas</span> <span class="hl-attr">ref</span>=<span class="hl-str">"chart"</span><span class="hl-tag">&gt;&lt;/canvas&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span>
 <span class="hl-tag">&lt;div</span> <span class="hl-attr">on:unmounted</span>=<span class="hl-str">"cleanup()"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></pre></div>
+  </div>
+
+  <!-- Key Modifiers -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="events-key-modifiers" t="docs.events.keyModifiers.title"></h2>
+    <p class="doc-text" t="docs.events.keyModifiers.text"></p>
+    <table class="doc-table">
+      <thead><tr><th t="docs.events.keyModifiers.col1"></th><th t="docs.events.keyModifiers.col2"></th></tr></thead>
+      <tbody>
+        <tr><td><code>.enter</code></td><td t="docs.events.keyModifiers.enter"></td></tr>
+        <tr><td><code>.escape</code></td><td t="docs.events.keyModifiers.escape"></td></tr>
+        <tr><td><code>.space</code></td><td t="docs.events.keyModifiers.space"></td></tr>
+        <tr><td><code>.tab</code></td><td t="docs.events.keyModifiers.tab"></td></tr>
+        <tr><td><code>.backspace</code></td><td t="docs.events.keyModifiers.backspace"></td></tr>
+        <tr><td><code>.delete</code></td><td t="docs.events.keyModifiers.delete"></td></tr>
+        <tr><td><code>.arrow-up</code></td><td t="docs.events.keyModifiers.arrowUp"></td></tr>
+        <tr><td><code>.arrow-down</code></td><td t="docs.events.keyModifiers.arrowDown"></td></tr>
+        <tr><td><code>.arrow-left</code></td><td t="docs.events.keyModifiers.arrowLeft"></td></tr>
+        <tr><td><code>.arrow-right</code></td><td t="docs.events.keyModifiers.arrowRight"></td></tr>
+        <tr><td><code>.ctrl</code></td><td t="docs.events.keyModifiers.ctrl"></td></tr>
+        <tr><td><code>.alt</code></td><td t="docs.events.keyModifiers.alt"></td></tr>
+        <tr><td><code>.shift</code></td><td t="docs.events.keyModifiers.shift"></td></tr>
+        <tr><td><code>.meta</code></td><td t="docs.events.keyModifiers.meta"></td></tr>
+      </tbody>
+    </table>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- Single key --&gt;</span>
+<span class="hl-tag">&lt;input</span> <span class="hl-attr">on:keydown.enter</span>=<span class="hl-str">"submit()"</span> <span class="hl-tag">/&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Combination --&gt;</span>
+<span class="hl-tag">&lt;input</span> <span class="hl-attr">on:keydown.ctrl.s</span>=<span class="hl-str">"save()"</span> <span class="hl-tag">/&gt;</span>
+
+<span class="hl-cmt">&lt;!-- Multiple modifiers --&gt;</span>
+<span class="hl-tag">&lt;input</span> <span class="hl-attr">on:keydown.ctrl.shift.enter</span>=<span class="hl-str">"submitAll()"</span> <span class="hl-tag">/&gt;</span></pre></div>
   </div>
 
 </div>

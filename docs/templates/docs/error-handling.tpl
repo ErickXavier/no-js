@@ -30,6 +30,21 @@
 <span class="hl-tag">&lt;/template&gt;</span></pre></div>
   </div>
 
+  <!-- Retry Behavior -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="error-retry" t="docs.errorHandling.retry.title"></h2>
+    <p class="doc-text" t="docs.errorHandling.retry.text"></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">get</span>=<span class="hl-str">"/api/data"</span> <span class="hl-attr">as</span>=<span class="hl-str">"data"</span>
+     <span class="hl-attr">retry</span>=<span class="hl-str">"3"</span>
+     <span class="hl-attr">retry-delay</span>=<span class="hl-str">"1000"</span>
+     <span class="hl-attr">error</span>=<span class="hl-str">"#err"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;p</span> <span class="hl-attr">bind</span>=<span class="hl-str">"data.message"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+    <div class="callout">
+      <p t="docs.errorHandling.retry.callout"></p>
+    </div>
+  </div>
+
   <!-- Global Error Handler -->
   <div class="doc-section">
     <h2 class="doc-title" id="error-handling-global-handler" t="docs.errorHandling.globalHandler.title"></h2>
@@ -64,6 +79,27 @@
     <span class="hl-tag">&lt;pre</span> <span class="hl-attr">bind</span>=<span class="hl-str">"err.message"</span><span class="hl-tag">&gt;&lt;/pre&gt;</span>
   <span class="hl-tag">&lt;/div&gt;</span>
 <span class="hl-tag">&lt;/template&gt;</span></pre></div>
+  </div>
+
+  <!-- Error Boundary Events -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="error-boundary-events" t="docs.errorHandling.boundaryEvents.title"></h2>
+    <p class="doc-text" t="docs.errorHandling.boundaryEvents.text"></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">error-boundary</span>=<span class="hl-str">"#fallback"</span>
+     <span class="hl-attr">on:error</span>=<span class="hl-str">"console.log($event.detail.message)"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-cmt">&lt;!-- children --&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+    <div class="callout">
+      <p t="docs.errorHandling.boundaryEvents.callout"></p>
+    </div>
+  </div>
+
+  <!-- Expression Errors -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="error-expression" t="docs.errorHandling.expressionErrors.title"></h2>
+    <p class="doc-text" t="docs.errorHandling.expressionErrors.text"></p>
+    <div class="code-block"><pre><span class="hl-cmt">&lt;!-- If user is undefined, displays nothing (not a crash) --&gt;</span>
+<span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"user.name"</span><span class="hl-tag">&gt;&lt;/span&gt;</span></pre></div>
   </div>
 
 </div>

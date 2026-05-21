@@ -605,6 +605,12 @@ value is a No.JS expression; `$route` and `$store` are available in scope.
 
 <!-- Expression using global store (e.g. after login) -->
 <template route="/account" page-title="$store.user.name + ' — My Account'">
+  <h1>Account</h1>
+</template>
+```
+
+---
+
 ## Route Head Attributes
 
 Declare SEO metadata directly on `<template route>` elements. All four
@@ -719,19 +725,6 @@ it skips `{` starting with `"` or `'` so JSON structural braces are not consumed
 The `data-nojs` marker on the injected script tag distinguishes it from
 hand-written JSON-LD blocks — both can coexist in `<head>`.
 
-### Precedence with body directives
-
-If both a `<div hidden page-title="...">` body directive (from the Head
-Management feature) and a `<template route page-title="...">` attribute are
-active at the same time, whichever executes last will overwrite the previous
-value. In practice:
-
-- Body directives are evaluated once when the element is processed.
-- Route attributes are evaluated on every navigation.
-
-For SPAs with a router, prefer route attributes — they automatically update
-metadata on each navigation without needing a separate `<div hidden>`.
-
 ### Notes
 
 - Only fires from the **default** outlet. Named outlets (e.g. sidebar) do not
@@ -819,4 +812,35 @@ content changes without requiring focus movement:
 ```
 ---
 
-**Next:** [Animations →](animations.md)
+## View Transitions
+
+No.JS uses the View Transition API for smooth route transitions. Add a `transition` attribute to your `route-view` outlet to enable animated navigation:
+
+```html
+<main route-view transition="slide"></main>
+```
+
+Built-in presets: `slide` (auto-detects direction), `fade`, `scale`, `none`. View Transitions are enabled by default when `transition` is set. Disable globally with `NoJS.config({ router: { viewTransition: false } })`.
+
+> **Note:** View Transitions require browser support for the View Transition API. When unsupported, No.JS falls back to instant content swaps. See [Animations → View Transitions](animations.md#view-transitions-route-navigation) for custom CSS and configuration details.
+
+---
+
+## `$router.forward()` — Forward Navigation
+
+In addition to `push()`, `replace()`, and `back()`, the router exposes `forward()` for browser forward navigation:
+
+```html
+<button on:click="$router.forward()">Go Forward</button>
+```
+
+---
+
+## See Also
+
+- [Animations](animations.md) — View Transition presets and custom CSS
+- [Head Management](head-management.md) — body-level head directives for non-routing pages
+- [SSG & Pre-Rendering](ssg.md) — SEO and deployment strategies
+- [Templates](templates.md) — remote templates and lazy loading
+
+**Previous:** [Filters ←](filters.md) | **Next:** [Internationalization →](i18n.md)

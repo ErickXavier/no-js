@@ -10,7 +10,6 @@
       "title": "Login con JWT",
       "desc": "Un flujo de login completo: validación de formulario, POST al endpoint de autenticación, guardar el JWT en un store global, y adjuntar automáticamente el token a cada solicitud posterior mediante un interceptor de peticiones.",
       "signIn": "Iniciar sesión",
-      "signingIn": "Iniciando sesión...",
       "previewHint": "Completa ambos campos para probar la vista previa interactiva",
       "signedIn": "¡Sesión iniciada!",
       "signOut": "Cerrar sesión",
@@ -33,7 +32,6 @@
       "badge": "Principiante",
       "title": "Búsqueda en Vivo",
       "desc": "Un campo de búsqueda instantánea que dispara una solicitud GET con debounce en cada pulsación de tecla, renderizando resultados reactivamente. Sin <code>addEventListener</code>, sin <code>setTimeout</code>, sin manipulación del DOM.",
-      "placeholder": "Buscar productos...",
       "noResults": "Sin resultados"
     },
     "cart": {
@@ -50,7 +48,6 @@
       "title": "Polling en Vivo",
       "desc": "Un panel de estado del servidor que se actualiza automáticamente cada 5 segundos usando el atributo <code>refresh</code>. Los estilos condicionales reaccionan instantáneamente al estado de salud actual — sin <code>setInterval</code>, sin bucle de <code>fetch</code>.",
       "serverStatus": "Estado del Servidor",
-      "online": "En línea",
       "cpu": "CPU",
       "reqPerSec": "Sol/s",
       "errors": "Errores",

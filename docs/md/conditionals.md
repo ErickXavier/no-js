@@ -95,4 +95,12 @@ Render one of many templates based on a value.
 
 ---
 
-**Next:** [Loops →](loops.md)
+---
+
+## See Also
+
+- [Loops](loops.md) — `foreach` with `filter` for conditional rendering of list items
+- [Dynamic Styling](styling.md) — `show`/`hide` alternative via `class-*`
+- [Templates](templates.md) — template-based conditional content with `then`/`else`
+
+**Previous:** [State Management ←](state-management.md) | **Next:** [Loops →](loops.md)

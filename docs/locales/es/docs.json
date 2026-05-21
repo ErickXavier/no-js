@@ -15,7 +15,9 @@
         "title": "Instalación",
         "cdnSubtitle": "CDN (recomendado)",
         "selfHostedSubtitle": "Auto-alojado",
-        "selfHostedText": "Descarga dist/iife/no.js e inclúyelo con una etiqueta <script>. Es un solo archivo."
+        "selfHostedText": "Descarga dist/iife/no.js e inclúyelo con una etiqueta <script>. Es un solo archivo.",
+        "npmSubtitle": "npm / ESM",
+        "npmText": "Al usar npm, debes llamar a NoJS.init() manualmente después de que el DOM esté listo. El script CDN lo hace automáticamente."
       },
       "quickStart": {
         "title": "Inicio Rápido",
@@ -42,14 +44,15 @@
         "tableCol2": "Directivas",
         "tableCol3": "Descripción",
         "tableRow1": "Inicializar estado local/global",
-        "tableRow2": "Obtener datos",
-        "tableRow3": "Enrutamiento SPA",
         "tableRow4": "Estructural (agregar/eliminar DOM)",
         "tableRow5": "Renderizado (actualizar DOM existente)",
-        "tableRow6": "Enlace de eventos",
         "tableRow7": "Efectos secundarios",
         "expressionSubtitle": "Sintaxis de Expresiones",
-        "expressionText": "La mayoría de los valores de directivas aceptan expresiones JavaScript evaluadas contra el contexto actual:"
+        "expressionText": "La mayoría de los valores de directivas aceptan expresiones JavaScript evaluadas contra el contexto actual:",
+        "tableRow1b": "Obtener datos, error boundaries, namespace i18n",
+        "tableRow2b": "Valores derivados y watchers de efectos secundarios",
+        "tableRow5b": "Referencias a elementos",
+        "tableRow15": "Configuración de drag and drop"
       }
     },
     "cheatsheet": {
@@ -81,7 +84,9 @@
         "success": "ID de plantilla a mostrar en caso de éxito",
         "then": "Expresión a ejecutar en caso de éxito",
         "redirect": "Ruta a la que navegar después del éxito",
-        "confirm": "Mensaje de confirmación antes de la solicitud"
+        "confirm": "Mensaje de confirmación antes de la solicitud",
+        "skeleton": "Mostrar/ocultar un placeholder durante la carga",
+        "retryDelay": "Retraso entre reintentos en ms"
       },
       "state": {
         "title": "Estado",
@@ -93,7 +98,10 @@
         "computed": "Valor derivado reactivo",
         "watch": "Reaccionar a cambios de valor",
         "persist": "Atributo de la directiva state — persiste el estado en almacenamiento",
-        "model": "Enlace bidireccional para inputs"
+        "model": "Enlace bidireccional para inputs",
+        "persistKey": "Clave de almacenamiento para persistencia",
+        "persistFields": "Campos separados por coma para persistir",
+        "persistSchema": "Validar claves restauradas contra el estado inicial"
       },
       "rendering": {
         "title": "Renderizado",
@@ -144,7 +152,9 @@
         "onUnmounted": "Ciclo de vida: desmontado",
         "throttle": "Limitar ejecución del manejador (ms)",
         "self": "Solo se ejecuta si el objetivo del evento es el elemento mismo",
-        "backspace": "Modificador de tecla para la tecla Retroceso"
+        "backspace": "Modificador de tecla para la tecla Retroceso",
+        "onUpdated": "Lifecycle: mutación del DOM observada",
+        "onError": "Lifecycle: error en el subárbol"
       },
       "styling": {
         "title": "Estilos",
@@ -244,7 +254,8 @@
         "col2": "Ejemplo",
         "col3": "Descripción",
         "t": "Traducir clave",
-        "tStar": "Parámetro de traducción"
+        "tStar": "Parámetro de traducción",
+        "tHtml": "Renderizar traducción como HTML sanitizado"
       },
       "misc": {
         "title": "Varios",
@@ -258,7 +269,18 @@
         "src": "Plantilla remota (ver también: lazy)",
         "loading": "Marcador de posición mostrado mientras la plantilla remota carga; se elimina al llegar",
         "include": "Clonar sincrónicamente una plantilla inline en la posición actual",
-        "errorBoundary": "Límite de error"
+        "errorBoundary": "Límite de error",
+        "var": "Nombre de variable del template"
+      },
+      "headManagement": {
+        "title": "Head Management",
+        "col1": "Directiva",
+        "col2": "Ejemplo",
+        "col3": "Descripción",
+        "pageTitle": "Establecer document.title reactivamente",
+        "pageDescription": "Establecer <meta name=\"description\">",
+        "pageCanonical": "Establecer <link rel=\"canonical\">",
+        "pageJsonld": "Establecer <script type=\"application/ld+json\">"
       }
     },
     "stateManagement": {
@@ -310,6 +332,15 @@
         "title": "NoJS.notify() — Actualizar Store",
         "text": "Cuando JavaScript externo muta una store vía NoJS.store, llame a NoJS.notify() para actualizar todos los bindings del DOM.",
         "callout": "Solo es necesario al mutar NoJS.store desde JavaScript puro — fuera de expresiones HTML. Las mutaciones dentro de on:click o bind se manejan automáticamente."
+      },
+      "persistSchema": {
+        "title": "persist-schema — Validación de Schema",
+        "text": "Al restaurar estado persistido, persist-schema valida que las claves restauradas coincidan con la forma del estado inicial. Las claves no presentes en el estado inicial se descartan. Esto previene que datos obsoletos o corruptos rompan tu app tras cambios en el schema."
+      },
+      "scoping": {
+        "title": "Alcance de Contexto & Shadowing",
+        "text": "Los contextos heredan de elementos padre como alcance léxico. Un state hijo puede sobrescribir una propiedad del padre — el hijo ve su propio valor, mientras los hermanos ven el del padre.",
+        "callout": "El shadowing es intencional y sigue las reglas de alcance de JavaScript. Si necesitas estado compartido entre hermanos, usa un store."
       }
     },
     "dataBinding": {
@@ -340,6 +371,17 @@
         "checkbox": "Acepto",
         "agreedLabel": "Aceptado:",
         "helloPrefix": "Hola,"
+      },
+      "radioSelect": {
+        "title": "Radio Buttons & Multi-Select",
+        "text": "model funciona con todos los tipos de input. Para radio buttons, vincula el mismo nombre de model a un grupo — el valor se actualiza al value del radio seleccionado. Para multi-select, el valor del model se convierte en un array de opciones seleccionadas."
+      },
+      "commonMistakes": {
+        "title": "Errores Comunes",
+        "text": "Evita estas trampas comunes de data binding:",
+        "mistake1": "Usar bind-html sin entender la sanitización — todo contenido es sanitizado por defecto, pero ten en cuenta qué se elimina.",
+        "mistake2": "Olvidar que bind reemplaza textContent — cualquier elemento hijo dentro de un bind es eliminado.",
+        "mistake3": "Usar model en elementos que no son formulario — model solo funciona en input, textarea y select."
       }
     },
     "events": {
@@ -370,9 +412,29 @@
         "col2": "Cuándo",
         "onInit": "La directiva se procesa por primera vez",
         "onMounted": "El elemento se inserta en el DOM visible",
-        "onUpdated": "Cualquier dependencia reactiva cambió",
+        "onUpdated": "Mutación del DOM observada (via MutationObserver)",
         "onUnmounted": "El elemento se elimina del DOM",
         "onError": "Error en el subárbol de este elemento"
+      },
+      "keyModifiers": {
+        "title": "Modificadores de Tecla",
+        "text": "Usa modificadores de tecla en eventos de teclado para filtrar por teclas específicas. Combina con Ctrl, Alt, Shift o Meta para atajos.",
+        "col1": "Modificador",
+        "col2": "Tecla",
+        "enter": "Enter / Return",
+        "escape": "Escape",
+        "space": "Espacio",
+        "tab": "Tab",
+        "backspace": "Backspace",
+        "arrowUp": "Flecha Arriba",
+        "arrowDown": "Flecha Abajo",
+        "arrowLeft": "Flecha Izquierda",
+        "arrowRight": "Flecha Derecha",
+        "ctrl": "Ctrl (Control)",
+        "alt": "Alt (Option en Mac)",
+        "shift": "Shift",
+        "meta": "Meta (Cmd en Mac, Win en Windows)",
+        "delete": "Delete"
       }
     },
     "conditionals": {
@@ -468,6 +530,15 @@
       "nested": {
         "title": "Bucles Anidados",
         "text": "Los bucles hijos (foreach, each o for) pueden acceder a las variables del ámbito padre."
+      },
+      "reactivity": {
+        "title": "Reactividad",
+        "text": "Las directivas de loop son totalmente reactivas. Cuando el array de origen cambia (elementos añadidos, eliminados o reordenados), el DOM se actualiza automáticamente. Usa el atributo key para diffing eficiente — sin él, la lista completa se re-renderiza en cada cambio."
+      },
+      "objectIteration": {
+        "title": "Iteración de Objetos",
+        "text": "Para iterar sobre las entradas de un objeto, usa el filtro keys o values para convertirlo en array primero.",
+        "callout": "La iteración directa de objetos no es soportada — siempre convierte a array con keys, values u Object.entries() en una expresión computed."
       }
     },
     "templates": {
@@ -860,17 +931,31 @@
       },
       "classToggle": {
         "title": "class-* — Alternar Clases",
+        "text": "Añade o elimina clases CSS reactivamente basándose en expresiones. Usa class-{name} para toggles individuales o class-map para múltiples clases.",
         "multiObject": "Múltiples Clases desde Objeto",
+        "multiObjectText": "Usa class-map con una expresión de objeto para alternar múltiples clases. Las claves son nombres de clases, los valores son expresiones booleanas.",
         "fromArray": "Desde Array"
       },
       "inlineStyles": {
         "title": "style-* — Estilos Inline",
-        "fromObject": "Desde Objeto"
+        "text": "Establece propiedades CSS inline reactivamente usando atributos style-{property}. Los nombres de propiedades usan kebab-case (ej: style-font-size, style-background-color).",
+        "fromObject": "Desde Objeto",
+        "fromObjectText": "Usa style-map con una expresión de objeto para establecer múltiples estilos inline a la vez."
       },
       "liveDemo": {
         "title": "Demo en Vivo — Estilos Dinámicos",
         "label": "Resultado",
         "toggleButton": "Alternar Activo"
+      },
+      "classStatic": {
+        "title": "Interacción con class Estática",
+        "text": "Las directivas class-* funcionan junto con atributos class estáticos. No.JS solo alterna las clases gestionadas por la directiva — las clases estáticas nunca se eliminan.",
+        "callout": "Puedes combinar class=\"card\" con class-active=\"isActive\" de forma segura. La clase card siempre está presente; active se alterna."
+      },
+      "cssCustomProperties": {
+        "title": "CSS Custom Properties",
+        "text": "Usa style-* con CSS custom properties (variables) para estilos reactivos con temas. Los nombres de propiedades siguen la misma convención kebab-case.",
+        "callout": "Las CSS custom properties definidas via style-* tienen alcance en el elemento y son heredadas por sus hijos — igual que las CSS custom properties regulares."
       }
     },
     "animations": {
@@ -917,6 +1002,11 @@
         "label": "Resultado",
         "toggleButton": "Alternar",
         "demoText": "¡Hola, Mundo Animado! ✨"
+      },
+      "a11y": {
+        "title": "Accesibilidad — Movimiento Reducido",
+        "text": "No.JS respeta automáticamente la media query prefers-reduced-motion. Cuando el usuario prefiere movimiento reducido, todas las animaciones CSS se deshabilitan mediante una regla CSS integrada que establece animation-duration y transition-duration en 0.01ms.",
+        "callout": "Esto se aplica globalmente — no se necesita configuración por elemento. Los usuarios que prefieren movimiento reducido ven cambios de estado instantáneos sin animación."
       }
     },
     "dnd": {
@@ -1120,6 +1210,46 @@
         "label": "Resultado",
         "uppercaseLabel": "Mayúsculas:",
         "initialsLabel": "Iniciales:"
+      },
+      "referenceTable": {
+        "title": "Referencia Completa de Filtros",
+        "text": "Los 32 filtros integrados de un vistazo:",
+        "col1": "Filtro",
+        "col2": "Categoría",
+        "col3": "Descripción",
+        "uppercase": "Convierte texto a MAYÚSCULAS",
+        "lowercase": "Convierte texto a minúsculas",
+        "capitalize": "Capitaliza la primera letra de cada palabra",
+        "truncate": "Trunca texto a N caracteres con puntos suspensivos",
+        "initials": "Extrae iniciales de un nombre",
+        "slug": "Convierte a slug compatible con URL",
+        "trim": "Elimina espacios en blanco iniciales/finales",
+        "padStart": "Rellena string desde el inicio",
+        "padEnd": "Rellena string desde el final",
+        "encodeUri": "Codifica un componente URI",
+        "currency": "Formatea número como moneda",
+        "number": "Formatea número con agrupación por localidad",
+        "percent": "Formatea número como porcentaje",
+        "ordinal": "Añade sufijo ordinal (1º, 2º, 3º)",
+        "bytes": "Formatea bytes a tamaño legible",
+        "round": "Redondea a N decimales",
+        "abs": "Valor absoluto",
+        "reverse": "Invierte array o string",
+        "unique": "Elimina valores duplicados",
+        "flatten": "Aplana arrays anidados",
+        "pluck": "Extrae una propiedad de cada elemento",
+        "where": "Filtra array por valor de propiedad",
+        "sortBy": "Ordena array por propiedad",
+        "groupBy": "Agrupa array por propiedad",
+        "first": "Retorna los primeros N elementos",
+        "last": "Retorna los últimos N elementos",
+        "date": "Formatea objeto Date",
+        "datetime": "Formatea Date con hora",
+        "timeago": "Tiempo relativo (ej: 'hace 3 horas')",
+        "json": "Serializa valor como string JSON",
+        "default": "Retorna fallback si el valor es null/undefined",
+        "keys": "Retorna las claves del objeto como array",
+        "values": "Retorna los valores del objeto como array"
       }
     },
     "i18n": {
@@ -1155,6 +1285,16 @@
         "title": "Demo en Vivo — Selector de Idioma",
         "label": "Resultado",
         "localeLabel": "Idioma:"
+      },
+      "fallback": {
+        "title": "Comportamiento de Fallback",
+        "text": "Cuando una clave de traducción no existe en la localidad actual, No.JS recurre a la fallbackLocale (por defecto: igual a defaultLocale). Si la clave no existe en ambas, se muestra la ruta de la clave.",
+        "callout": "Establece fallbackLocale explícitamente para asegurar que los usuarios siempre vean texto significativo, incluso para localidades parcialmente traducidas."
+      },
+      "detection": {
+        "title": "Detección de Localidad del Navegador",
+        "text": "Habilita la detección automática de localidad desde navigator.language del navegador con detectBrowser: true. La localidad detectada se combina con tus localidades disponibles.",
+        "callout": "Cuando se combina con persist: true, la localidad detectada se guarda para que las visitas posteriores usen el mismo idioma sin re-detección."
       }
     },
     "actionsRefs": {
@@ -1176,6 +1316,15 @@
       "refsMap": {
         "title": "$refs — Mapa de Refs",
         "text": "Todos los elementos con ref son accesibles vía $refs en el ámbito actual:"
+      },
+      "triggerAttrs": {
+        "title": "Atributos del Trigger",
+        "text": "Personaliza el comportamiento del trigger con atributos adicionales:",
+        "col1": "Atributo",
+        "col2": "Descripción",
+        "triggerData": "Payload de datos adjunto a la propiedad detail del CustomEvent",
+        "triggerBubbles": "Si el evento se propaga por el DOM (por defecto: true)",
+        "triggerOnce": "Disparar el trigger solo una vez, luego eliminarlo"
       }
     },
     "customDirectives": {
@@ -1196,6 +1345,22 @@
       },
       "componentPatterns": {
         "title": "Patrones Tipo Componente con Plantillas"
+      },
+      "priority": {
+        "title": "Niveles de Prioridad",
+        "text": "La prioridad determina cuándo se ejecuta tu directiva en relación a las directivas integradas. Los números más bajos se ejecutan primero.",
+        "col1": "Rango",
+        "col2": "Cuándo",
+        "range0": "Antes de todo (inicialización de estado)",
+        "range1": "Después del estado, con obtención de datos",
+        "range10": "Con directivas estructurales (if, each)",
+        "range20": "Con directivas de renderizado (bind, on:*)",
+        "range30": "Después de todo (validación, efectos secundarios)"
+      },
+      "disposal": {
+        "title": "Disposal & Cleanup",
+        "text": "Las directivas personalizadas deben limpiar después de sí mismas. Usa el callback _onDispose para eliminar event listeners, limpiar timers y cancelar watchers.",
+        "callout": "Las directivas registradas después de init (via plugins) no son congeladas — pero no pueden sobrescribir directivas integradas."
       }
     },
     "errorHandling": {
@@ -1212,6 +1377,20 @@
       },
       "errorBoundary": {
         "title": "error-boundary — Capturar Errores en el Subárbol"
+      },
+      "retry": {
+        "title": "Comportamiento de Retry",
+        "text": "Las solicitudes HTTP fallidas (errores 5xx y fallos de red) se reintentan automáticamente. Configura el número de reintentos por elemento con el atributo retry, y el retraso entre reintentos con retry-delay.",
+        "callout": "Los reintentos solo aplican a errores de servidor (5xx) y fallos de red. Los errores de cliente (4xx) no se reintentan."
+      },
+      "boundaryEvents": {
+        "title": "Eventos de Error Boundary",
+        "text": "Cuando un error boundary captura un error, dispara un CustomEvent nojs:error en el elemento boundary. Escucha con on:error para registrar errores o mostrar notificaciones.",
+        "callout": "El objeto $event.detail contiene: message (string), source (element) y error (objeto Error original)."
+      },
+      "expressionErrors": {
+        "title": "Errores de Expresión",
+        "text": "Cuando una expresión falla al evaluar (ej: acceder a una propiedad de undefined), No.JS captura el error, registra un warning via _warn() y retorna undefined. Una expresión rota nunca derrumba la página completa."
       }
     },
     "configuration": {
@@ -1430,70 +1609,6 @@
         "cleanupText": "Cuando un elemento con una directiva de head se elimina del DOM (ej. dentro de un bloque if o un cambio de ruta), su contribución al head se limpia automáticamente.",
         "captureTitle": "Captura de Template JSON-LD",
         "captureText": "El innerHTML del elemento page-jsonld se captura en el momento del procesamiento. Si necesitas JSON-LD reactivo, coloca el elemento dentro de un scope de state y usa interpolación {expresión}."
-      }
-    },
-    "ssg": {
-      "hero": {
-        "badge": "Guías",
-        "title": "SSG y Pre-Renderizado",
-        "subtitle": "Generación de sitios estáticos y patrones de renderizado del lado del servidor con No.JS"
-      },
-      "coreIdea": {
-        "title": "La Idea Central",
-        "text": "No.JS está diseñado para mejorar HTML pre-renderizado. Incrusta tus datos directamente en atributos state= en tiempo de compilación — la página carga con contenido real visible inmediatamente, y No.JS lo hace interactivo.",
-        "text2": "El navegador renderiza el HTML estático instantáneamente. No.JS activa los bindings, eventos y obtención de datos cuando el script carga — sin página en blanco, sin spinners de carga para el contenido inicial."
-      },
-      "patterns": {
-        "title": "Patrones",
-        "staticTitle": "Páginas Estáticas (SSG)",
-        "staticText": "Genera HTML en tiempo de compilación con herramientas como Eleventy, Hugo o Astro. Inyecta datos en atributos state= usando el lenguaje de plantillas de tu SSG.",
-        "staticEleventyLabel": "Eleventy (Nunjucks):",
-        "staticCallout": "El HTML se renderiza completamente en tiempo de compilación — los motores de búsqueda ven contenido real, los usuarios ven cargas de página instantáneas.",
-        "staticText2": "No.JS se activa después de que la página carga: las expresiones bind actualizan el DOM, los manejadores de eventos se conectan y la obtención de datos comienza para contenido dinámico.",
-        "ssrTitle": "Renderizado del Lado del Servidor (SSR)",
-        "ssrText": "Renderiza HTML en el servidor por solicitud. Mismo patrón — inyecta datos en state=, sirve el HTML, y deja que No.JS lo hidrate.",
-        "hybridTitle": "Híbrido: Estructura Estática, Interacción Dinámica",
-        "hybridText": "Pre-renderiza el contenido crítico para SEO en state=, y deja que No.JS maneje las características interactivas (carrito, actualizaciones en tiempo real) vía get= y manejadores de eventos."
-      },
-      "stateVsGet": {
-        "title": "Qué Poner en state= vs get=",
-        "colContentType": "Tipo de Contenido",
-        "colApproach": "Enfoque",
-        "colWhy": "Por qué",
-        "row1Col1": "Nombre del producto, precio, descripción",
-        "row1Col2": "state= (pre-renderizado)",
-        "row1Col3": "Crítico para SEO, visible inmediatamente",
-        "row2Col1": "Datos específicos del usuario (carrito, preferencias)",
-        "row2Col2": "get= (fetch del lado del cliente)",
-        "row2Col3": "Cambia por sesión, no indexable",
-        "row3Col1": "Conteo de stock, disponibilidad en tiempo real",
-        "row3Col2": "get= con refresh=",
-        "row3Col3": "Cambia frecuentemente, necesita polling",
-        "row4Col1": "Texto de UI estático, navegación",
-        "row4Col2": "HTML plano",
-        "row4Col3": "No necesita reactividad"
-      },
-      "ruleOfThumb": {
-        "title": "Regla General",
-        "text": "Si un motor de búsqueda debería verlo, pre-renderízalo en state=. Si es específico del usuario o en tiempo real, obténlo del lado del cliente con get=."
-      },
-      "eleventyQuickStart": {
-        "title": "No.JS + Eleventy — Inicio Rápido",
-        "configTitle": ".eleventy.js",
-        "productTemplateTitle": "Template de Página de Producto (product.njk)",
-        "baseLayoutTitle": "Layout Base (_includes/base.html)",
-        "text": "Ejecuta npx @11ty/eleventy --serve y cada página de producto se pre-renderiza con contenido SEO completo. No.JS lo hace interactivo en el navegador."
-      },
-      "securityNote": {
-        "title": "Nota de Seguridad",
-        "text": "Al incrustar contenido generado por usuarios en atributos state=, siempre escapa las entidades HTML para prevenir XSS:",
-        "text2": "Esto previene que un nombre de producto malicioso como </div><script>alert('xss')</script> rompa fuera del atributo."
-      },
-      "managingHead": {
-        "title": "Gestionando el <head> en Páginas SSG",
-        "text1": "Para páginas SSG, establece <title>, <meta description> y otras etiquetas head en tu template SSG (ej. el layout base de Eleventy) — son parte del HTML estático.",
-        "text2": "Para páginas SPA dinámicas dentro de la misma app, usa las directivas de gestión del head de No.JS (page-title, page-description, page-canonical, page-jsonld) para actualizar el head de forma reactiva.",
-        "text3": "Consulta la guía de Gestión del Head para la API completa."
       }
     }
   }

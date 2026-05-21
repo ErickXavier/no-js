@@ -449,6 +449,7 @@ A full analytics plugin demonstrating the plugin lifecycle, globals, interceptor
         console.warn('[analytics] Missing trackingId option');
         return;
       }
+      this._trackingId = trackingId;
 
       // Inject reactive global
       app.global('analytics', {
@@ -494,7 +495,7 @@ A full analytics plugin demonstrating the plugin lifecycle, globals, interceptor
     async dispose(app) {
       clearInterval(this._flushInterval);
       // Flush remaining events before shutdown
-      await this._flush(app);
+      await this._flush(this._trackingId);
     },
 
     _flush(trackingId) {
@@ -520,4 +521,12 @@ A full analytics plugin demonstrating the plugin lifecycle, globals, interceptor
 
 ---
 
-**Next:** [Custom Directives →](custom-directives.md)
+## See Also
+
+- [Custom Directives](custom-directives.md) — simpler extension point for single-attribute behaviors
+- [Configuration](configuration.md) — `NoJS.use()`, `NoJS.global()`, `NoJS.dispose()` overview
+- [Data Fetching](data-fetching.md) — interceptor sentinels (CANCEL, RESPOND, REPLACE)
+
+---
+
+**Previous:** [Custom Directives ←](custom-directives.md) | **Next:** [Error Handling →](error-handling.md)

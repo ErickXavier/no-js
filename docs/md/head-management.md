@@ -159,4 +159,12 @@ changes to the element's children after init are not picked up.
 
 ---
 
-**Next:** [Data Fetching →](data-fetching.md)
+## See Also
+
+- [Routing → Route Head Attributes](routing.md#route-head-attributes) — head management for SPA routes
+- [SSG & Pre-Rendering](ssg.md) — server-side head tags
+- [Configuration](configuration.md) — global settings
+
+---
+
+**Previous:** [Drag & Drop ←](drag-and-drop.md) | **Next:** [Custom Directives →](custom-directives.md)

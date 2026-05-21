@@ -17,14 +17,6 @@
     },
     "footer": {
       "desc": "O framework reativo HTML-first",
-      "resources": "Recursos",
-      "documentation": "Documentação",
-      "examples": "Exemplos",
-      "apiReference": "Referência da API",
-      "playground": "Playground",
-      "faq": "FAQ",
-      "github": "GitHub",
-      "discord": "Discord",
       "license": "2026 No.JS - Licença MIT"
     },
     "sidebar": {

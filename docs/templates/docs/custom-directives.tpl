@@ -61,6 +61,39 @@
 <span class="hl-tag">&lt;img</span> <span class="hl-attr">lazy-src</span>=<span class="hl-str">"user.avatarUrl"</span> <span class="hl-attr">alt</span>=<span class="hl-str">"avatar"</span> <span class="hl-tag">/&gt;</span></pre></div>
   </div>
 
+  <!-- Priority -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="custom-directives-priority" t="docs.customDirectives.priority.title"></h2>
+    <p class="doc-text" t="docs.customDirectives.priority.text"></p>
+    <table class="doc-table">
+      <thead><tr><th t="docs.customDirectives.priority.col1"></th><th t="docs.customDirectives.priority.col2"></th></tr></thead>
+      <tbody>
+        <tr><td><code>0</code></td><td t="docs.customDirectives.priority.range0"></td></tr>
+        <tr><td><code>1</code></td><td t="docs.customDirectives.priority.range1"></td></tr>
+        <tr><td><code>10</code></td><td t="docs.customDirectives.priority.range10"></td></tr>
+        <tr><td><code>20</code></td><td t="docs.customDirectives.priority.range20"></td></tr>
+        <tr><td><code>30+</code></td><td t="docs.customDirectives.priority.range30"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Disposal -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="custom-directives-disposal" t="docs.customDirectives.disposal.title"></h2>
+    <p class="doc-text" t="docs.customDirectives.disposal.text"></p>
+    <div class="code-block"><pre><span class="hl-kw">NoJS</span>.directive(<span class="hl-str">'tooltip'</span>, {
+  priority: <span class="hl-num">20</span>,
+  init(el, attr, value) {
+    <span class="hl-kw">const</span> handler = () =&gt; showTooltip(el, value);
+    el.addEventListener(<span class="hl-str">'mouseenter'</span>, handler);
+    _onDispose(() =&gt; el.removeEventListener(<span class="hl-str">'mouseenter'</span>, handler));
+  }
+});</pre></div>
+    <div class="callout">
+      <p t="docs.customDirectives.disposal.callout"></p>
+    </div>
+  </div>
+
   <!-- Web Components -->
   <div class="doc-section">
     <h2 class="doc-title" id="custom-directives-web-components" t="docs.customDirectives.webComponents.title"></h2>

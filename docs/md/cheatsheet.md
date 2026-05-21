@@ -19,6 +19,10 @@ Complete reference of every No.JS directive.
 | `cached` | `cached` or `cached="local"` | Cache responses (memory/local/session) |
 | `into` | `into="currentUser"` | Write response to a named global store |
 | `debounce` | `debounce="300"` | Debounce reactive URL refetches (ms) |
+| `refresh` | `refresh="5000"` | Auto-refresh interval in ms (polling) |
+| `skeleton` | `skeleton="cardSkel"` | Show/hide a placeholder element during loading |
+| `retry` | `retry="3"` | Number of retry attempts on failure |
+| `retry-delay` | `retry-delay="1000"` | Delay between retries in ms |
 
 ## State
 
@@ -29,6 +33,9 @@ Complete reference of every No.JS directive.
 | `computed` | `computed="total" expr="a+b"` | Derived reactive value |
 | `watch` | `watch="search"` | React to value changes |
 | `persist` | `persist="localStorage"` | Persist state to storage |
+| `persist-key` | `persist-key="settings"` | Storage key for persistence |
+| `persist-fields` | `persist-fields="theme,lang"` | Comma-separated fields to persist |
+| `persist-schema` | `persist-schema` | Validate restored keys against initial state |
 | `model` | `model="name"` | Two-way binding for inputs |
 
 ## Rendering
@@ -73,6 +80,9 @@ Complete reference of every No.JS directive.
 | `on:keydown.*` | `on:keydown.enter="..."` | Key handler |
 | `on:mounted` | `on:mounted="init()"` | Lifecycle: mounted |
 | `on:unmounted` | `on:unmounted="cleanup()"` | Lifecycle: unmounted |
+| `on:init` | `on:init="setup()"` | Lifecycle: first processed |
+| `on:updated` | `on:updated="refresh()"` | Lifecycle: DOM mutation observed |
+| `on:error` | `on:error="log($event)"` | Lifecycle: error in subtree |
 
 ## Styling
 
@@ -112,6 +122,12 @@ Complete reference of every No.JS directive.
 | `lazy` | `lazy="ondemand"` | Defer route template fetch until first visit |
 | `lazy` | `lazy="priority"` | Force template to load before all others |
 | `$route.matched` | `if="$route.matched"` | `true` if an explicit route matched, `false` for wildcard/fallback |
+| `transition` | `transition="slide"` | View Transition API preset (slide/fade/scale/none) |
+| `page-title` | `page-title="'Title'"` | Route document title |
+| `page-description` | `page-description="'...'"` | Route meta description |
+| `page-canonical` | `page-canonical="'/path'"` | Route canonical URL |
+| `page-jsonld` | `page-jsonld='{"@type":"..."}'` | Route JSON-LD data |
+| `redirect` | `redirect="/login"` | Redirect path when guard fails |
 
 ## Animation
 
@@ -162,6 +178,15 @@ Complete reference of every No.JS directive.
 | `t-*` | `t-name="user.name"` | Translation param |
 | `t-html` | `t="key" t-html` | Render translation as sanitized HTML |
 
+## Head Management
+
+| Directive | Example | Description |
+|-----------|---------|-------------|
+| `page-title` | `page-title="'About \| Store'"` | Set `document.title` reactively |
+| `page-description` | `page-description="product.desc"` | Set `<meta name="description">` |
+| `page-canonical` | `page-canonical="'/about'"` | Set `<link rel="canonical">` |
+| `page-jsonld` | `<div hidden page-jsonld>` | Set `<script type="application/ld+json">` |
+
 ## Misc
 
 | Directive | Example | Description |
@@ -174,3 +199,8 @@ Complete reference of every No.JS directive.
 | `loading` (on template) | `<template src="..." loading="#skl">` | Placeholder shown while remote template loads; removed on arrival |
 | `include` (on template) | `<template include="#fragment">` | Synchronously clone an inline template into the current position |
 | `error-boundary` | `error-boundary="#fb"` | Error boundary |
+| `var` | `<template var="data">` | Template variable name |
+
+---
+
+**Previous:** [Playground ←](playground.md) | **Next:** [Examples →](examples.md)

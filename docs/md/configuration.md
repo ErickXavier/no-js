@@ -65,6 +65,12 @@
 </script>
 ```
 
+### `devtools`
+
+**Type:** `boolean` | **Default:** `false`
+
+Enables the No.JS browser devtools integration. When `true`, framework state, directive processing, and route navigation are exposed via `window.__NOJS_DEVTOOLS__` for debugging.
+
 ---
 
 ## Pre-initializing Stores
@@ -249,4 +255,12 @@ See [Plugins →](plugins.md) for the full API reference, plugin lifecycle, secu
 
 ---
 
-**Next:** [Directive Cheatsheet →](cheatsheet.md)
+## See Also
+
+- [Plugins](plugins.md) — full plugin system reference
+- [Data Fetching](data-fetching.md) — interceptors, caching, retry configuration
+- [Error Handling](error-handling.md) — global error handler via `NoJS.on()`
+
+---
+
+**Previous:** [Error Handling ←](error-handling.md) | **Next:** [SSG & Pre-Rendering →](ssg.md)

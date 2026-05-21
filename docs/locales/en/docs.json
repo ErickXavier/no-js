@@ -15,7 +15,9 @@
         "title": "Installation",
         "cdnSubtitle": "CDN (recommended)",
         "selfHostedSubtitle": "Self-hosted",
-        "selfHostedText": "Download dist/iife/no.js and include it with a <script> tag. It's a single file."
+        "selfHostedText": "Download dist/iife/no.js and include it with a <script> tag. It's a single file.",
+        "npmSubtitle": "npm / ESM",
+        "npmText": "When using npm, you must call NoJS.init() manually after the DOM is ready. The CDN script handles this automatically."
       },
       "quickStart": {
         "title": "Quick Start",
@@ -42,12 +44,13 @@
         "tableCol2": "Directives",
         "tableCol3": "Description",
         "tableRow1": "Initialize local/global state",
-        "tableRow2": "Fetch data",
-        "tableRow3": "SPA routing",
         "tableRow4": "Structural (add/remove DOM)",
         "tableRow5": "Rendering (update existing DOM)",
-        "tableRow6": "Event binding",
         "tableRow7": "Side effects",
+        "tableRow1b": "Fetch data, error boundaries, i18n namespace",
+        "tableRow2b": "Derived values and side-effect watchers",
+        "tableRow5b": "Element references",
+        "tableRow15": "Drag and drop setup",
         "expressionSubtitle": "Expression Syntax",
         "expressionText": "Most directive values accept JavaScript expressions evaluated against the current context:"
       }
@@ -81,7 +84,9 @@
         "success": "Template ID to show on success",
         "then": "Expression to execute on success",
         "redirect": "Path to navigate after success",
-        "confirm": "Confirmation message before request"
+        "confirm": "Confirmation message before request",
+        "skeleton": "Show/hide a placeholder element during loading",
+        "retryDelay": "Delay between retries in ms"
       },
       "state": {
         "title": "State",
@@ -93,6 +98,9 @@
         "computed": "Derived reactive value",
         "watch": "React to value changes",
         "persist": "Attribute of state directive — persists state to storage",
+        "persistKey": "Storage key for persistence",
+        "persistFields": "Comma-separated fields to persist",
+        "persistSchema": "Validate restored keys against initial state",
         "model": "Two-way binding for inputs"
       },
       "rendering": {
@@ -144,7 +152,9 @@
         "onUnmounted": "Lifecycle: unmounted",
         "throttle": "Throttle handler execution (ms)",
         "self": "Only fires if event target is the element itself",
-        "backspace": "Key modifier for Backspace key"
+        "backspace": "Key modifier for Backspace key",
+        "onUpdated": "Lifecycle: DOM mutation observed",
+        "onError": "Lifecycle: error in subtree"
       },
       "styling": {
         "title": "Styling",
@@ -244,7 +254,18 @@
         "col2": "Example",
         "col3": "Description",
         "t": "Translate key",
-        "tStar": "Translation param"
+        "tStar": "Translation param",
+        "tHtml": "Render translation as sanitized HTML"
+      },
+      "headManagement": {
+        "title": "Head Management",
+        "col1": "Directive",
+        "col2": "Example",
+        "col3": "Description",
+        "pageTitle": "Set document.title reactively",
+        "pageDescription": "Set <meta name=\"description\">",
+        "pageCanonical": "Set <link rel=\"canonical\">",
+        "pageJsonld": "Set <script type=\"application/ld+json\">"
       },
       "misc": {
         "title": "Misc",
@@ -258,7 +279,8 @@
         "src": "Remote template (see also: lazy)",
         "loading": "Placeholder shown while remote template loads; removed on arrival",
         "include": "Synchronously clone an inline template into the current position",
-        "errorBoundary": "Error boundary"
+        "errorBoundary": "Error boundary",
+        "var": "Template variable name"
       }
     },
     "stateManagement": {
@@ -306,6 +328,15 @@
         "title": "State Persistence",
         "text": "Persist state across page reloads using localStorage or sessionStorage."
       },
+      "persistSchema": {
+        "title": "persist-schema — Schema Validation",
+        "text": "When restoring persisted state, persist-schema validates that restored keys match the initial state shape. Keys not present in the initial state are discarded. This prevents stale or corrupted data from breaking your app after schema changes."
+      },
+      "scoping": {
+        "title": "Context Scoping & Shadowing",
+        "text": "Contexts inherit from parent elements like lexical scoping. A child state can shadow a parent property — the child sees its own value, while siblings see the parent's.",
+        "callout": "Shadowing is intentional and follows JavaScript's scoping rules. If you need shared state across siblings, use a store instead."
+      },
       "notify": {
         "title": "NoJS.notify() — Flush Store Updates",
         "text": "When external JavaScript mutates a store via NoJS.store, call NoJS.notify() to flush all pending DOM updates.",
@@ -340,6 +371,17 @@
         "checkbox": "I agree",
         "agreedLabel": "Agreed:",
         "helloPrefix": "Hello,"
+      },
+      "radioSelect": {
+        "title": "Radio Buttons & Multi-Select",
+        "text": "model works with all input types. For radio buttons, bind the same model name to a group — the value updates to the selected radio's value. For multi-select, the model value becomes an array of selected options."
+      },
+      "commonMistakes": {
+        "title": "Common Mistakes",
+        "text": "Avoid these common data binding pitfalls:",
+        "mistake1": "Using bind-html without understanding sanitization — all content is sanitized by default, but be aware of what gets stripped.",
+        "mistake2": "Forgetting that bind replaces textContent — any child elements inside a bind target are removed.",
+        "mistake3": "Using model on non-form elements — model only works on input, textarea, and select elements."
       }
     },
     "events": {
@@ -370,9 +412,29 @@
         "col2": "When",
         "onInit": "Directive first processed",
         "onMounted": "Element inserted into visible DOM",
-        "onUpdated": "Any reactive dependency changed",
+        "onUpdated": "DOM mutation observed (via MutationObserver)",
         "onUnmounted": "Element removed from DOM",
         "onError": "Error in this element's subtree"
+      },
+      "keyModifiers": {
+        "title": "Key Modifiers",
+        "text": "Use key modifiers on keyboard events to filter by specific keys. Combine with Ctrl, Alt, Shift, or Meta for shortcuts.",
+        "col1": "Modifier",
+        "col2": "Key",
+        "enter": "Enter / Return",
+        "escape": "Escape",
+        "space": "Space",
+        "tab": "Tab",
+        "backspace": "Backspace",
+        "arrowUp": "Arrow Up",
+        "arrowDown": "Arrow Down",
+        "arrowLeft": "Arrow Left",
+        "arrowRight": "Arrow Right",
+        "ctrl": "Ctrl (Control)",
+        "alt": "Alt (Option on Mac)",
+        "shift": "Shift",
+        "meta": "Meta (Cmd on Mac, Win on Windows)",
+        "delete": "Delete"
       }
     },
     "conditionals": {
@@ -468,6 +530,15 @@
       "nested": {
         "title": "Nested Loops",
         "text": "Child loops (foreach, each, or for) can access parent scope variables."
+      },
+      "reactivity": {
+        "title": "Reactivity",
+        "text": "Loop directives are fully reactive. When the source array changes (items added, removed, or reordered), the DOM updates automatically. Use the key attribute for efficient diffing — without it, the entire list re-renders on every change."
+      },
+      "objectIteration": {
+        "title": "Object Iteration",
+        "text": "To iterate over an object's entries, use the keys or values filter to convert it to an array first.",
+        "callout": "Direct object iteration is not supported — always convert to an array with keys, values, or Object.entries() in a computed expression."
       }
     },
     "templates": {
@@ -860,12 +931,26 @@
       },
       "classToggle": {
         "title": "class-* — Toggle Classes",
+        "text": "Add or remove CSS classes reactively based on expressions. Use class-{name} for individual toggles or class-map for multiple classes at once.",
         "multiObject": "Multiple Classes from Object",
+        "multiObjectText": "Use class-map with an object expression to toggle multiple classes. Keys are class names, values are boolean expressions.",
         "fromArray": "From Array"
+      },
+      "classStatic": {
+        "title": "Static class Interaction",
+        "text": "class-* directives work alongside static class attributes. No.JS only toggles the directive-managed classes — static classes are never removed.",
+        "callout": "You can safely combine class=\"card\" with class-active=\"isActive\". The card class is always present; active is toggled."
       },
       "inlineStyles": {
         "title": "style-* — Inline Styles",
-        "fromObject": "From Object"
+        "text": "Set inline CSS properties reactively using style-{property} attributes. Property names use kebab-case (e.g. style-font-size, style-background-color).",
+        "fromObject": "From Object",
+        "fromObjectText": "Use style-map with an object expression to set multiple inline styles at once."
+      },
+      "cssCustomProperties": {
+        "title": "CSS Custom Properties",
+        "text": "Use style-* with CSS custom properties (variables) for theme-aware reactive styling. Property names follow the same kebab-case convention.",
+        "callout": "CSS custom properties set via style-* are scoped to the element and inherited by its children — just like regular CSS custom properties."
       },
       "liveDemo": {
         "title": "Live Demo — Dynamic Styling",
@@ -911,6 +996,11 @@
       "builtIn": {
         "title": "Built-in Animation Names",
         "text": "No.JS ships with these CSS animations:"
+      },
+      "a11y": {
+        "title": "Accessibility — Reduced Motion",
+        "text": "No.JS automatically respects the prefers-reduced-motion media query. When the user prefers reduced motion, all CSS animations are disabled via a built-in CSS rule that sets animation-duration and transition-duration to 0.01ms.",
+        "callout": "This applies globally — no per-element configuration needed. Users who prefer reduced motion see instant state changes with no animation."
       },
       "liveDemo": {
         "title": "Live Demo — Toggle Animation",
@@ -1109,6 +1199,46 @@
       "object": {
         "title": "Object Filters"
       },
+      "referenceTable": {
+        "title": "Complete Filter Reference",
+        "text": "All 32 built-in filters at a glance:",
+        "col1": "Filter",
+        "col2": "Category",
+        "col3": "Description",
+        "uppercase": "Converts text to UPPERCASE",
+        "lowercase": "Converts text to lowercase",
+        "capitalize": "Capitalizes first letter of each word",
+        "truncate": "Truncates text to N characters with ellipsis",
+        "initials": "Extracts initials from a name",
+        "slug": "Converts to URL-friendly slug",
+        "trim": "Removes leading/trailing whitespace",
+        "padStart": "Pads string from the start",
+        "padEnd": "Pads string from the end",
+        "encodeUri": "Encodes a URI component",
+        "currency": "Formats number as currency",
+        "number": "Formats number with locale grouping",
+        "percent": "Formats number as percentage",
+        "ordinal": "Adds ordinal suffix (1st, 2nd, 3rd)",
+        "bytes": "Formats bytes to human-readable size",
+        "round": "Rounds to N decimal places",
+        "abs": "Absolute value",
+        "reverse": "Reverses array or string",
+        "unique": "Removes duplicate values",
+        "flatten": "Flattens nested arrays",
+        "pluck": "Extracts a property from each item",
+        "where": "Filters array by property value",
+        "sortBy": "Sorts array by property",
+        "groupBy": "Groups array by property",
+        "first": "Returns first N items",
+        "last": "Returns last N items",
+        "date": "Formats Date object",
+        "datetime": "Formats Date with time",
+        "timeago": "Relative time (e.g. '3 hours ago')",
+        "json": "Serializes value as JSON string",
+        "default": "Returns fallback if value is null/undefined",
+        "keys": "Returns object keys as array",
+        "values": "Returns object values as array"
+      },
       "chaining": {
         "title": "Chaining Filters"
       },
@@ -1151,6 +1281,16 @@
       "formatting": {
         "title": "Number & Date Formatting"
       },
+      "fallback": {
+        "title": "Fallback Behavior",
+        "text": "When a translation key is missing in the current locale, No.JS falls back to the fallbackLocale (default: same as defaultLocale). If the key is missing in both, the raw key path is displayed.",
+        "callout": "Set fallbackLocale explicitly to ensure users always see meaningful text, even for partially translated locales."
+      },
+      "detection": {
+        "title": "Browser Locale Detection",
+        "text": "Enable automatic locale detection from the browser's navigator.language setting with detectBrowser: true. The detected locale is matched against your available locales.",
+        "callout": "When combined with persist: true, the detected locale is saved so subsequent visits use the same language without re-detecting."
+      },
       "liveDemo": {
         "title": "Live Demo — Locale Switcher",
         "label": "Result",
@@ -1168,6 +1308,15 @@
       },
       "trigger": {
         "title": "trigger — Emit Custom Events"
+      },
+      "triggerAttrs": {
+        "title": "Trigger Attributes",
+        "text": "Customize trigger behavior with additional attributes:",
+        "col1": "Attribute",
+        "col2": "Description",
+        "triggerData": "Data payload attached to the CustomEvent's detail property",
+        "triggerBubbles": "Whether the event bubbles up the DOM (default: true)",
+        "triggerOnce": "Fire the trigger only once, then remove it"
       },
       "ref": {
         "title": "ref — Named References",
@@ -1190,6 +1339,22 @@
       "usage": {
         "title": "Usage"
       },
+      "priority": {
+        "title": "Priority Levels",
+        "text": "Priority determines when your directive runs relative to built-in directives. Lower numbers run first.",
+        "col1": "Range",
+        "col2": "When",
+        "range0": "Before everything (state initialization)",
+        "range1": "After state, with data fetching",
+        "range10": "With structural directives (if, each)",
+        "range20": "With rendering directives (bind, on:*)",
+        "range30": "After everything (validation, side effects)"
+      },
+      "disposal": {
+        "title": "Disposal & Cleanup",
+        "text": "Custom directives must clean up after themselves. Use the _onDispose callback to remove event listeners, clear timers, and unsubscribe watchers.",
+        "callout": "Directives registered after init (via plugins) are not frozen — but they cannot override built-in directives."
+      },
       "webComponents": {
         "title": "Web Components Compatibility",
         "text": "No.JS directives work on custom elements:"
@@ -1207,11 +1372,25 @@
       "perElement": {
         "title": "Per-Element Error Handling"
       },
+      "retry": {
+        "title": "Retry Behavior",
+        "text": "Failed HTTP requests (5xx errors and network failures) are automatically retried. Configure the number of retries per element with the retry attribute, and the delay between retries with retry-delay.",
+        "callout": "Retries only apply to server errors (5xx) and network failures. Client errors (4xx) are not retried."
+      },
       "globalHandler": {
         "title": "Global Error Handler"
       },
       "errorBoundary": {
         "title": "error-boundary — Catch Errors in Subtree"
+      },
+      "boundaryEvents": {
+        "title": "Error Boundary Events",
+        "text": "When an error boundary catches an error, it dispatches a nojs:error CustomEvent on the boundary element. Listen with on:error to log errors or show notifications.",
+        "callout": "The $event.detail object contains: message (string), source (element), and error (original Error object)."
+      },
+      "expressionErrors": {
+        "title": "Expression Errors",
+        "text": "When an expression fails to evaluate (e.g. accessing a property of undefined), No.JS catches the error, logs a warning via _warn(), and returns undefined. One broken expression never crashes the entire page."
       }
     },
     "configuration": {
@@ -1430,70 +1609,6 @@
         "cleanupText": "When an element with a head directive is removed from the DOM (e.g. inside an if block or a route change), its head contribution is automatically cleaned up.",
         "captureTitle": "JSON-LD Template Capture",
         "captureText": "The page-jsonld element's innerHTML is captured at processing time. If you need reactive JSON-LD, place the element inside a state scope and use {expression} interpolation."
-      }
-    },
-    "ssg": {
-      "hero": {
-        "badge": "Guides",
-        "title": "SSG & Pre-Rendering",
-        "subtitle": "Static site generation and server-side rendering patterns with No.JS"
-      },
-      "coreIdea": {
-        "title": "The Core Idea",
-        "text": "No.JS is designed to enhance pre-rendered HTML. Embed your data directly in state= attributes at build time — the page loads with real content visible immediately, and No.JS makes it interactive.",
-        "text2": "The browser renders the static HTML instantly. No.JS activates bindings, events, and data fetching when the script loads — no blank page, no loading spinners for initial content."
-      },
-      "patterns": {
-        "title": "Patterns",
-        "staticTitle": "Static Pages (SSG)",
-        "staticText": "Generate HTML at build time with tools like Eleventy, Hugo, or Astro. Inject data into state= attributes using your SSG's template language.",
-        "staticEleventyLabel": "Eleventy (Nunjucks):",
-        "staticCallout": "The HTML is fully rendered at build time — search engines see real content, users see instant page loads.",
-        "staticText2": "No.JS activates after the page loads: bind expressions update the DOM, event handlers are attached, and data fetching begins for dynamic content.",
-        "ssrTitle": "Server-Side Rendering (SSR)",
-        "ssrText": "Render HTML on the server per request. Same pattern — inject data into state=, serve the HTML, and let No.JS hydrate it.",
-        "hybridTitle": "Hybrid: Static Structure, Dynamic Interaction",
-        "hybridText": "Pre-render the SEO-critical content in state=, and let No.JS handle interactive features (cart, real-time updates) via get= and event handlers."
-      },
-      "stateVsGet": {
-        "title": "What to Put in state= vs get=",
-        "colContentType": "Content Type",
-        "colApproach": "Approach",
-        "colWhy": "Why",
-        "row1Col1": "Product name, price, description",
-        "row1Col2": "state= (pre-rendered)",
-        "row1Col3": "SEO-critical, visible immediately",
-        "row2Col1": "User-specific data (cart, preferences)",
-        "row2Col2": "get= (client-side fetch)",
-        "row2Col3": "Changes per session, not indexable",
-        "row3Col1": "Stock count, real-time availability",
-        "row3Col2": "get= with refresh=",
-        "row3Col3": "Changes frequently, needs polling",
-        "row4Col1": "Static UI text, navigation",
-        "row4Col2": "Plain HTML",
-        "row4Col3": "No reactivity needed"
-      },
-      "ruleOfThumb": {
-        "title": "Rule of Thumb",
-        "text": "If a search engine should see it, pre-render it in state=. If it's user-specific or real-time, fetch it client-side with get=."
-      },
-      "eleventyQuickStart": {
-        "title": "No.JS + Eleventy Quick-Start",
-        "configTitle": ".eleventy.js",
-        "productTemplateTitle": "Product Page Template (product.njk)",
-        "baseLayoutTitle": "Base Layout (_includes/base.html)",
-        "text": "Run npx @11ty/eleventy --serve and every product page is pre-rendered with full SEO content. No.JS makes it interactive in the browser."
-      },
-      "securityNote": {
-        "title": "Security Note",
-        "text": "When embedding user-generated content into state= attributes, always escape HTML entities to prevent XSS:",
-        "text2": "This prevents a malicious product name like </div><script>alert('xss')</script> from breaking out of the attribute."
-      },
-      "managingHead": {
-        "title": "Managing <head> in SSG Pages",
-        "text1": "For SSG pages, set <title>, <meta description>, and other head tags in your SSG template (e.g. the Eleventy base layout) — they are part of the static HTML.",
-        "text2": "For dynamic SPA pages within the same app, use No.JS head management directives (page-title, page-description, page-canonical, page-jsonld) to update the head reactively.",
-        "text3": "See the Head Management guide for the full API."
       }
     }
   }

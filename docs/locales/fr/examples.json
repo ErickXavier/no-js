@@ -10,7 +10,6 @@
       "title": "Connexion avec JWT",
       "desc": "Un flux de connexion complet : validation du formulaire, POST vers un endpoint d'authentification, sauvegarde du JWT dans un store global, et ajout automatique du token à chaque requête suivante via un intercepteur de requêtes.",
       "signIn": "Se connecter",
-      "signingIn": "Connexion en cours...",
       "previewHint": "Remplissez les deux champs pour essayer l'aperçu interactif",
       "signedIn": "Connecté !",
       "signOut": "Se déconnecter",
@@ -33,7 +32,6 @@
       "badge": "Débutant",
       "title": "Recherche en direct",
       "desc": "Un champ de recherche instantané qui déclenche une requête GET avec debounce à chaque frappe, affichant les résultats de manière réactive. Pas de <code>addEventListener</code>, pas de <code>setTimeout</code>, pas de manipulation du DOM.",
-      "placeholder": "Rechercher des produits...",
       "noResults": "Aucun résultat"
     },
     "cart": {
@@ -50,7 +48,6 @@
       "title": "Polling en direct",
       "desc": "Un tableau de bord de statut serveur qui se rafraîchit automatiquement toutes les 5 secondes grâce à l'attribut <code>refresh</code>. Le style conditionnel réagit instantanément à l'état de santé actuel — pas de <code>setInterval</code>, pas de boucle <code>fetch</code>.",
       "serverStatus": "Statut du serveur",
-      "online": "En ligne",
       "cpu": "CPU",
       "reqPerSec": "Req/s",
       "errors": "Erreurs",

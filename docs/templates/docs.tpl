@@ -314,9 +314,10 @@
 .skl-line.w50 { width: 50%; }
 .skl-code.sm  { height: 80px; margin-top: 4px; }
 
-/* Hide skeleton once real content has arrived */
-.doc-with-sidebar .doc-main > [id]:has(.doc-section) .doc-skeleton,
-.doc-with-sidebar .doc-main > [id]:has(.hero-section) .doc-skeleton {
+/* Hide skeleton once real content has arrived
+   (router wraps content in display:contents divs, so use :has instead of >) */
+.doc-with-sidebar .doc-main:has(.doc-section) .doc-skeleton,
+.doc-with-sidebar .doc-main:has(.hero-section) .doc-skeleton {
   display: none;
 }
 
@@ -377,7 +378,7 @@
   .doc-table th, .doc-table td { padding: 8px 10px; }
 }
 </style>
-<!-- Documentation — Single page with all sections -->
+<!-- Documentation — Nested routing layout (sidebar + route outlet) -->
 
 <!-- Reusable skeleton — injected by NoJS via template[include] -->
 <template id="doc-skeleton">
@@ -396,55 +397,8 @@
     </div>
     <template src="./docs/sidebar.tpl"></template>
 
-    <div class="doc-main">
-
-        <div id="getting-started"><template src="./docs/getting-started.tpl" loading="#doc-skeleton"></template></div>
-
-        <div id="cheatsheet"><template src="./docs/cheatsheet.tpl" loading="#doc-skeleton"></template></div>
-        <div id="actions-refs"><template src="./docs/actions-refs.tpl" loading="#doc-skeleton"></template></div>
-        <div id="custom-directives"><template src="./docs/custom-directives.tpl" loading="#doc-skeleton"></template></div>
-        <div id="plugins"><template src="./docs/plugins.tpl" loading="#doc-skeleton"></template></div>
-        <div id="error-handling"><template src="./docs/error-handling.tpl" loading="#doc-skeleton"></template></div>
-        <div id="configuration"><template src="./docs/configuration.tpl" loading="#doc-skeleton"></template></div>
-        <div id="state-management"><template src="./docs/state-management.tpl" loading="#doc-skeleton"></template></div>
-
-        <div id="events"><template src="./docs/events.tpl" loading="#doc-skeleton"></template></div>
-        <div id="data-binding"><template src="./docs/data-binding.tpl" loading="#doc-skeleton"></template></div>
-        <div id="conditionals"><template src="./docs/conditionals.tpl" loading="#doc-skeleton"></template></div>
-        <div id="loops"><template src="./docs/loops.tpl" loading="#doc-skeleton"></template></div>
-        <div id="templates"><template src="./docs/templates.tpl" loading="#doc-skeleton"></template></div>
-        <div id="data-fetching"><template src="./docs/data-fetching.tpl" loading="#doc-skeleton"></template></div>
-        <div id="routing"><template src="./docs/routing.tpl" loading="#doc-skeleton"></template></div>
-        <div id="head-management"><template src="./docs/head-management.tpl" loading="#doc-skeleton"></template></div>
-        <div id="forms-validation"><template src="./docs/forms-validation.tpl" loading="#doc-skeleton"></template></div>
-        <div id="styling"><template src="./docs/styling.tpl" loading="#doc-skeleton"></template></div>
-        <div id="drag-and-drop"><template src="./docs/drag-and-drop.tpl" loading="#doc-skeleton"></template></div>
-        <div id="animations"><template src="./docs/animations.tpl" loading="#doc-skeleton"></template></div>
-        <div id="filters"><template src="./docs/filters.tpl" loading="#doc-skeleton"></template></div>
-        <div id="i18n"><template src="./docs/i18n.tpl" loading="#doc-skeleton"></template></div>
-
-    </div><!-- /doc-main -->
-
-    <!-- Page TOC skeleton (shown while headings load) -->
-    <div class="page-toc-skeleton">
-        <div class="page-toc-skeleton-inner">
-            <div class="skl-toc-title"></div>
-            <div class="skl-toc-link"></div>
-            <div class="skl-toc-link w75"></div>
-            <div class="skl-toc-link w85"></div>
-            <div class="skl-toc-link w65"></div>
-            <div class="skl-toc-link w55"></div>
-            <div class="skl-toc-link w75"></div>
-            <div class="skl-toc-link w85"></div>
-            <div class="skl-toc-link w65"></div>
-        </div>
+    <div class="doc-main" route-view="docs" src="./docs/" route-index="getting-started" transition="fade" page-toc>
     </div>
-
-    <!-- Right-side "On This Page" table of contents -->
-    <aside class="page-toc" id="page-toc">
-        <div class="page-toc-title" t="shell.sidebar.onThisPage"></div>
-        <nav class="page-toc-nav"></nav>
-    </aside>
 
 </div><!-- /doc-with-sidebar -->
 </div>

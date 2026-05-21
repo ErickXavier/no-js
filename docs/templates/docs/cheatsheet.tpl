@@ -33,6 +33,8 @@
         <tr><td><code>then</code></td><td><code>then="items = $data"</code></td><td t="docs.cheatsheet.data.then"></td></tr>
         <tr><td><code>redirect</code></td><td><code>redirect="/home"</code></td><td t="docs.cheatsheet.data.redirect"></td></tr>
         <tr><td><code>confirm</code></td><td><code>confirm="Are you sure?"</code></td><td t="docs.cheatsheet.data.confirm"></td></tr>
+        <tr><td><code>skeleton</code></td><td><code>skeleton="cardSkel"</code></td><td t="docs.cheatsheet.data.skeleton"></td></tr>
+        <tr><td><code>retry-delay</code></td><td><code>retry-delay="1000"</code></td><td t="docs.cheatsheet.data.retryDelay"></td></tr>
       </tbody>
     </table>
   </div>
@@ -48,6 +50,9 @@
         <tr><td><code>computed</code></td><td><code>computed="total" expr="a+b"</code></td><td t="docs.cheatsheet.state.computed"></td></tr>
         <tr><td><code>watch</code></td><td><code>watch="search"</code></td><td t="docs.cheatsheet.state.watch"></td></tr>
         <tr><td><code>persist</code></td><td><code>persist="localStorage"</code></td><td t="docs.cheatsheet.state.persist"></td></tr>
+        <tr><td><code>persist-key</code></td><td><code>persist-key="settings"</code></td><td t="docs.cheatsheet.state.persistKey"></td></tr>
+        <tr><td><code>persist-fields</code></td><td><code>persist-fields="theme,lang"</code></td><td t="docs.cheatsheet.state.persistFields"></td></tr>
+        <tr><td><code>persist-schema</code></td><td><code>persist-schema</code></td><td t="docs.cheatsheet.state.persistSchema"></td></tr>
         <tr><td><code>model</code></td><td><code>model="name"</code></td><td t="docs.cheatsheet.state.model"></td></tr>
       </tbody>
     </table>
@@ -112,6 +117,8 @@
         <tr><td><code>.throttle</code></td><td><code>on:scroll.throttle.300="..."</code></td><td t="docs.cheatsheet.events.throttle"></td></tr>
         <tr><td><code>.self</code></td><td><code>on:click.self="..."</code></td><td t="docs.cheatsheet.events.self"></td></tr>
         <tr><td><code>backspace</code></td><td><code>on:keydown.backspace="..."</code></td><td t="docs.cheatsheet.events.backspace"></td></tr>
+        <tr><td><code>on:updated</code></td><td><code>on:updated="refresh()"</code></td><td t="docs.cheatsheet.events.onUpdated"></td></tr>
+        <tr><td><code>on:error</code></td><td><code>on:error="log($event)"</code></td><td t="docs.cheatsheet.events.onError"></td></tr>
       </tbody>
     </table>
   </div>
@@ -155,9 +162,9 @@
         <tr><td><code>route</code></td><td><code>route="/path"</code></td><td t="docs.cheatsheet.routing.route"></td></tr>
         <tr><td><code>route-view</code></td><td><code>route-view</code></td><td t="docs.cheatsheet.routing.routeView"></td></tr>
         <tr><td><code>route-view="name"</code></td><td><code>&lt;aside route-view="sidebar"&gt;</code></td><td t="docs.cheatsheet.routing.routeViewNamed"></td></tr>
-        <tr><td><code>route-view[src]</code></td><td><code>&lt;main route-view src="./pages/"&gt;</code></td><td t-html="docs.cheatsheet.routing.routeViewSrc"></td></tr>
-        <tr><td><code>route-index</code></td><td><code>route-index="overview"</code></td><td t-html="docs.cheatsheet.routing.routeIndex"></td></tr>
-        <tr><td><code>ext</code></td><td><code>ext=".html"</code></td><td t-html="docs.cheatsheet.routing.routeExt"></td></tr>
+        <tr><td><code>route-view[src]</code></td><td><code>&lt;main route-view src="./pages/"&gt;</code></td><td t="docs.cheatsheet.routing.routeViewSrc" t-html></td></tr>
+        <tr><td><code>route-index</code></td><td><code>route-index="overview"</code></td><td t="docs.cheatsheet.routing.routeIndex" t-html></td></tr>
+        <tr><td><code>ext</code></td><td><code>ext=".html"</code></td><td t="docs.cheatsheet.routing.routeExt" t-html></td></tr>
         <tr><td><code>i18n-ns</code></td><td><code>i18n-ns</code></td><td t="docs.cheatsheet.routing.i18nNs"></td></tr>
         <tr><td><code>outlet</code></td><td><code>&lt;template route="/x" outlet="sidebar"&gt;</code></td><td t="docs.cheatsheet.routing.outlet"></td></tr>
         <tr><td><code>route-active</code></td><td><code>route-active="cls"</code></td><td t="docs.cheatsheet.routing.routeActive"></td></tr>
@@ -170,6 +177,8 @@
         <tr><td><code>$router.on(fn)</code></td><td><code>$router.on(r =&gt; ...)</code></td><td t="docs.cheatsheet.routing.routerOn"></td></tr>
         <tr><td><code>$router.current</code></td><td><code>$router.current.path</code></td><td t="docs.cheatsheet.routing.routerCurrent"></td></tr>
         <tr><td><code>transition</code> <small>(route-view)</small></td><td><code>&lt;main route-view transition="slide"&gt;</code></td><td t="docs.cheatsheet.routing.transitionVT"></td></tr>
+        <tr><td><code>route="*"</code></td><td><code>&lt;template route="*"&gt;404&lt;/template&gt;</code></td><td t="docs.cheatsheet.routing.routeWildcard"></td></tr>
+        <tr><td><code>$route.matched</code></td><td><code>&lt;span bind="$route.matched"&gt;</code></td><td t="docs.cheatsheet.routing.routeMatched" t-html></td></tr>
       </tbody>
     </table>
   </div>
@@ -234,6 +243,21 @@
       <tbody>
         <tr><td><code>t</code></td><td><code>t="greeting"</code></td><td t="docs.cheatsheet.i18n.t"></td></tr>
         <tr><td><code>t-*</code></td><td><code>t-name="user.name"</code></td><td t="docs.cheatsheet.i18n.tStar"></td></tr>
+        <tr><td><code>t-html</code></td><td><code>t="key" t-html</code></td><td t="docs.cheatsheet.i18n.tHtml"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Head Management -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="cheatsheet-head-management" t="docs.cheatsheet.headManagement.title"></h2>
+    <table class="doc-table">
+      <thead><tr><th t="docs.cheatsheet.headManagement.col1"></th><th t="docs.cheatsheet.headManagement.col2"></th><th t="docs.cheatsheet.headManagement.col3"></th></tr></thead>
+      <tbody>
+        <tr><td><code>page-title</code></td><td><code>page-title="'About | Store'"</code></td><td t="docs.cheatsheet.headManagement.pageTitle"></td></tr>
+        <tr><td><code>page-description</code></td><td><code>page-description="product.desc"</code></td><td t="docs.cheatsheet.headManagement.pageDescription"></td></tr>
+        <tr><td><code>page-canonical</code></td><td><code>page-canonical="'/about'"</code></td><td t="docs.cheatsheet.headManagement.pageCanonical"></td></tr>
+        <tr><td><code>page-jsonld</code></td><td><code>&lt;div hidden page-jsonld&gt;</code></td><td t="docs.cheatsheet.headManagement.pageJsonld"></td></tr>
       </tbody>
     </table>
   </div>
@@ -252,6 +276,7 @@
         <tr><td><code>loading</code> (on template)</td><td><code>&lt;template src="..." loading="#skl"&gt;</code></td><td t="docs.cheatsheet.misc.loading"></td></tr>
         <tr><td><code>include</code> (on template)</td><td><code>&lt;template include="#fragment"&gt;</code></td><td t="docs.cheatsheet.misc.include"></td></tr>
         <tr><td><code>error-boundary</code></td><td><code>error-boundary="#fb"</code></td><td t="docs.cheatsheet.misc.errorBoundary"></td></tr>
+        <tr><td><code>var</code></td><td><code>&lt;template var="data"&gt;</code></td><td t="docs.cheatsheet.misc.var"></td></tr>
       </tbody>
     </table>
   </div>

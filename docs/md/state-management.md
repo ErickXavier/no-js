@@ -183,6 +183,36 @@ Use `persist-fields` to control exactly which fields are saved and restored. Fie
 | `persist-key` | Unique storage key. **Required** when `persist` is set |
 | `persist-fields` | Comma-separated list of fields to persist. Omit to persist all fields |
 
+### `persist-schema` — Validate Restored State
+
+Add `persist-schema` to validate that keys restored from storage match the initial state schema. Unknown keys are ignored and type mismatches trigger a console warning:
+
+```html
+<div state="{ theme: 'dark', sidebar: true }"
+     persist="localStorage"
+     persist-key="settings"
+     persist-schema>
+  <!-- If storage has { theme: 123, unknown: true }, warns about type mismatch
+       on "theme" and ignores "unknown" -->
+</div>
+```
+
+---
+
+### Context Scoping
+
+Reactive contexts inherit from parent elements, like lexical scoping. A child `state` can shadow a parent's property:
+
+```html
+<div state="{ color: 'red' }">
+  <span bind="color"></span> <!-- "red" -->
+
+  <div state="{ color: 'blue' }">
+    <span bind="color"></span> <!-- "blue" (shadows parent) -->
+  </div>
+</div>
+```
+
 ---
 
 ## `NoJS.notify()` — Flush Store Updates from JavaScript
@@ -223,4 +253,12 @@ When external JavaScript (interceptors, helper functions, `<script>` blocks) mut
 
 ---
 
-**Next:** [Events →](events.md)
+---
+
+## See Also
+
+- [Data Binding](data-binding.md) — reading state with `bind` and `model`
+- [Data Fetching](data-fetching.md) — `into` for writing fetch results to stores
+- [Configuration](configuration.md) — pre-initializing stores via `config()`
+
+**Previous:** [Data Binding ←](data-binding.md) | **Next:** [Conditionals →](conditionals.md)

@@ -155,4 +155,30 @@
 <span class="hl-tag">&lt;/template&gt;</span></pre></div>
   </div>
 
+  <!-- Reactivity -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="loops-reactivity" t="docs.loops.reactivity.title"></h2>
+    <p class="doc-text" t="docs.loops.reactivity.text"></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ items: ['A', 'B', 'C'] }"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">foreach</span>=<span class="hl-str">"item in items"</span> <span class="hl-attr">key</span>=<span class="hl-str">"item"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"item"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+  <span class="hl-tag">&lt;button</span> <span class="hl-attr">on:click</span>=<span class="hl-str">"items.push('D')"</span><span class="hl-tag">&gt;</span>Add<span class="hl-tag">&lt;/button&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+  </div>
+
+  <!-- Object Iteration -->
+  <div class="doc-section">
+    <h2 class="doc-title" id="loops-object-iteration" t="docs.loops.objectIteration.title"></h2>
+    <p class="doc-text" t="docs.loops.objectIteration.text"></p>
+    <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ config: { theme: 'dark', lang: 'en' } }"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">foreach</span>=<span class="hl-str">"key in config | keys"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;span</span> <span class="hl-attr">bind</span>=<span class="hl-str">"key"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre></div>
+    <div class="callout">
+      <p t="docs.loops.objectIteration.callout"></p>
+    </div>
+  </div>
+
 </div>

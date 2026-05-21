@@ -59,6 +59,25 @@ Bind any DOM event directly in HTML:
 <form on:submit.prevent.once="register()">
 ```
 
+### All Key Modifiers
+
+| Modifier | Key |
+|----------|-----|
+| `.enter` | Enter |
+| `.escape` | Escape |
+| `.tab` | Tab |
+| `.space` | Space |
+| `.delete` | Delete or Backspace |
+| `.backspace` | Delete or Backspace (alias) |
+| `.up` | ArrowUp |
+| `.down` | ArrowDown |
+| `.left` | ArrowLeft |
+| `.right` | ArrowRight |
+| `.ctrl` | Control key held |
+| `.alt` | Alt key held |
+| `.shift` | Shift key held |
+| `.meta` | Meta/Command key held |
+
 ---
 
 ## `$event` — The Event Object
@@ -103,10 +122,22 @@ Inside any `on:*` handler, `$event` refers to the native DOM event:
 |------|------|
 | `on:init` | Directive first processed |
 | `on:mounted` | Element inserted into visible DOM |
-| `on:updated` | Any reactive dependency changed |
+| `on:updated` | DOM mutation observed (childList, attributes, characterData) |
 | `on:unmounted` | Element removed from DOM |
 | `on:error` | Any error in this element's subtree |
 
 ---
 
-**Next:** [Dynamic Styling →](styling.md)
+## `trigger` — Emit Custom Events
+
+The `trigger` directive emits a custom event from the element, typically used for child-to-parent communication. See [Actions & Refs → trigger](actions-refs.md#trigger--emit-custom-events) for full details.
+
+---
+
+## See Also
+
+- [Actions & Refs](actions-refs.md) — `call`, `trigger`, and `ref` directives
+- [Forms & Validation](forms-validation.md) — form event handling with `$form`
+- [Data Binding](data-binding.md) — `$event` and `$el` in context
+
+**Previous:** [Templates ←](templates.md) | **Next:** [Forms & Validation →](forms-validation.md)
