@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nested Routing — NoJS E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 2rem; color: #333; }
+    nav a { margin-right: 1rem; text-decoration: none; color: #333; }
+    nav a.active { color: #2196f3; font-weight: 600; }
+    .docs-layout { display: flex; gap: 2rem; }
+    .docs-sidebar { min-width: 180px; border-right: 1px solid #ddd; padding-right: 1rem; }
+    .docs-sidebar ul { list-style: none; padding: 0; }
+    .docs-sidebar li { margin-bottom: 0.5rem; }
+    .docs-sidebar a { display: block; padding: 0.25rem 0; }
+    .docs-content { flex: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- Top-level navigation -->
+  <header data-test="main-nav">
+    <nav>
+      <a route="/" route-active-exact="active" data-test="nav-home">Home</a>
+      <a route="/docs" route-active="active" data-test="nav-docs">Docs</a>
+    </nav>
+  </header>
+
+  <!-- Main route outlet (file-based) -->
+  <main route-view src="./nested-routing-templates/" route-index="home" data-test="main-outlet"></main>
+
+  <!-- Docs layout: sidebar + named outlet (lives in static HTML) -->
+  <div class="docs-layout" data-test="docs-layout-wrapper">
+    <nav class="docs-sidebar" data-test="docs-sidebar">
+      <h3>Documentation</h3>
+      <ul>
+        <li><a route="/docs/getting-started" route-active="active" data-test="sidebar-getting-started">Getting Started</a></li>
+        <li><a route="/docs/loops" route-active="active" data-test="sidebar-loops">Loops</a></li>
+        <li><a route="/docs/state" route-active="active" data-test="sidebar-state">State</a></li>
+      </ul>
+    </nav>
+    <div class="docs-content" route-view="docs" data-test="docs-outlet"></div>
+  </div>
+
+  <!-- Route templates: /home resolves via file-based (nested-routing-templates/home.tpl) -->
+
+  <!-- /docs → redirect to /docs/getting-started -->
+  <template route="/docs" guard="false" redirect="/docs/getting-started"></template>
+
+  <!-- Docs sub-routes: default outlet gets empty template, "docs" outlet gets the .tpl -->
+  <template route="/docs/getting-started"></template>
+  <template route="/docs/getting-started" outlet="docs" src="./nested-routing-templates/docs/getting-started.tpl"></template>
+
+  <template route="/docs/loops"></template>
+  <template route="/docs/loops" outlet="docs" src="./nested-routing-templates/docs/loops.tpl"></template>
+
+  <template route="/docs/state"></template>
+  <template route="/docs/state" outlet="docs" src="./nested-routing-templates/docs/state.tpl"></template>
+
+  <script src="../../dist/iife/no.js"></script>
+  <script>
+    NoJS.config({ router: { useHash: true, suppressHashWarning: true } });
+    NoJS.init();
+  </script>
+</body>
+</html>
