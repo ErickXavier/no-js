@@ -288,107 +288,88 @@
     (function() {
       var headingSelector = '.doc-title[id], .doc-subtitle[id]';
       var activeLink = null;
-      var observer = null;
-      var mutation = null;
+      var scrollObserver = null;
       var buildTimer = null;
-      var tocEl = null;
-      var navEl = null;
 
-      function ensureToc(docMain) {
+      function ensureToc() {
+        var docMain = document.querySelector('.doc-main');
+        if (!docMain) return null;
         var hero = docMain.querySelector('.hero-section');
-        if (!hero) return false;
+        if (!hero) return null;
         var existing = docMain.querySelector('.page-toc');
-        if (existing) {
-          tocEl = existing;
-          navEl = existing.querySelector('.page-toc-nav');
-          return true;
-        }
-        tocEl = document.createElement('aside');
-        tocEl.className = 'page-toc';
-        tocEl.id = 'page-toc';
+        if (existing) return existing.querySelector('.page-toc-nav');
+        var aside = document.createElement('aside');
+        aside.className = 'page-toc';
+        aside.id = 'page-toc';
         var title = document.createElement('div');
         title.className = 'page-toc-title';
         title.setAttribute('t', 'shell.sidebar.onThisPage');
-        navEl = document.createElement('nav');
-        navEl.className = 'page-toc-nav';
-        tocEl.appendChild(title);
-        tocEl.appendChild(navEl);
-        hero.insertAdjacentElement('afterend', tocEl);
+        var nav = document.createElement('nav');
+        nav.className = 'page-toc-nav';
+        aside.appendChild(title);
+        aside.appendChild(nav);
+        hero.insertAdjacentElement('afterend', aside);
         if (typeof NoJS !== 'undefined' && NoJS.processTree) NoJS.processTree(title);
-        return true;
+        return nav;
       }
 
-      function initToc() {
+      function buildToc() {
         var docMain = document.querySelector('.doc-main');
         if (!docMain) return;
-
-        function hasTranslatedText() {
-          var h = docMain.querySelector(headingSelector);
-          return h && h.textContent.trim().length > 0;
-        }
-
-        function buildToc() {
-          if (!ensureToc(docMain)) { scheduleBuild(); return; }
-          var headings = docMain.querySelectorAll(headingSelector);
-          if (!headings.length) return;
-          if (!hasTranslatedText()) { scheduleBuild(); return; }
-          navEl.innerHTML = '';
-          headings.forEach(function(h) {
-            if (!h.textContent.trim()) return;
-            var a = document.createElement('a');
-            a.href = '#' + h.id;
-            a.className = 'page-toc-link' + (h.classList.contains('doc-subtitle') ? ' toc-indent' : '');
-            a.textContent = h.textContent;
-            a.title = h.textContent;
-            navEl.appendChild(a);
-          });
-          observeHeadings();
-        }
-
-        function scheduleBuild() {
-          clearTimeout(buildTimer);
-          buildTimer = setTimeout(buildToc, 200);
-        }
-
-        function observeHeadings() {
-          if (observer) observer.disconnect();
-          var headings = docMain.querySelectorAll(headingSelector);
-          if (!headings.length) return;
-          observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (entry.isIntersecting) setActive(entry.target.id);
-            });
-          }, {
-            rootMargin: '-' + (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 70) + 'px 0px -60% 0px',
-            threshold: 0
-          });
-          headings.forEach(function(h) { observer.observe(h); });
-        }
-
-        function setActive(id) {
-          if (activeLink) activeLink.classList.remove('active');
-          if (!navEl) return;
-          var link = navEl.querySelector('a[href="#' + CSS.escape(id) + '"]');
-          if (link) {
-            link.classList.add('active');
-            activeLink = link;
-          }
-        }
-
-        if (mutation) mutation.disconnect();
-        mutation = new MutationObserver(function() {
-          var headings = docMain.querySelectorAll(headingSelector);
-          var current = navEl ? navEl.querySelectorAll('a').length : 0;
-          if (headings.length !== current || !current) scheduleBuild();
+        var nav = ensureToc();
+        if (!nav) { scheduleBuild(); return; }
+        var headings = docMain.querySelectorAll(headingSelector);
+        if (!headings.length) return;
+        var h = docMain.querySelector(headingSelector);
+        if (!h || !h.textContent.trim()) { scheduleBuild(); return; }
+        nav.innerHTML = '';
+        activeLink = null;
+        headings.forEach(function(h) {
+          if (!h.textContent.trim()) return;
+          var a = document.createElement('a');
+          a.href = '#' + h.id;
+          a.className = 'page-toc-link' + (h.classList.contains('doc-subtitle') ? ' toc-indent' : '');
+          a.textContent = h.textContent;
+          a.title = h.textContent;
+          nav.appendChild(a);
         });
-        mutation.observe(docMain, { childList: true, subtree: true, characterData: true });
-        scheduleBuild();
+        observeScroll(docMain, nav);
       }
 
-      var bodyObs = new MutationObserver(function() {
-        if (document.querySelector('.doc-main')) { bodyObs.disconnect(); initToc(); }
+      function scheduleBuild() {
+        clearTimeout(buildTimer);
+        buildTimer = setTimeout(buildToc, 300);
+      }
+
+      function observeScroll(docMain, nav) {
+        if (scrollObserver) scrollObserver.disconnect();
+        var headings = docMain.querySelectorAll(headingSelector);
+        if (!headings.length) return;
+        scrollObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              if (activeLink) activeLink.classList.remove('active');
+              var link = nav.querySelector('a[href="#' + CSS.escape(entry.target.id) + '"]');
+              if (link) { link.classList.add('active'); activeLink = link; }
+            }
+          });
+        }, {
+          rootMargin: '-' + (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 70) + 'px 0px -60% 0px',
+          threshold: 0
+        });
+        headings.forEach(function(h) { scrollObserver.observe(h); });
+      }
+
+      // Watch for DOM changes (route navigation, i18n translations, lazy content)
+      var domObs = new MutationObserver(function() {
+        var docMain = document.querySelector('.doc-main');
+        if (!docMain) return;
+        var nav = docMain.querySelector('.page-toc-nav');
+        var headings = docMain.querySelectorAll(headingSelector);
+        var current = nav ? nav.querySelectorAll('a').length : 0;
+        if (headings.length !== current || !current) scheduleBuild();
       });
-      bodyObs.observe(document.body, { childList: true, subtree: true });
+      domObs.observe(document.body, { childList: true, subtree: true, characterData: true });
     })();
 
     NoJS.directive('faq-filter', {
