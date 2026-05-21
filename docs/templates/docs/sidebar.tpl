@@ -2,9 +2,9 @@
   <nav class="sidebar-nav">
     <div class="sidebar-group">
       <div class="sidebar-group-title" t="shell.sidebar.gettingStarted"></div>
-      <a route="/docs/getting-started" class="sidebar-link" route-active="active" t="shell.sidebar.introduction"></a>
-      <a route="/docs/getting-started" class="sidebar-link" route-active="active" t="shell.sidebar.quickStart"></a>
-      <a route="/docs/getting-started" class="sidebar-link" route-active="active" t="shell.sidebar.coreConcepts"></a>
+      <a route="/docs/getting-started#getting-started-introduction" class="sidebar-link" route-active="active" t="shell.sidebar.introduction"></a>
+      <a route="/docs/getting-started#getting-started-quick-start" class="sidebar-link" route-active="active" t="shell.sidebar.quickStart"></a>
+      <a route="/docs/getting-started#getting-started-core-concepts" class="sidebar-link" route-active="active" t="shell.sidebar.coreConcepts"></a>
     </div>
 
     <div class="sidebar-group">
