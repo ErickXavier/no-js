@@ -25,18 +25,18 @@
       "f2Title": "SPA Router",
       "f2Desc": "Roteamento client-side com parâmetros de rota, wildcards, guards, rotas aninhadas e templates com carregamento lazy. Sem arquivos de configuração.",
       "f3Title": "i18n Integrado",
-      "f3Desc": "Troca de idioma, carregamento de namespaces, pluralização e suporte RTL. Tudo movido por um único atributo t.",
+      "f3Desc": "Troca de idioma, carregamento de namespaces, pluralização e detecção do navegador. Tudo movido por um único atributo t.",
       "f4Title": "Fetch Declarativo",
       "f4Desc": "GET, POST, PUT, DELETE — basta adicionar o atributo. Auto-binding ao estado, indicadores de carregamento e tratamento de erros incluídos.",
       "f5Title": "Validação de Formulários",
       "f5Desc": "15+ validadores integrados com mensagens de erro personalizadas, validação condicional e feedback em tempo real. HTML puro.",
       "f6Title": "Animações",
-      "f6Desc": "Transições por classes CSS com suporte a escalonamento. Animações de entrada, saída e movimento controladas inteiramente por atributos."
+      "f6Desc": "Transições por classes CSS com suporte a escalonamento. Animações de entrada e saída controladas inteiramente por atributos."
     },
     "bundle": {
       "badge": "O resultado.",
       "h1": "Seu bundle tem 2.3 MB.",
-      "h2": "O nosso tem 24 KB.",
+      "h2": "O nosso é um único arquivo.",
       "subtitle": "Sem build. Sem bundler. Sem desculpas.",
       "getStarted": "Começar",
       "seeFeatures": "Ler a Documentação"

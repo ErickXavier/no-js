@@ -468,15 +468,6 @@ A full analytics plugin demonstrating the plugin lifecycle, globals, interceptor
         return response;
       });
 
-      // Listen for route changes
-      app.on('route:change', (route) => {
-        this._queue.push({
-          type: 'page_view',
-          path: route.path,
-          timestamp: Date.now()
-        });
-      });
-
       // Flush events periodically
       this._flushInterval = setInterval(() => {
         this._flush(trackingId);

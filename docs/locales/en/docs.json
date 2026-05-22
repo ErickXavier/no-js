@@ -1209,35 +1209,34 @@
         "lowercase": "Converts text to lowercase",
         "capitalize": "Capitalizes first letter of each word",
         "truncate": "Truncates text to N characters with ellipsis",
-        "initials": "Extracts initials from a name",
-        "slug": "Converts to URL-friendly slug",
+        "slugify": "Converts to URL-friendly slug",
         "trim": "Removes leading/trailing whitespace",
-        "padStart": "Pads string from the start",
-        "padEnd": "Pads string from the end",
         "encodeUri": "Encodes a URI component",
         "currency": "Formats number as currency",
         "number": "Formats number with locale grouping",
         "percent": "Formats number as percentage",
         "ordinal": "Adds ordinal suffix (1st, 2nd, 3rd)",
-        "bytes": "Formats bytes to human-readable size",
-        "round": "Rounds to N decimal places",
-        "abs": "Absolute value",
+        "filesize": "Formats bytes to human-readable size",
         "reverse": "Reverses array or string",
         "unique": "Removes duplicate values",
-        "flatten": "Flattens nested arrays",
         "pluck": "Extracts a property from each item",
         "where": "Filters array by property value",
         "sortBy": "Sorts array by property",
-        "groupBy": "Groups array by property",
-        "first": "Returns first N items",
-        "last": "Returns last N items",
+        "first": "Returns the first element of an array",
+        "last": "Returns the last element of an array",
         "date": "Formats Date object",
         "datetime": "Formats Date with time",
-        "timeago": "Relative time (e.g. '3 hours ago')",
+        "relative": "Time elapsed since date (e.g. '5 minutes ago')",
+        "fromNow": "Time until future date (e.g. 'in 3 hours')",
         "json": "Serializes value as JSON string",
         "default": "Returns fallback if value is null/undefined",
         "keys": "Returns object keys as array",
-        "values": "Returns object values as array"
+        "values": "Returns object values as array",
+        "count": "Returns the length of an array",
+        "join": "Joins array elements with a separator",
+        "stripHtml": "Removes HTML tags from a string",
+        "nl2br": "Converts newlines to <br> tags",
+        "debug": "Outputs value to console and returns it"
       },
       "chaining": {
         "title": "Chaining Filters"
@@ -1249,7 +1248,7 @@
         "title": "Live Demo — Filters",
         "label": "Result",
         "uppercaseLabel": "Uppercase:",
-        "initialsLabel": "Initials:"
+        "slugifyLabel": "Slugify:"
       }
     },
     "i18n": {
@@ -1314,9 +1313,7 @@
         "text": "Customize trigger behavior with additional attributes:",
         "col1": "Attribute",
         "col2": "Description",
-        "triggerData": "Data payload attached to the CustomEvent's detail property",
-        "triggerBubbles": "Whether the event bubbles up the DOM (default: true)",
-        "triggerOnce": "Fire the trigger only once, then remove it"
+        "triggerData": "Data payload attached to the CustomEvent's detail property"
       },
       "ref": {
         "title": "ref — Named References",

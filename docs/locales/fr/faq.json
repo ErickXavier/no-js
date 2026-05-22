@@ -23,7 +23,7 @@
       "title": "Premiers Pas",
       "q1": {
         "question": "Qu'est-ce que No.JS ?",
-        "answer": "Un framework réactif HTML-first. État, fetch de données, routage, validation, i18n, animations : tout déclaré via des attributs HTML. ~24 Ko gzippé, zéro dépendance, pas de build."
+        "answer": "Un framework réactif HTML-first. État, fetch de données, routage, validation, i18n, animations : tout déclaré via des attributs HTML. Zéro dépendance, pas de build."
       },
       "q2": {
         "question": "Comment commencer ?",
@@ -50,7 +50,7 @@
       },
       "q7": {
         "question": "Quelles fonctionnalités sont incluses ?",
-        "answer": "Tout est livré dans un seul fichier de ~24 Ko :<br><br>• État réactif et propriétés calculées<br>• Routage SPA avec lazy loading<br>• HTTP déclaratif (GET, POST, PUT, PATCH, DELETE)<br>• i18n avec fichiers de locale externes<br>• Validation de formulaires<br>• Animations et transitions<br>• Drag and drop<br>• 30+ filtres intégrés"
+        "answer": "Tout est livré dans un seul fichier :<br><br>• État réactif et propriétés calculées<br>• Routage SPA avec lazy loading<br>• HTTP déclaratif (GET, POST, PUT, PATCH, DELETE)<br>• i18n avec fichiers de locale externes<br>• Validation de formulaires<br>• Animations et transitions<br>• Drag and drop<br>• 32 filtres intégrés"
       },
       "q8": {
         "question": "Quel est le cas d'usage idéal ?",
@@ -69,11 +69,11 @@
       },
       "q11": {
         "question": "No.JS vs React ou Vue ?",
-        "answer": "React et Vue nécessitent un build, un virtual DOM et des fichiers JavaScript. No.JS ne nécessite rien de tout cela.<br><br>~24 Ko vs 100+ Ko. Fichiers HTML vs bundles compilés. Le déploiement, c'est envoyer du HTML, pas configurer un pipeline."
+        "answer": "React et Vue nécessitent un build, un virtual DOM et des fichiers JavaScript. No.JS ne nécessite rien de tout cela.<br><br>Un seul fichier vs 100+ Ko de bundles compilés. Fichiers HTML vs pipelines de build. Le déploiement, c'est envoyer du HTML, pas configurer un pipeline."
       },
       "q12": {
         "question": "Ça me rappelle AngularJS. C'est similaire ?",
-        "answer": "Même intuition : ramener le développement web au HTML. Exécution différente : ~24 Ko, zéro dépendance, pas de spirale de complexité.<br><br>No.JS reste intentionnellement petit et focalisé sur les cas où un framework complet est excessif."
+        "answer": "Même intuition : ramener le développement web au HTML. Exécution différente : zéro dépendance, pas de spirale de complexité.<br><br>No.JS reste intentionnellement petit et focalisé sur les cas où un framework complet est excessif."
       }
     },
     "security": {
@@ -84,7 +84,7 @@
       },
       "q14": {
         "question": "Quelle est la taille du bundle ?",
-        "answer": "~24 Ko gzippé. Cela inclut réactivité, routage, fetch de données, i18n, animations, drag and drop, validation de formulaires et 30+ filtres. Zéro dépendance."
+        "answer": "Un seul fichier, zéro dépendance. Cela inclut réactivité, routage, fetch de données, i18n, animations, drag and drop, validation de formulaires et 32 filtres."
       },
       "q15": {
         "question": "Ai-je besoin d'un build ?",
@@ -92,7 +92,7 @@
       },
       "q16": {
         "question": "Est-il prêt pour la production ?",
-        "answer": "Oui. 800+ tests unitaires, testé sur les navigateurs modernes. Ce site de documentation est entièrement construit avec No.JS."
+        "answer": "Oui. 1 350+ tests unitaires, testé sur les navigateurs modernes. Ce site de documentation est entièrement construit avec No.JS."
       }
     },
     "cta": {

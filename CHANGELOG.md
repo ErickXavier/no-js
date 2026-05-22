@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Horizontal scrollbar during view transitions ([`5751c55`](https://github.com/ErickXavier/no-js/commit/5751c55))
 - Missing hero titles on 5 doc pages ([`1e34526`](https://github.com/ErickXavier/no-js/commit/1e34526))
 - Styling page broken t-html and heading hierarchy ([`1675a18`](https://github.com/ErickXavier/no-js/commit/1675a18))
+- Full docs accuracy audit: removed bundle size claims (dynamic value), fixed 14 incorrect animation names, replaced 7 phantom filters with real ones in reference table, corrected `first`/`last`/`count` filter descriptions, removed fabricated `trigger-bubbles`/`trigger-once` attributes, fixed `NoJS.on('error')` callback signature, replaced `el.__nojs_dispose` with `el.__disposers`, removed nonexistent `route:change` event and `RTL support` claims, updated README version badge and npm package name, removed 9 broken `ssg.md` links, updated test count from 800+ to 1,350+ and filter count from 30+ to 32 across all 5 locales
 
 ## [1.11.1](https://github.com/ErickXavier/no-js/compare/v1.11.0...v1.11.1) — 2026-05-20
 

@@ -162,7 +162,6 @@ changes to the element's children after init are not picked up.
 ## See Also
 
 - [Routing → Route Head Attributes](routing.md#route-head-attributes) — head management for SPA routes
-- [SSG & Pre-Rendering](ssg.md) — server-side head tags
 - [Configuration](configuration.md) — global settings
 
 ---

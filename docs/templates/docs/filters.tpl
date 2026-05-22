@@ -81,33 +81,32 @@
         <tr><td><code>lowercase</code></td><td>Text</td><td t="docs.filters.referenceTable.lowercase"></td></tr>
         <tr><td><code>capitalize</code></td><td>Text</td><td t="docs.filters.referenceTable.capitalize"></td></tr>
         <tr><td><code>truncate</code></td><td>Text</td><td t="docs.filters.referenceTable.truncate"></td></tr>
-        <tr><td><code>initials</code></td><td>Text</td><td t="docs.filters.referenceTable.initials"></td></tr>
-        <tr><td><code>slug</code></td><td>Text</td><td t="docs.filters.referenceTable.slug"></td></tr>
         <tr><td><code>trim</code></td><td>Text</td><td t="docs.filters.referenceTable.trim"></td></tr>
-        <tr><td><code>padStart</code></td><td>Text</td><td t="docs.filters.referenceTable.padStart"></td></tr>
-        <tr><td><code>padEnd</code></td><td>Text</td><td t="docs.filters.referenceTable.padEnd"></td></tr>
+        <tr><td><code>stripHtml</code></td><td>Text</td><td t="docs.filters.referenceTable.stripHtml"></td></tr>
+        <tr><td><code>slugify</code></td><td>Text</td><td t="docs.filters.referenceTable.slugify"></td></tr>
+        <tr><td><code>nl2br</code></td><td>Text</td><td t="docs.filters.referenceTable.nl2br"></td></tr>
         <tr><td><code>encodeUri</code></td><td>Text</td><td t="docs.filters.referenceTable.encodeUri"></td></tr>
         <tr><td><code>currency</code></td><td>Number</td><td t="docs.filters.referenceTable.currency"></td></tr>
         <tr><td><code>number</code></td><td>Number</td><td t="docs.filters.referenceTable.number"></td></tr>
         <tr><td><code>percent</code></td><td>Number</td><td t="docs.filters.referenceTable.percent"></td></tr>
         <tr><td><code>ordinal</code></td><td>Number</td><td t="docs.filters.referenceTable.ordinal"></td></tr>
-        <tr><td><code>bytes</code></td><td>Number</td><td t="docs.filters.referenceTable.bytes"></td></tr>
-        <tr><td><code>round</code></td><td>Number</td><td t="docs.filters.referenceTable.round"></td></tr>
-        <tr><td><code>abs</code></td><td>Number</td><td t="docs.filters.referenceTable.abs"></td></tr>
-        <tr><td><code>reverse</code></td><td>Array</td><td t="docs.filters.referenceTable.reverse"></td></tr>
-        <tr><td><code>unique</code></td><td>Array</td><td t="docs.filters.referenceTable.unique"></td></tr>
-        <tr><td><code>flatten</code></td><td>Array</td><td t="docs.filters.referenceTable.flatten"></td></tr>
-        <tr><td><code>pluck</code></td><td>Array</td><td t="docs.filters.referenceTable.pluck"></td></tr>
-        <tr><td><code>where</code></td><td>Array</td><td t="docs.filters.referenceTable.where"></td></tr>
-        <tr><td><code>sortBy</code></td><td>Array</td><td t="docs.filters.referenceTable.sortBy"></td></tr>
-        <tr><td><code>groupBy</code></td><td>Array</td><td t="docs.filters.referenceTable.groupBy"></td></tr>
+        <tr><td><code>filesize</code></td><td>Number</td><td t="docs.filters.referenceTable.filesize"></td></tr>
+        <tr><td><code>count</code></td><td>Array</td><td t="docs.filters.referenceTable.count"></td></tr>
         <tr><td><code>first</code></td><td>Array</td><td t="docs.filters.referenceTable.first"></td></tr>
         <tr><td><code>last</code></td><td>Array</td><td t="docs.filters.referenceTable.last"></td></tr>
+        <tr><td><code>join</code></td><td>Array</td><td t="docs.filters.referenceTable.join"></td></tr>
+        <tr><td><code>reverse</code></td><td>Array</td><td t="docs.filters.referenceTable.reverse"></td></tr>
+        <tr><td><code>unique</code></td><td>Array</td><td t="docs.filters.referenceTable.unique"></td></tr>
+        <tr><td><code>pluck</code></td><td>Array</td><td t="docs.filters.referenceTable.pluck"></td></tr>
+        <tr><td><code>sortBy</code></td><td>Array</td><td t="docs.filters.referenceTable.sortBy"></td></tr>
+        <tr><td><code>where</code></td><td>Array</td><td t="docs.filters.referenceTable.where"></td></tr>
         <tr><td><code>date</code></td><td>Date</td><td t="docs.filters.referenceTable.date"></td></tr>
         <tr><td><code>datetime</code></td><td>Date</td><td t="docs.filters.referenceTable.datetime"></td></tr>
-        <tr><td><code>timeago</code></td><td>Date</td><td t="docs.filters.referenceTable.timeago"></td></tr>
-        <tr><td><code>json</code></td><td>Utility</td><td t="docs.filters.referenceTable.json"></td></tr>
+        <tr><td><code>relative</code></td><td>Date</td><td t="docs.filters.referenceTable.relative"></td></tr>
+        <tr><td><code>fromNow</code></td><td>Date</td><td t="docs.filters.referenceTable.fromNow"></td></tr>
         <tr><td><code>default</code></td><td>Utility</td><td t="docs.filters.referenceTable.default"></td></tr>
+        <tr><td><code>json</code></td><td>Utility</td><td t="docs.filters.referenceTable.json"></td></tr>
+        <tr><td><code>debug</code></td><td>Utility</td><td t="docs.filters.referenceTable.debug"></td></tr>
         <tr><td><code>keys</code></td><td>Object</td><td t="docs.filters.referenceTable.keys"></td></tr>
         <tr><td><code>values</code></td><td>Object</td><td t="docs.filters.referenceTable.values"></td></tr>
       </tbody>
@@ -150,7 +149,7 @@
         <div class="code-block"><pre><span class="hl-tag">&lt;div</span> <span class="hl-attr">state</span>=<span class="hl-str">"{ name: 'John Doe' }"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">model</span>=<span class="hl-str">"name"</span> <span class="hl-tag">/&gt;</span>
   <span class="hl-tag">&lt;p</span> <span class="hl-attr">bind</span>=<span class="hl-str">"name | uppercase"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
-  <span class="hl-tag">&lt;p</span> <span class="hl-attr">bind</span>=<span class="hl-str">"name | initials"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
+  <span class="hl-tag">&lt;p</span> <span class="hl-attr">bind</span>=<span class="hl-str">"name | slugify"</span><span class="hl-tag">&gt;&lt;/p&gt;</span>
 <span class="hl-tag">&lt;/div&gt;</span></pre></div>
       </div>
       <div class="demo-preview">
@@ -160,7 +159,7 @@
             <input class="input" model="name" />
           </div>
           <p><span t="docs.filters.liveDemo.uppercaseLabel"></span> <strong bind="name | uppercase"></strong></p>
-          <p><span t="docs.filters.liveDemo.initialsLabel"></span> <strong bind="name | initials"></strong></p>
+          <p><span t="docs.filters.liveDemo.slugifyLabel"></span> <strong bind="name | slugify"></strong></p>
         </div>
       </div>
     </div>

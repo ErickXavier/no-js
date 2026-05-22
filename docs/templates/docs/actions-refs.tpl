@@ -66,8 +66,6 @@
       <thead><tr><th t="docs.actionsRefs.triggerAttrs.col1"></th><th t="docs.actionsRefs.triggerAttrs.col2"></th></tr></thead>
       <tbody>
         <tr><td><code>trigger-data</code></td><td t="docs.actionsRefs.triggerAttrs.triggerData"></td></tr>
-        <tr><td><code>trigger-bubbles</code></td><td t="docs.actionsRefs.triggerAttrs.triggerBubbles"></td></tr>
-        <tr><td><code>trigger-once</code></td><td t="docs.actionsRefs.triggerAttrs.triggerOnce"></td></tr>
       </tbody>
     </table>
     <div class="code-block"><pre><span class="hl-tag">&lt;button</span>

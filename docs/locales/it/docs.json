@@ -1209,7 +1209,7 @@
         "title": "Demo Live — Filtri",
         "label": "Risultato",
         "uppercaseLabel": "Maiuscolo:",
-        "initialsLabel": "Iniziali:"
+        "slugifyLabel": "Slugify:"
       },
       "referenceTable": {
         "title": "Riferimento Completo dei Filtri",
@@ -1221,35 +1221,34 @@
         "lowercase": "Converte il testo in minuscolo",
         "capitalize": "Rende maiuscola la prima lettera di ogni parola",
         "truncate": "Tronca il testo a N caratteri con puntini di sospensione",
-        "initials": "Estrae le iniziali da un nome",
-        "slug": "Converte in slug compatibile URL",
+        "slugify": "Converte in slug compatibile URL",
         "trim": "Rimuove gli spazi iniziali/finali",
-        "padStart": "Completa la stringa dall'inizio",
-        "padEnd": "Completa la stringa dalla fine",
         "encodeUri": "Codifica un componente URI",
         "currency": "Formatta un numero come valuta",
         "number": "Formatta un numero con raggruppamento per località",
         "percent": "Formatta un numero come percentuale",
         "ordinal": "Aggiunge suffisso ordinale (1°, 2°, 3°)",
-        "bytes": "Formatta i byte in dimensione leggibile",
-        "round": "Arrotonda a N decimali",
-        "abs": "Valore assoluto",
+        "filesize": "Formatta i byte in dimensione leggibile",
         "reverse": "Inverte array o stringa",
         "unique": "Rimuove i valori duplicati",
-        "flatten": "Appiattisce array annidati",
         "pluck": "Estrae una proprietà da ogni elemento",
         "where": "Filtra array per valore di proprietà",
         "sortBy": "Ordina array per proprietà",
-        "groupBy": "Raggruppa array per proprietà",
-        "first": "Restituisce i primi N elementi",
-        "last": "Restituisce gli ultimi N elementi",
+        "first": "Restituisce il primo elemento di un array",
+        "last": "Restituisce l'ultimo elemento di un array",
         "date": "Formatta un oggetto Date",
         "datetime": "Formatta una Date con l'ora",
-        "timeago": "Tempo relativo (es: '3 ore fa')",
+        "relative": "Tempo trascorso dalla data (es: '5 minuti fa')",
+        "fromNow": "Tempo fino a una data futura (es: 'tra 3 ore')",
         "json": "Serializza un valore come stringa JSON",
         "default": "Restituisce un fallback se il valore è null/undefined",
         "keys": "Restituisce le chiavi dell'oggetto come array",
-        "values": "Restituisce i valori dell'oggetto come array"
+        "values": "Restituisce i valori dell'oggetto come array",
+        "count": "Restituisce la lunghezza di un array",
+        "join": "Unisce gli elementi dell'array con un separatore",
+        "stripHtml": "Rimuove i tag HTML da una stringa",
+        "nl2br": "Converte le interruzioni di riga in tag <br>",
+        "debug": "Mostra il valore nella console e lo restituisce"
       }
     },
     "i18n": {
@@ -1322,9 +1321,7 @@
         "text": "Personalizza il comportamento del trigger con attributi aggiuntivi:",
         "col1": "Attributo",
         "col2": "Descrizione",
-        "triggerData": "Payload di dati allegato alla proprietà detail del CustomEvent",
-        "triggerBubbles": "Se l'evento si propaga nel DOM (predefinito: true)",
-        "triggerOnce": "Attivare il trigger solo una volta, poi rimuoverlo"
+        "triggerData": "Payload di dati allegato alla proprietà detail del CustomEvent"
       }
     },
     "customDirectives": {

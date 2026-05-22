@@ -50,7 +50,7 @@
       },
       "q7": {
         "question": "Quais recursos estão incluídos?",
-        "answer": "Tudo vem em um único arquivo:<br><br>• Estado reativo e propriedades computadas<br>• Roteamento SPA com lazy loading<br>• HTTP declarativo (GET, POST, PUT, PATCH, DELETE)<br>• i18n com arquivos de locale externos<br>• Validação de formulários<br>• Animações e transições<br>• Drag and drop<br>• 30+ filtros integrados"
+        "answer": "Tudo vem em um único arquivo:<br><br>• Estado reativo e propriedades computadas<br>• Roteamento SPA com lazy loading<br>• HTTP declarativo (GET, POST, PUT, PATCH, DELETE)<br>• i18n com arquivos de locale externos<br>• Validação de formulários<br>• Animações e transições<br>• Drag and drop<br>• 32 filtros integrados"
       },
       "q8": {
         "question": "Qual o caso de uso ideal?",
@@ -84,7 +84,7 @@
       },
       "q14": {
         "question": "Qual o tamanho do bundle?",
-        "answer": "Inclui reatividade, roteamento, fetch de dados, i18n, animações, drag and drop, validação de formulários e 30+ filtros. Zero dependências."
+        "answer": "Inclui reatividade, roteamento, fetch de dados, i18n, animações, drag and drop, validação de formulários e 32 filtros. Zero dependências."
       },
       "q15": {
         "question": "Preciso de uma etapa de build?",
@@ -92,7 +92,7 @@
       },
       "q16": {
         "question": "Está pronto para produção?",
-        "answer": "Sim. 800+ testes unitários, testado em navegadores modernos. Este site de documentação é construído inteiramente com No.JS."
+        "answer": "Sim. 1.350+ testes unitários, testado em navegadores modernos. Este site de documentação é construído inteiramente com No.JS."
       }
     },
     "cta": {

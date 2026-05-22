@@ -80,8 +80,8 @@ If your directive adds event listeners, observers, or timers, register cleanup v
       observer.observe(el);
 
       // Cleanup when element is removed from DOM
-      el.__nojs_dispose = el.__nojs_dispose || [];
-      el.__nojs_dispose.push(() => observer.disconnect());
+      el.__disposers = el.__disposers || [];
+      el.__disposers.push(() => observer.disconnect());
     }
   });
 </script>

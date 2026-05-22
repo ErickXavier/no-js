@@ -583,8 +583,6 @@ Hash mode produces URLs like `https://your-site.com/#/about`. These work on any 
 
 ---
 
-> **See also:** For SEO-optimised routing without a server, consider generating static HTML per route at build time — see [SSG & Pre-Rendering →](ssg.md).
-
 ---
 
 ## Per-Route Document Title (`page-title`)
@@ -840,7 +838,6 @@ In addition to `push()`, `replace()`, and `back()`, the router exposes `forward(
 
 - [Animations](animations.md) — View Transition presets and custom CSS
 - [Head Management](head-management.md) — body-level head directives for non-routing pages
-- [SSG & Pre-Rendering](ssg.md) — SEO and deployment strategies
 - [Templates](templates.md) — remote templates and lazy loading
 
 **Previous:** [Filters ←](filters.md) | **Next:** [Internationalization →](i18n.md)

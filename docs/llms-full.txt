@@ -1,6 +1,6 @@
 # No.JS Complete Documentation
 
-> No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. ~24 KB gzipped, zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
+> No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. Zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
 
 No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `foreach`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP/error-boundary (1) → computed/watch (2) → ref (5) → structural (10) → rendering/events (20) → validation (30).
 
@@ -141,6 +141,7 @@ Directives run in a defined order:
 | 5 | `ref` | Element references |
 | 10 | `if`, `switch`, `foreach`, `each`, `for`, `use`, `drag-list` | Structural (add/remove DOM) |
 | 15 | `drag`, `drop` | Drag and drop setup |
+| 16 | `drag-multiple` | Multi-select drag setup |
 | 20 | `bind`, `bind-*`, `model`, `class-*`, `style-*`, `on:*`, `show`, `hide`, `t`, `call`, `trigger`, `page-title`, `page-description` | Rendering, events, i18n, actions, head |
 | 30 | `validate` | Form validation side effects |
 
@@ -617,7 +618,7 @@ Renders evaluated expression as HTML. Sanitized by default.
 <div bind-html="`<em>${user.bio}</em>`"></div>
 ```
 
-> ⚠️ Uses DOMPurify-compatible sanitization to prevent XSS.
+> ⚠️ Uses built-in DOMParser-based sanitization to prevent XSS.
 
 > **Tip:** You can configure a custom sanitizer via `NoJS.config({ sanitizeHtml: fn })`. See [Configuration → Security](configuration.md#security) for details.
 
@@ -2342,7 +2343,7 @@ View Transitions automatically respect `prefers-reduced-motion: reduce` — anim
 
 No.JS ships with these CSS animations:
 
-`fadeIn`, `fadeOut`, `slideInLeft`, `slideInRight`, `slideInUp`, `slideInDown`, `slideOutLeft`, `slideOutRight`, `slideOutUp`, `slideOutDown`, `zoomIn`, `zoomOut`, `bounceIn`, `flipIn`
+`fadeIn`, `fadeOut`, `fadeInUp`, `fadeInDown`, `fadeOutUp`, `fadeOutDown`, `slideInLeft`, `slideInRight`, `slideOutLeft`, `slideOutRight`, `zoomIn`, `zoomOut`, `bounceIn`, `bounceOut`
 
 ---
 
@@ -3090,10 +3091,6 @@ Hash mode produces URLs like `https://your-site.com/#/about`. These work on any 
 
 ---
 
-> **See also:** For SEO-optimised routing without a server, consider generating static HTML per route at build time — see [SSG & Pre-Rendering →](ssg.md).
-
----
-
 ## Per-Route Document Title (`page-title`)
 
 Set `document.title` declaratively on each `<template route>` element. The
@@ -3347,7 +3344,6 @@ In addition to `push()`, `replace()`, and `back()`, the router exposes `forward(
 
 - [Animations](animations.md) — View Transition presets and custom CSS
 - [Head Management](head-management.md) — body-level head directives for non-routing pages
-- [SSG & Pre-Rendering](ssg.md) — SEO and deployment strategies
 - [Templates](templates.md) — remote templates and lazy loading
 
 **Previous:** [Filters ←](filters.md) | **Next:** [Internationalization →](i18n.md)
@@ -3516,7 +3512,6 @@ changes to the element's children after init are not picked up.
 ## See Also
 
 - [Routing → Route Head Attributes](routing.md#route-head-attributes) — head management for SPA routes
-- [SSG & Pre-Rendering](ssg.md) — server-side head tags
 - [Configuration](configuration.md) — global settings
 
 ---
@@ -3806,8 +3801,8 @@ If your directive adds event listeners, observers, or timers, register cleanup v
       observer.observe(el);
 
       // Cleanup when element is removed from DOM
-      el.__nojs_dispose = el.__nojs_dispose || [];
-      el.__nojs_dispose.push(() => observer.disconnect());
+      el.__disposers = el.__disposers || [];
+      el.__disposers.push(() => observer.disconnect());
     }
   });
 </script>
@@ -4272,7 +4267,7 @@ See [Plugins →](plugins.md) for the full API reference, plugin lifecycle, secu
 
 ---
 
-**Previous:** [Error Handling ←](error-handling.md) | **Next:** [SSG & Pre-Rendering →](ssg.md)
+**Previous:** [Error Handling ←](error-handling.md) | **Next:** [Drag and Drop →](drag-and-drop.md)
 
 # Drag and Drop
 
@@ -4985,15 +4980,6 @@ A full analytics plugin demonstrating the plugin lifecycle, globals, interceptor
         return response;
       });
 
-      // Listen for route changes
-      app.on('route:change', (route) => {
-        this._queue.push({
-          type: 'page_view',
-          path: route.path,
-          timestamp: Date.now()
-        });
-      });
-
       // Flush events periodically
       this._flushInterval = setInterval(() => {
         this._flush(trackingId);
@@ -5617,4 +5603,4 @@ inlined.
 
 ---
 
-**Previous:** [SSG & Pre-Rendering ←](ssg.md) | **Next:** [Directive Cheatsheet →](cheatsheet.md)
+**Previous:** [Configuration ←](configuration.md) | **Next:** [Directive Cheatsheet →](cheatsheet.md)

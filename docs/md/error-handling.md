@@ -69,13 +69,13 @@ Use `NoJS.on()` to listen for errors globally — useful for logging, analytics,
 ```html
 <script>
   // Catch all framework errors
-  NoJS.on('error', (error, context) => {
+  NoJS.on('error', ({ url, error }) => {
     console.error('[No.JS Error]', error);
     // Send to error tracking service
   });
 
   // Catch HTTP-specific errors
-  NoJS.on('fetch:error', (url, error) => {
+  NoJS.on('fetch:error', ({ url, error }) => {
     if (error.status === 401) {
       NoJS.store.auth.user = null;
       NoJS.notify();

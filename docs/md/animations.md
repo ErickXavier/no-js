@@ -129,7 +129,7 @@ View Transitions automatically respect `prefers-reduced-motion: reduce` — anim
 
 No.JS ships with these CSS animations:
 
-`fadeIn`, `fadeOut`, `slideInLeft`, `slideInRight`, `slideInUp`, `slideInDown`, `slideOutLeft`, `slideOutRight`, `slideOutUp`, `slideOutDown`, `zoomIn`, `zoomOut`, `bounceIn`, `flipIn`
+`fadeIn`, `fadeOut`, `fadeInUp`, `fadeInDown`, `fadeOutUp`, `fadeOutDown`, `slideInLeft`, `slideInRight`, `slideOutLeft`, `slideOutRight`, `zoomIn`, `zoomOut`, `bounceIn`, `bounceOut`
 
 ---
 

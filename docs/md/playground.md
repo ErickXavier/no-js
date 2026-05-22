@@ -65,4 +65,4 @@ inlined.
 
 ---
 
-**Previous:** [SSG & Pre-Rendering ←](ssg.md) | **Next:** [Directive Cheatsheet →](cheatsheet.md)
+**Previous:** [Configuration ←](configuration.md) | **Next:** [Directive Cheatsheet →](cheatsheet.md)

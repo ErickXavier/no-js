@@ -116,7 +116,6 @@ manipulation.
 
   <!-- GET fires 300ms after the user stops typing -->
   <div get="/products?q={query}"
-       watch="query"
        debounce="300"
        as="results">
 
@@ -133,7 +132,7 @@ manipulation.
 </div>
 ```
 
-**Key concepts:** `model` · `watch` · `debounce` · dynamic `get` with interpolation · `show`
+**Key concepts:** `model` · `debounce` · dynamic `get` with interpolation · `show`
 
 ---
 

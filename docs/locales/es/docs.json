@@ -1209,7 +1209,7 @@
         "title": "Demo en Vivo — Filtros",
         "label": "Resultado",
         "uppercaseLabel": "Mayúsculas:",
-        "initialsLabel": "Iniciales:"
+        "slugifyLabel": "Slugify:"
       },
       "referenceTable": {
         "title": "Referencia Completa de Filtros",
@@ -1221,35 +1221,34 @@
         "lowercase": "Convierte texto a minúsculas",
         "capitalize": "Capitaliza la primera letra de cada palabra",
         "truncate": "Trunca texto a N caracteres con puntos suspensivos",
-        "initials": "Extrae iniciales de un nombre",
-        "slug": "Convierte a slug compatible con URL",
+        "slugify": "Convierte a slug compatible con URL",
         "trim": "Elimina espacios en blanco iniciales/finales",
-        "padStart": "Rellena string desde el inicio",
-        "padEnd": "Rellena string desde el final",
         "encodeUri": "Codifica un componente URI",
         "currency": "Formatea número como moneda",
         "number": "Formatea número con agrupación por localidad",
         "percent": "Formatea número como porcentaje",
         "ordinal": "Añade sufijo ordinal (1º, 2º, 3º)",
-        "bytes": "Formatea bytes a tamaño legible",
-        "round": "Redondea a N decimales",
-        "abs": "Valor absoluto",
+        "filesize": "Formatea bytes a tamaño legible",
         "reverse": "Invierte array o string",
         "unique": "Elimina valores duplicados",
-        "flatten": "Aplana arrays anidados",
         "pluck": "Extrae una propiedad de cada elemento",
         "where": "Filtra array por valor de propiedad",
         "sortBy": "Ordena array por propiedad",
-        "groupBy": "Agrupa array por propiedad",
-        "first": "Retorna los primeros N elementos",
-        "last": "Retorna los últimos N elementos",
+        "first": "Retorna el primer elemento de un array",
+        "last": "Retorna el último elemento de un array",
         "date": "Formatea objeto Date",
         "datetime": "Formatea Date con hora",
-        "timeago": "Tiempo relativo (ej: 'hace 3 horas')",
+        "relative": "Tiempo transcurrido desde la fecha (ej: 'hace 5 minutos')",
+        "fromNow": "Tiempo hasta una fecha futura (ej: 'en 3 horas')",
         "json": "Serializa valor como string JSON",
         "default": "Retorna fallback si el valor es null/undefined",
         "keys": "Retorna las claves del objeto como array",
-        "values": "Retorna los valores del objeto como array"
+        "values": "Retorna los valores del objeto como array",
+        "count": "Retorna la longitud de un array",
+        "join": "Une elementos del array con un separador",
+        "stripHtml": "Elimina las etiquetas HTML de un string",
+        "nl2br": "Convierte saltos de línea en etiquetas <br>",
+        "debug": "Muestra el valor en consola y lo retorna"
       }
     },
     "i18n": {
@@ -1322,9 +1321,7 @@
         "text": "Personaliza el comportamiento del trigger con atributos adicionales:",
         "col1": "Atributo",
         "col2": "Descripción",
-        "triggerData": "Payload de datos adjunto a la propiedad detail del CustomEvent",
-        "triggerBubbles": "Si el evento se propaga por el DOM (por defecto: true)",
-        "triggerOnce": "Disparar el trigger solo una vez, luego eliminarlo"
+        "triggerData": "Payload de datos adjunto a la propiedad detail del CustomEvent"
       }
     },
     "customDirectives": {

@@ -263,4 +263,4 @@ See [Plugins →](plugins.md) for the full API reference, plugin lifecycle, secu
 
 ---
 
-**Previous:** [Error Handling ←](error-handling.md) | **Next:** [SSG & Pre-Rendering →](ssg.md)
+**Previous:** [Error Handling ←](error-handling.md) | **Next:** [Playground →](playground.md)

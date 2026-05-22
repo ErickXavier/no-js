@@ -441,15 +441,6 @@ app.<span class="hl-fn">global</span>(<span class="hl-str">'exec'</span>, Functi
         <span class="hl-kw">return</span> response;
       });
 
-      <span class="hl-cmt">// Listen for route changes</span>
-      app.<span class="hl-fn">on</span>(<span class="hl-str">'route:change'</span>, (<span class="hl-attr">route</span>) <span class="hl-op">=&gt;</span> {
-        <span class="hl-kw">this</span>._queue.<span class="hl-fn">push</span>({
-          <span class="hl-attr">type</span>: <span class="hl-str">'page_view'</span>,
-          <span class="hl-attr">path</span>: route.path,
-          <span class="hl-attr">timestamp</span>: Date.<span class="hl-fn">now</span>()
-        });
-      });
-
       <span class="hl-cmt">// Flush events periodically</span>
       <span class="hl-kw">this</span>._flushInterval <span class="hl-op">=</span> <span class="hl-fn">setInterval</span>(() <span class="hl-op">=&gt;</span> {
         <span class="hl-kw">this</span>.<span class="hl-fn">_flush</span>(trackingId);

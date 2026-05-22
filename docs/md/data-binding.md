@@ -31,7 +31,7 @@ Renders evaluated expression as HTML. Sanitized by default.
 <div bind-html="`<em>${user.bio}</em>`"></div>
 ```
 
-> ⚠️ Uses DOMPurify-compatible sanitization to prevent XSS.
+> ⚠️ Uses built-in DOMParser-based sanitization to prevent XSS.
 
 > **Tip:** You can configure a custom sanitizer via `NoJS.config({ sanitizeHtml: fn })`. See [Configuration → Security](configuration.md#security) for details.
 

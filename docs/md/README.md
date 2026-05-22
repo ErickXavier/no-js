@@ -41,7 +41,6 @@ Welcome to the No.JS documentation. Choose a topic to get started.
 - [Plugins](plugins.md) — Plugin system, globals, interceptor sentinels, lifecycle
 - [Error Handling](error-handling.md) — Per-element errors, boundaries, global handler
 - [Configuration](configuration.md) — Global settings, interceptors, CSRF, security
-- [SSG & Pre-Rendering](ssg.md) — Static generation, server rendering, Eleventy
 
 ## Reference
 

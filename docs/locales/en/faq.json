@@ -50,7 +50,7 @@
       },
       "q7": {
         "question": "What features are included?",
-        "answer": "Everything ships in one file:<br><br>• Reactive state and computed properties<br>• SPA routing with lazy loading<br>• Declarative HTTP (GET, POST, PUT, PATCH, DELETE)<br>• i18n with external locale files<br>• Form validation<br>• Animations and transitions<br>• Drag and drop<br>• 30+ built-in filters"
+        "answer": "Everything ships in one file:<br><br>• Reactive state and computed properties<br>• SPA routing with lazy loading<br>• Declarative HTTP (GET, POST, PUT, PATCH, DELETE)<br>• i18n with external locale files<br>• Form validation<br>• Animations and transitions<br>• Drag and drop<br>• 32 built-in filters"
       },
       "q8": {
         "question": "What's the right use case?",
@@ -84,7 +84,7 @@
       },
       "q14": {
         "question": "How big is the bundle?",
-        "answer": "It includes reactivity, routing, data fetching, i18n, animations, drag and drop, form validation, and 30+ filters. Zero dependencies."
+        "answer": "It includes reactivity, routing, data fetching, i18n, animations, drag and drop, form validation, and 32 filters. Zero dependencies."
       },
       "q15": {
         "question": "Do I need a build step?",
@@ -92,7 +92,7 @@
       },
       "q16": {
         "question": "Is it production-ready?",
-        "answer": "Yes. 800+ unit tests, tested across modern browsers. This documentation site is built entirely with No.JS."
+        "answer": "Yes. 1,350+ unit tests, tested across modern browsers. This documentation site is built entirely with No.JS."
       }
     },
     "cta": {

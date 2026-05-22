@@ -1,6 +1,6 @@
 # No.JS
 
-> No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. ~24 KB gzipped, zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
+> No.JS is an HTML-first reactive framework for building dynamic web applications using only HTML attributes. Zero dependencies, no build step, no virtual DOM, CSP-compliant. Include one script tag and start writing directives.
 
 No.JS replaces JavaScript framework boilerplate with declarative HTML attributes. Directives like `get`, `bind`, `state`, `foreach`, `if`, and `on:click` handle data fetching, rendering, state management, and interactivity — all without writing JavaScript. Data lives in reactive contexts (Proxy-backed) that inherit through the DOM like lexical scoping. Directives execute by priority: state (0) → HTTP/error-boundary (1) → computed/watch (2) → ref (5) → structural (10) → rendering/events (20) → validation (30).
 
@@ -19,7 +19,7 @@ No.JS replaces JavaScript framework boilerplate with declarative HTML attributes
 
 ## Interaction
 
-- [Events](https://no-js.dev/#/events): `on:click`, `on:keydown.enter`, `on:submit.prevent`; modifiers (`.stop`, `.once`, `.debounce.300`); lifecycle hooks (`on:mounted`, `on:updated`, `on:unmounted`); `$event` and `$el` references
+- [Events](https://no-js.dev/#/events): `on:click`, `on:keydown.enter`, `on:submit.prevent`; modifiers (`.stop`, `.once`, `.debounce.300`); lifecycle hooks (`on:mounted`, `on:init`, `on:updated`, `on:error`, `on:unmounted`); `$event` and `$el` references
 - [Forms & Validation](https://no-js.dev/#/forms-validation): `validate` attribute with built-in rules (`required`, `email`, `min`, `max`, `pattern`); `$form` context for form state; custom validators via `NoJS.validator()`; real-time and submit-time validation
 - [Actions & Refs](https://no-js.dev/#/actions-refs): `call` (trigger HTTP from any element), `trigger` (dispatch custom events), `ref` (name an element), `$refs` (access named elements)
 

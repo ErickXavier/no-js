@@ -9,13 +9,13 @@
       "introduction": {
         "title": "Introduction",
         "text": "No.JS est un framework réactif HTML-first. Construisez des applications web dynamiques et orientées données en utilisant uniquement des attributs HTML — pas de build, pas de DOM virtuel, pas de JSX.",
-        "callout": "~24 Ko gzippé · Zéro dépendance · Fonctionne dans tous les navigateurs modernes · Aucune étape de build requise"
+        "callout": "Zéro dépendance · Fonctionne dans tous les navigateurs modernes · Aucune étape de build requise"
       },
       "installation": {
         "title": "Installation",
         "cdnSubtitle": "CDN (recommandé)",
         "selfHostedSubtitle": "Auto-hébergé",
-        "selfHostedText": "Téléchargez dist/iife/no.js et incluez-le avec une balise <script>. C'est un fichier unique, ~24 Ko gzippé.",
+        "selfHostedText": "Téléchargez dist/iife/no.js et incluez-le avec une balise <script>. C'est un fichier unique, sans dépendances.",
         "npmSubtitle": "npm / ESM",
         "npmText": "Avec npm, vous devez appeler NoJS.init() manuellement une fois le DOM prêt. Le script CDN le fait automatiquement."
       },
@@ -1209,7 +1209,7 @@
         "title": "Démo en direct — Filtres",
         "label": "Résultat",
         "uppercaseLabel": "Majuscules :",
-        "initialsLabel": "Initiales :"
+        "slugifyLabel": "Slugify :"
       },
       "referenceTable": {
         "title": "Référence Complète des Filtres",
@@ -1221,35 +1221,34 @@
         "lowercase": "Convertit le texte en minuscules",
         "capitalize": "Met en majuscule la première lettre de chaque mot",
         "truncate": "Tronque le texte à N caractères avec des points de suspension",
-        "initials": "Extrait les initiales d'un nom",
-        "slug": "Convertit en slug compatible URL",
+        "slugify": "Convertit en slug compatible URL",
         "trim": "Supprime les espaces en début/fin",
-        "padStart": "Complète la chaîne depuis le début",
-        "padEnd": "Complète la chaîne depuis la fin",
         "encodeUri": "Encode un composant URI",
         "currency": "Formate un nombre en devise",
         "number": "Formate un nombre avec groupement par localité",
         "percent": "Formate un nombre en pourcentage",
         "ordinal": "Ajoute un suffixe ordinal (1er, 2e, 3e)",
-        "bytes": "Formate les octets en taille lisible",
-        "round": "Arrondit à N décimales",
-        "abs": "Valeur absolue",
+        "filesize": "Formate les octets en taille lisible",
         "reverse": "Inverse un tableau ou une chaîne",
         "unique": "Supprime les valeurs en double",
-        "flatten": "Aplatit les tableaux imbriqués",
         "pluck": "Extrait une propriété de chaque élément",
         "where": "Filtre un tableau par valeur de propriété",
         "sortBy": "Trie un tableau par propriété",
-        "groupBy": "Groupe un tableau par propriété",
-        "first": "Retourne les N premiers éléments",
-        "last": "Retourne les N derniers éléments",
+        "first": "Retourne le premier élément d'un tableau",
+        "last": "Retourne le dernier élément d'un tableau",
         "date": "Formate un objet Date",
         "datetime": "Formate une Date avec l'heure",
-        "timeago": "Temps relatif (ex : 'il y a 3 heures')",
+        "relative": "Temps écoulé depuis la date (ex : 'il y a 5 minutes')",
+        "fromNow": "Temps jusqu'à une date future (ex : 'dans 3 heures')",
         "json": "Sérialise une valeur en chaîne JSON",
         "default": "Retourne un fallback si la valeur est null/undefined",
         "keys": "Retourne les clés de l'objet en tableau",
-        "values": "Retourne les valeurs de l'objet en tableau"
+        "values": "Retourne les valeurs de l'objet en tableau",
+        "count": "Retourne la longueur d'un tableau",
+        "join": "Joint les éléments d'un tableau avec un séparateur",
+        "stripHtml": "Supprime les balises HTML d'une chaîne",
+        "nl2br": "Convertit les sauts de ligne en balises <br>",
+        "debug": "Affiche la valeur dans la console et la retourne"
       }
     },
     "i18n": {
@@ -1322,9 +1321,7 @@
         "text": "Personnalisez le comportement du trigger avec des attributs supplémentaires :",
         "col1": "Attribut",
         "col2": "Description",
-        "triggerData": "Payload de données attaché à la propriété detail du CustomEvent",
-        "triggerBubbles": "Si l'événement se propage dans le DOM (par défaut : true)",
-        "triggerOnce": "Déclencher le trigger une seule fois, puis le supprimer"
+        "triggerData": "Payload de données attaché à la propriété detail du CustomEvent"
       }
     },
     "customDirectives": {

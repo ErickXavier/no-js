@@ -88,12 +88,13 @@ Directives run in a defined order:
 | Priority | Directives | Description |
 |----------|-----------|-------------|
 | 0 | `state`, `store` | Initialize local/global state |
-| 1 | `get`, `post`, `put`, `patch`, `delete`, `error-boundary`, `i18n-ns` | Fetch data, error boundaries, i18n namespace |
+| 1 | `get`, `post`, `put`, `patch`, `delete`, `error-boundary`, `i18n-ns`, `page-title`, `page-description`, `page-canonical`, `page-jsonld` | Fetch data, error boundaries, i18n namespace, head management |
 | 2 | `computed`, `watch` | Derived values and side-effect watchers |
 | 5 | `ref` | Element references |
 | 10 | `if`, `switch`, `foreach`, `each`, `for`, `use`, `drag-list` | Structural (add/remove DOM) |
 | 15 | `drag`, `drop` | Drag and drop setup |
-| 20 | `bind`, `bind-*`, `model`, `class-*`, `style-*`, `on:*`, `show`, `hide`, `t`, `call`, `trigger`, `page-title`, `page-description` | Rendering, events, i18n, actions, head |
+| 16 | `drag-multiple` | Multi-select drag |
+| 20 | `bind`, `bind-*`, `model`, `class-*`, `style-*`, `on:*`, `show`, `hide`, `t`, `call`, `trigger` | Rendering, events, i18n, actions |
 | 30 | `validate` | Form validation side effects |
 
 ### Expression Syntax

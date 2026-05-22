@@ -89,6 +89,7 @@ Complete reference of every No.JS directive.
 | Directive | Example | Description |
 |-----------|---------|-------------|
 | `class-*` | `class-active="isOn"` | Toggle CSS class |
+| `class-list` | `class-list="['a', cond && 'b']"` | Class from array |
 | `class-map` | `class-map="{ a: x }"` | Class from object |
 | `style-*` | `style-color="c"` | Set inline style |
 | `style-map` | `style-map="{ ... }"` | Style from object |
