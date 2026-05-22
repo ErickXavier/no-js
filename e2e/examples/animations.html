@@ -30,14 +30,14 @@
   <section state="{ show: false }">
     <p class="test-label">Test 1: Animate on if</p>
     <button data-test="fade-toggle" on:click="show = !show">Toggle fade</button>
-    <div if="show" animate="fadeIn" data-test="fade-target">Faded in!</div>
+    <div if="show" animate="fadeIn" animate-duration="500" data-test="fade-target">Faded in!</div>
   </section>
 
   <!-- 2. Animate enter/leave -->
   <section state="{ visible: false }">
     <p class="test-label">Test 2: Animate enter/leave</p>
     <button data-test="enterleave-toggle" on:click="visible = !visible">Toggle enter/leave</button>
-    <div if="visible" animate-enter="slideIn" animate-leave="fadeOut" data-test="enterleave-target">Animated</div>
+    <div if="visible" animate-enter="slideIn" animate-leave="fadeOut" animate-duration="500" data-test="enterleave-target">Animated</div>
   </section>
 
   <!-- 3. Stagger on loop -->
@@ -51,7 +51,7 @@
   <section state="{ trans: false }">
     <p class="test-label">Test 4: Transition class sequence</p>
     <button data-test="transition-toggle" on:click="trans = !trans">Toggle transition</button>
-    <div if="trans" transition="fade" data-test="transition-target">Transitioning</div>
+    <div if="trans" transition="fade" animate-duration="500" data-test="transition-target">Transitioning</div>
   </section>
 
   <script src="../../dist/iife/no.js"></script>

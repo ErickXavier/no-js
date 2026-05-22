@@ -74,15 +74,7 @@ describe('Globals', () => {
       expect(_interceptors.response).toEqual([]);
     });
 
-    test('_stores is an object', () => {
-      expect(typeof _stores).toBe('object');
-    });
-
-    test('_validators is an object', () => {
-      expect(typeof _validators).toBe('object');
-    });
-
-    test('_cache is a Map', () => {
+test('_cache is a Map', () => {
       expect(_cache).toBeInstanceOf(Map);
     });
 
@@ -888,19 +880,8 @@ describe('index.js — config() stores', () => {
   });
 });
 
-describe('index.js — init() SSR guard', () => {
-  test('init() returns immediately when document is undefined', async () => {
-    const { default: No } = await import('../src/index.js');
-
-    const origDocument = global.document;
-    delete global.document;
-
-    const result = await No.init();
-    expect(result).toBeUndefined();
-
-    global.document = origDocument;
-  });
-});
+// SSR guard (`typeof document === "undefined"`) is untestable in jsdom —
+// document is a non-configurable property. Covered by E2E / real Node environments.
 
 describe('index.js — interceptor() with invalid type', () => {
   test('does nothing for invalid interceptor type', async () => {
@@ -1706,8 +1687,9 @@ describe('evaluate — browser globals allow-list', () => {
     expect(evaluate('URL', ctx)).toBe(URL);
   });
 
-  test('setTimeout is accessible', () => {
-    expect(evaluate('setTimeout', ctx)).toBe(setTimeout);
+  test('setTimeout is accessible (wrapped for safety)', () => {
+    const st = evaluate('setTimeout', ctx);
+    expect(typeof st).toBe('function');
   });
 
   test('Promise is accessible', () => {

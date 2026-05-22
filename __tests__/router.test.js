@@ -92,14 +92,6 @@ describe('Router', () => {
     expect(router.current.hash).toBe('');
   });
 
-  test('register adds routes', () => {
-    router = _createRouter();
-    const tpl = document.createElement('template');
-    router.register('/home', tpl);
-    router.register('/about', tpl);
-
-  });
-
   test('push navigates to new route (hash mode)', () => {
     router = _createRouter();
     const tpl = document.createElement('template');

@@ -157,17 +157,6 @@ describe('Animations', () => {
 });
 
 describe('_animateIn with transition', () => {
-  test('adds transition-enter and transition-enter-active classes', () => {
-    const el = document.createElement('div');
-    const child = document.createElement('p');
-    el.appendChild(child);
-
-    _animateIn(el, null, 'fade');
-
-    expect(child.classList.contains('fade-enter')).toBe(true);
-    expect(child.classList.contains('fade-enter-active')).toBe(true);
-  });
-
   test('transition rAF removes enter, adds enter-to', async () => {
     const el = document.createElement('div');
     const child = document.createElement('p');

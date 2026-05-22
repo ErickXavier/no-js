@@ -2468,7 +2468,7 @@ describe('foreach with inline template (no external template)', () => {
     // Limit 2: Bob, Charlie
     expect(wrappers.length).toBe(2);
 
-    const names = wrappers.map((w) => w.querySelector('span').textContent);
+    const names = wrappers.map((w) => w.textContent);
     expect(names).toEqual(['Bob', 'Charlie']);
   });
 
@@ -2496,9 +2496,7 @@ describe('foreach with inline template (no external template)', () => {
     wrappers = [...list.children];
     expect(wrappers.length).toBe(3);
 
-    const texts = wrappers.map(
-      (w) => w.querySelector('span').textContent,
-    );
+    const texts = wrappers.map((w) => w.textContent);
     expect(texts).toEqual(['x', 'y', 'z']);
   });
 
@@ -2517,8 +2515,8 @@ describe('foreach with inline template (no external template)', () => {
 
     const wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
-    expect(wrappers[0].querySelector('span').textContent).toBe('0');
-    expect(wrappers[1].querySelector('span').textContent).toBe('1');
+    expect(wrappers[0].textContent).toBe('0');
+    expect(wrappers[1].textContent).toBe('1');
   });
 
   test('renders empty list without errors', () => {
@@ -2554,7 +2552,7 @@ describe('foreach with inline template (no external template)', () => {
     const wrappers = [...list.children];
     expect(wrappers.length).toBe(2);
 
-    const texts = wrappers.map((w) => w.querySelector('span').textContent);
+    const texts = wrappers.map((w) => w.textContent);
     expect(texts).toEqual(['c', 'd']);
   });
 });
@@ -3392,5 +3390,301 @@ describe('M5 — debounce timer cleared on disposal', () => {
 
     // The callback should NOT have fired because disposal cleared the timer
     expect(ctx.clicked).toBe(false);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  FOREACH REFACTOR COVERAGE (v1.12.0)
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('foreach "item in list" unified syntax', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('foreach="item in list" renders items', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ fruits: ["apple", "banana", "cherry"] }');
+    const list = document.createElement('ul');
+    list.setAttribute('foreach', 'fruit in fruits');
+    list.innerHTML = '<li bind="fruit"></li>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(3);
+    expect(items.map(i => i.textContent)).toEqual(['apple', 'banana', 'cherry']);
+  });
+
+  test('foreach with filter and limit using "in" syntax', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ nums: [5, 3, 1, 4, 2] }');
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'n in nums');
+    list.setAttribute('filter', 'n > 2');
+    list.setAttribute('limit', '2');
+    list.innerHTML = '<span bind="n"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(2);
+    expect(items.map(i => i.textContent)).toEqual(['5', '3']);
+  });
+});
+
+describe('foreach deprecated "from" syntax emits warning', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('foreach with from= logs deprecation warning', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b"] }');
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item');
+    list.setAttribute('from', 'items');
+    list.innerHTML = '<span bind="item"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const deprecationCalls = warnSpy.mock.calls.filter(c =>
+      c.some(arg => typeof arg === 'string' && arg.includes('deprecated'))
+    );
+    expect(deprecationCalls.length).toBeGreaterThan(0);
+    warnSpy.mockRestore();
+  });
+});
+
+describe('for directive (alias)', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('for="item in list" renders items', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ colors: ["red", "green", "blue"] }');
+    const list = document.createElement('div');
+    list.setAttribute('for', 'color in colors');
+    list.innerHTML = '<span bind="color"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(3);
+    expect(items.map(i => i.textContent)).toEqual(['red', 'green', 'blue']);
+  });
+
+  test('for with filter attribute', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ nums: [1, 2, 3, 4, 5] }');
+    const list = document.createElement('div');
+    list.setAttribute('for', 'n in nums');
+    list.setAttribute('filter', 'n > 2');
+    list.innerHTML = '<span bind="n"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(3);
+    expect(items.map(i => i.textContent)).toEqual(['3', '4', '5']);
+  });
+
+  test('for with sort by property and limit', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ users: [{ name: "Zoe" }, { name: "Amy" }, { name: "Max" }] }');
+    const list = document.createElement('div');
+    list.setAttribute('for', 'u in users');
+    list.setAttribute('sort', 'name');
+    list.setAttribute('limit', '2');
+    list.innerHTML = '<span bind="u.name"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(2);
+    expect(items.map(i => i.textContent)).toEqual(['Amy', 'Max']);
+  });
+
+  test('for with offset', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ letters: ["a", "b", "c", "d"] }');
+    const list = document.createElement('div');
+    list.setAttribute('for', 'l in letters');
+    list.setAttribute('offset', '2');
+    list.innerHTML = '<span bind="l"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(2);
+    expect(items.map(i => i.textContent)).toEqual(['c', 'd']);
+  });
+
+  test('for provides iteration variables', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["x", "y"] }');
+    const list = document.createElement('div');
+    list.setAttribute('for', 'item in items');
+    list.innerHTML = '<div><span class="val" bind="item"></span><span class="idx" bind="$index"></span><span class="first" bind="$first"></span><span class="last" bind="$last"></span></div>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const items = [...list.children];
+    expect(items.length).toBe(2);
+    expect(items[0].querySelector('.val').textContent).toBe('x');
+    expect(items[0].querySelector('.idx').textContent).toBe('0');
+    expect(items[0].querySelector('.first').textContent).toBe('true');
+    expect(items[0].querySelector('.last').textContent).toBe('false');
+    expect(items[1].querySelector('.last').textContent).toBe('true');
+  });
+});
+
+describe('each directive with filter/sort/limit/offset', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('each with filter', () => {
+    document.body.innerHTML = `
+      <template id="num-tpl"><span bind="n"></span></template>
+      <div state="{ nums: [1, 2, 3, 4, 5] }">
+        <div each="n in nums" template="num-tpl" filter="n % 2 === 0"></div>
+      </div>
+    `;
+    processTree(document.body);
+    const container = document.querySelector('[each]');
+    const items = [...container.children];
+    expect(items.length).toBe(2);
+    expect(items.map(i => i.textContent)).toEqual(['2', '4']);
+  });
+
+  test('each with sort by property and limit', () => {
+    document.body.innerHTML = `
+      <template id="val-tpl"><span bind="v.label"></span></template>
+      <div state="{ vals: [{ label: 'Zeta' }, { label: 'Alpha' }, { label: 'Mid' }] }">
+        <div each="v in vals" template="val-tpl" sort="label" limit="2"></div>
+      </div>
+    `;
+    processTree(document.body);
+    const container = document.querySelector('[each]');
+    const items = [...container.children];
+    expect(items.length).toBe(2);
+    expect(items.map(i => i.textContent)).toEqual(['Alpha', 'Mid']);
+  });
+
+  test('each with offset', () => {
+    document.body.innerHTML = `
+      <template id="ch-tpl"><span bind="ch"></span></template>
+      <div state="{ chars: ['a', 'b', 'c', 'd', 'e'] }">
+        <div each="ch in chars" template="ch-tpl" offset="3"></div>
+      </div>
+    `;
+    processTree(document.body);
+    const container = document.querySelector('[each]');
+    const items = [...container.children];
+    expect(items.length).toBe(2);
+    expect(items.map(i => i.textContent)).toEqual(['d', 'e']);
+  });
+});
+
+describe('_makeLoopItem: single-root vs multi-root template promotion', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('single-root inline template: no wrapper div, element is direct child', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["one", "two"] }');
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item in items');
+    list.innerHTML = '<span bind="item"></span>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const children = [...list.children];
+    expect(children.length).toBe(2);
+    children.forEach(child => {
+      expect(child.tagName).toBe('SPAN');
+      expect(child.style.display).not.toBe('contents');
+    });
+    expect(children[0].textContent).toBe('one');
+    expect(children[1].textContent).toBe('two');
+  });
+
+  test('multi-root inline template: wraps in div[display:contents]', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ items: ["a", "b"] }');
+    const list = document.createElement('div');
+    list.setAttribute('foreach', 'item in items');
+    list.innerHTML = '<span bind="item"></span><em bind="$index"></em>';
+    parent.appendChild(list);
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    const children = [...list.children];
+    expect(children.length).toBe(2);
+    children.forEach(child => {
+      expect(child.tagName).toBe('DIV');
+      expect(child.style.display).toBe('contents');
+      expect(child.querySelector('span')).not.toBeNull();
+      expect(child.querySelector('em')).not.toBeNull();
+    });
+    expect(children[0].querySelector('span').textContent).toBe('a');
+    expect(children[0].querySelector('em').textContent).toBe('0');
+    expect(children[1].querySelector('span').textContent).toBe('b');
+    expect(children[1].querySelector('em').textContent).toBe('1');
+  });
+
+  test('single-root with external template: promoted directly', () => {
+    document.body.innerHTML = `
+      <template id="single-tpl"><p bind="item"></p></template>
+      <div state="{ items: ['x', 'y'] }">
+        <div each="item in items" template="single-tpl"></div>
+      </div>
+    `;
+    processTree(document.body);
+    const container = document.querySelector('[each]');
+    const children = [...container.children];
+    expect(children.length).toBe(2);
+    children.forEach(child => {
+      expect(child.tagName).toBe('P');
+    });
+    expect(children[0].textContent).toBe('x');
+    expect(children[1].textContent).toBe('y');
+  });
+
+  test('multi-root with external template: wraps in div[display:contents]', () => {
+    document.body.innerHTML = `
+      <template id="multi-tpl"><span bind="item"></span><b bind="$index"></b></template>
+      <div state="{ items: ['m', 'n'] }">
+        <div each="item in items" template="multi-tpl"></div>
+      </div>
+    `;
+    processTree(document.body);
+    const container = document.querySelector('[each]');
+    const children = [...container.children];
+    expect(children.length).toBe(2);
+    children.forEach(child => {
+      expect(child.tagName).toBe('DIV');
+      expect(child.style.display).toBe('contents');
+    });
+    expect(children[0].querySelector('span').textContent).toBe('m');
+    expect(children[0].querySelector('b').textContent).toBe('0');
   });
 });

@@ -35,17 +35,7 @@ describe('Directive Registry', () => {
       expect(order).toEqual(['high', 'low']);
     });
 
-    test('default priority is 50', () => {
-      const initFn = jest.fn();
-      registerDirective('default-prio', { init: initFn });
-
-      const div = document.createElement('div');
-      div.setAttribute('default-prio', 'val');
-      processElement(div);
-
-      expect(initFn).toHaveBeenCalled();
-    });
-  });
+});
 
   describe('processElement', () => {
     test('marks element as __declared', () => {

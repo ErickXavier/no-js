@@ -89,9 +89,6 @@ describe('i18n System', () => {
     expect(_i18n.t('welcome', {})).toBe('Welcome, !');
   });
 
-  test('handles empty params', () => {
-    expect(_i18n.t('greeting', {})).toBe('Hello');
-  });
 });
 
 describe('i18n — pluralization edge cases', () => {

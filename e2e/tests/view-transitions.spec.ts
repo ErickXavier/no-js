@@ -53,7 +53,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 1: Basic VT API usage ──────────────────────────────────────
   test('1 — Basic VT API: route change with transition="slide" triggers startViewTransition', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions.html');
@@ -72,7 +72,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 2: Built-in presets — slide ────────────────────────────────
   test('2a — Built-in presets: slide transition produces correct types', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions.html');
@@ -90,7 +90,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 2b: Built-in presets — fade ───────────────────────────────
   test('2b — Built-in presets: fade transition produces correct types', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions-disabled.html');
@@ -114,7 +114,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 2c: Built-in presets — scale ──────────────────────────────
   test('2c — Built-in presets: scale transition produces correct types', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions.html');
@@ -136,7 +136,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 3: Direction tracking ──────────────────────────────────────
   test('3 — Direction tracking: forward nav → "forward", back nav → "backward"', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions.html');
@@ -165,7 +165,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 4: Config opt-out ──────────────────────────────────────────
   test('4 — Config opt-out: viewTransition=false → VT API NOT called', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions-disabled.html');
@@ -184,7 +184,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 5: No transition attr ─────────────────────────────────────
   test('5 — No transition attr: route-view without transition → no VT API called', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await patchViewTransition(page);
     await page.goto('/e2e/examples/view-transitions-no-attr.html');
@@ -200,7 +200,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 6: Deprecation warning ─────────────────────────────────────
   test('6 — Deprecation warning: VT API unavailable + transition attr → console.warn', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'This test removes VT API to simulate absence; only meaningful in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API to exist before removal; options parameter needed (Firefox 147+)');
 
     await removeViewTransition(page);
     const warnings = collectWarnings(page);
@@ -222,7 +222,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 7: view-transition-name on outlet ──────────────────────────
   test('7 — view-transition-name: outlet with transition gets route-content style', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await page.goto('/e2e/examples/view-transitions.html');
     await expect(page.getByTestId('page-home')).toBeVisible();
@@ -242,7 +242,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 8: Rapid navigation ────────────────────────────────────────
   test('8 — Rapid navigation: multiple quick navigations don\'t crash', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     const errors: string[] = [];
     page.on('pageerror', (err: Error) => {
@@ -289,7 +289,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 10: Content changes correctly after VT navigation ─────────
   test('10 — Content correctness: content updates after each VT-powered navigation', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await page.goto('/e2e/examples/view-transitions.html');
     await expect(page.getByTestId('page-home')).toBeVisible();
@@ -317,7 +317,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 11: VT CSS presets are injected ────────────────────────────
   test('11 — VT CSS presets: view-transition CSS rules are injected into head', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'View Transition API is only available in Chromium');
+    test.skip(browserName !== 'chromium', 'Requires VT API options parameter (Firefox 147+, Safari 18.2+)');
 
     await page.goto('/e2e/examples/view-transitions.html');
     await expect(page.getByTestId('page-home')).toBeVisible();
@@ -344,7 +344,7 @@ test.describe('View Transitions', () => {
 
   // ── Test 12: Non-Chromium fallback — page still navigates correctly ─
   test('12 — Non-Chromium fallback: navigation works when VT API absent', async ({ page, browserName }) => {
-    test.skip(browserName === 'chromium', 'This test validates fallback in non-Chromium browsers');
+    test.skip(browserName === 'chromium', 'Tests fallback path when VT API is absent or uses callback-only form');
 
     // Use the no-transition-attr page to avoid Firefox-specific timing issues
     // with the deprecation fallback path (transition attr + no VT API).

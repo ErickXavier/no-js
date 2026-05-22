@@ -116,6 +116,7 @@ describe('HTTP Directives', () => {
     });
 
     await new Promise((r) => setTimeout(r, 50));
+    expect(div.querySelector('.loading')).toBeNull();
   });
 
   test('GET with error template on failure', async () => {

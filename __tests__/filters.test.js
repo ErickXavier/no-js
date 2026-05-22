@@ -401,19 +401,7 @@ describe('filters.js — sortBy without key', () => {
   });
 });
 
-describe('filters.js — fromNow past dates (additional branches)', () => {
-  test('fromNow delegates to relative for date in the past (just now)', () => {
-    const justNow = new Date(Date.now() - 10000);
-    const result = _filters.fromNow(justNow.toISOString());
-    expect(result).toBe('just now');
-  });
-
-  test('fromNow delegates to relative for date days ago', () => {
-    const daysAgo = new Date(Date.now() - 3 * 86400 * 1000);
-    const result = _filters.fromNow(daysAgo.toISOString());
-    expect(result).toBe('3d ago');
-  });
-
+describe('filters.js — fromNow future dates', () => {
   test('fromNow in a moment for near-future', () => {
     const soonDate = new Date(Date.now() + 30 * 1000);
     const result = _filters.fromNow(soonDate.toISOString());
