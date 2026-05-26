@@ -198,7 +198,6 @@ Full documentation is available in the [docs/](docs/) folder:
 |------|-------------|
 | [NoJS-LSP](https://github.com/ErickXavier/nojs-lsp) | VS Code extension — autocomplete, hover docs, diagnostics for No.JS HTML |
 | [NoJS-Skill](https://github.com/ErickXavier/nojs-skill) | Claude Code skill — guided No.JS project generation |
-| [NoJS-CLI](https://github.com/ErickXavier/nojs-cli) | CLI tool — scaffold, dev server, build & deploy No.JS apps |
 
 ---
 

@@ -85,13 +85,12 @@ Conventional commits: `<type>[scope][!]: <description>`. Types: `feat` (MINOR), 
 
 ### Ecosystem versioning
 
-All 4 repos share the same version — never bump individually:
+All 3 repos share the same version — never bump individually:
 
 | Repo | Version locations | Publish |
 |------|-------------------|---------|
 | **NoJS** | `package.json:3` + `src/index.js:493` | `npm publish` |
 | **NoJS-LSP** | `package.json:5` | `npx vsce package` (VSIX) |
-| **NoJS-CLI** | `package.json:3` | `npm publish` |
 | **NoJS-Skill** | `SKILL.md:4` (frontmatter) | none |
 
 ### Release order

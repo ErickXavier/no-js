@@ -207,7 +207,6 @@ All repos share the **same version**. Never bump individually. Highest bump acro
 |------|------|-------------------|-------|---------|
 | **NoJS** | `NoJS/` | `package.json:3` + `src/index.js:493` | `node build.js` | `npm publish` |
 | **NoJS-LSP** | `NoJS-LSP/` | `package.json:5` | `npm run compile` | `npx vsce package` (VSIX only) |
-| **NoJS-CLI** | `NoJS-CLI/` | `package.json:3` | none | `npm publish` |
 | **NoJS-Skill** | `NoJS-Skill/` | `SKILL.md:4` (frontmatter) | none | none (markdown) |
 
 All repos live under `/Users/erick/_projects/_personal/NoJS/`.
