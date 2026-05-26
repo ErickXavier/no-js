@@ -9,7 +9,7 @@ import { _devtoolsEmit, _ctxRegistry } from "./devtools.js";
 const _FORBIDDEN_CTX_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
 let _batchDepth = 0;
-const _batchQueue = new Set();
+let _batchQueue = new Set();
 let _ctxId = 0;
 let _ctxGeneration = 0;
 
@@ -24,8 +24,8 @@ export function _endBatch() {
   _batchDepth--;
   if (_batchDepth === 0 && _batchQueue.size > 0) {
     _devtoolsEmit("batch:end", { depth: 0, queueSize: _batchQueue.size });
-    const fns = [..._batchQueue];
-    _batchQueue.clear();
+    const fns = _batchQueue;
+    _batchQueue = new Set();
     fns.forEach((fn) => {
       if (fn._el && !fn._el.isConnected) return;
       fn();
@@ -113,13 +113,21 @@ export function createContext(data = {}, parent = null) {
       if (old !== value) {
         _ctxGeneration++;
         notify();
-        const isSensitive = typeof key === "string" && [..._SENSITIVE_KEYS].some(s => key.toLowerCase().includes(s));
-        _devtoolsEmit("ctx:updated", {
-          id: target.__devtoolsId,
-          key,
-          oldValue: isSensitive ? "[REDACTED]" : old,
-          newValue: isSensitive ? "[REDACTED]" : value,
-        });
+        if (_config.devtools) {
+          let isSensitive = false;
+          if (typeof key === "string") {
+            const lk = key.toLowerCase();
+            for (const s of _SENSITIVE_KEYS) {
+              if (lk.includes(s)) { isSensitive = true; break; }
+            }
+          }
+          _devtoolsEmit("ctx:updated", {
+            id: target.__devtoolsId,
+            key,
+            oldValue: isSensitive ? "[REDACTED]" : old,
+            newValue: isSensitive ? "[REDACTED]" : value,
+          });
+        }
       }
       return true;
     },

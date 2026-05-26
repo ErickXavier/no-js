@@ -1211,6 +1211,8 @@ function _execStmtNode(node, scope) {
 
 // Parse pipe syntax: "expr | filter1 | filter2:arg"
 function _parsePipes(exprStr) {
+  // Fast-path: ~90%+ expressions have zero pipes
+  if (!exprStr.includes('|')) return [exprStr.trim()];
   // Don't split on || (logical OR)
   const parts = [];
   let current = "";
