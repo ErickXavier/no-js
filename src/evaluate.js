@@ -999,7 +999,10 @@ function _evalNode(node, scope) {
           ? _evalNode(node.property, scope)
           : node.property.name || node.property.value;
         if (_FORBIDDEN_PROPS[prop]) return undefined;
-        return obj[prop];
+        const val = obj[prop];
+        if (val instanceof Document || val === globalThis.document) return _safeDocument;
+        if (val === globalThis.window || val === globalThis) return _safeWindow;
+        return val;
       }
 
       case 'CallExpr':
@@ -1032,13 +1035,19 @@ function _evalNode(node, scope) {
           if (_FORBIDDEN_PROPS[prop]) return undefined;
           const fn = thisObj[prop];
           if (typeof fn !== 'function') return undefined;
-          return fn.apply(thisObj, evalArgs(node.args));
+          const callResult = fn.apply(thisObj, evalArgs(node.args));
+          if (callResult instanceof Document || callResult === globalThis.document) return _safeDocument;
+          if (callResult === globalThis.window || callResult === globalThis) return _safeWindow;
+          return callResult;
         }
 
         const fn = _evalNode(node.callee, scope);
         if (fn == null && node.type === 'OptionalCallExpr') return undefined;
         if (typeof fn !== 'function') return undefined;
-        return fn.apply(undefined, evalArgs(node.args));
+        const standaloneResult = fn.apply(undefined, evalArgs(node.args));
+        if (standaloneResult instanceof Document || standaloneResult === globalThis.document) return _safeDocument;
+        if (standaloneResult === globalThis.window || standaloneResult === globalThis) return _safeWindow;
+        return standaloneResult;
       }
 
       case 'ArrayExpr': {
