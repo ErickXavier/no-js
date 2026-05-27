@@ -50,10 +50,10 @@ import "./directives/loops.js";
 import "./directives/styling.js";
 import "./directives/events.js";
 import "./directives/refs.js";
-import "./directives/validation.js";
+import "./directives/validate-stub.js";
 import "./directives/error-boundary.js";
 import "./directives/i18n.js";
-import "./directives/dnd.js";
+import "./directives/dnd-stub.js";
 import "./directives/head.js";
 
 // Lock core directives — plugins can only register NEW names
