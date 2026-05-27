@@ -10,7 +10,7 @@
  * PR #64 — NOJS-35: Proxy get trap + reusable filter context (M2, M4)
  */
 
-import { _config, _stores, _storeWatchers, _setCurrentEl, _onDispose, _watchExpr, _notifyStoreWatchers, _refs, _globals } from '../src/globals.js';
+import { _config, _stores, _storeWatchers, _setCurrentEl, _onDispose, _watchExpr, _notifyStoreWatchers, _addStoreWatcher, _deleteStoreWatcher, _refs, _globals } from '../src/globals.js';
 import { createContext, _startBatch, _endBatch, _collectKeys, _resetCtxId } from '../src/context.js';
 import { evaluate, resolve, _execStatement, _exprCache, _stmtCache } from '../src/evaluate.js';
 import { registerDirective, processElement, processTree, _disposeTree, _disposeChildren } from '../src/registry.js';
@@ -404,12 +404,12 @@ describe('PR #61 — Prototype-based scope in evaluate()', () => {
       _stores.counter = { value: 0 };
       const ctx = createContext({});
       const watcher = jest.fn();
-      _storeWatchers.add(watcher);
+      _addStoreWatcher(watcher, 'counter');
 
       _execStatement('$store.counter.value = 42', ctx, {});
 
       expect(watcher).toHaveBeenCalled();
-      _storeWatchers.delete(watcher);
+      _deleteStoreWatcher(watcher);
       delete _stores.counter;
     });
   });
@@ -637,18 +637,18 @@ describe('PR #63 — MutationObserver removal: store reactivity', () => {
       _watchExpr('$store.app.value', ctx, fn);
       _setCurrentEl(null);
 
-      expect(_storeWatchers.has(fn)).toBe(true);
+      expect(_storeWatchers.get('app')?.has(fn)).toBe(true);
 
       // Remove element from DOM (without dispose)
       parent.removeChild(el);
 
-      // Watcher still in Set (no MutationObserver to eagerly remove)
-      expect(_storeWatchers.has(fn)).toBe(true);
+      // Watcher still in partition (no MutationObserver to eagerly remove)
+      expect(_storeWatchers.get('app')?.has(fn)).toBe(true);
 
       // Trigger notification — lazy pruning should remove it
-      _notifyStoreWatchers();
+      _notifyStoreWatchers('app');
 
-      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(_storeWatchers.get('app')?.has(fn) ?? false).toBe(false);
       expect(fn).not.toHaveBeenCalled();
 
       document.body.removeChild(parent);
@@ -691,12 +691,12 @@ describe('PR #63 — MutationObserver removal: store reactivity', () => {
       _watchExpr('$store.app.value', ctx, fn);
       _setCurrentEl(null);
 
-      expect(_storeWatchers.has(fn)).toBe(true);
+      expect(_storeWatchers.get('app')?.has(fn)).toBe(true);
 
       // Proper disposal path
       _disposeTree(el);
 
-      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(_storeWatchers.get('app')?.has(fn) ?? false).toBe(false);
 
       document.body.removeChild(container);
     });
@@ -769,13 +769,13 @@ describe('PR #63 — MutationObserver removal: store reactivity', () => {
       _watchExpr('$store.nav.page', ctx, fn1);
       _setCurrentEl(null);
 
-      expect(_storeWatchers.has(fn1)).toBe(true);
+      expect(_storeWatchers.get('nav')?.has(fn1)).toBe(true);
 
       // Simulate route transition: dispose old, insert new
       _disposeTree(page1);
       outlet.innerHTML = '';
 
-      expect(_storeWatchers.has(fn1)).toBe(false);
+      expect(_storeWatchers.get('nav')?.has(fn1) ?? false).toBe(false);
 
       const page2 = document.createElement('div');
       outlet.appendChild(page2);

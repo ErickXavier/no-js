@@ -2,7 +2,7 @@
 //  DIRECTIVE REGISTRY & DOM PROCESSING
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _currentEl, _setCurrentEl, _storeWatchers, _warn } from "./globals.js";
+import { _currentEl, _setCurrentEl, _deleteStoreWatcher, _warn } from "./globals.js";
 import { _i18nListeners } from "./i18n.js";
 import { _devtoolsEmit, _ctxRegistry } from "./devtools.js";
 
@@ -100,7 +100,7 @@ function _disposeElement(node) {
 
   if (node.__ctx && node.__ctx.__listeners) {
     for (const fn of node.__ctx.__listeners) {
-      _storeWatchers.delete(fn);
+      _deleteStoreWatcher(fn);
       _i18nListeners.delete(fn);
     }
     node.__ctx.__listeners.clear();

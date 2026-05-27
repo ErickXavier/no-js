@@ -1,6 +1,6 @@
 import { registerDirective, processElement, processTree, _disposeTree, _disposeChildren } from '../src/registry.js';
 import { createContext } from '../src/context.js';
-import { _setCurrentEl, _onDispose, _storeWatchers } from '../src/globals.js';
+import { _setCurrentEl, _onDispose, _storeWatchers, _addStoreWatcher } from '../src/globals.js';
 import { _i18nListeners } from '../src/i18n.js';
 
 describe('Directive Registry', () => {
@@ -182,14 +182,14 @@ describe('Disposal', () => {
 
     test('clears context __listeners and removes from _storeWatchers', () => {
       const fn = jest.fn();
-      _storeWatchers.add(fn);
+      _addStoreWatcher(fn, 'test');
 
       const el = document.createElement('div');
       el.__ctx = { __listeners: new Set([fn]) };
 
       _disposeTree(el);
 
-      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(_storeWatchers.get('test')?.has(fn) ?? false).toBe(false);
       expect(el.__ctx.__listeners.size).toBe(0);
     });
 

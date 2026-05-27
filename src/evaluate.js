@@ -2,7 +2,7 @@
 //  EXPRESSION EVALUATOR
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _routerInstance, _filters, _warn, _notifyStoreWatchers, _globals } from "./globals.js";
+import { _config, _stores, _routerInstance, _filters, _warn, _notifyStoreWatchers, _extractStoreName, _globals } from "./globals.js";
 import { _i18n } from "./i18n.js";
 import { _collectKeys } from "./context.js";
 
@@ -1438,7 +1438,7 @@ export function _execStatement(expr, ctx, extraVars = {}) {
 
     // Notify global store watchers when expression touches $store
     if (typeof expr === "string" && expr.includes("$store")) {
-      _notifyStoreWatchers();
+      _notifyStoreWatchers(_extractStoreName(expr));
     }
   } catch (e) {
     _warn("Expression error:", expr, e.message);

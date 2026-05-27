@@ -184,7 +184,7 @@ for (const method of HTTP_METHODS) {
           if (intoStore) {
             if (!_stores[intoStore]) _stores[intoStore] = createContext({});
             _stores[intoStore].$set(asKey, data);
-            _notifyStoreWatchers();
+            _notifyStoreWatchers(intoStore);
           }
 
           // Success template
