@@ -106,14 +106,17 @@ const _loopHandler = {
       }
       prevList = list;
 
-      // Filter
+      // Filter — reuse a single proxy context, mutating its target per item
       if (filterExpr) {
+        const filterData = { [itemName]: undefined, [indexName]: 0 };
+        const filterCtx = createContext(filterData, ctx);
+        const filterRaw = filterCtx.__raw;
         list = list.filter((item, i) => {
-          const tempCtx = createContext(
-            { [itemName]: item, [indexName]: i },
-            ctx,
-          );
-          return !!evaluate(filterExpr, tempCtx);
+          filterRaw[itemName] = item;
+          filterRaw[indexName] = i;
+          // Invalidate _collectKeys cache since we bypassed the proxy setter
+          delete filterRaw.__collectKeysCache;
+          return !!evaluate(filterExpr, filterCtx);
         });
       }
 
@@ -204,9 +207,16 @@ const _loopHandler = {
       // On first render clear any residual content so only managed nodes appear.
       if (keyMap.size === 0) el.innerHTML = "";
 
+      // Reuse a single proxy context for key evaluation (same pattern as filter)
+      const keyData = { [itemName]: undefined, [indexName]: 0 };
+      const keyCtx = createContext(keyData, ctx);
+      const keyRaw = keyCtx.__raw;
       const newOrder = list.map((item, i) => {
-        const tempCtx = createContext({ [itemName]: item, [indexName]: i }, ctx);
-        return { key: evaluate(keyExpr, tempCtx), item, i };
+        keyRaw[itemName] = item;
+        keyRaw[indexName] = i;
+        // Invalidate _collectKeys cache since we bypassed the proxy setter
+        delete keyRaw.__collectKeysCache;
+        return { key: evaluate(keyExpr, keyCtx), item, i };
       });
 
       const nextKeySet = new Set(newOrder.map((e) => e.key));
