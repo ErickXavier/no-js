@@ -204,7 +204,7 @@ test('_cache is a Map', () => {
       expect(_storeWatchers.has(fn)).toBe(false);
     });
 
-    test('removes $store watcher from Set when element is removed without dispose', async () => {
+    test('prunes $store watcher lazily via isConnected guard when element is removed without dispose', () => {
       const ctx = createContext({});
       const fn = jest.fn();
 
@@ -222,13 +222,18 @@ test('_cache is a Map', () => {
       // Remove element externally (bypassing framework dispose)
       parent.innerHTML = '';
 
-      // Allow MutationObserver microtask to run
-      await new Promise((r) => setTimeout(r, 0));
+      // Watcher is still in the Set (no MutationObserver to eagerly remove it)
+      expect(_storeWatchers.has(fn)).toBe(true);
+
+      // _notifyStoreWatchers prunes disconnected elements via isConnected guard
+      _notifyStoreWatchers();
 
       expect(_storeWatchers.has(fn)).toBe(false);
+      // The watcher callback should NOT have been invoked for the disconnected element
+      expect(fn).not.toHaveBeenCalled();
     });
 
-    test('disconnects MutationObserver via _onDispose when _disposeTree runs (each re-render pattern)', () => {
+    test('removes $store watcher via _onDispose when _disposeTree runs (each re-render pattern)', () => {
       const ctx = createContext({});
       const fn = jest.fn();
 
@@ -248,7 +253,7 @@ test('_cache is a Map', () => {
       _disposeTree(itemWrapper);
       container.innerHTML = '';
 
-      // Watcher must be removed by the _onDispose path (not the MutationObserver callback)
+      // Watcher must be removed by the _onDispose path
       expect(_storeWatchers.has(fn)).toBe(false);
     });
 
