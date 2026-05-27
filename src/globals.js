@@ -27,7 +27,7 @@ export const _config = {
 export const _interceptors = { request: [], response: [] };
 export const _eventBus = {};
 export const _stores = {};
-export const _storeWatchers = new Set();
+export const _storeWatchers = new Map(); // storeName → Set<fn>, '*' = wildcard
 export const _filters = {};
 export const _validators = {};
 export const _cache = new Map();
@@ -79,13 +79,64 @@ export function _warn(...args) {
   console.warn("[No.JS]", ...args);
 }
 
-export function _notifyStoreWatchers() {
-  for (const fn of _storeWatchers) {
+// Regex to extract the first store name from expressions like $store.cart.items
+const _STORE_NAME_RE = /\$store\.(\w+)/;
+
+export function _extractStoreName(expr) {
+  if (typeof expr !== "string") return null;
+  const m = _STORE_NAME_RE.exec(expr);
+  return m ? m[1] : null;
+}
+
+function _notifyPartition(set) {
+  for (const fn of set) {
     if (fn._el && !fn._el.isConnected) {
-      _storeWatchers.delete(fn);
+      set.delete(fn);
       continue;
     }
     fn();
+  }
+}
+
+export function _notifyStoreWatchers(storeName) {
+  if (storeName) {
+    // Notify only the targeted partition + wildcards
+    const partition = _storeWatchers.get(storeName);
+    if (partition) _notifyPartition(partition);
+    const wildcard = _storeWatchers.get("*");
+    if (wildcard) _notifyPartition(wildcard);
+  } else {
+    // No store name — notify ALL partitions (backward compat)
+    for (const set of _storeWatchers.values()) {
+      _notifyPartition(set);
+    }
+  }
+}
+
+export function _addStoreWatcher(fn, partition) {
+  let set = _storeWatchers.get(partition);
+  if (!set) {
+    set = new Set();
+    _storeWatchers.set(partition, set);
+  }
+  set.add(fn);
+  fn._storePartition = partition;
+}
+
+export function _deleteStoreWatcher(fn) {
+  const partition = fn._storePartition;
+  if (partition) {
+    const set = _storeWatchers.get(partition);
+    if (set) {
+      set.delete(fn);
+      if (set.size === 0) _storeWatchers.delete(partition);
+    }
+  } else {
+    // Fallback: scan all partitions (legacy safety net)
+    for (const [key, set] of _storeWatchers) {
+      set.delete(fn);
+      if (set.size === 0) _storeWatchers.delete(key);
+    }
   }
 }
 
@@ -93,10 +144,11 @@ export function _watchExpr(expr, ctx, fn) {
   const unwatch = ctx.$watch(fn);
   _onDispose(() => {
     unwatch();
-    _storeWatchers.delete(fn);
+    _deleteStoreWatcher(fn);
   });
   if (typeof expr === "string" && expr.includes("$store")) {
-    _storeWatchers.add(fn);
+    const partition = _extractStoreName(expr) || "*";
+    _addStoreWatcher(fn, partition);
     fn._el = _currentEl;
   }
 }

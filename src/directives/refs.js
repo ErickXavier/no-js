@@ -159,7 +159,7 @@ registerDirective("call", {
         if (intoStore) {
           if (!_stores[intoStore]) _stores[intoStore] = createContext({});
           _stores[intoStore].$set(asKey, data);
-          _notifyStoreWatchers();
+          _notifyStoreWatchers(intoStore);
         }
         if (thenExpr) _execStatement(thenExpr, ctx, { result: data });
         if (successTpl) {

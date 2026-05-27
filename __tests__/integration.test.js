@@ -391,44 +391,44 @@ describe('NoJS.notify()', () => {
   });
 
   test('triggers store watchers', () => {
-    const { _storeWatchers } = require('../src/globals.js');
+    const { _addStoreWatcher, _deleteStoreWatcher } = require('../src/globals.js');
     const fn1 = jest.fn();
     const fn2 = jest.fn();
-    _storeWatchers.add(fn1);
-    _storeWatchers.add(fn2);
+    _addStoreWatcher(fn1, 'test');
+    _addStoreWatcher(fn2, 'test');
 
     NoJS.notify();
 
     expect(fn1).toHaveBeenCalledTimes(1);
     expect(fn2).toHaveBeenCalledTimes(1);
 
-    _storeWatchers.delete(fn1);
-    _storeWatchers.delete(fn2);
+    _deleteStoreWatcher(fn1);
+    _deleteStoreWatcher(fn2);
   });
 
   test('prunes disconnected element watchers', () => {
-    const { _storeWatchers } = require('../src/globals.js');
+    const { _addStoreWatcher, _storeWatchers } = require('../src/globals.js');
     const fn = jest.fn();
     fn._el = { isConnected: false };
-    _storeWatchers.add(fn);
+    _addStoreWatcher(fn, 'test');
 
     NoJS.notify();
 
     expect(fn).not.toHaveBeenCalled();
-    expect(_storeWatchers.has(fn)).toBe(false);
+    expect(_storeWatchers.get('test')?.has(fn) ?? false).toBe(false);
   });
 
   test('multiple rapid calls do not break anything', () => {
-    const { _storeWatchers } = require('../src/globals.js');
+    const { _addStoreWatcher, _deleteStoreWatcher } = require('../src/globals.js');
     const fn = jest.fn();
-    _storeWatchers.add(fn);
+    _addStoreWatcher(fn, 'test');
 
     NoJS.notify();
     NoJS.notify();
     NoJS.notify();
 
     expect(fn).toHaveBeenCalledTimes(3);
-    _storeWatchers.delete(fn);
+    _deleteStoreWatcher(fn);
   });
 
   test('DOM updates after external store mutation + notify()', async () => {

@@ -14,6 +14,8 @@ import {
   _warn,
   _notifyStoreWatchers,
   _watchExpr,
+  _addStoreWatcher,
+  _deleteStoreWatcher,
   _emitEvent,
   _setCurrentEl,
   _onDispose,
@@ -123,13 +125,29 @@ test('_cache is a Map', () => {
     test('calls all store watchers', () => {
       const fn1 = jest.fn();
       const fn2 = jest.fn();
-      _storeWatchers.add(fn1);
-      _storeWatchers.add(fn2);
+      _addStoreWatcher(fn1, 'cart');
+      _addStoreWatcher(fn2, 'user');
       _notifyStoreWatchers();
       expect(fn1).toHaveBeenCalled();
       expect(fn2).toHaveBeenCalled();
-      _storeWatchers.delete(fn1);
-      _storeWatchers.delete(fn2);
+      _deleteStoreWatcher(fn1);
+      _deleteStoreWatcher(fn2);
+    });
+
+    test('calls only targeted partition + wildcards', () => {
+      const fnCart = jest.fn();
+      const fnUser = jest.fn();
+      const fnWild = jest.fn();
+      _addStoreWatcher(fnCart, 'cart');
+      _addStoreWatcher(fnUser, 'user');
+      _addStoreWatcher(fnWild, '*');
+      _notifyStoreWatchers('cart');
+      expect(fnCart).toHaveBeenCalled();
+      expect(fnWild).toHaveBeenCalled();
+      expect(fnUser).not.toHaveBeenCalled();
+      _deleteStoreWatcher(fnCart);
+      _deleteStoreWatcher(fnUser);
+      _deleteStoreWatcher(fnWild);
     });
   });
 
@@ -159,10 +177,11 @@ test('_cache is a Map', () => {
     test('adds to _storeWatchers when expr includes $store', () => {
       const ctx = createContext({});
       const fn = jest.fn();
-      const sizeBefore = _storeWatchers.size;
+      const cartSetBefore = _storeWatchers.get('cart');
+      const sizeBefore = cartSetBefore ? cartSetBefore.size : 0;
       _watchExpr('$store.cart.items', ctx, fn);
-      expect(_storeWatchers.size).toBe(sizeBefore + 1);
-      _storeWatchers.delete(fn);
+      expect(_storeWatchers.get('cart').size).toBe(sizeBefore + 1);
+      _deleteStoreWatcher(fn);
     });
 
     test('registers _onDispose that calls unwatch on disposal', () => {
@@ -197,11 +216,11 @@ test('_cache is a Map', () => {
       _watchExpr('$store.cart.items', ctx, fn);
       _setCurrentEl(null);
 
-      expect(_storeWatchers.has(fn)).toBe(true);
+      expect(_storeWatchers.get('cart')?.has(fn)).toBe(true);
 
       _disposeTree(el);
 
-      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(_storeWatchers.get('cart')?.has(fn) ?? false).toBe(false);
     });
 
     test('prunes $store watcher lazily via isConnected guard when element is removed without dispose', () => {
@@ -217,18 +236,18 @@ test('_cache is a Map', () => {
       _watchExpr('$store.cart', ctx, fn);
       _setCurrentEl(null);
 
-      expect(_storeWatchers.has(fn)).toBe(true);
+      expect(_storeWatchers.get('cart')?.has(fn)).toBe(true);
 
       // Remove element externally (bypassing framework dispose)
       parent.innerHTML = '';
 
-      // Watcher is still in the Set (no MutationObserver to eagerly remove it)
-      expect(_storeWatchers.has(fn)).toBe(true);
+      // Watcher is still in the partition (no MutationObserver to eagerly remove it)
+      expect(_storeWatchers.get('cart')?.has(fn)).toBe(true);
 
       // _notifyStoreWatchers prunes disconnected elements via isConnected guard
-      _notifyStoreWatchers();
+      _notifyStoreWatchers('cart');
 
-      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(_storeWatchers.get('cart')?.has(fn) ?? false).toBe(false);
       // The watcher callback should NOT have been invoked for the disconnected element
       expect(fn).not.toHaveBeenCalled();
     });
@@ -247,14 +266,14 @@ test('_cache is a Map', () => {
       _watchExpr('$store.cart.items', ctx, fn);
       _setCurrentEl(null);
 
-      expect(_storeWatchers.has(fn)).toBe(true);
+      expect(_storeWatchers.get('cart')?.has(fn)).toBe(true);
 
       // Simulate each re-render: disposeTree then clear innerHTML
       _disposeTree(itemWrapper);
       container.innerHTML = '';
 
       // Watcher must be removed by the _onDispose path
-      expect(_storeWatchers.has(fn)).toBe(false);
+      expect(_storeWatchers.get('cart')?.has(fn) ?? false).toBe(false);
     });
 
     test('does not throw when element has no parentElement', () => {
@@ -268,7 +287,7 @@ test('_cache is a Map', () => {
       expect(() => _watchExpr('$store.x', ctx, fn)).not.toThrow();
       _setCurrentEl(null);
 
-      _storeWatchers.delete(fn);
+      _deleteStoreWatcher(fn);
     });
   });
 });
