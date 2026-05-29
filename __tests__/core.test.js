@@ -149,6 +149,27 @@ test('_cache is a Map', () => {
       _deleteStoreWatcher(fnUser);
       _deleteStoreWatcher(fnWild);
     });
+
+    test('a throwing store watcher does not skip siblings (NOJS-62)', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const first = jest.fn();
+      const middle = jest.fn(() => { throw new Error('boom'); });
+      const third = jest.fn();
+      _addStoreWatcher(first, 'cart');
+      _addStoreWatcher(middle, 'cart');
+      _addStoreWatcher(third, 'cart');
+
+      expect(() => _notifyStoreWatchers('cart')).not.toThrow();
+      expect(first).toHaveBeenCalledTimes(1);
+      expect(middle).toHaveBeenCalledTimes(1);
+      expect(third).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalled();
+
+      _deleteStoreWatcher(first);
+      _deleteStoreWatcher(middle);
+      _deleteStoreWatcher(third);
+      warnSpy.mockRestore();
+    });
   });
 
   describe('_emitEvent', () => {
@@ -436,6 +457,49 @@ describe('Reactive Context', () => {
       expect(watcher).not.toHaveBeenCalled();
       _endBatch();
       expect(watcher).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('listener resilience (NOJS-62)', () => {
+    let warnSpy;
+    beforeEach(() => { warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {}); });
+    afterEach(() => { warnSpy.mockRestore(); });
+
+    test('immediate mode: a throwing middle listener does not skip siblings', () => {
+      const ctx = createContext({ x: 0 });
+      const first = jest.fn();
+      const middle = jest.fn(() => { throw new Error('boom'); });
+      const third = jest.fn();
+      ctx.$watch(first);
+      ctx.$watch(middle);
+      ctx.$watch(third);
+
+      expect(() => { ctx.x = 1; }).not.toThrow();
+
+      expect(first).toHaveBeenCalledTimes(1);
+      expect(middle).toHaveBeenCalledTimes(1);
+      expect(third).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalled();
+    });
+
+    test('batched mode: a throwing middle listener does not drop queued siblings', () => {
+      const ctx = createContext({ x: 0 });
+      const first = jest.fn();
+      const middle = jest.fn(() => { throw new Error('boom'); });
+      const third = jest.fn();
+      ctx.$watch(first);
+      ctx.$watch(middle);
+      ctx.$watch(third);
+
+      _startBatch();
+      ctx.x = 1;
+      expect(first).not.toHaveBeenCalled();
+      expect(() => _endBatch()).not.toThrow();
+
+      expect(first).toHaveBeenCalledTimes(1);
+      expect(middle).toHaveBeenCalledTimes(1);
+      expect(third).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalled();
     });
   });
 
