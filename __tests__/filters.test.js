@@ -436,4 +436,105 @@ describe('filters.js — default filter edge cases', () => {
   });
 });
 
+// NOJS-67 #6 — date-only ISO strings must be parsed in local time, not UTC
+// midnight (which renders as the previous day in negative-UTC-offset zones).
+describe('filters.js — date-only ISO parsing (NOJS-67 #6)', () => {
+  test('date renders the same calendar day it was given', () => {
+    const out = _filters.date('2026-05-29');
+    // Local-component parse → must contain day 29, never roll back to 28.
+    const parsed = new Date('2026-05-29T00:00:00');
+    expect(out).toBe(parsed.toLocaleDateString(undefined, { dateStyle: 'short' }));
+    expect(parsed.getDate()).toBe(29);
+    expect(parsed.getMonth()).toBe(4); // May
+  });
+
+  test('date-only year boundary stays on the given year', () => {
+    const parsed = new Date('2026-01-01T00:00:00');
+    expect(_filters.date('2026-01-01')).toBe(
+      parsed.toLocaleDateString(undefined, { dateStyle: 'short' }),
+    );
+    expect(parsed.getFullYear()).toBe(2026);
+  });
+
+  test('full datetime strings remain unaffected', () => {
+    const iso = '2026-05-29T15:30:00Z';
+    expect(_filters.datetime(iso)).toBe(new Date(iso).toLocaleString());
+  });
+
+  test('invalid date still passes through unchanged', () => {
+    expect(_filters.date('not-a-date')).toBe('not-a-date');
+  });
+});
+
+// NOJS-67 #31 — relative() must not report future timestamps as "just now".
+describe('filters.js — relative future timestamps (NOJS-67 #31)', () => {
+  test('a future date delegates to fromNow ("in ...")', () => {
+    const future = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    const out = _filters.relative(future);
+    // Must read as future ("in ..."), never the buggy "just now".
+    expect(out.startsWith('in ')).toBe(true);
+    expect(out).not.toBe('just now');
+  });
+
+  test('recent past still returns "just now"', () => {
+    const past = new Date(Date.now() - 5 * 1000).toISOString();
+    expect(_filters.relative(past)).toBe('just now');
+  });
+});
+
+// NOJS-67 #32 — filesize() must scale negative byte counts.
+describe('filters.js — filesize negative bytes (NOJS-67 #32)', () => {
+  test('negative kilobytes scale and keep the sign', () => {
+    expect(_filters.filesize(-2048)).toBe('-2.0 KB');
+  });
+
+  test('negative bytes below 1KB stay in B', () => {
+    expect(_filters.filesize(-512)).toBe('-512 B');
+  });
+
+  test('positive values are unchanged', () => {
+    expect(_filters.filesize(2048)).toBe('2.0 KB');
+  });
+});
+
+// NOJS-67 #67 — number/currency/percent must not throw on out-of-range decimals.
+describe('filters.js — out-of-range decimals guard (NOJS-67 #67)', () => {
+  test('number clamps negative decimals instead of throwing', () => {
+    expect(() => _filters.number(1234.5, -1)).not.toThrow();
+    expect(_filters.number(1234.5, -1)).toBe(_filters.number(1234.5, 0));
+  });
+
+  test('percent clamps negative decimals instead of throwing', () => {
+    expect(() => _filters.percent(0.5, -2)).not.toThrow();
+    expect(_filters.percent(0.5, -2)).toBe('50%');
+  });
+
+  test('number clamps absurdly large decimals', () => {
+    expect(() => _filters.number(1, 1000)).not.toThrow();
+  });
+});
+
+// NOJS-67 #68 — sortBy must sink non-comparable (null/undefined/NaN) keys.
+describe('filters.js — sortBy non-comparable keys (NOJS-67 #68)', () => {
+  test('undefined keys are pushed to the end (asc)', () => {
+    const arr = [{ n: 3 }, { x: 1 }, { n: 1 }, { n: 2 }];
+    const sorted = _filters.sortBy(arr, 'n').map((o) => o.n);
+    expect(sorted).toEqual([1, 2, 3, undefined]);
+  });
+
+  test('NaN keys are pushed to the end', () => {
+    const arr = [{ n: NaN }, { n: 2 }, { n: 1 }];
+    const sorted = _filters.sortBy(arr, 'n').map((o) => o.n);
+    expect(sorted[0]).toBe(1);
+    expect(sorted[1]).toBe(2);
+    expect(Number.isNaN(sorted[2])).toBe(true);
+  });
+
+  test('descending still sinks nil keys to the end', () => {
+    const arr = [{ n: 1 }, { x: 0 }, { n: 3 }];
+    const sorted = _filters.sortBy(arr, '-n').map((o) => o.n);
+    expect(sorted).toEqual([3, 1, undefined]);
+  });
+});
+
 

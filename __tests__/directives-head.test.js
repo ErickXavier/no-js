@@ -1,6 +1,6 @@
 import { _stores, _config } from '../src/globals.js';
 import { createContext } from '../src/context.js';
-import { processTree } from '../src/registry.js';
+import { processTree, _disposeTree } from '../src/registry.js';
 import { findContext } from '../src/dom.js';
 
 import '../src/filters.js';
@@ -178,5 +178,62 @@ describe('page-jsonld directive', () => {
     expect(allScripts.length).toBe(2);
     // Original untouched
     expect(allScripts[0].textContent).toContain('WebSite');
+  });
+});
+
+// ─── disposal: no stale head elements across SPA route changes (NOJS-67 #21) ──
+
+describe('head directives — disposal cleanup (NOJS-67 #21)', () => {
+  test('page-description meta created by the directive is removed on dispose', () => {
+    document.body.innerHTML = `<div hidden page-description="'Route A description'"></div>`;
+    processTree(document.body);
+    expect(document.querySelector('meta[name="description"]').content).toBe(
+      'Route A description',
+    );
+
+    _disposeTree(document.body.firstElementChild);
+    // Stale meta must not linger into the next route.
+    expect(document.querySelector('meta[name="description"]')).toBeNull();
+  });
+
+  test('a hand-written meta description is NOT removed on dispose', () => {
+    const manual = document.createElement('meta');
+    manual.name = 'description';
+    manual.content = 'Static site description';
+    document.head.appendChild(manual);
+
+    document.body.innerHTML = `<div hidden page-description="'Updated by directive'"></div>`;
+    processTree(document.body);
+    expect(document.querySelector('meta[name="description"]').content).toBe(
+      'Updated by directive',
+    );
+
+    _disposeTree(document.body.firstElementChild);
+    // The developer's own meta survives (directive only removes what it created).
+    expect(document.querySelector('meta[name="description"]')).toBe(manual);
+  });
+
+  test('page-canonical link created by the directive is removed on dispose', () => {
+    document.body.innerHTML = `<div hidden page-canonical="'/route-a'"></div>`;
+    processTree(document.body);
+    expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(
+      '/route-a',
+    );
+
+    _disposeTree(document.body.firstElementChild);
+    expect(document.querySelector('link[rel="canonical"]')).toBeNull();
+  });
+
+  test('page-jsonld script created by the directive is removed on dispose', () => {
+    document.body.innerHTML = `<div hidden page-jsonld>{"@type":"Product"}</div>`;
+    processTree(document.body);
+    expect(
+      document.querySelector('script[type="application/ld+json"][data-nojs]'),
+    ).not.toBeNull();
+
+    _disposeTree(document.body.firstElementChild);
+    expect(
+      document.querySelector('script[type="application/ld+json"][data-nojs]'),
+    ).toBeNull();
   });
 });

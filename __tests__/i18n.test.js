@@ -689,3 +689,50 @@ describe('t-html child disposal (M10)', () => {
     expect(el.innerHTML).toContain('<em>Changed</em>');
   });
 });
+
+// NOJS-67 #33 — per-key fallback: a present locale bundle that is missing a
+// specific key must fall back to the fallbackLocale bundle, not return the key.
+describe('i18n — per-key fallbackLocale resolution (NOJS-67 #33)', () => {
+  beforeEach(() => {
+    _i18n.locale = 'pt';
+    _i18n.locales = {
+      en: {
+        greeting: 'Hello',
+        only_in_en: 'English only',
+        nested: { deep: 'Deep EN' },
+      },
+      pt: {
+        greeting: 'Olá',
+        // intentionally missing only_in_en + nested.deep
+      },
+    };
+    _config.i18n.fallbackLocale = 'en';
+  });
+
+  afterEach(() => {
+    _i18n.locale = 'en';
+    _i18n.locales = {};
+    _config.i18n.fallbackLocale = 'en';
+  });
+
+  test('falls back to fallbackLocale when key missing in present bundle', () => {
+    expect(_i18n.t('only_in_en')).toBe('English only');
+  });
+
+  test('nested missing key falls back to fallbackLocale', () => {
+    expect(_i18n.t('nested.deep')).toBe('Deep EN');
+  });
+
+  test('present key in active locale is still preferred', () => {
+    expect(_i18n.t('greeting')).toBe('Olá');
+  });
+
+  test('key absent in both locales returns the raw key', () => {
+    expect(_i18n.t('totally.absent')).toBe('totally.absent');
+  });
+
+  test('no fallback applied when fallbackLocale equals active locale', () => {
+    _i18n.locale = 'en';
+    expect(_i18n.t('missing.key')).toBe('missing.key');
+  });
+});
