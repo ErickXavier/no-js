@@ -5,7 +5,7 @@
 import { _stores, _refs, _config, _validators, _eventBus, _interceptors, setRouterInstance, _cache } from '../src/globals.js';
 import { createContext } from '../src/context.js';
 import { findContext } from '../src/dom.js';
-import { processTree } from '../src/registry.js';
+import { processTree, _disposeTree } from '../src/registry.js';
 import { _cacheSet } from '../src/fetch.js';
 import { _i18n } from '../src/i18n.js';
 
@@ -3838,5 +3838,131 @@ describe('M6 — call directive sensitive header warning', () => {
     expect(sensitiveWarns).toHaveLength(0);
 
     warnSpy.mockRestore();
+  });
+});
+
+// ──────────────────────────────────────────────────────────────────────
+// NOJS-61: http directive lifecycle (findings #22, #60, #61)
+// ──────────────────────────────────────────────────────────────────────
+
+describe('http directive — abort in-flight request on disposal (NOJS-61 #22)', () => {
+  beforeEach(httpSetup);
+  afterEach(httpTeardown);
+
+  test('disposing the element aborts the in-flight request signal', async () => {
+    let capturedSignal;
+    global.fetch.mockImplementation((url, opts) => {
+      capturedSignal = opts.signal;
+      return new Promise(() => {}); // never resolves — stays in flight
+    });
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/slow');
+    el.setAttribute('as', 'data');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(20);
+
+    expect(capturedSignal).toBeDefined();
+    expect(capturedSignal.aborted).toBe(false);
+
+    _disposeTree(el);
+    expect(capturedSignal.aborted).toBe(true);
+  });
+});
+
+describe('http directive — params encoding (NOJS-61 #60)', () => {
+  beforeEach(httpSetup);
+  afterEach(httpTeardown);
+
+  test('array param expands to repeated keys, object param is JSON-encoded', async () => {
+    let calledUrl;
+    global.fetch.mockImplementation((url) => {
+      calledUrl = url;
+      return Promise.resolve(mockJsonResponse({ ok: true }));
+    });
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', "{ tags: ['a', 'b'], range: { min: 1, max: 9 }, q: 'x' }");
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/search');
+    el.setAttribute('as', 'data');
+    el.setAttribute('params', '{ tag: tags, range: range, q: q }');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(50);
+
+    expect(calledUrl).toContain('tag=a');
+    expect(calledUrl).toContain('tag=b');
+    // object value JSON-encoded, not "[object Object]"
+    expect(calledUrl).not.toContain('object+Object');
+    expect(decodeURIComponent(calledUrl)).toContain('range={"min":1,"max":9}');
+    expect(calledUrl).toContain('q=x');
+  });
+
+  test('null/undefined param values are skipped', async () => {
+    let calledUrl;
+    global.fetch.mockImplementation((url) => {
+      calledUrl = url;
+      return Promise.resolve(mockJsonResponse({ ok: true }));
+    });
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', "{ a: 'keep', b: null }");
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/x');
+    el.setAttribute('as', 'data');
+    el.setAttribute('params', '{ a: a, b: b }');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(50);
+
+    expect(calledUrl).toContain('a=keep');
+    expect(calledUrl).not.toContain('b=');
+  });
+});
+
+describe('http directive — refresh interval clamp (NOJS-61 #61)', () => {
+  beforeEach(() => {
+    httpSetup();
+    jest.useFakeTimers();
+  });
+  afterEach(() => {
+    jest.useRealTimers();
+    httpTeardown();
+  });
+
+  test('tiny positive refresh value is clamped to the 250ms floor', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ status: 'ok' }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/status');
+    el.setAttribute('as', 'status');
+    el.setAttribute('refresh', '1'); // would be a tight loop without clamping
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+
+    await jest.advanceTimersByTimeAsync(10);
+    expect(global.fetch).toHaveBeenCalledTimes(1); // initial only
+
+    // At 1ms it would have polled dozens of times; clamped to 250ms it has not.
+    await jest.advanceTimersByTimeAsync(200); // total ~210ms < 250ms floor
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // Crossing the 250ms floor triggers exactly one poll.
+    await jest.advanceTimersByTimeAsync(60); // total ~270ms
+    expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 });

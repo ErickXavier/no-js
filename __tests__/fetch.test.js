@@ -1,4 +1,4 @@
-import { _config, _interceptors, _cache } from '../src/globals.js';
+import { _config, _interceptors, _cache, _plugins } from '../src/globals.js';
 import { resolveUrl, _doFetch, _cacheGet, _cacheSet } from '../src/fetch.js';
 
 describe('URL Resolution', () => {
@@ -716,5 +716,215 @@ describe('fetch.js — explicit _doFetch retry params override _config', () => {
     const result = await _doFetch('/api/retry-override', 'GET', null, {}, null, null, 2, 10);
     expect(result).toEqual({ success: true });
     expect(callCount).toBe(3);
+  });
+});
+
+// ──────────────────────────────────────────────────────────────────────
+// NOJS-61: timeout/abort lifecycle (findings #4, #5, #29, #30, #66)
+// ──────────────────────────────────────────────────────────────────────
+
+describe('fetch.js — timeout/abort lifecycle (NOJS-61)', () => {
+  let originalFetch;
+  let clearTimeoutSpy;
+
+  beforeEach(() => {
+    originalFetch = global.fetch;
+    _config.retries = 0;
+    _config.retryDelay = 1000;
+    _config.timeout = 10000;
+    _config.headers = {};
+    _config.csrf = null;
+    _config.credentials = 'same-origin';
+    _interceptors.request.length = 0;
+    _interceptors.response.length = 0;
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    if (clearTimeoutSpy) clearTimeoutSpy.mockRestore();
+    clearTimeoutSpy = undefined;
+  });
+
+  // #4 — request timeout never cleared on error/retry path
+  test('#4 clears the request-timeout handle on every retry attempt (no leak)', async () => {
+    _config.retries = 2;
+    _config.retryDelay = 1;
+
+    // The abort()-driving timeouts are the ones scheduled with the configured
+    // request timeout (10000ms). Track how many of those are cleared.
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+
+    let callCount = 0;
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.reject(new TypeError('network error'))
+    );
+
+    await expect(_doFetch('/api/always-fails')).rejects.toThrow('network error');
+    callCount = global.fetch.mock.calls.length;
+    expect(callCount).toBe(3); // initial + 2 retries
+
+    // Each attempt schedules a request-timeout with delay 10000.
+    const requestTimeoutIds = setTimeoutSpy.mock.results
+      .filter((_, i) => setTimeoutSpy.mock.calls[i][1] === 10000)
+      .map((r) => r.value);
+    expect(requestTimeoutIds.length).toBe(3);
+
+    // Every one of those handles must be cleared (finally block), proving no
+    // orphaned timer survives across the 3 attempts.
+    const clearedIds = new Set(clearTimeoutSpy.mock.calls.map((c) => c[0]));
+    for (const id of requestTimeoutIds) {
+      expect(clearedIds.has(id)).toBe(true);
+    }
+
+    setTimeoutSpy.mockRestore();
+  });
+
+  test('#4 clears the request-timeout handle on the success path', async () => {
+    clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('{"ok":true}'),
+    });
+
+    await _doFetch('/api/ok');
+
+    const requestTimeoutIds = setTimeoutSpy.mock.results
+      .filter((_, i) => setTimeoutSpy.mock.calls[i][1] === 10000)
+      .map((r) => r.value);
+    expect(requestTimeoutIds.length).toBe(1);
+    const clearedIds = new Set(clearTimeoutSpy.mock.calls.map((c) => c[0]));
+    expect(clearedIds.has(requestTimeoutIds[0])).toBe(true);
+
+    setTimeoutSpy.mockRestore();
+  });
+
+  // #5 — external-signal abort listener leak across retries
+  test('#5 does not accumulate external-signal abort listeners across retries', async () => {
+    _config.retries = 2;
+    _config.retryDelay = 1;
+
+    const controller = new AbortController();
+    const addSpy = jest.spyOn(controller.signal, 'addEventListener');
+    const removeSpy = jest.spyOn(controller.signal, 'removeEventListener');
+
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.reject(new TypeError('network error'))
+    );
+
+    await expect(
+      _doFetch('/api/fails', 'GET', null, {}, null, controller.signal)
+    ).rejects.toThrow('network error');
+
+    // 3 attempts → 3 'abort' listeners added and all 3 removed (net zero).
+    const added = addSpy.mock.calls.filter((c) => c[0] === 'abort').length;
+    const removed = removeSpy.mock.calls.filter((c) => c[0] === 'abort').length;
+    expect(added).toBe(3);
+    expect(removed).toBe(3);
+    expect(added - removed).toBe(0);
+
+    addSpy.mockRestore();
+    removeSpy.mockRestore();
+  });
+
+  test('#5 removes the external-signal abort listener on the success path', async () => {
+    const controller = new AbortController();
+    const addSpy = jest.spyOn(controller.signal, 'addEventListener');
+    const removeSpy = jest.spyOn(controller.signal, 'removeEventListener');
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('{}'),
+    });
+
+    await _doFetch('/api/ok', 'GET', null, {}, null, controller.signal);
+
+    const added = addSpy.mock.calls.filter((c) => c[0] === 'abort').length;
+    const removed = removeSpy.mock.calls.filter((c) => c[0] === 'abort').length;
+    expect(added).toBe(1);
+    expect(removed).toBe(1);
+
+    addSpy.mockRestore();
+    removeSpy.mockRestore();
+  });
+
+  // #29 — trusted interceptor sensitive-header refresh must survive re-apply
+  test('#29 trusted interceptor auth-token refresh is sent, not overwritten', async () => {
+    _config.headers = { Authorization: 'Bearer OLD' };
+    _plugins.set('auth-plugin', { options: { trusted: true } });
+    _interceptors.request.push({
+      pluginName: 'auth-plugin',
+      fn: (url, opts) => ({ headers: { ...opts.headers, Authorization: 'Bearer NEW' } }),
+    });
+
+    let sentHeaders;
+    global.fetch = jest.fn().mockImplementation((url, opts) => {
+      sentHeaders = opts.headers;
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('{}') });
+    });
+
+    await _doFetch('/api/secure', 'GET');
+    expect(sentHeaders.Authorization).toBe('Bearer NEW');
+
+    _plugins.delete('auth-plugin');
+  });
+
+  test('#29 untrusted interceptor cannot alter sensitive headers', async () => {
+    _config.headers = { Authorization: 'Bearer REAL' };
+    _interceptors.request.push((url, opts) => ({
+      headers: { ...opts.headers, Authorization: 'Bearer HIJACK' },
+    }));
+
+    let sentHeaders;
+    global.fetch = jest.fn().mockImplementation((url, opts) => {
+      sentHeaders = opts.headers;
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('{}') });
+    });
+
+    await _doFetch('/api/secure', 'GET');
+    expect(sentHeaders.Authorization).toBe('Bearer REAL');
+  });
+
+  // #30 — interceptor returning a custom object must not lose the real body
+  test('#30 reads the real body when an untrusted interceptor returns a custom object', async () => {
+    // Untrusted response interceptor returns a plain object with no .text();
+    // the real Response body must still be extracted.
+    _interceptors.response.push((res) => ({ note: 'observed', status: res.status }));
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: () => Promise.resolve(JSON.stringify({ real: 'payload' })),
+    });
+
+    const result = await _doFetch('/api/data', 'GET');
+    expect(result).toEqual({ real: 'payload' });
+  });
+
+  // #66 — lowercase method with a body must still attach the body
+  test('#66 lowercase "post" with a body attaches the request body', async () => {
+    let sentOpts;
+    global.fetch = jest.fn().mockImplementation((url, opts) => {
+      sentOpts = opts;
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('{}') });
+    });
+
+    await _doFetch('/api/items', 'post', { name: 'x' });
+    expect(sentOpts.method).toBe('POST');
+    expect(sentOpts.body).toBe(JSON.stringify({ name: 'x' }));
+  });
+
+  test('#66 lowercase "get" with a body does NOT attach a body', async () => {
+    let sentOpts;
+    global.fetch = jest.fn().mockImplementation((url, opts) => {
+      sentOpts = opts;
+      return Promise.resolve({ ok: true, text: () => Promise.resolve('{}') });
+    });
+
+    await _doFetch('/api/items', 'get', { name: 'x' });
+    expect(sentOpts.method).toBe('GET');
+    expect(sentOpts.body).toBeUndefined();
   });
 });
