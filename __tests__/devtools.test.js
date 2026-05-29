@@ -659,3 +659,98 @@ describe('M12 — destroyDevtools cleanup', () => {
     destroyDevtools();
   });
 });
+
+// ─── NOJS-68 hardening (review findings #14, #16, #77) ───────────────────────
+describe('NOJS-68 — devtools hardening', () => {
+  beforeEach(() => {
+    _config.devtools = true;
+    _ctxRegistry.clear();
+    _resetCtxId();
+    for (const key of Object.keys(_stores)) delete _stores[key];
+  });
+
+  afterEach(() => {
+    destroyDevtools();
+    _config.devtools = false;
+    delete window.__NOJS_DEVTOOLS__;
+    document.body.innerHTML = '';
+  });
+
+  // Finding #14 — _safeSnapshot must not stack-overflow on cyclic proxies.
+  test('NOJS-68.F — inspect handles self-referential reactive data without overflow', () => {
+    initDevtools({ version: '1.0.0' });
+
+    const div = document.createElement('div');
+    div.id = 'cyclic-host';
+    document.body.appendChild(div);
+    const ctx = createContext({ name: 'root' });
+    ctx.self = ctx; // cyclic proxy reference
+    div.__ctx = ctx;
+
+    let result;
+    expect(() => { result = window.__NOJS_DEVTOOLS__.inspect('#cyclic-host'); }).not.toThrow();
+    expect(result.data.name).toBe('root');
+    expect(result.data.self).toBe('[Circular]');
+  });
+
+  test('NOJS-68.G — stats does not overflow on cyclic store data', () => {
+    initDevtools({ version: '1.0.0' });
+    const store = createContext({ a: 1 });
+    store.loop = store;
+    _stores.cyclic = store;
+
+    expect(() => window.__NOJS_DEVTOOLS__.stats()).not.toThrow();
+    // snapshot getter also exercised
+    expect(() => window.__NOJS_DEVTOOLS__.stores).not.toThrow();
+  });
+
+  // Finding #16 — destroyDevtools must remove a lingering highlight overlay.
+  test('NOJS-68.H — destroyDevtools removes the highlight overlay', () => {
+    initDevtools({ version: '1.0.0' });
+    const div = document.createElement('div');
+    div.id = 'hl-cleanup';
+    document.body.appendChild(div);
+
+    window.__NOJS_DEVTOOLS__.highlight('#hl-cleanup');
+    expect(document.getElementById('__nojs_devtools_highlight__')).not.toBeNull();
+
+    destroyDevtools();
+    expect(document.getElementById('__nojs_devtools_highlight__')).toBeNull();
+  });
+
+  // Finding #16 — overlay repositions on scroll/resize while shown.
+  test('NOJS-68.I — highlight overlay repositions on window resize', () => {
+    initDevtools({ version: '1.0.0' });
+    const div = document.createElement('div');
+    div.id = 'hl-reposition';
+    document.body.appendChild(div);
+
+    let rectTop = 10;
+    div.getBoundingClientRect = () => ({ top: rectTop, left: 0, width: 50, height: 50 });
+
+    window.__NOJS_DEVTOOLS__.highlight('#hl-reposition');
+    const overlay = document.getElementById('__nojs_devtools_highlight__');
+    expect(overlay.style.top).toBe('10px');
+
+    rectTop = 80;
+    window.dispatchEvent(new Event('resize'));
+    expect(overlay.style.top).toBe('80px');
+  });
+
+  // Finding #77 — _elementTag must produce a valid selector for special-char classes.
+  test('NOJS-68.J — inspect tag escapes special characters in class names', () => {
+    initDevtools({ version: '1.0.0' });
+    const div = document.createElement('div');
+    div.id = 'tag-escape';
+    div.className = 'foo:bar';
+    document.body.appendChild(div);
+
+    const result = window.__NOJS_DEVTOOLS__.inspect('#tag-escape');
+    // When CSS.escape is available the colon is escaped; the tag stays a usable selector.
+    if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+      expect(result.tag).toContain('.foo\\:bar');
+    } else {
+      expect(result.tag).toContain('foo:bar');
+    }
+  });
+});

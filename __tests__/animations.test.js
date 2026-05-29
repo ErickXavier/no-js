@@ -550,3 +550,78 @@ describe('M1/M2: safety-net timeout uses 0 when no CSS duration', () => {
     jest.useRealTimers();
   });
 });
+
+// ─── NOJS-68 hardening (review finding #15) ──────────────────────────────────
+describe('NOJS-68 — _animateIn canceller + timer cleanup', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  test('NOJS-68.A — _animateIn returns a canceller for the anim branch', () => {
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const cancel = _animateIn(el, 'fadeIn', null);
+    expect(typeof cancel).toBe('function');
+    expect(child.classList.contains('fadeIn')).toBe(true);
+  });
+
+  test('NOJS-68.B — canceller clears the fallback timer and removes the class', () => {
+    jest.useFakeTimers();
+    const clearSpy = jest.spyOn(global, 'clearTimeout');
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const cancel = _animateIn(el, 'fadeIn', null, 400);
+    expect(child.classList.contains('fadeIn')).toBe(true);
+
+    cancel();
+    expect(clearSpy).toHaveBeenCalled();
+    expect(child.classList.contains('fadeIn')).toBe(false);
+
+    clearSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('NOJS-68.C — animationend clears the fallback timer (no leaked timer)', () => {
+    jest.useFakeTimers();
+    const clearSpy = jest.spyOn(global, 'clearTimeout');
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    _animateIn(el, 'fadeIn', null, 400);
+    child.dispatchEvent(new Event('animationend'));
+
+    expect(clearSpy).toHaveBeenCalled();
+    expect(child.classList.contains('fadeIn')).toBe(false);
+
+    clearSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('NOJS-68.D — _animateIn returns a canceller for the transition branch', () => {
+    const el = document.createElement('div');
+    const child = document.createElement('span');
+    el.appendChild(child);
+    document.body.appendChild(el);
+
+    const cancel = _animateIn(el, null, 'slide');
+    expect(typeof cancel).toBe('function');
+    // Canceller is safe to call before rAF resolves.
+    expect(() => cancel()).not.toThrow();
+  });
+
+  test('NOJS-68.E — _animateIn returns a no-op canceller when no anim/transition', () => {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    const cancel = _animateIn(el, null, null);
+    expect(typeof cancel).toBe('function');
+    expect(() => cancel()).not.toThrow();
+  });
+});

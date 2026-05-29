@@ -1148,3 +1148,66 @@ describe('Security', () => {
     warnSpy.mockRestore();
   });
 });
+
+// ─── NOJS-68 hardening (review findings #8, #70) ─────────────────────────────
+describe('NOJS-68 — index hardening', () => {
+  // Finding #8 — global() with an already-reactive proxy bypasses the unsafe-ref check
+  test('NOJS-68.1 — global(proxy) with forbidden key is rejected (no sanitize bypass)', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    // Build a proxy whose raw target carries a forbidden key (constructor) as own prop.
+    const raw = {};
+    Object.defineProperty(raw, 'constructor', {
+      value: { polluted: true },
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+    const proxy = createContext(raw);
+
+    NoJS.global('viaProxy', proxy);
+
+    expect('viaProxy' in _globals).toBe(false);
+    warnSpy.mockRestore();
+  });
+
+  // Finding #8 — global() with a clean proxy is accepted and stored
+  test('NOJS-68.2 — global(proxy) with clean value is accepted', () => {
+    const proxy = createContext({ count: 1 });
+    NoJS.global('cleanProxy', proxy);
+    expect('cleanProxy' in _globals).toBe(true);
+    delete _globals.cleanProxy;
+  });
+
+  // Finding #70 — interceptor() warns on unknown type and registers nothing
+  test('NOJS-68.3 — interceptor() with unknown type warns and no-ops', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    NoJS.interceptor('bogus', () => {});
+
+    expect(_interceptors.bogus).toBeUndefined();
+    expectWarning(warnSpy, 'unknown type');
+    warnSpy.mockRestore();
+  });
+
+  // Finding #70 — interceptor() blocked during dispose
+  test('NOJS-68.4 — interceptor() blocked during dispose()', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    _setDisposing(true);
+    const before = _interceptors.request.length;
+    NoJS.interceptor('request', () => {});
+    _setDisposing(false);
+
+    expect(_interceptors.request.length).toBe(before);
+    expectWarning(warnSpy, 'during dispose');
+    warnSpy.mockRestore();
+  });
+
+  // Finding #70 — valid interceptor type still registers
+  test('NOJS-68.5 — interceptor() with valid type registers the fn', () => {
+    const before = _interceptors.response.length;
+    NoJS.interceptor('response', () => {});
+    expect(_interceptors.response.length).toBe(before + 1);
+  });
+});
