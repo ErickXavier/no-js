@@ -247,6 +247,19 @@ registerDirective("hide", {
   },
 });
 
+// Standalone enter animation (e.g. cloned error templates, static markup)
+registerDirective("animate", {
+  priority: 15,
+  init(el, name, value) {
+    const animName = el.getAttribute("animate-enter") || value;
+    const transition = el.getAttribute("transition");
+    const animDuration = parseInt(el.getAttribute("animate-duration")) || 0;
+    if (animName || transition) {
+      _animateIn(el, animName, transition, animDuration, true);
+    }
+  },
+});
+
 registerDirective("switch", {
   priority: 10,
   init(el, name, expr) {
