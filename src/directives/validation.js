@@ -221,15 +221,24 @@ function _validateField(value, rules, allValues) {
   return null;
 }
 
+// ── Bind form context so descendants (show/hide, bind, etc.) share $form ──
+function _bindFormContext(formEl) {
+  if (formEl.__ctx) return formEl.__ctx;
+  const ctx = formEl.parentElement
+    ? findContext(formEl.parentElement)
+    : createContext();
+  formEl.__ctx = ctx;
+  return ctx;
+}
+
 registerDirective("validate", {
   priority: 30,
   init(el, name, rules) {
-    const ctx = findContext(el);
-
     // ═════════════════════════════════════════════════════
     //  FORM-LEVEL VALIDATION
     // ═════════════════════════════════════════════════════
     if (el.tagName === "FORM") {
+      const ctx = _bindFormContext(el);
       // Prevent native browser validation popups
       el.setAttribute("novalidate", "");
 
@@ -523,6 +532,7 @@ registerDirective("validate", {
     // ═════════════════════════════════════════════════════
     //  FIELD-LEVEL VALIDATION (standalone, outside form)
     // ═════════════════════════════════════════════════════
+    const ctx = findContext(el);
     if (
       rules &&
       (el.tagName === "INPUT" ||

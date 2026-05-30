@@ -13,6 +13,7 @@ import { _i18n } from '../src/i18n.js';
 import '../src/filters.js';
 import '../src/directives/state.js';
 import '../src/directives/binding.js';
+import '../src/directives/conditionals.js';
 import '../src/directives/http.js';
 import '../src/directives/refs.js';
 import '../src/directives/events.js';
@@ -1752,6 +1753,36 @@ describe('Form validation — dirty and touched tracking', () => {
 
     expect(ctx.$form.submitting).toBe(false);
     expect(btn.disabled).toBe(true);
+  });
+
+  test('show/hide bindings update on submit without state parent', async () => {
+    const form = document.createElement('form');
+    form.setAttribute('validate', '');
+    form.setAttribute('method', 'POST');
+    form.setAttribute('action', '/login');
+    form.innerHTML = `
+      <input name="email" value="user@test.com" required />
+      <button type="submit">
+        <span data-testid="label" hide="$form.submitting">Send</span>
+        <span data-testid="loading" show="$form.submitting">Sending...</span>
+      </button>
+    `;
+    document.body.appendChild(form);
+
+    processTree(form);
+    await new Promise((r) => setTimeout(r, 50));
+
+    const label = form.querySelector('[data-testid="label"]');
+    const loading = form.querySelector('[data-testid="loading"]');
+
+    expect(label.style.display).not.toBe('none');
+    expect(loading.style.display).toBe('none');
+
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(findContext(form).$form.submitting).toBe(true);
+    expect(label.style.display).toBe('none');
+    expect(loading.style.display).not.toBe('none');
   });
 
   test('native POST form sets submitting before navigation', async () => {
