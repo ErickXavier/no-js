@@ -247,10 +247,14 @@ registerDirective("hide", {
   },
 });
 
-// Standalone enter animation (e.g. cloned error templates, static markup)
+// Standalone enter animation (e.g. cloned error templates, static markup).
+// Skip when if/show/hide own the animate attribute — they already call _animateIn.
 registerDirective("animate", {
   priority: 15,
   init(el, name, value) {
+    if (el.hasAttribute("if") || el.hasAttribute("show") || el.hasAttribute("hide")) {
+      return;
+    }
     const animName = el.getAttribute("animate-enter") || value;
     const transition = el.getAttribute("transition");
     const animDuration = parseInt(el.getAttribute("animate-duration")) || 0;

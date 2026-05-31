@@ -142,6 +142,7 @@ function _findErrorTemplateWrapper(anchorEl) {
 function _renderErrorTemplate(selector, errorMsg, ruleName, anchorEl, ctx) {
   const existing = _findErrorTemplateWrapper(anchorEl);
   if (existing) {
+    // Compare via the error wrapper's own context (not a child ctx that may shadow $error).
     const sameError =
       existing.__ctx?.$error === errorMsg &&
       existing.__ctx?.$rule === ruleName;
