@@ -24,6 +24,97 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 
+  <!-- ─── Boot Loader (critical, inline so it paints before style.css) ── -->
+  <style>
+    /* Token fallbacks mirror style.css :root so the splash is FOUC-free
+       even on the first frame before style.css has arrived. */
+    #nojs-boot {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      background:
+        radial-gradient(120% 120% at 50% 30%,
+          var(--primary-surface, #F0F9FF) 0%,
+          var(--white, #FFFFFF) 60%);
+      opacity: 1;
+      transition: opacity 360ms ease, visibility 360ms ease;
+      -webkit-font-smoothing: antialiased;
+    }
+    #nojs-boot.is-hiding {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #nojs-boot .boot-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: nojs-boot-breathe 2.4s ease-in-out infinite;
+    }
+    #nojs-boot .boot-logo { height: 44px; width: auto; }
+    #nojs-boot .boot-title {
+      font-family: var(--font-heading, 'Space Grotesk', system-ui, sans-serif);
+      font-weight: 700;
+      font-size: 30px;
+      letter-spacing: -0.02em;
+      color: var(--text, #0F172A);
+      line-height: 1;
+    }
+    #nojs-boot .boot-dot { color: var(--primary, #0EA5E9); }
+    /* Indeterminate progress bar — refined, brand-colored */
+    #nojs-boot .boot-track {
+      position: relative;
+      width: 168px;
+      height: 3px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--border, #E2E8F0);
+    }
+    #nojs-boot .boot-track::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 40%;
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        var(--primary, #0EA5E9),
+        var(--primary-light, #38BDF8));
+      animation: nojs-boot-slide 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+    #nojs-boot .boot-sr {
+      position: absolute;
+      width: 1px; height: 1px;
+      margin: -1px; padding: 0; border: 0;
+      overflow: hidden; clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    @keyframes nojs-boot-slide {
+      0%   { left: -40%; }
+      100% { left: 100%; }
+    }
+    @keyframes nojs-boot-breathe {
+      0%, 100% { opacity: 1; transform: translateY(0); }
+      50%      { opacity: 0.86; transform: translateY(-1px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #nojs-boot { transition: opacity 1ms linear, visibility 1ms linear; }
+      #nojs-boot .boot-mark { animation: none; }
+      #nojs-boot .boot-track::after {
+        animation: none;
+        width: 100%;
+        left: 0;
+        opacity: 0.65;
+      }
+    }
+  </style>
+
   <!-- LLM-friendly metadata (https://llmstxt.org) -->
   <script type="text/llms.txt">
   # No.JS — HTML-First Reactive Framework
@@ -51,6 +142,28 @@
 
 </head>
 <body state="{ version: window.NoJS.version }">
+
+  <!-- ─── Boot Loader markup (first element in body; mirrors header logo) ── -->
+  <div id="nojs-boot" role="status" aria-live="polite">
+    <div class="boot-mark">
+      <svg class="boot-logo" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <mask id="boot-bolt-border">
+            <rect x="0" y="0" width="150" height="150" fill="white"/>
+            <path d="m119.5 16h-54l-26 51h18l-27 67 73-67h-18z" fill="black" stroke="black" stroke-width="15" stroke-linejoin="miter"/>
+          </mask>
+        </defs>
+        <g mask="url(#boot-bolt-border)">
+          <path fill-rule="evenodd" fill="none" stroke="#0F172A" stroke-width="14" d="m45 40l-35 35 35 35"/>
+          <path fill-rule="evenodd" fill="none" stroke="#0F172A" stroke-width="14" d="m105 40l35 35-35 35"/>
+        </g>
+        <path fill="#0ea5e9" d="m119.5 16h-54l-26 51h18l-27 67 73-67h-18z"/>
+      </svg>
+      <span class="boot-title">No<span class="boot-dot">.</span>JS</span>
+    </div>
+    <div class="boot-track" aria-hidden="true"></div>
+    <span class="boot-sr">Loading No.JS…</span>
+  </div>
 
   <!-- ═══ PageHeader: 70px, white bg, border-bottom #E2E8F0, padding 0 80px ═══ -->
   <header class="header">
@@ -199,6 +312,34 @@
   <!-- ═══ Scripts ═══ -->
   <script src="https://cdn.no-js.dev/"></script>
   <script>
+    // ─── Boot loader: hide once NoJS is hydrated ───────────────────
+    // Idempotent fade-out + DOM removal so the splash never traps focus.
+    (function () {
+      var booted = false;
+      function hideLoader() {
+        if (booted) return;
+        booted = true;
+        var el = document.getElementById('nojs-boot');
+        if (!el) return;
+        el.classList.add('is-hiding');
+        el.addEventListener('transitionend', function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, { once: true });
+        // Belt-and-suspenders: remove even if transitionend never fires.
+        setTimeout(function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 500);
+      }
+      // Preferred: NoJS emits "plugins:ready" after first paint + plugin init.
+      if (window.NoJS && typeof NoJS.on === 'function') {
+        NoJS.on('plugins:ready', hideLoader);
+      }
+      // Fallback: window load (covers the event already having fired).
+      window.addEventListener('load', hideLoader);
+      // Failsafe: never trap the user on the splash (e.g. CDN failure).
+      setTimeout(hideLoader, 6000);
+    })();
+
     // ── Global NoJS configuration ──
     NoJS.config({
         debug: true,
