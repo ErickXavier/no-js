@@ -3836,6 +3836,64 @@ describe('Validation Revamp — Error template references', () => {
     expect(rendered).not.toBeNull();
   });
 
+  test('error template with validate-on blur (Laravel-style layout)', async () => {
+    const form = document.createElement('form');
+    form.setAttribute('validate', '');
+    form.setAttribute('validate-on', 'blur');
+    const tpl = document.createElement('template');
+    tpl.id = 'emailError';
+    tpl.innerHTML =
+      '<p class="err-p" animate="fadeIn" animate-duration="300">' +
+      '<svg></svg><span class="err-text" bind="$error"></span></p>';
+    form.innerHTML = `
+      <div class="group">
+        <input name="email" type="email" required
+          error-required="Campo obrigatório" error="#emailError" />
+      </div>`;
+    form.querySelector('.group').appendChild(tpl);
+    document.body.appendChild(form);
+    processTree(form);
+    await new Promise(r => setTimeout(r, 50));
+
+    form.querySelector('input').dispatchEvent(new Event('focusout', { bubbles: true }));
+
+    const msg = form.querySelector('.err-text');
+    const animated = form.querySelector('.err-p');
+    expect(msg).not.toBeNull();
+    expect(msg.textContent).toBe('Campo obrigatório');
+    expect(animated.style.animationName).toBe('fadeIn');
+    expect(animated.style.animationDuration).toBe('300ms');
+  });
+
+  test('error template processes bind and animate directives', async () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const form = document.createElement('form');
+    form.setAttribute('validate', '');
+    const tpl = document.createElement('template');
+    tpl.id = 'err-tpl-animate';
+    tpl.innerHTML =
+      '<p class="err-animated" animate="fadeIn" animate-duration="300">' +
+      '<span class="err-text" bind="$error"></span></p>';
+    form.innerHTML =
+      '<input name="email" required error-required="Campo obrigatório" error="#err-tpl-animate" />';
+    form.appendChild(tpl);
+    parent.appendChild(form);
+    document.body.appendChild(parent);
+    processTree(parent);
+    await new Promise(r => setTimeout(r, 50));
+
+    const input = form.querySelector('input');
+    input.dispatchEvent(new Event('focusout', { bubbles: true }));
+
+    const msg = form.querySelector('.err-text');
+    const animated = form.querySelector('.err-animated');
+    expect(msg).not.toBeNull();
+    expect(msg.textContent).toBe('Campo obrigatório');
+    expect(animated.classList.contains('fadeIn')).toBe(true);
+    expect(animated.style.animationDuration).toBe('300ms');
+  });
+
   test('clears template when field becomes valid', async () => {
     const parent = document.createElement('div');
     parent.setAttribute('state', '{}');
