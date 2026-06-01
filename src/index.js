@@ -34,7 +34,7 @@ import { _i18n, _loadI18nForLocale } from "./i18n.js";
 import { createContext } from "./context.js";
 import { evaluate, resolve, _execStatement } from "./evaluate.js";
 import { findContext, _loadRemoteTemplates, _loadRemoteTemplatesPhase1, _loadRemoteTemplatesPhase2, _processTemplateIncludes, _cloneTemplate } from "./dom.js";
-import { registerDirective, processTree, _removeCoreDirective, _disposeChildren } from "./registry.js";
+import { registerDirective, processTree, _removeCoreDirective, _disposeChildren, _disposeTree } from "./registry.js";
 import { _createRouter } from "./router.js";
 import { initDevtools, destroyDevtools, _devtoolsEmit } from "./devtools.js";
 
@@ -519,6 +519,7 @@ const NoJS = {
       execStatement: _execStatement,
       cloneTemplate: _cloneTemplate,
       disposeChildren: _disposeChildren,
+      disposeTree: _disposeTree,
       warn: _warn,
       validators: Object.freeze({..._validators}),
       removeCoreDirective: _removeCoreDirective,
