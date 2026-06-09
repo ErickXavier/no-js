@@ -87,6 +87,7 @@ export async function _doFetch(
   externalSignal = null,
   retries = undefined,
   retryDelay = undefined,
+  meta = null,
 ) {
   const fullUrl = resolveUrl(url, el);
   if (_config.credentials !== "omit" && fullUrl.startsWith("http://")) {
@@ -245,6 +246,7 @@ export async function _doFetch(
 
         if (result && result[_REPLACE] !== undefined) {
           _log("Response replaced by interceptor", i);
+          if (meta) meta.headers = response.headers;
           return result[_REPLACE];
         }
         if (result) {
@@ -275,6 +277,10 @@ export async function _doFetch(
         err.body = errBody;
         throw err;
       }
+
+      // Populate optional meta object with response headers for callers
+      // that need access (e.g. pagination end-of-data detection).
+      if (meta) meta.headers = response.headers;
 
       const text = await response.text();
       try {
