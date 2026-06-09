@@ -158,9 +158,31 @@ Both plain IDs and `#id` syntax are accepted. Each `include` creates a fresh ind
 
 ---
 
+## Templates with Loops
+
+Loop directives use the `template` attribute to reference external templates. The loop element is the repeating unit — clones of the referenced template are inserted as siblings:
+
+```html
+<ul get="/api/users" as="users">
+  <li each="user in users" template="userCard"></li>
+  <li else>No users found</li>
+</ul>
+
+<template id="userCard">
+  <div class="card">
+    <h3 bind="user.name"></h3>
+    <p bind="user.email"></p>
+  </div>
+</template>
+```
+
+The sibling `else` element shows when the array is empty. You can also point `else` at a template ID: `else="emptyTpl"`.
+
+---
+
 ## See Also
 
-- [Loops](loops.md) — `template` attribute for loop item templates
+- [Loops](loops.md) — self-repeating elements and sibling `else` for empty lists
 - [Routing](routing.md) — route templates and file-based routing
 - [Data Fetching](data-fetching.md) — `loading`, `error`, `success` templates
 

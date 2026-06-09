@@ -1,51 +1,66 @@
 // ═══════════════════════════════════════════════════════════════════════
 //  DIRECTIVES: foreach, each, for  (aliases — single handler)
+//  Self-repeating pattern: the element with each/foreach/for IS the
+//  repeating template. It gets cloned N times as siblings. The parent
+//  element becomes the container.
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createContext } from "../context.js";
-import { _watchExpr } from "../globals.js";
+import { _watchExpr, _currentEl, _setCurrentEl } from "../globals.js";
 import { evaluate, resolve } from "../evaluate.js";
 import { findContext, _cloneTemplate } from "../dom.js";
-import { registerDirective, processTree, _disposeChildren } from "../registry.js";
+import { registerDirective, processTree, _disposeTree } from "../registry.js";
 
-// Creates the item node for a loop iteration.
-// Single-root templates: attaches __ctx directly to the root element (no wrapper div).
-// Multi-root templates: wraps in a div[display:contents] to host __ctx.
-function _makeLoopItem(source, childCtx, animEnter, stagger, i) {
-  const isFragment = source.nodeType === 11; // Node.DOCUMENT_FRAGMENT_NODE
-  let node, animTarget;
+// Directive and companion attribute names that must be stripped from clones
+// to prevent double-execution and re-initialization.
+const _LOOP_ATTRS = [
+  "foreach", "each", "for", "from",
+  "filter", "sort", "limit", "offset", "key", "index",
+  "else", "template",
+  "animate-enter", "animate-leave", "animate-stagger", "animate-duration", "animate",
+];
 
-  if (isFragment) {
-    const roots = source.children;
-    if (roots.length === 1) {
-      node = roots[0];
-      node.__ctx = childCtx;
-      animTarget = node;
-    } else {
-      node = document.createElement("div");
-      node.style.display = "contents";
-      node.__ctx = childCtx;
-      node.appendChild(source);
-      animTarget = node.firstElementChild || node;
-    }
-  } else {
-    node = source;
-    node.__ctx = childCtx;
-    animTarget = node;
+// Strips all loop-related directive attributes from a cloned element.
+function _stripLoopAttrs(clone) {
+  for (let i = 0; i < _LOOP_ATTRS.length; i++) {
+    clone.removeAttribute(_LOOP_ATTRS[i]);
   }
+}
 
-  function applyAnim() {
-    if (!animEnter) return;
-    animTarget.classList.add(animEnter);
-    animTarget.addEventListener(
-      "animationend",
-      () => animTarget.classList.remove(animEnter),
-      { once: true },
-    );
-    if (stagger) animTarget.style.animationDelay = i * stagger + "ms";
+// Collects managed clones between the start and end comment markers.
+// Returns a snapshot (array) of element nodes in the managed range.
+function _getManagedClones(startMarker, endMarker) {
+  const clones = [];
+  let node = startMarker.nextSibling;
+  while (node && node !== endMarker) {
+    if (node.nodeType === 1) clones.push(node); // Element nodes only
+    node = node.nextSibling;
   }
+  return clones;
+}
 
-  return { node, applyAnim };
+// Removes all nodes between markers (including text/comment nodes),
+// disposing each element first (Safety Rule 1: dispose before removal).
+function _clearManagedClones(startMarker, endMarker) {
+  let node = startMarker.nextSibling;
+  while (node && node !== endMarker) {
+    const next = node.nextSibling;
+    if (node.nodeType === 1) _disposeTree(node);
+    node.parentNode.removeChild(node);
+    node = next;
+  }
+}
+
+// Applies enter animation to a clone element.
+function _applyEnterAnim(clone, animEnter, stagger, i) {
+  if (!animEnter) return;
+  clone.classList.add(animEnter);
+  clone.addEventListener(
+    "animationend",
+    () => clone.classList.remove(animEnter),
+    { once: true },
+  );
+  if (stagger) clone.style.animationDelay = i * stagger + "ms";
 }
 
 const _loopHandler = {
@@ -83,28 +98,103 @@ const _loopHandler = {
     // Delta optimization is disabled when filter/sort/offset modify rendered order.
     const hasPipeline = !!(filterExpr || sortProp || offset);
 
-    // Capture inline children as template fragment (before any render).
-    // When no external template is specified, the element's children become
-    // the repeating unit and the element itself acts as the container.
-    let inlineTemplate = null;
-    if (!tplId && el.childNodes.length > 0) {
-      inlineTemplate = document.createDocumentFragment();
-      while (el.firstChild) inlineTemplate.appendChild(el.firstChild);
+    // ── Sibling else capture ────────────────────────────────────────────
+    // Before removing el from the DOM, check for a next sibling element
+    // with an `else` attribute (but NOT `if`, `else-if`, or loop directives).
+    // This sibling shows when the loop is empty and hides when it has items.
+    const _LOOP_DIRECTIVES = ["foreach", "each", "for"];
+    let elseSibling = null;
+    let elseSiblingChildren = null;
+    const nextEl = el.nextElementSibling;
+    if (nextEl && nextEl.hasAttribute("else")
+      && !nextEl.hasAttribute("if") && !nextEl.hasAttribute("else-if")
+      && !_LOOP_DIRECTIVES.some((d) => nextEl.hasAttribute(d))) {
+      elseSibling = nextEl;
+      elseSiblingChildren = [...nextEl.childNodes].map((n) => n.cloneNode(true));
+      // Hide initially — update() will set the correct state.
+      elseSibling.style.display = "none";
+      // Mark as loop-managed so the else directive in conditionals.js skips it.
+      elseSibling.__loopElse = true;
+      // Mark as declared so the parent processTree walk does not process it.
+      // The loop handler owns this element's lifecycle exclusively.
+      elseSibling.__declared = true;
     }
 
-    // key → item node (root element or wrapper div for multi-root templates).
+    // ── Self-repeating setup ──────────────────────────────────────────
+    // The element with the loop directive IS the template. Insert comment
+    // markers at its position, then remove it from the DOM. Clones are
+    // inserted as siblings between the markers.
+    const parent = el.parentNode;
+    const startMarker = document.createComment("foreach");
+    const endMarker = document.createComment("/foreach");
+    parent.insertBefore(startMarker, el);
+    parent.insertBefore(endMarker, el.nextSibling);
+    // Remove el from the visible DOM — it becomes the template source.
+    parent.removeChild(el);
+
+    // key → cloned element node.
     const keyMap = new Map();
+
+    // Creates a clone of `el` for one loop iteration. When a `template`
+    // attribute is set, the clone's children are replaced with the
+    // external template's content (the element tag wraps the template).
+    function _makeClone(childData) {
+      const clone = el.cloneNode(true);
+      _stripLoopAttrs(clone);
+      // Reset __declared so processTree processes the clone fresh.
+      clone.__declared = false;
+
+      // When template attribute is set, replace children with template content
+      if (tplId) {
+        const tplContent = document.getElementById(tplId)?.content.cloneNode(true);
+        if (tplContent) {
+          clone.innerHTML = "";
+          clone.appendChild(tplContent);
+        }
+      }
+
+      clone.__ctx = createContext(childData, ctx);
+      return clone;
+    }
+
+    // Syncs the sibling else element's visibility based on whether the
+    // loop rendered any items. When empty: show else content (restore
+    // original children, process tree). When non-empty: hide and dispose.
+    function _syncElseSibling(isEmpty) {
+      if (!elseSibling) return;
+      if (isEmpty) {
+        if (elseSibling.style.display !== "") {
+          elseSibling.style.display = "";
+          _disposeTree(elseSibling);
+          elseSibling.innerHTML = "";
+          for (const child of elseSiblingChildren)
+            elseSibling.appendChild(child.cloneNode(true));
+          elseSibling.__declared = false;
+          processTree(elseSibling);
+        }
+      } else {
+        if (elseSibling.style.display !== "none") {
+          _disposeTree(elseSibling);
+          elseSibling.innerHTML = "";
+          elseSibling.style.display = "none";
+        }
+      }
+    }
 
     function update() {
       let list = /[\[\]()\s+\-*\/!?:&|]/.test(listPath)
         ? evaluate(listPath, ctx)
         : resolve(listPath, ctx);
-      if (!Array.isArray(list)) return;
+      if (!Array.isArray(list)) {
+        _syncElseSibling(true);
+        return;
+      }
 
-      // Same-reference optimisation: propagate to children without DOM rebuild.
-      if (list === prevList && list.length > 0 && el.children.length > 0) {
-        for (const child of el.children) {
-          if (child.__ctx && child.__ctx.$notify) child.__ctx.$notify();
+      // Same-reference optimisation: propagate to managed clones without DOM rebuild.
+      const managedClones = _getManagedClones(startMarker, endMarker);
+      if (list === prevList && list.length > 0 && managedClones.length > 0) {
+        for (const clone of managedClones) {
+          if (clone.__ctx && clone.__ctx.$notify) clone.__ctx.$notify();
         }
         return;
       }
@@ -149,22 +239,38 @@ const _loopHandler = {
       // Offset and limit
       list = list.slice(offset, offset + limit);
 
-      // Empty state
+      // Empty state — show else template at marker position
       if (list.length === 0 && elseTpl) {
-        const clone = _cloneTemplate(elseTpl);
-        if (clone) {
-          _disposeChildren(el);
+        const tplClone = _cloneTemplate(elseTpl);
+        if (tplClone) {
+          _clearManagedClones(startMarker, endMarker);
           keyMap.clear();
-          el.innerHTML = "";
-          el.appendChild(clone);
-          processTree(el);
+          // Insert the else template content between markers
+          parent.insertBefore(tplClone, endMarker);
+          // Process the inserted nodes
+          let node = startMarker.nextSibling;
+          while (node && node !== endMarker) {
+            if (node.nodeType === 1) processTree(node);
+            node = node.nextSibling;
+          }
         }
+        _syncElseSibling(true);
+        prevRendered = null;
+        return;
+      }
+
+      // Empty list without companion else template — sync sibling else only
+      if (list.length === 0) {
+        _clearManagedClones(startMarker, endMarker);
+        keyMap.clear();
+        _syncElseSibling(true);
         prevRendered = null;
         return;
       }
 
       if (keyExpr) {
-        reconcileForeachItems(list, list.length);
+        reconcileItems(list, list.length);
+        _syncElseSibling(false);
         prevRendered = null;
         return;
       }
@@ -181,7 +287,8 @@ const _loopHandler = {
         const oldLen = prevRendered.length;
         const newLen = list.length;
         if (newLen <= oldLen) return false;
-        if (el.children.length !== oldLen) return false;
+        const currentClones = _getManagedClones(startMarker, endMarker);
+        if (currentClones.length !== oldLen) return false;
         // Shallow compare: every existing item reference must be identical.
         for (let j = 0; j < oldLen; j++) {
           if (list[j] !== prevRendered[j]) return false;
@@ -190,7 +297,7 @@ const _loopHandler = {
         // then append only the delta items.
         const count = newLen;
         for (let j = 0; j < oldLen; j++) {
-          const childCtx = el.children[j].__ctx;
+          const childCtx = currentClones[j].__ctx;
           if (childCtx) {
             const raw = childCtx.__raw;
             raw.$count = count;
@@ -211,23 +318,18 @@ const _loopHandler = {
             $even: i % 2 === 0,
             $odd: i % 2 !== 0,
           };
-          const clone = tplId
-            ? document.getElementById(tplId)?.content.cloneNode(true)
-            : inlineTemplate?.cloneNode(true);
-          if (!clone) return false;
-          const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
-          el.appendChild(node);
-          processTree(node);
-          applyAnim();
+          const clone = _makeClone(childData);
+          parent.insertBefore(clone, endMarker);
+          processTree(clone);
+          _applyEnterAnim(clone, animEnter, stagger, i);
         }
         prevRendered = list.slice();
         return true;
       }
 
-      function renderForeachItems() {
+      function renderItems() {
         const count = list.length;
-        _disposeChildren(el);
-        el.innerHTML = "";
+        _clearManagedClones(startMarker, endMarker);
         list.forEach((item, i) => {
           const childData = {
             [itemName]: item,
@@ -239,45 +341,43 @@ const _loopHandler = {
             $even: i % 2 === 0,
             $odd: i % 2 !== 0,
           };
-          const clone = tplId
-            ? document.getElementById(tplId)?.content.cloneNode(true)
-            : inlineTemplate?.cloneNode(true);
-          if (!clone) return;
-          const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
-          el.appendChild(node);
-          processTree(node);
-          applyAnim();
+          const clone = _makeClone(childData);
+          parent.insertBefore(clone, endMarker);
+          processTree(clone);
+          _applyEnterAnim(clone, animEnter, stagger, i);
         });
         prevRendered = list.slice();
       }
 
       // Animate out old items if animate-leave is set
-      if (animLeave && el.children.length > 0) {
-        const oldItems = [...el.children];
-        let remaining = oldItems.length;
-        oldItems.forEach((child) => {
-          const target = child.firstElementChild || child;
-          target.classList.add(animLeave);
+      const currentClones = _getManagedClones(startMarker, endMarker);
+      if (animLeave && currentClones.length > 0) {
+        let remaining = currentClones.length;
+        currentClones.forEach((clone) => {
+          clone.classList.add(animLeave);
           const done = () => {
-            target.classList.remove(animLeave);
+            clone.classList.remove(animLeave);
             remaining--;
-            if (remaining <= 0) renderForeachItems();
+            if (remaining <= 0) {
+              renderItems();
+              _syncElseSibling(false);
+            }
           };
-          target.addEventListener("animationend", done, { once: true });
+          clone.addEventListener("animationend", done, { once: true });
           // || 0: unblocks the next render on the next tick when no CSS animation fires.
           setTimeout(done, animDuration || 0);
         });
       } else if (!tryDeltaAppend()) {
-        renderForeachItems();
+        renderItems();
       }
+      _syncElseSibling(false);
     }
 
-    // Key-based reconciliation for foreach — mirrors each's reconcileItems.
-    // Applied to the final (filtered, sorted, sliced) list so keys always
-    // correspond to what is actually rendered.
-    function reconcileForeachItems(list, count) {
+    // Key-based reconciliation — applied to the final (filtered, sorted,
+    // sliced) list so keys always correspond to what is actually rendered.
+    function reconcileItems(list, count) {
       // On first render clear any residual content so only managed nodes appear.
-      if (keyMap.size === 0) el.innerHTML = "";
+      if (keyMap.size === 0) _clearManagedClones(startMarker, endMarker);
 
       // Reuse a single proxy context for key evaluation (same pattern as filter)
       const keyData = { [itemName]: undefined, [indexName]: 0 };
@@ -295,7 +395,7 @@ const _loopHandler = {
 
       for (const [key, wrapper] of keyMap) {
         if (!nextKeySet.has(key)) {
-          _disposeChildren(wrapper);
+          _disposeTree(wrapper);
           wrapper.remove();
           keyMap.delete(key);
         }
@@ -314,29 +414,40 @@ const _loopHandler = {
         };
 
         if (!keyMap.has(key)) {
-          const clone = tplId
-            ? document.getElementById(tplId)?.content.cloneNode(true)
-            : inlineTemplate?.cloneNode(true);
-          if (!clone) return;
-          const { node, applyAnim } = _makeLoopItem(clone, createContext(childData, ctx), animEnter, stagger, i);
-          keyMap.set(key, node);
-          el.appendChild(node);
-          processTree(node);
-          applyAnim();
+          const clone = _makeClone(childData);
+          keyMap.set(key, clone);
+          parent.insertBefore(clone, endMarker);
+          processTree(clone);
+          _applyEnterAnim(clone, animEnter, stagger, i);
         } else {
           Object.assign(keyMap.get(key).__ctx.__raw, childData);
           keyMap.get(key).__ctx.$notify();
         }
       });
 
+      // Reorder: ensure DOM order matches the new list order.
+      // Work with a mutable snapshot so moves are tracked correctly.
+      const managedClones = _getManagedClones(startMarker, endMarker);
       for (let i = 0; i < newOrder.length; i++) {
         const itemNode = keyMap.get(newOrder[i].key);
-        if (itemNode !== el.children[i]) el.insertBefore(itemNode, el.children[i] ?? null);
+        if (itemNode !== managedClones[i]) {
+          parent.insertBefore(itemNode, managedClones[i] ?? endMarker);
+          // Refresh the snapshot after a move so subsequent comparisons
+          // reference the current DOM order, not the stale snapshot.
+          const fromIdx = managedClones.indexOf(itemNode);
+          if (fromIdx !== -1) managedClones.splice(fromIdx, 1);
+          managedClones.splice(i, 0, itemNode);
+        }
       }
     }
 
+    // Redirect _currentEl to parent so _onDispose and fn._el reference a
+    // connected DOM node instead of the removed template element.
+    const savedEl = _currentEl;
+    _setCurrentEl(parent);
     _watchExpr(listPath, ctx, update);
     update();
+    _setCurrentEl(savedEl);
   },
 };
 
