@@ -57,12 +57,16 @@ Complete reference of every No.JS directive.
 
 ## Loops
 
+The element with the loop directive IS the repeating template. It is removed from the DOM and clones are inserted as siblings.
+
 | Directive | Example | Description |
 |-----------|---------|-------------|
-| `foreach` | `foreach="item in items"` | Iterate over arrays (primary directive) |
+| `foreach` | `foreach="item in items"` | Iterate over arrays (primary directive). The element repeats as siblings. |
 | `each` | `each="item in items"` | Alias for `foreach` |
 | `for` | `for="item in items"` | Alias for `foreach` |
-| `template` | `template="tplId"` | Template to clone (optional — inline children used when omitted) |
+| `else` (sibling) | `<li else>No items</li>` | Sibling element shown when the loop array is empty/null/undefined |
+| `else` (template) | `else="emptyTpl"` | Reference an external template for the empty state |
+| `template` | `template="tplId"` | Template to clone for each item (optional — own children used when omitted) |
 | `index` | `index="i"` | Index variable name |
 | `key` | `key="item.id"` | Unique key for diffing |
 | `filter` | `filter="item.active"` | Filter expression |
