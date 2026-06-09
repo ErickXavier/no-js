@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createContext } from "../context.js";
-import { _watchExpr } from "../globals.js";
+import { _watchExpr, _currentEl, _setCurrentEl } from "../globals.js";
 import { evaluate, resolve } from "../evaluate.js";
 import { findContext, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeTree } from "../registry.js";
@@ -441,8 +441,13 @@ const _loopHandler = {
       }
     }
 
+    // Redirect _currentEl to parent so _onDispose and fn._el reference a
+    // connected DOM node instead of the removed template element.
+    const savedEl = _currentEl;
+    _setCurrentEl(parent);
     _watchExpr(listPath, ctx, update);
     update();
+    _setCurrentEl(savedEl);
   },
 };
 
