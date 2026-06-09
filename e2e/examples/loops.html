@@ -124,6 +124,46 @@
     </ul>
   </section>
 
+  <!-- 13. foreach with sibling else — toggle between empty and populated -->
+  <section state="{ feItems: [], feAll: ['X', 'Y', 'Z'] }">
+    <p class="test-label">Test 13: foreach sibling else with toggle</p>
+    <button data-test="fe-sib-toggle" on:click="feItems = feItems.length > 0 ? [] : feAll">Toggle</button>
+    <ul data-test="fe-sib-list">
+      <li data-test="fe-sib-item" foreach="item in feItems" bind="item"></li>
+      <li data-test="fe-sib-else" else>No data available</li>
+    </ul>
+  </section>
+
+  <!-- 14. foreach with else template reference — toggle between empty and populated -->
+  <section state="{ feTplItems: [], feTplAll: [{name: 'Alpha'}, {name: 'Beta'}] }">
+    <p class="test-label">Test 14: foreach else template with toggle</p>
+    <button data-test="fe-tpl-toggle" on:click="feTplItems = feTplItems.length > 0 ? [] : feTplAll">Toggle</button>
+    <ul data-test="fe-tpl-list">
+      <li data-test="fe-tpl-item" foreach="item in feTplItems" else="fe-no-data" bind="item.name"></li>
+    </ul>
+    <template id="fe-no-data"><p data-test="fe-tpl-else">No records found</p></template>
+  </section>
+
+  <!-- 15. each with else template reference — toggle between empty and populated -->
+  <section state="{ eaTplItems: [], eaTplAll: ['One', 'Two', 'Three'] }">
+    <p class="test-label">Test 15: each else template with toggle</p>
+    <button data-test="ea-tpl-toggle" on:click="eaTplItems = eaTplItems.length > 0 ? [] : eaTplAll">Toggle</button>
+    <ul data-test="ea-tpl-list">
+      <li data-test="ea-tpl-item" each="item in eaTplItems" else="ea-no-data" bind="item"></li>
+    </ul>
+    <template id="ea-no-data"><p data-test="ea-tpl-else">Nothing here</p></template>
+  </section>
+
+  <!-- 16. for with else template reference — toggle between empty and populated -->
+  <section state="{ frTplItems: [], frTplAll: [100, 200, 300] }">
+    <p class="test-label">Test 16: for else template with toggle</p>
+    <button data-test="fr-tpl-toggle" on:click="frTplItems = frTplItems.length > 0 ? [] : frTplAll">Toggle</button>
+    <ul data-test="fr-tpl-list">
+      <li data-test="fr-tpl-item" for="item in frTplItems" else="fr-no-data" bind="item"></li>
+    </ul>
+    <template id="fr-no-data"><p data-test="fr-tpl-else">Empty list</p></template>
+  </section>
+
   <script src="../../dist/iife/no.js"></script>
   <!--
     WORKAROUND: processTree(document.body) breaks when a self-repeating loop

@@ -159,4 +159,144 @@ test.describe('Loops', () => {
     await expect(items.nth(1)).toHaveText('Gadget');
     await expect(items.nth(2)).toHaveText('Doohickey');
   });
+
+  test('13 — foreach sibling else: shows else when array is initially empty', async ({ page }) => {
+    const items = page.getByTestId('fe-sib-item');
+    const elseEl = page.getByTestId('fe-sib-else');
+
+    // Initially empty — else content visible, no loop items
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+    await expect(elseEl).toHaveText('No data available');
+  });
+
+  // FIXME: same framework bug as test 3 — disconnected watcher element prevents
+  // the loop from re-rendering when state changes dynamically.
+  test.fixme('13 — foreach sibling else: toggles between items and else', async ({ page }) => {
+    const items = page.getByTestId('fe-sib-item');
+    const elseEl = page.getByTestId('fe-sib-else');
+
+    // Initially empty — else visible
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+
+    // Toggle to populated — items appear, else hides
+    await page.getByTestId('fe-sib-toggle').click();
+    await expect(items).toHaveCount(3);
+    await expect(items.nth(0)).toHaveText('X');
+    await expect(items.nth(1)).toHaveText('Y');
+    await expect(items.nth(2)).toHaveText('Z');
+    await expect(elseEl).toBeHidden();
+
+    // Toggle back to empty — else reappears
+    await page.getByTestId('fe-sib-toggle').click();
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+
+    // Toggle to populated again — verifies multiple round-trips
+    await page.getByTestId('fe-sib-toggle').click();
+    await expect(items).toHaveCount(3);
+    await expect(elseEl).toBeHidden();
+  });
+
+  test('14 — foreach else template: shows template content when array is initially empty', async ({ page }) => {
+    const items = page.getByTestId('fe-tpl-item');
+    const elseEl = page.getByTestId('fe-tpl-else');
+
+    // Initially empty — template else content injected
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+    await expect(elseEl).toHaveText('No records found');
+  });
+
+  // FIXME: same framework bug as test 3 — disconnected watcher element prevents
+  // the loop from re-rendering when state changes dynamically.
+  test.fixme('14 — foreach else template: toggles between items and template else', async ({ page }) => {
+    const items = page.getByTestId('fe-tpl-item');
+    const elseEl = page.getByTestId('fe-tpl-else');
+
+    // Initially empty — template else visible
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+
+    // Toggle to populated — items appear, else template removed
+    await page.getByTestId('fe-tpl-toggle').click();
+    await expect(items).toHaveCount(2);
+    await expect(items.nth(0)).toHaveText('Alpha');
+    await expect(items.nth(1)).toHaveText('Beta');
+    await expect(elseEl).toHaveCount(0);
+
+    // Toggle back to empty — template else reappears
+    await page.getByTestId('fe-tpl-toggle').click();
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+  });
+
+  test('15 — each else template: shows template content when array is initially empty', async ({ page }) => {
+    const items = page.getByTestId('ea-tpl-item');
+    const elseEl = page.getByTestId('ea-tpl-else');
+
+    // Initially empty — template else content injected
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+    await expect(elseEl).toHaveText('Nothing here');
+  });
+
+  // FIXME: same framework bug as test 3 — disconnected watcher element prevents
+  // the loop from re-rendering when state changes dynamically.
+  test.fixme('15 — each else template: toggles between items and template else', async ({ page }) => {
+    const items = page.getByTestId('ea-tpl-item');
+    const elseEl = page.getByTestId('ea-tpl-else');
+
+    // Initially empty — template else visible
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+
+    // Toggle to populated — items appear, else removed
+    await page.getByTestId('ea-tpl-toggle').click();
+    await expect(items).toHaveCount(3);
+    await expect(items.nth(0)).toHaveText('One');
+    await expect(items.nth(1)).toHaveText('Two');
+    await expect(items.nth(2)).toHaveText('Three');
+    await expect(elseEl).toHaveCount(0);
+
+    // Toggle back to empty — template else reappears
+    await page.getByTestId('ea-tpl-toggle').click();
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+  });
+
+  test('16 — for else template: shows template content when array is initially empty', async ({ page }) => {
+    const items = page.getByTestId('fr-tpl-item');
+    const elseEl = page.getByTestId('fr-tpl-else');
+
+    // Initially empty — template else content injected
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+    await expect(elseEl).toHaveText('Empty list');
+  });
+
+  // FIXME: same framework bug as test 3 — disconnected watcher element prevents
+  // the loop from re-rendering when state changes dynamically.
+  test.fixme('16 — for else template: toggles between items and template else', async ({ page }) => {
+    const items = page.getByTestId('fr-tpl-item');
+    const elseEl = page.getByTestId('fr-tpl-else');
+
+    // Initially empty — template else visible
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+
+    // Toggle to populated — items appear, else removed
+    await page.getByTestId('fr-tpl-toggle').click();
+    await expect(items).toHaveCount(3);
+    await expect(items.nth(0)).toHaveText('100');
+    await expect(items.nth(1)).toHaveText('200');
+    await expect(items.nth(2)).toHaveText('300');
+    await expect(elseEl).toHaveCount(0);
+
+    // Toggle back to empty — template else reappears
+    await page.getByTestId('fr-tpl-toggle').click();
+    await expect(items).toHaveCount(0);
+    await expect(elseEl).toBeVisible();
+  });
 });
