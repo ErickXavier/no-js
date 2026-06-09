@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First-fetch sentinel registers `_onDispose` — fixes leak on element removal before pagination ([b32fb35](https://github.com/ErickXavier/no-js/commit/b32fb35))
 - `_removeInlineError()` helper added for proper error wrapper cleanup ([b32fb35](https://github.com/ErickXavier/no-js/commit/b32fb35))
 - `fetch.js`: expose response headers via `meta` before `_REPLACE` early return ([b32fb35](https://github.com/ErickXavier/no-js/commit/b32fb35))
+- Conditionals: guard `else` directive from firing on loop elements that use `else="templateId"` for empty-state rendering — the conditional handler now skips elements with `foreach`, `each`, or `for` attributes ([b24b6e9](https://github.com/ErickXavier/no-js/commit/b24b6e9))
 
 ## [1.13.3] - 2026-06-05
 

@@ -106,6 +106,18 @@ The `else` directive also works as a **sibling element after a loop**. When the 
 </ul>
 ```
 
+You can also place `else` directly on the loop element as an attribute with a template reference:
+
+```html
+<article foreach="item in items" else="noItems">
+  <h2 bind="item.title"></h2>
+</article>
+
+<template id="noItems">
+  <p>No items found.</p>
+</template>
+```
+
 This complements the conditional `if`/`else` pattern — `else` now works in both contexts. See [Loops](loops.md) for full details.
 
 ---

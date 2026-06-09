@@ -74,7 +74,7 @@ When the source array is empty, `null`, or `undefined`, the loop renders nothing
 
 The `else` element is hidden when items exist and shown when the list is empty. This works with all three aliases (`foreach`, `each`, `for`).
 
-You can also reference an external template with `else="templateId"`:
+You can also reference an external template with `else="templateId"` on the sibling:
 
 ```html
 <ul>
@@ -90,11 +90,28 @@ You can also reference an external template with `else="templateId"`:
 </template>
 ```
 
+### Inline `else` on the Loop Element
+
+Instead of a sibling, you can place the `else` attribute directly on the loop element with a template reference. When the list is empty, the referenced template content replaces the loop:
+
+```html
+<article foreach="item in items" else="noItems">
+  <h2 bind="item.title"></h2>
+</article>
+
+<template id="noItems">
+  <p class="empty-state">No items found.</p>
+</template>
+```
+
+Both patterns produce the same result — use the sibling form when you want inline fallback content, and the inline `else` attribute when you want to reference a shared template.
+
 ### Attributes
 
 | Attribute | Description |
 |-----------|-------------|
 | `foreach` | `"item in array"` — variable name and source expression |
+| `else` | Template ID for empty-state content rendered when the list is empty (alternative to a sibling `else` element) |
 | `template` | ID of the `<template>` element to clone for each item (optional — when omitted, the element's own children are the template) |
 | `index` | Variable name for the index (default: `$index`) |
 | `key` | Unique key expression for DOM diffing |
@@ -107,7 +124,7 @@ You can also reference an external template with `else="templateId"`:
 | `animate-stagger` | Delay (ms) between each item's enter animation |
 | `animate-duration` | Max duration (ms) before leave animation is force-completed |
 
-The sibling `else` element is documented above — it is placed after the loop element, not as an attribute on it.
+Empty-state rendering supports two patterns: a **sibling element** with the `else` attribute (documented above), or an **inline `else` attribute** on the loop element itself referencing a template ID.
 
 ---
 
