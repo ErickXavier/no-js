@@ -150,6 +150,9 @@ registerDirective("else", {
   init(el) {
     // Skip if this element also has an "if" directive (else is used as an attribute of if)
     if (el.hasAttribute("if")) return;
+    // Skip if this element is managed by a loop's sibling-else handler.
+    // The loop directive sets __loopElse on elements it owns.
+    if (el.__loopElse) return;
     const ctx = findContext(el);
     const thenId = el.getAttribute("then");
     const originalChildren = [...el.childNodes].map((n) => n.cloneNode(true));
