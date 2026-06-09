@@ -98,10 +98,15 @@ export function processElement(el) {
 export function processTree(root) {
   if (!root) return;
   if (root.nodeType === 1 && !root.__declared) processElement(root);
+  // Snapshot all elements before processing. Structural directives (loops,
+  // conditionals) may remove nodes from the DOM during init, which derails
+  // the TreeWalker — a detached currentNode cannot navigate to siblings.
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-  while (walker.nextNode()) {
-    const node = walker.currentNode;
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  for (const node of nodes) {
     if (node.tagName === "TEMPLATE" || node.tagName === "SCRIPT") continue;
+    if (!root.contains(node)) continue; // Skip nodes removed during earlier processing
     if (!node.__declared) processElement(node);
   }
 }
