@@ -84,10 +84,11 @@ automatically — no extra code needed in the route itself.
   <!-- Token is attached automatically via the request interceptor -->
   <div get="/me/dashboard" as="data" loading="#dash-skeleton">
     <h2 bind="'Welcome, ' + data.user.name"></h2>
-    <div each="m in data.metrics">
+    <p each="m in data.metrics">
       <span bind="m.label"></span>
       <span bind="m.value | number"></span>
-    </div>
+    </p>
+    <p else>No metrics available</p>
   </div>
   <button on:click="$store.auth.user = null; $store.auth.token = null">
     Sign out
@@ -123,10 +124,10 @@ manipulation.
       No results for <strong bind="query"></strong>
     </p>
 
-    <div each="item in results">
+    <p each="item in results">
       <span bind="item.name"></span>
       <span bind="item.price | currency"></span>
-    </div>
+    </p>
 
   </div>
 </div>
@@ -157,15 +158,16 @@ simultaneously — no event bus, no shared component.
       Add to cart
     </button>
   </div>
+  <div else>No products available</div>
 </div>
 
 <!-- Cart summary: somewhere else entirely -->
-<div show="$store.cart.items.length > 0">
-  <div each="item in $store.cart.items">
+<ul show="$store.cart.items.length > 0">
+  <li each="item in $store.cart.items">
     <span bind="item.name"></span>
     <span bind="item.price | currency"></span>
-  </div>
-</div>
+  </li>
+</ul>
 ```
 
 **Key concepts:** `store` · `$store.*` cross-component reactivity · `each` · `show`
@@ -188,10 +190,10 @@ A server-status dashboard that refreshes automatically every 5 seconds using the
         bind="s.healthy ? 'Online' : 'Degraded'">
   </span>
 
-  <div each="metric in s.metrics">
+  <p each="metric in s.metrics">
     <span bind="metric.label"></span>
     <span bind="metric.value | number"></span>
-  </div>
+  </p>
 
 </div>
 ```
@@ -264,10 +266,11 @@ All five patterns combined into a single production-grade SPA:
   <template route="/dashboard" guard="$store.auth.token" redirect="/login">
     <div get="/me/dashboard" as="data">
       <h1 bind="'Welcome, ' + data.user.name"></h1>
-      <div each="m in data.metrics">
+      <p each="m in data.metrics">
         <span bind="m.label"></span>
         <span bind="m.value | number"></span>
-      </div>
+      </p>
+      <p else>No metrics available</p>
     </div>
     <button on:click="$store.auth.user = null; $store.auth.token = null">
       Sign out

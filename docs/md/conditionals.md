@@ -95,11 +95,24 @@ Render one of many templates based on a value.
 
 ---
 
+## `else` After Loop Siblings
+
+The `else` directive also works as a **sibling element after a loop**. When the loop array is empty, `null`, or `undefined`, the `else` sibling is shown:
+
+```html
+<ul>
+  <li each="item in items" bind="item.name"></li>
+  <li else>No items found</li>
+</ul>
+```
+
+This complements the conditional `if`/`else` pattern — `else` now works in both contexts. See [Loops](loops.md) for full details.
+
 ---
 
 ## See Also
 
-- [Loops](loops.md) — `foreach` with `filter` for conditional rendering of list items
+- [Loops](loops.md) — `foreach` with `filter` for conditional rendering, and sibling `else` for empty lists
 - [Dynamic Styling](styling.md) — `show`/`hide` alternative via `class-*`
 - [Templates](templates.md) — template-based conditional content with `then`/`else`
 
