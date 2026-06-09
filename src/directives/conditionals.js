@@ -153,6 +153,9 @@ registerDirective("else", {
     // Skip if this element is managed by a loop's sibling-else handler.
     // The loop directive sets __loopElse on elements it owns.
     if (el.__loopElse) return;
+    // Skip if this element has a loop directive — the loop handler
+    // uses the else attribute as a template reference for empty state.
+    if (el.hasAttribute("foreach") || el.hasAttribute("each") || el.hasAttribute("for")) return;
     const ctx = findContext(el);
     const thenId = el.getAttribute("then");
     const originalChildren = [...el.childNodes].map((n) => n.cloneNode(true));
