@@ -52,49 +52,43 @@ Use the `template` attribute to reference a `<template>` element by ID. The loop
       filter="item.active"
       sort="item.order"
       limit="10"
-      offset="0">
+      offset="0"
+      else="noItemsTpl">
     <a bind-href="item.link">
       <span bind="idx + 1"></span> - <span bind="item.label"></span>
     </a>
   </li>
-  <li else>No items available</li>
-</ul>
-```
-
-### Sibling `else` for Empty Lists
-
-When the source array is empty, `null`, or `undefined`, the loop renders nothing. Place a sibling element with `else` immediately after the loop element to show fallback content:
-
-```html
-<ul>
-  <li foreach="item in items" bind="item.name"></li>
-  <li else>No items found</li>
-</ul>
-```
-
-The `else` element is hidden when items exist and shown when the list is empty. This works with all three aliases (`foreach`, `each`, `for`).
-
-You can also reference an external template with `else="templateId"`:
-
-```html
-<ul>
-  <li foreach="item in items" bind="item.name"></li>
-  <li else="emptyTpl"></li>
 </ul>
 
-<template id="emptyTpl">
-  <li class="empty-state">
-    <p>Nothing to display.</p>
-    <button on:click="reload()">Retry</button>
-  </li>
+<template id="noItemsTpl">
+  <li>No items available</li>
 </template>
 ```
+
+### Empty-State Fallback with `else`
+
+Place `else="templateId"` on the loop element to reference a `<template>` for the empty state. The template renders when the list is empty (`[]`) **or** null/undefined/non-array — e.g. API state before the first fetch resolves:
+
+```html
+<article foreach="item in items" else="noItems">
+  <h2 bind="item.title"></h2>
+</article>
+
+<template id="noItems">
+  <p class="empty-state">No items found.</p>
+</template>
+```
+
+When `items` is an empty array (`[]`), null, undefined, or any non-array value, the template content replaces the loop output. When items are present, the template is removed and items render normally. Both bare ID (`else="noItems"`) and hash syntax (`else="#noItems"`) are accepted.
+
+> **Breaking change (v1.15):** The sibling `else` pattern (`<li else>No items</li>` placed after a loop element) has been removed. Use `else="templateId"` on the loop element itself instead.
 
 ### Attributes
 
 | Attribute | Description |
 |-----------|-------------|
 | `foreach` | `"item in array"` — variable name and source expression |
+| `else` | Template ID rendered when the array is empty or null/undefined/non-array (e.g. `else="noItemsTpl"`) |
 | `template` | ID of the `<template>` element to clone for each item (optional — when omitted, the element's own children are the template) |
 | `index` | Variable name for the index (default: `$index`) |
 | `key` | Unique key expression for DOM diffing |
@@ -107,13 +101,13 @@ You can also reference an external template with `else="templateId"`:
 | `animate-stagger` | Delay (ms) between each item's enter animation |
 | `animate-duration` | Max duration (ms) before leave animation is force-completed |
 
-The sibling `else` element is documented above — it is placed after the loop element, not as an attribute on it.
+Empty-state rendering uses the `else` attribute on the loop element to reference a `<template>` by ID.
 
 ---
 
 ## Aliases: `each` and `for`
 
-`each` and `for` are aliases for `foreach`. They share the same handler and support all the same attributes — `filter`, `sort`, `limit`, `offset`, `key`, `animate-*`, `template`, `index`, and loop variables. The sibling `else` element also works with all three.
+`each` and `for` are aliases for `foreach`. They share the same handler and support all the same attributes — `filter`, `sort`, `limit`, `offset`, `key`, `animate-*`, `else`, `template`, `index`, and loop variables.
 
 ```html
 <!-- All three are equivalent — the element repeats as siblings -->
@@ -269,7 +263,7 @@ Loop directives are fully reactive. When the source array changes (push, splice,
 
 ## See Also
 
-- [Conditionals](conditionals.md) — `else` also works as a sibling after loop elements
+- [Conditionals](conditionals.md) — `else="templateId"` on the loop element renders a template for empty lists
 - [Templates](templates.md) — external templates referenced by loops
 - [Animations](animations.md) — `animate-stagger` for list enter/leave effects
 - [Filters & Pipes](filters.md) — `count`, `first`, `last`, `reverse`, `sortBy` filters

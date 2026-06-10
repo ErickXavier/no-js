@@ -95,24 +95,27 @@ Render one of many templates based on a value.
 
 ---
 
-## `else` After Loop Siblings
+## `else` on Loop Elements
 
-The `else` directive also works as a **sibling element after a loop**. When the loop array is empty, `null`, or `undefined`, the `else` sibling is shown:
+Loop directives (`foreach`, `each`, `for`) support `else="templateId"` to reference a `<template>` for empty-state fallback. The template renders when the list is empty (`[]`) or null/undefined/non-array — e.g. API state before the first fetch:
 
 ```html
-<ul>
-  <li each="item in items" bind="item.name"></li>
-  <li else>No items found</li>
-</ul>
+<article foreach="item in items" else="noItems">
+  <h2 bind="item.title"></h2>
+</article>
+
+<template id="noItems">
+  <p>No items found.</p>
+</template>
 ```
 
-This complements the conditional `if`/`else` pattern — `else` now works in both contexts. See [Loops](loops.md) for full details.
+> **Breaking change (v1.15):** The sibling `else` pattern for loops has been removed. Use `else="templateId"` on the loop element itself. See [Loops](loops.md) for details.
 
 ---
 
 ## See Also
 
-- [Loops](loops.md) — `foreach` with `filter` for conditional rendering, and sibling `else` for empty lists
+- [Loops](loops.md) — `foreach` with `filter` for conditional rendering, and `else` for empty lists
 - [Dynamic Styling](styling.md) — `show`/`hide` alternative via `class-*`
 - [Templates](templates.md) — template-based conditional content with `then`/`else`
 

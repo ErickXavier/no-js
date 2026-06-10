@@ -137,7 +137,7 @@
         "sort": "Propriété de tri (nom seul, sans préfixe de variable d'élément)",
         "limit": "Nombre maximum d'éléments",
         "offset": "Éléments à ignorer",
-        "else": "Élément frère affiché quand le tableau est vide"
+        "else": "Template rendu quand le tableau est vide ou null/undefined"
       },
       "events": {
         "title": "Événements",
@@ -493,17 +493,17 @@
         "from": "Tableau source (DEPRECATED — utilisez la syntaxe item in array)",
         "index": "Nom de la variable d'index (par défaut : $index)",
         "key": "Expression de clé unique pour l'identification et le suivi des éléments",
-        "else": "Élément frère avec attribut else, affiché quand le tableau est vide",
         "filter": "Expression pour filtrer les éléments",
         "sort": "Chemin de propriété pour le tri (préfixe - pour l'ordre décroissant)",
         "limit": "Nombre maximum d'éléments à afficher",
         "offset": "Nombre d'éléments à ignorer",
         "preview": "Aperçu",
-        "template": "ID de template externe (optionnel — les enfants deviennent le template si omis)"
+        "template": "ID de template externe (optionnel — les enfants deviennent le template si omis)",
+        "elseTpl": "ID de template rendu quand le tableau est vide ou null/undefined (ex : else=\"noItemsTpl\")"
       },
       "fullExample": {
         "title": "Exemple complet avec tous les attributs",
-        "text": "Un exemple complet montrant foreach avec filtrage, tri, pagination et un else frère pour le secours d'état vide."
+        "text": "Un exemple complet montrant foreach avec filtrage, tri, pagination et un template else pour le secours d'état vide."
       },
       "aliases": {
         "title": "Alias : each et for",
@@ -511,7 +511,7 @@
       },
       "inline": {
         "title": "Self-Repeating Pattern",
-        "text": "Placez la directive de boucle sur l'élément qui se répète lui-même. L'élément est cloné pour chaque item du tableau. Ajoutez un élément frère avec else pour gérer les tableaux vides."
+        "text": "Placez la directive de boucle sur l'élément répété lui-même. L'élément est cloné pour chaque item du tableau. Utilisez else=\"templateId\" pour référencer un template pour l'état vide."
       },
       "deprecated": {
         "title": "Déprécié : attribut from",
@@ -540,6 +540,12 @@
         "title": "Itération d'Objets",
         "text": "Pour itérer sur les entrées d'un objet, utilisez le filtre keys ou values pour le convertir en tableau d'abord.",
         "callout": "L'itération directe d'objets n'est pas supportée — convertissez toujours en tableau avec keys, values ou Object.entries() dans une expression computed."
+      },
+      "elseTpl": {
+        "title": "Else avec Référence de Template",
+        "text": "Placez else=\"templateId\" directement sur l'élément de boucle. Quand la liste est vide ([]) ou null/undefined, le contenu du template référencé remplace la sortie de la boucle.",
+        "callout": "L'attribut else sur l'élément de boucle s'active pour les tableaux vides ([]) et aussi pour les sources null, undefined ou non-array — par exemple l'état de l'API avant la résolution du premier fetch.",
+        "breaking": "Breaking change (v1.15) : le pattern else frère pour les boucles a été supprimé. Utilisez else=\"templateId\" sur l'élément de boucle."
       }
     },
     "templates": {

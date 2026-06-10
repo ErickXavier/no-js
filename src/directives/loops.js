@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createContext } from "../context.js";
-import { _watchExpr, _currentEl, _setCurrentEl } from "../globals.js";
+import { _watchExpr, _warn, _currentEl, _setCurrentEl } from "../globals.js";
 import { evaluate, resolve } from "../evaluate.js";
 import { findContext, _cloneTemplate } from "../dom.js";
 import { registerDirective, processTree, _disposeTree } from "../registry.js";
@@ -49,6 +49,20 @@ function _clearManagedClones(startMarker, endMarker) {
     node.parentNode.removeChild(node);
     node = next;
   }
+}
+
+// Returns true when `el` carries a loop directive that the loop handler
+// will actually claim. `foreach`/`each` always belong to the loop handler.
+// A bare `for` only counts when its value is loop-shaped ("item in list")
+// or the deprecated `from` companion attribute is present — this mirrors
+// the loop handler's own init bail-out, so HTML's native `for` attribute
+// on label/output elements is never misclassified as a loop.
+export function _isLoopElement(el) {
+  if (el.hasAttribute("foreach") || el.hasAttribute("each")) return true;
+  if (!el.hasAttribute("for")) return false;
+  const v = el.getAttribute("for") || "";
+  if (/^\w+\s+in\s+\S+$/.test(v)) return true;
+  return el.hasAttribute("from") && /^\w+$/.test(v);
 }
 
 // Applies enter animation to a clone element.
@@ -95,30 +109,14 @@ const _loopHandler = {
     let prevList = null;
     // Tracks the last rendered (post-filter/sort/slice) list for delta optimization.
     let prevRendered = null;
+    // True while the else template's content is rendered between the markers.
+    // Guards the same-ref fast path (else nodes are not item clones) and
+    // dedups redundant empty updates (rebuilding would wipe input state).
+    let elseRendered = false;
+    // Warn once per element when the else template id cannot be resolved.
+    let elseTplWarned = false;
     // Delta optimization is disabled when filter/sort/offset modify rendered order.
     const hasPipeline = !!(filterExpr || sortProp || offset);
-
-    // ── Sibling else capture ────────────────────────────────────────────
-    // Before removing el from the DOM, check for a next sibling element
-    // with an `else` attribute (but NOT `if`, `else-if`, or loop directives).
-    // This sibling shows when the loop is empty and hides when it has items.
-    const _LOOP_DIRECTIVES = ["foreach", "each", "for"];
-    let elseSibling = null;
-    let elseSiblingChildren = null;
-    const nextEl = el.nextElementSibling;
-    if (nextEl && nextEl.hasAttribute("else")
-      && !nextEl.hasAttribute("if") && !nextEl.hasAttribute("else-if")
-      && !_LOOP_DIRECTIVES.some((d) => nextEl.hasAttribute(d))) {
-      elseSibling = nextEl;
-      elseSiblingChildren = [...nextEl.childNodes].map((n) => n.cloneNode(true));
-      // Hide initially — update() will set the correct state.
-      elseSibling.style.display = "none";
-      // Mark as loop-managed so the else directive in conditionals.js skips it.
-      elseSibling.__loopElse = true;
-      // Mark as declared so the parent processTree walk does not process it.
-      // The loop handler owns this element's lifecycle exclusively.
-      elseSibling.__declared = true;
-    }
 
     // ── Self-repeating setup ──────────────────────────────────────────
     // The element with the loop directive IS the template. Insert comment
@@ -157,42 +155,19 @@ const _loopHandler = {
       return clone;
     }
 
-    // Syncs the sibling else element's visibility based on whether the
-    // loop rendered any items. When empty: show else content (restore
-    // original children, process tree). When non-empty: hide and dispose.
-    function _syncElseSibling(isEmpty) {
-      if (!elseSibling) return;
-      if (isEmpty) {
-        if (elseSibling.style.display !== "") {
-          elseSibling.style.display = "";
-          _disposeTree(elseSibling);
-          elseSibling.innerHTML = "";
-          for (const child of elseSiblingChildren)
-            elseSibling.appendChild(child.cloneNode(true));
-          elseSibling.__declared = false;
-          processTree(elseSibling);
-        }
-      } else {
-        if (elseSibling.style.display !== "none") {
-          _disposeTree(elseSibling);
-          elseSibling.innerHTML = "";
-          elseSibling.style.display = "none";
-        }
-      }
-    }
-
     function update() {
       let list = /[\[\]()\s+\-*\/!?:&|]/.test(listPath)
         ? evaluate(listPath, ctx)
         : resolve(listPath, ctx);
-      if (!Array.isArray(list)) {
-        _syncElseSibling(true);
-        return;
-      }
+      // Non-array values (null, undefined, …) are treated as an empty list:
+      // stale clones are cleared and the else template (if any) renders.
+      if (!Array.isArray(list)) list = [];
 
-      // Same-reference optimisation: propagate to managed clones without DOM rebuild.
+      // Same-reference optimisation: propagate to managed clones without DOM
+      // rebuild. Skipped while the else template is showing — the managed
+      // nodes are template content, not item clones.
       const managedClones = _getManagedClones(startMarker, endMarker);
-      if (list === prevList && list.length > 0 && managedClones.length > 0) {
+      if (!elseRendered && list === prevList && list.length > 0 && managedClones.length > 0) {
         for (const clone of managedClones) {
           if (clone.__ctx && clone.__ctx.$notify) clone.__ctx.$notify();
         }
@@ -241,10 +216,18 @@ const _loopHandler = {
 
       // Empty state — show else template at marker position
       if (list.length === 0 && elseTpl) {
+        // Dedup: already showing the else template — rebuilding it would
+        // wipe any input state inside the template content.
+        if (elseRendered) {
+          prevRendered = null;
+          return;
+        }
+        // Always clear stale item clones first — even when the else template
+        // id cannot be resolved, previously rendered items must not linger.
+        _clearManagedClones(startMarker, endMarker);
+        keyMap.clear();
         const tplClone = _cloneTemplate(elseTpl);
         if (tplClone) {
-          _clearManagedClones(startMarker, endMarker);
-          keyMap.clear();
           // Insert the else template content between markers
           parent.insertBefore(tplClone, endMarker);
           // Process the inserted nodes
@@ -253,24 +236,32 @@ const _loopHandler = {
             if (node.nodeType === 1) processTree(node);
             node = node.nextSibling;
           }
+          elseRendered = true;
+        } else if (!elseTplWarned) {
+          elseTplWarned = true;
+          _warn(`${name}: else template "${elseTpl}" not found`, el);
         }
-        _syncElseSibling(true);
+
         prevRendered = null;
         return;
       }
 
-      // Empty list without companion else template — sync sibling else only
+      // Empty list without else template — just clear
       if (list.length === 0) {
         _clearManagedClones(startMarker, endMarker);
         keyMap.clear();
-        _syncElseSibling(true);
+        elseRendered = false;
         prevRendered = null;
         return;
       }
 
+      // Items are about to render — every render path below clears the
+      // managed range (renderItems, keyed reconcile, delta append), so any
+      // previously rendered else template content is replaced.
+      elseRendered = false;
+
       if (keyExpr) {
         reconcileItems(list, list.length);
-        _syncElseSibling(false);
         prevRendered = null;
         return;
       }
@@ -360,7 +351,6 @@ const _loopHandler = {
             remaining--;
             if (remaining <= 0) {
               renderItems();
-              _syncElseSibling(false);
             }
           };
           clone.addEventListener("animationend", done, { once: true });
@@ -370,7 +360,6 @@ const _loopHandler = {
       } else if (!tryDeltaAppend()) {
         renderItems();
       }
-      _syncElseSibling(false);
     }
 
     // Key-based reconciliation — applied to the final (filtered, sorted,

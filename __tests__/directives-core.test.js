@@ -3723,241 +3723,450 @@ describe('self-repeating loop: clone structure', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════
-//  NOJS-114: Sibling else for loop directives
+//  NOJS-114: Sibling else for loop directives (REMOVED — breaking change)
+//  Sibling else pattern was removed in NOJS-125. Use else="#templateId"
+//  on the loop element instead.
 // ═══════════════════════════════════════════════════════════════════════
 
-describe('Sibling else for loop directives (NOJS-114)', () => {
+// ═══════════════════════════════════════════════════════════════════════
+//  NOJS-125/127: Loop else="#template" pattern + guard in conditionals
+// ═══════════════════════════════════════════════════════════════════════
+
+describe('Loop else template pattern (NOJS-125)', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     Object.keys(_stores).forEach((k) => delete _stores[k]);
   });
 
-  // Helper: get managed element clones between comment markers
-  function getManagedClones(host) {
-    return [...host.childNodes].filter((n) => n.nodeType === 1);
-  }
-
-  test('shows else element when array is empty', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: [] }');
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    el.setAttribute('bind', 'item');
-    host.appendChild(el);
-    const elseEl = document.createElement('div');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'No items';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    // No loop clones rendered
-    const clones = getManagedClones(host);
-    // The else sibling should be visible (not display:none)
-    const siblingElse = clones.find(n => n.textContent.includes('No items'));
-    expect(siblingElse).toBeDefined();
-    expect(siblingElse.style.display).not.toBe('none');
-  });
-
-  test('shows else element when value is null', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: null }');
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    el.setAttribute('bind', 'item');
-    host.appendChild(el);
-    const elseEl = document.createElement('div');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'Nothing here';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    const siblingElse = [...host.querySelectorAll('div')].find(
-      n => n.textContent.includes('Nothing here')
-    );
-    expect(siblingElse).toBeDefined();
-    expect(siblingElse.style.display).not.toBe('none');
-  });
-
-  test('shows else element when value is undefined', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ }');
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    el.setAttribute('bind', 'item');
-    host.appendChild(el);
-    const elseEl = document.createElement('div');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'Undefined list';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    const siblingElse = [...host.querySelectorAll('div')].find(
-      n => n.textContent.includes('Undefined list')
-    );
-    expect(siblingElse).toBeDefined();
-    expect(siblingElse.style.display).not.toBe('none');
-  });
-
-  test('hides else element when array has items', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: ["a", "b"] }');
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    el.setAttribute('bind', 'item');
-    host.appendChild(el);
-    const elseEl = document.createElement('div');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'No items';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    // Loop clones should exist
-    const spans = host.querySelectorAll('span');
-    expect(spans.length).toBe(2);
-    // Else sibling should be hidden
-    expect(elseEl.style.display).toBe('none');
-  });
-
-  test('toggles else reactively: empty -> populated -> empty', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: [] }');
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    el.setAttribute('bind', 'item');
-    host.appendChild(el);
-    const elseEl = document.createElement('div');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'Empty';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    // Initially empty — else visible
-    expect(elseEl.style.display).not.toBe('none');
-
-    // Add items — else should hide
-    const ctx = findContext(host);
-    ctx.$set('items', ['x', 'y']);
-    expect(elseEl.style.display).toBe('none');
-    expect(host.querySelectorAll('span').length).toBe(2);
-
-    // Back to empty — else should show again
-    ctx.$set('items', []);
-    expect(elseEl.style.display).not.toBe('none');
-    expect(host.querySelectorAll('span').length).toBe(0);
-  });
-
-  test('works with foreach alias', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: [] }');
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    host.appendChild(el);
-    const elseEl = document.createElement('p');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'Foreach empty';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    expect(elseEl.style.display).not.toBe('none');
-    expect(elseEl.textContent).toBe('Foreach empty');
-  });
-
-  test('works with each alias', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: [] }');
-    const el = document.createElement('span');
-    el.setAttribute('each', 'item in items');
-    host.appendChild(el);
-    const elseEl = document.createElement('p');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'Each empty';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    expect(elseEl.style.display).not.toBe('none');
-    expect(elseEl.textContent).toBe('Each empty');
-  });
-
-  test('works with for alias', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: [] }');
-    const el = document.createElement('span');
-    el.setAttribute('for', 'item in items');
-    host.appendChild(el);
-    const elseEl = document.createElement('p');
-    elseEl.setAttribute('else', '');
-    elseEl.textContent = 'For empty';
-    host.appendChild(elseEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    expect(elseEl.style.display).not.toBe('none');
-    expect(elseEl.textContent).toBe('For empty');
-  });
-
-  test('does not interfere with if/else (sibling with if is not captured)', () => {
-    const host = document.createElement('div');
-    host.setAttribute('state', '{ items: ["a"], show: false }');
-    // Loop element
-    const el = document.createElement('span');
-    el.setAttribute('foreach', 'item in items');
-    el.setAttribute('bind', 'item');
-    host.appendChild(el);
-    // Next sibling has both if and else — should NOT be captured as loop else
-    const condEl = document.createElement('div');
-    condEl.setAttribute('if', 'show');
-    condEl.setAttribute('else', '');
-    condEl.textContent = 'Conditional';
-    host.appendChild(condEl);
-    document.body.appendChild(host);
-    processTree(host);
-
-    // Loop should render items normally
-    const spans = host.querySelectorAll('span');
-    expect(spans.length).toBe(1);
-    expect(spans[0].textContent).toBe('a');
-    // The if/else element is NOT marked as __loopElse
-    expect(condEl.__loopElse).toBeFalsy();
-  });
-
-  test('companion else="tplId" still works alongside sibling else', () => {
-    // Companion else (template-based) is on the loop element itself.
-    // Sibling else is a next sibling with else attr.
-    // Both should work: companion inserts template content between markers,
-    // sibling shows/hides its own element.
+  test('foreach else="#tpl" shows template when array is empty, toggles to populated and back', () => {
     const tpl = document.createElement('template');
-    tpl.id = 'companion-else-tpl';
-    tpl.innerHTML = '<em>Template empty</em>';
+    tpl.id = 'no-items';
+    tpl.innerHTML = '<p>No items</p>';
     document.body.appendChild(tpl);
 
     const host = document.createElement('div');
     host.setAttribute('state', '{ items: [] }');
     const el = document.createElement('span');
     el.setAttribute('foreach', 'item in items');
-    el.setAttribute('else', 'companion-else-tpl');
+    el.setAttribute('else', '#no-items');
+    el.setAttribute('bind', 'item');
     host.appendChild(el);
-    // Sibling else — should also be captured and shown
-    const sibElse = document.createElement('div');
-    sibElse.setAttribute('else', '');
-    sibElse.textContent = 'Sibling empty';
-    host.appendChild(sibElse);
     document.body.appendChild(host);
     processTree(host);
 
-    // Companion else template content should be inserted between markers
-    const em = host.querySelector('em');
-    expect(em).not.toBeNull();
-    expect(em.textContent).toBe('Template empty');
-    // Sibling else should also be visible
-    expect(sibElse.style.display).not.toBe('none');
+    // Empty state: template content should be rendered
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('No items');
+    expect(host.querySelectorAll('span').length).toBe(0);
+
+    // Toggle to populated
+    const ctx = findContext(host);
+    ctx.$set('items', ['a', 'b']);
+    const spans = host.querySelectorAll('span');
+    expect(spans.length).toBe(2);
+    expect(spans[0].textContent).toBe('a');
+    expect(spans[1].textContent).toBe('b');
+    // Template content gone
+    expect(host.querySelector('p')).toBeNull();
+
+    // Toggle back to empty
+    ctx.$set('items', []);
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('No items');
+    expect(host.querySelectorAll('span').length).toBe(0);
   });
+
+  test('each else="#tpl" shows template when array is empty', () => {
+    const tpl = document.createElement('template');
+    tpl.id = 'each-empty-tpl';
+    tpl.innerHTML = '<p>Each empty</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: [] }');
+    const el = document.createElement('span');
+    el.setAttribute('each', 'item in items');
+    el.setAttribute('else', '#each-empty-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('Each empty');
+
+    // Populate — template gone
+    const ctx = findContext(host);
+    ctx.$set('items', ['x']);
+    expect(host.querySelectorAll('span').length).toBe(1);
+    expect(host.querySelector('p')).toBeNull();
+  });
+
+  test('for else="#tpl" shows template when array is empty', () => {
+    const tpl = document.createElement('template');
+    tpl.id = 'for-empty-tpl';
+    tpl.innerHTML = '<p>For empty</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: [] }');
+    const el = document.createElement('span');
+    el.setAttribute('for', 'item in items');
+    el.setAttribute('else', '#for-empty-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('For empty');
+
+    // Populate — template gone
+    const ctx = findContext(host);
+    ctx.$set('items', ['y']);
+    expect(host.querySelectorAll('span').length).toBe(1);
+    expect(host.querySelector('p')).toBeNull();
+  });
+
+  test('foreach else="#tpl" shows template when array is null (treated as empty)', () => {
+    // Non-array values (null/undefined) are normalized to an empty list,
+    // so the elseTpl path activates exactly as for [].
+    const tpl = document.createElement('template');
+    tpl.id = 'null-tpl';
+    tpl.innerHTML = '<p>Null list</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: null }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#null-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    // Template IS injected — null is treated as an empty list
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('Null list');
+  });
+
+  test('foreach else="#tpl" shows template when array is undefined (treated as empty)', () => {
+    const tpl = document.createElement('template');
+    tpl.id = 'undef-tpl';
+    tpl.innerHTML = '<p>Undefined list</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#undef-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    // Template IS injected — undefined is treated as an empty list
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('Undefined list');
+  });
+
+  test('else directive handler does NOT process elements with loop attributes', () => {
+    // The guard in conditionals.js should skip elements that have
+    // foreach/each/for — even if they also have else="#tpl".
+    // Without the guard, the else handler would try to evaluate
+    // preceding if/else-if siblings and potentially clobber content.
+    const tpl = document.createElement('template');
+    tpl.id = 'guard-tpl';
+    tpl.innerHTML = '<p>Guard template</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: ["a", "b"] }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#guard-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    // Items should render normally — the else directive should NOT
+    // have interfered by restoring original children or hiding the element.
+    const spans = host.querySelectorAll('span');
+    expect(spans.length).toBe(2);
+    expect(spans[0].textContent).toBe('a');
+    expect(spans[1].textContent).toBe('b');
+    // No template content should be injected (array is not empty)
+    expect(host.querySelector('p')).toBeNull();
+  });
+
+  test('else directive handler does NOT process elements with each attribute', () => {
+    const tpl = document.createElement('template');
+    tpl.id = 'guard-each-tpl';
+    tpl.innerHTML = '<p>Each guard</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: ["x"] }');
+    const el = document.createElement('span');
+    el.setAttribute('each', 'item in items');
+    el.setAttribute('else', '#guard-each-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    const spans = host.querySelectorAll('span');
+    expect(spans.length).toBe(1);
+    expect(spans[0].textContent).toBe('x');
+    expect(host.querySelector('p')).toBeNull();
+  });
+
+  test('else directive handler does NOT process elements with for attribute', () => {
+    const tpl = document.createElement('template');
+    tpl.id = 'guard-for-tpl';
+    tpl.innerHTML = '<p>For guard</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: ["z"] }');
+    const el = document.createElement('span');
+    el.setAttribute('for', 'item in items');
+    el.setAttribute('else', '#guard-for-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    const spans = host.querySelectorAll('span');
+    expect(spans.length).toBe(1);
+    expect(spans[0].textContent).toBe('z');
+    expect(host.querySelector('p')).toBeNull();
+  });
+
+  test('foreach else="#tpl": in-place mutation of the same array ref while else template is showing renders items', () => {
+    // Regression (F1): the same-reference fast path must be skipped while
+    // the else template is rendered — its nodes are template content, not
+    // item clones, so notify-only would leave the items unrendered forever.
+    const tpl = document.createElement('template');
+    tpl.id = 'inplace-tpl';
+    tpl.innerHTML = '<p>Nothing yet</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: [] }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#inplace-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    // Else template showing
+    expect(host.querySelector('p')).not.toBeNull();
+
+    // Mutate the SAME array reference in place, then $notify — the set trap
+    // dedups identical references, so $notify is how in-place mutations
+    // reach the watchers (the exact scenario the elseRendered guard fixes).
+    const ctx = findContext(host);
+    const sameRef = ctx.__raw.items;
+    sameRef.push('a');
+    sameRef.push('b');
+    ctx.$notify();
+
+    const spans = host.querySelectorAll('span');
+    expect(spans.length).toBe(2);
+    expect(spans[0].textContent).toBe('a');
+    expect(spans[1].textContent).toBe('b');
+    expect(host.querySelector('p')).toBeNull();
+  });
+
+  test('foreach else="#tpl": empty → empty re-update does NOT re-clone the else template (same DOM node persists)', () => {
+    // Regression (F3): redundant empty updates must not rebuild the else
+    // template content — that would destroy input state inside it.
+    const tpl = document.createElement('template');
+    tpl.id = 'dedup-tpl';
+    tpl.innerHTML = '<p>Still empty</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: [] }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#dedup-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    const rendered = host.querySelector('p');
+    expect(rendered).not.toBeNull();
+    // Tag the live node — if the template were re-cloned, the tag is lost.
+    rendered.__qaPersistMarker = 'kept';
+
+    // Empty → empty with a NEW array ref (forces a full update pass)
+    const ctx = findContext(host);
+    ctx.$set('items', []);
+
+    const after = host.querySelector('p');
+    expect(after).toBe(rendered);
+    expect(after.__qaPersistMarker).toBe('kept');
+  });
+
+  test('foreach else="#tpl": null → populated → null transitions toggle items and else template', () => {
+    // F4: non-array values are normalized to an empty list on every update,
+    // so transitions through null behave exactly like transitions through [].
+    const tpl = document.createElement('template');
+    tpl.id = 'null-toggle-tpl';
+    tpl.innerHTML = '<p>No data</p>';
+    document.body.appendChild(tpl);
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: null }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#null-toggle-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    // null initial value → else template renders
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelectorAll('span').length).toBe(0);
+
+    // null → populated
+    const ctx = findContext(host);
+    ctx.$set('items', ['a']);
+    expect(host.querySelectorAll('span').length).toBe(1);
+    expect(host.querySelector('span').textContent).toBe('a');
+    expect(host.querySelector('p')).toBeNull();
+
+    // populated → null (e.g. API state reset)
+    ctx.$set('items', null);
+    expect(host.querySelectorAll('span').length).toBe(0);
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('No data');
+  });
+
+  test('foreach else with unresolvable template id clears previously rendered items and warns once', () => {
+    // Regression (F2): the managed-clone clear is hoisted out of the
+    // tplClone branch — a missing else template must not leave stale items.
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: ["a", "b"] }');
+    const el = document.createElement('span');
+    el.setAttribute('foreach', 'item in items');
+    el.setAttribute('else', '#does-not-exist-tpl');
+    el.setAttribute('bind', 'item');
+    host.appendChild(el);
+    document.body.appendChild(host);
+    processTree(host);
+
+    expect(host.querySelectorAll('span').length).toBe(2);
+
+    // Empty the list — items must be cleared even though the else
+    // template id cannot be resolved.
+    const ctx = findContext(host);
+    ctx.$set('items', []);
+    expect(host.querySelectorAll('span').length).toBe(0);
+    expect(host.querySelector('p')).toBeNull();
+
+    const notFoundWarns = () =>
+      warnSpy.mock.calls.filter((args) =>
+        args.some((a) => typeof a === 'string' && a.includes('not found')),
+      ).length;
+    expect(notFoundWarns()).toBe(1);
+
+    // Second empty update — warn must not repeat (one-time warning)
+    ctx.$set('items', []);
+    expect(notFoundWarns()).toBe(1);
+
+    warnSpy.mockRestore();
+  });
+
+  test('label with native for attribute and else works as a conditional else in an if chain', () => {
+    // Regression (F5): _isLoopElement must not claim HTML\'s native `for`
+    // attribute (e.g. <label for="email">) — only loop-shaped values.
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ ok: true }');
+    const ifEl = document.createElement('div');
+    ifEl.setAttribute('if', 'ok');
+    ifEl.textContent = 'Yes';
+    const label = document.createElement('label');
+    label.setAttribute('for', 'email');
+    label.setAttribute('else', '');
+    label.textContent = 'Fallback label';
+    host.appendChild(ifEl);
+    host.appendChild(label);
+    document.body.appendChild(host);
+    processTree(host);
+
+    // if is true → else branch hidden
+    expect(label.style.display).toBe('none');
+    // Native for attribute preserved (not stripped as a loop directive)
+    expect(label.getAttribute('for')).toBe('email');
+
+    // Flip the condition → else branch shows its content
+    const ctx = findContext(host);
+    ctx.$set('ok', false);
+    expect(label.style.display).toBe('');
+    expect(label.textContent).toBe('Fallback label');
+  });
+
+  test('plain element with loop-shaped for attribute still loops', () => {
+    // F5 counterpart: loop-shaped `for` values keep belonging to the loop
+    // handler — the conditional else guard must not break them.
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ items: ["a", "b", "c"] }');
+    const ul = document.createElement('ul');
+    const li = document.createElement('li');
+    li.setAttribute('for', 'x in items');
+    li.setAttribute('bind', 'x');
+    ul.appendChild(li);
+    host.appendChild(ul);
+    document.body.appendChild(host);
+    processTree(host);
+
+    const lis = ul.querySelectorAll('li');
+    expect(lis.length).toBe(3);
+    expect(lis[0].textContent).toBe('a');
+    expect(lis[2].textContent).toBe('c');
+  });
+
+  test('orphan else with no preceding if/else-if warns once mentioning the v1.15 removal', () => {
+    // F6: migration aid for un-migrated sibling-else loop markup.
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const host = document.createElement('div');
+    host.setAttribute('state', '{ n: 1 }');
+    const orphan = document.createElement('p');
+    orphan.setAttribute('else', '');
+    orphan.textContent = 'Orphan';
+    host.appendChild(orphan);
+    document.body.appendChild(host);
+    processTree(host);
+
+    const orphanWarns = () =>
+      warnSpy.mock.calls.filter((args) =>
+        args.some(
+          (a) => typeof a === 'string' && a.includes('no preceding if/else-if'),
+        ),
+      ).length;
+    expect(orphanWarns()).toBe(1);
+
+    // Trigger another update — the warning must not repeat
+    const ctx = findContext(host);
+    ctx.$set('n', 2);
+    expect(orphanWarns()).toBe(1);
+
+    warnSpy.mockRestore();
+  });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════

@@ -137,7 +137,7 @@
         "sort": "Proprietà di ordinamento (solo nome, senza prefisso della variabile elemento)",
         "limit": "Numero massimo di elementi",
         "offset": "Salta elementi",
-        "else": "Elemento fratello mostrato quando l'array è vuoto"
+        "else": "Template renderizzato quando l'array è vuoto o null/undefined"
       },
       "events": {
         "title": "Eventi",
@@ -493,17 +493,17 @@
         "from": "Array sorgente (DEPRECATED — usa la sintassi item in array)",
         "index": "Nome della variabile per l'indice (default: $index)",
         "key": "Espressione chiave univoca per l'identificazione e il tracciamento degli elementi",
-        "else": "Elemento fratello con attributo else, mostrato quando l'array è vuoto",
         "filter": "Espressione per filtrare gli elementi",
         "sort": "Percorso della proprietà per l'ordinamento (prefisso - per ordine decrescente)",
         "limit": "Numero massimo di elementi da renderizzare",
         "offset": "Numero di elementi da saltare",
         "preview": "Anteprima",
-        "template": "ID di template esterno (opzionale — i figli diventano il template se omesso)"
+        "template": "ID di template esterno (opzionale — i figli diventano il template se omesso)",
+        "elseTpl": "ID del template renderizzato quando l'array è vuoto o null/undefined (es: else=\"noItemsTpl\")"
       },
       "fullExample": {
         "title": "Esempio completo con tutti gli attributi",
-        "text": "Un esempio completo che mostra foreach con filtraggio, ordinamento, paginazione e un else fratello per il fallback di stato vuoto."
+        "text": "Un esempio completo che mostra foreach con filtraggio, ordinamento, paginazione e un template else per il fallback di stato vuoto."
       },
       "aliases": {
         "title": "Alias: each e for",
@@ -511,7 +511,7 @@
       },
       "inline": {
         "title": "Self-Repeating Pattern",
-        "text": "Posiziona la direttiva di loop sull'elemento che si ripete. L'elemento viene clonato per ogni item dell'array. Aggiungi un elemento fratello con else per gestire array vuoti."
+        "text": "Posiziona la direttiva del loop sull'elemento ripetuto stesso. L'elemento viene clonato per ogni item dell'array. Usa else=\"templateId\" per referenziare un template per lo stato vuoto."
       },
       "deprecated": {
         "title": "Deprecato: attributo from",
@@ -540,6 +540,12 @@
         "title": "Iterazione di Oggetti",
         "text": "Per iterare sulle voci di un oggetto, usa il filtro keys o values per convertirlo in array prima.",
         "callout": "L'iterazione diretta di oggetti non è supportata — converti sempre in array con keys, values o Object.entries() in un'espressione computed."
+      },
+      "elseTpl": {
+        "title": "Else con Riferimento al Template",
+        "text": "Inserisci else=\"templateId\" direttamente sull'elemento del loop. Quando la lista è vuota ([]) o null/undefined, il contenuto del template referenziato sostituisce l'output del loop.",
+        "callout": "L'attributo else sull'elemento del loop si attiva per array vuoti ([]) e anche per sorgenti null, undefined o non-array — ad esempio lo stato dell'API prima che il primo fetch si risolva.",
+        "breaking": "Breaking change (v1.15): il pattern else fratello per i loop è stato rimosso. Usa else=\"templateId\" sull'elemento del loop."
       }
     },
     "templates": {

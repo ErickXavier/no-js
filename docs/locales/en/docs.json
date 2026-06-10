@@ -137,7 +137,7 @@
         "sort": "Sort property (name only, not prefixed with item variable)",
         "limit": "Max items",
         "offset": "Skip items",
-        "else": "Sibling element shown when array is empty"
+        "else": "Template rendered when the array is empty or null/undefined"
       },
       "events": {
         "title": "Events",
@@ -494,16 +494,16 @@
         "from": "Source array (DEPRECATED — use item in array syntax)",
         "index": "Variable name for the index (default: $index)",
         "key": "Unique key expression for element identification and tracking",
-        "else": "Sibling element with else attribute, shown when array is empty",
         "filter": "Expression to filter items",
         "sort": "Property path to sort by (prefix - for descending)",
         "limit": "Maximum number of items to render",
         "offset": "Number of items to skip",
-        "template": "External template ID (optional — children become template if omitted)"
+        "template": "External template ID (optional — children become template if omitted)",
+        "elseTpl": "Template ID rendered when the array is empty or null/undefined (e.g. else=\"noItemsTpl\")"
       },
       "fullExample": {
         "title": "Full Example with All Attributes",
-        "text": "A complete example showing foreach with filtering, sorting, pagination, and a sibling else for the empty-state fallback."
+        "text": "A complete example showing foreach with filtering, sorting, pagination, and an else template for the empty-state fallback."
       },
       "aliases": {
         "title": "Aliases: each and for",
@@ -511,7 +511,7 @@
       },
       "inline": {
         "title": "Self-Repeating Pattern",
-        "text": "Place the loop directive on the repeating element itself. The element is cloned for each item in the array. Add a sibling element with else to handle empty arrays."
+        "text": "Place the loop directive on the repeating element itself. The element is cloned for each item in the array. Use else=\"templateId\" to reference a template for the empty state."
       },
       "deprecated": {
         "title": "Deprecated: from Attribute",
@@ -540,6 +540,12 @@
         "title": "Object Iteration",
         "text": "To iterate over an object's entries, use the keys or values filter to convert it to an array first.",
         "callout": "Direct object iteration is not supported — always convert to an array with keys, values, or Object.entries() in a computed expression."
+      },
+      "elseTpl": {
+        "title": "Else with Template Reference",
+        "text": "Place else=\"templateId\" directly on the loop element. When the list is empty ([]) or null/undefined, the referenced template content replaces the loop output.",
+        "callout": "The else attribute on the loop element activates for empty arrays ([]) and also for null, undefined, or non-array sources — e.g. API state before the first fetch resolves.",
+        "breaking": "Breaking change (v1.15): the sibling else pattern for loops has been removed. Use else=\"templateId\" on the loop element instead."
       }
     },
     "templates": {
