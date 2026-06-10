@@ -3828,10 +3828,9 @@ describe('Loop else template pattern (NOJS-125)', () => {
     expect(host.querySelector('p')).toBeNull();
   });
 
-  test('foreach else="#tpl" does NOT show template when array is null (early return path)', () => {
-    // When the list resolves to null/undefined, the loop handler returns
-    // early before reaching the elseTpl path.
-    // The elseTpl pattern only activates for empty arrays (list.length === 0).
+  test('foreach else="#tpl" shows template when array is null (treated as empty)', () => {
+    // Non-array values (null/undefined) are normalized to an empty list,
+    // so the elseTpl path activates exactly as for [].
     const tpl = document.createElement('template');
     tpl.id = 'null-tpl';
     tpl.innerHTML = '<p>Null list</p>';
@@ -3847,11 +3846,12 @@ describe('Loop else template pattern (NOJS-125)', () => {
     document.body.appendChild(host);
     processTree(host);
 
-    // Template is NOT injected — null takes the early return before elseTpl
-    expect(host.querySelector('p')).toBeNull();
+    // Template IS injected — null is treated as an empty list
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('Null list');
   });
 
-  test('foreach else="#tpl" does NOT show template when array is undefined (early return path)', () => {
+  test('foreach else="#tpl" shows template when array is undefined (treated as empty)', () => {
     const tpl = document.createElement('template');
     tpl.id = 'undef-tpl';
     tpl.innerHTML = '<p>Undefined list</p>';
@@ -3867,8 +3867,9 @@ describe('Loop else template pattern (NOJS-125)', () => {
     document.body.appendChild(host);
     processTree(host);
 
-    // Template is NOT injected — undefined takes the early return before elseTpl
-    expect(host.querySelector('p')).toBeNull();
+    // Template IS injected — undefined is treated as an empty list
+    expect(host.querySelector('p')).not.toBeNull();
+    expect(host.querySelector('p').textContent).toBe('Undefined list');
   });
 
   test('else directive handler does NOT process elements with loop attributes', () => {
