@@ -77,10 +77,14 @@ registerDirective("style-*", {
           // property removed from the bound object no longer lingers on the
           // element (stale style leak).
           for (const prop of prevProps) {
-            if (!(prop in obj)) el.style[prop] = "";
+            if (!(prop in obj)) {
+              if (prop.startsWith("--")) el.style.removeProperty(prop);
+              else el.style[prop] = "";
+            }
           }
           for (const [prop, val] of Object.entries(obj)) {
-            el.style[prop] = val ?? "";
+            if (prop.startsWith("--")) el.style.setProperty(prop, val ?? "");
+            else el.style[prop] = val ?? "";
           }
           prevProps = nextProps;
         }
