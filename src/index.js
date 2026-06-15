@@ -29,6 +29,7 @@ import {
   _RESPOND,
   _REPLACE,
   _onDispose,
+  _stripBase,
 } from "./globals.js";
 import { _i18n, _loadI18nForLocale } from "./i18n.js";
 import { createContext } from "./context.js";
@@ -123,13 +124,6 @@ function _deepCheckUnsafe(obj, seen = new Set()) {
 // ═══════════════════════════════════════════════════════════════════════
 //  PUBLIC API
 // ═══════════════════════════════════════════════════════════════════════
-
-function _stripBase(pathname) {
-  const base = (_config.router.base || "/").replace(/\/$/, "");
-  if (!base) return pathname || "/";
-  const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return pathname.replace(new RegExp("^" + escaped), "") || "/";
-}
 
 function _getDefaultRoutePath() {
   if (typeof window === "undefined") return null;

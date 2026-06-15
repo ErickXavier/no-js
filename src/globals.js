@@ -80,6 +80,14 @@ export function _warn(...args) {
   console.warn("[No.JS]", ...args);
 }
 
+// ─── Shared URL utility ─────────────────────────────────────────────────────
+export function _stripBase(pathname) {
+  const base = (_config.router.base || "/").replace(/\/$/, "");
+  if (!base) return pathname || "/";
+  const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return pathname.replace(new RegExp("^" + escaped), "") || "/";
+}
+
 // Regex to extract the first store name from expressions like $store.cart.items
 const _STORE_NAME_RE = /\$store\.(\w+)/;
 
