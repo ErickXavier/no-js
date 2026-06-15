@@ -2,7 +2,7 @@
 //  CLIENT-SIDE ROUTER
 // ═══════════════════════════════════════════════════════════════════════
 
-import { _config, _stores, _log, _warn, _notifyRouteWatchers } from "./globals.js";
+import { _config, _stores, _log, _warn, _notifyRouteWatchers, _stripBase } from "./globals.js";
 import { createContext } from "./context.js";
 import { evaluate } from "./evaluate.js";
 
@@ -56,13 +56,6 @@ function _clearOutlets() {
     for (const child of [...outletEl.children]) _disposeTree(child);
     outletEl.innerHTML = "";
   }
-}
-
-function _stripBase(pathname) {
-  const base = (_config.router.base || "/").replace(/\/$/, "");
-  if (!base) return pathname || "/";
-  const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return pathname.replace(new RegExp("^" + escaped), "") || "/";
 }
 
 export function _createRouter() {

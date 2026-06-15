@@ -21,4 +21,6 @@ jobs:
 
       - run: node build.js
 
+      - run: npm run lint
+
       - run: npm test

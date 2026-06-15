@@ -7,8 +7,10 @@
   "browser": "dist/iife/no.js",
   "unpkg": "dist/iife/no.js",
   "jsdelivr": "dist/iife/no.js",
+  "types": "./types/nojs-plugin.d.ts",
   "exports": {
     ".": {
+      "types": "./types/nojs-plugin.d.ts",
       "import": "./dist/esm/no.js",
       "require": "./dist/cjs/no.js",
       "default": "./dist/cjs/no.js"
@@ -17,11 +19,13 @@
   "files": [
     "dist/",
     "src/",
+    "types/",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "node build.js",
+    "lint": "eslint src/",
     "start": "node docs/dev-server.js",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -33,7 +37,8 @@
     "test:e2e:report": "npx playwright show-report e2e/playwright-report",
     "test:all": "npm test && npm run test:e2e",
     "bench": "jest --testMatch='**/__benchmarks__/**/*.test.js' --testPathIgnorePatterns='[]'",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "husky"
   },
   "keywords": [
     "javascript",
@@ -63,10 +68,15 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.0",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.9.1",
     "babel-jest": "^30.2.0",
     "esbuild": "^0.27.3",
+    "eslint": "^10.5.0",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "jsdom": "^28.1.0"
