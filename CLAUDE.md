@@ -206,7 +206,7 @@ All repos share the **same version**. Never bump individually. Highest bump acro
 
 | Repo | Path | Version locations | Build | Publish |
 |------|------|-------------------|-------|---------|
-| **NoJS** | `NoJS/` | `package.json:3` + `src/index.js:493` | `node build.js` | `npm publish` |
+| **NoJS** | `NoJS/` | `package.json:3` + `src/index.js:493` | `node build.js` | nothing (CDN-only) |
 | **NoJS-LSP** | `NoJS-LSP/` | `package.json:5` | `npm run compile` | `npx vsce package` (VSIX only) |
 | **NoJS-Skill** | `NoJS-Skill/` | `SKILL.md:4` (frontmatter) | none | none (markdown) |
 
@@ -227,7 +227,7 @@ Order is strict — never skip or reorder:
 9. **Push** release branch + **create PR** → main
 10. **Merge** PR (merge commit, not squash)
 11. **Tag** merge commit: `git tag v<x.y.z> && git push origin tag v<x.y.z>`
-12. **Publish**: NoJS `npm publish`, LSP `npx vsce package`, CLI `npm publish`, Skill → nothing
+12. **Publish**: NoJS nothing (CDN-only), Elements nothing (CDN-only), LSP `npx vsce package`, CLI `npm publish`, Skill → nothing
 13. **Cleanup** delete release branches (local + remote)
 14. **Verify** all versions match, tags exist, npm versions correct
 
@@ -235,7 +235,7 @@ Pre-publish checks: `npm whoami` before any `npm publish`. Delete old VSIX befor
 
 ### CDN deployment
 
-`cdn.no-js.dev` serves `dist/iife/no.js` via unpkg/jsdelivr. After `npm publish`, CDN auto-updates.
+`cdn.no-js.dev` serves `dist/iife/no.js` via jsDelivr. After pushing a version tag, CDN auto-updates via jsDelivr from the GitHub release.
 
 ### Ecosystem sync mapping
 
