@@ -1,5 +1,5 @@
-import { _i18n, _i18nListeners, _watchI18n, _notifyI18n, _loadI18nForLocale, _loadI18nNamespace } from '../src/i18n.js';
-import { _config } from '../src/globals.js';
+import { _i18n, _notifyI18n, _loadI18nForLocale, _loadI18nNamespace } from '../src/i18n.js';
+import { _config, _i18nListeners, _watchI18n } from '../src/globals.js';
 import { processTree, _disposeChildren } from '../src/registry.js';
 import '../src/directives/state.js';
 import '../src/directives/i18n.js';
