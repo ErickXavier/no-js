@@ -1587,6 +1587,198 @@ describe('reactive URL watching', () => {
   });
 });
 
+describe('reactive params watching (NOJS-196)', () => {
+  beforeEach(httpSetup);
+  afterEach(httpTeardown);
+
+  test('re-fetches when params expression value changes even with static URL', async () => {
+    global.fetch
+      .mockResolvedValueOnce(mockJsonResponse({ items: ['a'] }))
+      .mockResolvedValueOnce(mockJsonResponse({ items: ['b'] }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ filters: { status: "active" } }');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/items');
+    el.setAttribute('as', 'result');
+    el.setAttribute('params', 'filters');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    const firstUrl = global.fetch.mock.calls[0][0];
+    expect(firstUrl).toContain('status=active');
+
+    // Change the params expression value — URL stays the same template
+    const ctx = findContext(parent);
+    ctx.filters = { status: 'archived' };
+
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    const secondUrl = global.fetch.mock.calls[1][0];
+    expect(secondUrl).toContain('status=archived');
+  });
+
+  test('does NOT re-fetch when params resolve to same value', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ items: [] }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ filters: { page: 1 } }');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/items');
+    el.setAttribute('as', 'result');
+    el.setAttribute('params', 'filters');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // Set filters to an identical-value object — should NOT trigger re-fetch
+    const ctx = findContext(parent);
+    ctx.filters = { page: 1 };
+
+    await flush(100);
+
+    // Still 1 — stringify comparison prevents duplicate fetch
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  test('params watcher is suppressed when get-trigger="none"', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ items: [] }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ filters: { q: "hello" } }');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/search');
+    el.setAttribute('as', 'result');
+    el.setAttribute('params', 'filters');
+    el.setAttribute('get-trigger', 'none');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(100);
+
+    // trigger="none" means no auto-fetch at all
+    expect(global.fetch).not.toHaveBeenCalled();
+
+    // Change params — should still NOT trigger a fetch
+    const ctx = findContext(parent);
+    ctx.filters = { q: "world" };
+
+    await flush(100);
+
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test('params watcher with undefined params does not crash', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ filters: undefined }');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/data');
+    el.setAttribute('as', 'result');
+    el.setAttribute('params', 'filters');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    // Should not throw
+    processTree(parent);
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // Transition from undefined to a real object
+    const ctx = findContext(parent);
+    ctx.filters = { type: 'new' };
+
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    const secondUrl = global.fetch.mock.calls[1][0];
+    expect(secondUrl).toContain('type=new');
+  });
+
+  test('params watcher with empty object does not trigger spurious re-fetch', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ ok: true }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ filters: {} }');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/data');
+    el.setAttribute('as', 'result');
+    el.setAttribute('params', 'filters');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // Set to another empty object — same JSON, should not re-fetch
+    const ctx = findContext(parent);
+    ctx.filters = {};
+
+    await flush(100);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('reactive params watching with debounce (NOJS-196)', () => {
+  beforeEach(() => {
+    httpSetup();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    httpTeardown();
+  });
+
+  test('debounces re-fetch when params change with debounce attribute', async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse({ items: [] }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ filters: { q: "a" } }');
+    const el = document.createElement('div');
+    el.setAttribute('get', '/api/search');
+    el.setAttribute('as', 'results');
+    el.setAttribute('params', 'filters');
+    el.setAttribute('debounce', '300');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    processTree(parent);
+    await jest.advanceTimersByTimeAsync(50);
+    expect(global.fetch).toHaveBeenCalledTimes(1); // initial fetch
+
+    const ctx = findContext(parent);
+
+    // Rapid param changes — should debounce
+    ctx.filters = { q: 'ab' };
+    await jest.advanceTimersByTimeAsync(100);
+    ctx.filters = { q: 'abc' };
+    await jest.advanceTimersByTimeAsync(100);
+
+    // Should still be 1 — debounce has not fired yet
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // After debounce period elapses, should fire once
+    await jest.advanceTimersByTimeAsync(400);
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('polling with refresh-interval', () => {
   beforeEach(() => {
     httpSetup();
@@ -2380,5 +2572,162 @@ describe('M6 — call directive sensitive header warning', () => {
     expect(sensitiveWarns).toHaveLength(0);
 
     warnSpy.mockRestore();
+  });
+});
+
+
+describe('NOJS-194 — GET defers initial fetch to microtask so computed values resolve first', () => {
+  let originalFetch;
+
+  beforeEach(() => {
+    originalFetch = global.fetch;
+    _config.retries = 0;
+    _config.timeout = 10000;
+    _config.baseApiUrl = '';
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    document.body.innerHTML = '';
+    Object.keys(_stores).forEach((k) => delete _stores[k]);
+  });
+
+  test('initial fetch uses computed value in URL (not undefined)', async () => {
+    // Scenario: state defines base + type, computed derives slug, get uses {slug}.
+    // Priority order: state(0) → get(1) → computed(2).
+    // Without the microtask deferral, get fires doRequest before computed has
+    // evaluated, so {slug} resolves to undefined → wrong URL.
+    const fetchCalls = [];
+    global.fetch = jest.fn((url) => {
+      fetchCalls.push(url);
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({ items: ['a', 'b'] })),
+      });
+    });
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ type: "fiction", prefix: "bk" }');
+
+    // computed is on the same element as get — both directives on one node.
+    // processElement sorts by priority: get(1) runs before computed(2).
+    const child = document.createElement('div');
+    child.setAttribute('computed', 'slug');
+    child.setAttribute('expr', 'prefix + "-" + type');
+    child.setAttribute('get', '/api/items/{slug}');
+    child.setAttribute('as', 'result');
+    parent.appendChild(child);
+
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Wait for microtask (deferred doRequest) + fetch resolution
+    await new Promise((r) => setTimeout(r, 50));
+
+    // The fetch should have been called exactly once
+    expect(fetchCalls).toHaveLength(1);
+    // The URL must contain the computed value, not "undefined"
+    expect(fetchCalls[0]).toBe('/api/items/bk-fiction');
+    expect(child.__ctx.result).toEqual({ items: ['a', 'b'] });
+  });
+
+  test('initial fetch fires only once (not twice — wrong then correct)', async () => {
+    // Before the fix, the URL watcher would detect a change from undefined →
+    // computed value and trigger a second fetch. With the fix, only one fetch
+    // fires because computed is already resolved before the deferred doRequest.
+    const fetchCalls = [];
+    global.fetch = jest.fn((url) => {
+      fetchCalls.push(url);
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({ ok: true })),
+      });
+    });
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ userId: 42 }');
+
+    // computed on the same element: processElement runs get(1) before computed(2).
+    const child = document.createElement('div');
+    child.setAttribute('computed', 'uid');
+    child.setAttribute('expr', 'userId');
+    child.setAttribute('get', '/users/{uid}');
+    child.setAttribute('as', 'data');
+    parent.appendChild(child);
+
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Wait long enough for any double-fetch to manifest
+    await new Promise((r) => setTimeout(r, 100));
+
+    // Exactly one fetch, with the correct computed URL
+    expect(fetchCalls).toHaveLength(1);
+    expect(fetchCalls[0]).toBe('/users/42');
+  });
+
+  test('computed on sibling after get in DOM order — fetch uses resolved value', async () => {
+    // When computed is on a sibling that appears AFTER the get element in DOM
+    // order, processTree processes get first. The microtask deferral ensures
+    // the fetch waits for all siblings to be processed.
+    const fetchCalls = [];
+    global.fetch = jest.fn((url) => {
+      fetchCalls.push(url);
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify([])),
+      });
+    });
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{ lang: "en" }');
+
+    // get element comes first in DOM order
+    const getEl = document.createElement('div');
+    getEl.setAttribute('get', '/i18n/{locale}');
+    getEl.setAttribute('as', 'translations');
+    parent.appendChild(getEl);
+
+    // computed element comes after — processTree processes it second
+    const computedEl = document.createElement('span');
+    computedEl.setAttribute('computed', 'locale');
+    computedEl.setAttribute('expr', 'lang');
+    parent.appendChild(computedEl);
+
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    await new Promise((r) => setTimeout(r, 50));
+
+    // The first fetch must use the computed value
+    expect(fetchCalls[0]).toBe('/i18n/en');
+  });
+
+  test('disposed element does not fetch after microtask', async () => {
+    // The el.isConnected guard inside the microtask must prevent fetching
+    // when the element has been removed from the DOM between scheduling
+    // and execution.
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: true,
+      text: () => Promise.resolve(JSON.stringify({})),
+    }));
+
+    const parent = document.createElement('div');
+    parent.setAttribute('state', '{}');
+    const child = document.createElement('div');
+    child.setAttribute('get', '/api/data');
+    child.setAttribute('as', 'data');
+    parent.appendChild(child);
+
+    document.body.appendChild(parent);
+    processTree(parent);
+
+    // Remove the element before the microtask fires
+    child.remove();
+
+    await new Promise((r) => setTimeout(r, 50));
+
+    // Fetch should NOT have been called because el.isConnected was false
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });

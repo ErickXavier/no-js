@@ -11,6 +11,14 @@ import {
   _routerInstance,
   _onDispose,
   _SENSITIVE_HEADERS,
+  _addStoreWatcher,
+  _deleteStoreWatcher,
+  _addRouteWatcher,
+  _deleteRouteWatcher,
+  _watchI18n,
+  _i18nListeners,
+  _extractStoreName,
+  _currentEl,
 } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement, _interpolate, _FORBIDDEN_PROPS } from "../evaluate.js";
@@ -876,13 +884,13 @@ for (const method of HTTP_METHODS) {
           } else {
             // Fallback: fire immediately when IntersectionObserver unavailable
             _warn('IntersectionObserver not available, get-trigger="visible" falling back to immediate fetch');
-            if (el.isConnected) doRequest();
+            queueMicrotask(() => { if (el.isConnected) doRequest(); });
           }
         } else if (trigger === "scroll" && isInsertMode) {
           // Infinite scroll: fire initial request. The IntersectionObserver
           // is created lazily in _afterPaginatedFetch() after the first fetch
           // completes and the sentinel is repositioned.
-          if (el.isConnected) doRequest();
+          queueMicrotask(() => { if (el.isConnected) doRequest(); });
         } else if (trigger === "scroll" && !isInsertMode) {
           // scroll without get-insert — fall back to visible behavior (warned above)
           if (typeof IntersectionObserver !== "undefined") {
@@ -901,14 +909,14 @@ for (const method of HTTP_METHODS) {
             observer.observe(el);
             _onDispose(() => observer.disconnect());
           } else {
-            if (el.isConnected) doRequest();
+            queueMicrotask(() => { if (el.isConnected) doRequest(); });
           }
         } else if (trigger === "button" && isInsertMode) {
           // Load-more button: fire initial request, then render button after.
-          if (el.isConnected) doRequest();
+          queueMicrotask(() => { if (el.isConnected) doRequest(); });
         } else if (trigger === "button" && !isInsertMode) {
           // button without get-insert — fall back to immediate (warned above)
-          if (el.isConnected) doRequest();
+          queueMicrotask(() => { if (el.isConnected) doRequest(); });
         } else if (trigger === "hover") {
           // Prefetch on hover: fire on first mouseenter.
           const useOnce = refreshInterval <= 0;
@@ -925,7 +933,7 @@ for (const method of HTTP_METHODS) {
           _onDispose(() => el.removeEventListener("mouseenter", hoverHandler));
         } else {
           // Default: immediate fire (current behavior, no trigger attribute)
-          if (el.isConnected) doRequest();
+          queueMicrotask(() => { if (el.isConnected) doRequest(); });
         }
       } else {
         // Non-GET on non-FORM: attach click listener
@@ -1003,6 +1011,70 @@ for (const method of HTTP_METHODS) {
           const unwatch = ancestor.$watch(onAncestorChange);
           _onDispose(unwatch);
           ancestor = ancestor.$parent;
+        }
+
+        // Subscribe to global reactive sources ($store, $route, $i18n) so
+        // URL expressions like get="/api/{$store.auth.token}" or
+        // get="/users/{$route.params.id}" trigger re-fetch on change.
+        // Without these, only local ancestor context changes fire.
+        if (url.includes("$store")) {
+          const partition = _extractStoreName(url) || "*";
+          _addStoreWatcher(onAncestorChange, partition);
+          onAncestorChange._el = _currentEl;
+          _onDispose(() => _deleteStoreWatcher(onAncestorChange));
+        }
+        if (url.includes("$route")) {
+          _addRouteWatcher(onAncestorChange);
+          onAncestorChange._el = _currentEl;
+          _onDispose(() => _deleteRouteWatcher(onAncestorChange));
+        }
+        if (url.includes("$i18n")) {
+          _watchI18n(onAncestorChange);
+          onAncestorChange._el = _currentEl;
+          _onDispose(() => _i18nListeners.delete(onAncestorChange));
+        }
+      }
+
+      // ── Reactive params watching: re-fetch when params expression changes ──
+      // Independent of URL watching — handles the case where the URL stays
+      // the same but params (e.g. params="{filters}") resolve to new values.
+      // Suppressed for get-trigger="none" (manual-only, same as URL watcher).
+      if (paramsAttr && trigger !== "none") {
+        const paramsDebounceMs = parseInt(el.getAttribute("debounce")) || 0;
+        let _lastParamsJson = "";
+        try {
+          const initial = evaluate(paramsAttr, ctx);
+          _lastParamsJson = JSON.stringify(initial) || "";
+        } catch { /* ignore — first doRequest() will evaluate */ }
+        let _paramsDebounceTimer = null;
+
+        function onParamsChange() {
+          let newParamsJson = "";
+          try {
+            const resolved = evaluate(paramsAttr, ctx);
+            newParamsJson = JSON.stringify(resolved) || "";
+          } catch { return; /* expression error — skip re-fetch */ }
+          if (newParamsJson !== _lastParamsJson) {
+            _lastParamsJson = newParamsJson;
+            if (_paramsDebounceTimer) clearTimeout(_paramsDebounceTimer);
+            if (paramsDebounceMs > 0) {
+              _paramsDebounceTimer = setTimeout(doRequest, paramsDebounceMs);
+            } else {
+              doRequest();
+            }
+          }
+        }
+
+        _onDispose(() => {
+          if (_paramsDebounceTimer) clearTimeout(_paramsDebounceTimer);
+        });
+
+        // Watch all ancestor contexts for changes (same pattern as URL watcher)
+        let paramsAncestor = parentCtx;
+        while (paramsAncestor && paramsAncestor.__isProxy) {
+          const unwatch = paramsAncestor.$watch(onParamsChange);
+          _onDispose(unwatch);
+          paramsAncestor = paramsAncestor.$parent;
         }
       }
 
