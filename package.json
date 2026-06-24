@@ -16,13 +16,6 @@
       "default": "./dist/cjs/no.js"
     }
   },
-  "files": [
-    "dist/",
-    "src/",
-    "types/",
-    "README.md",
-    "LICENSE"
-  ],
   "scripts": {
     "build": "node build.js",
     "lint": "eslint src/",
@@ -37,7 +30,6 @@
     "test:e2e:report": "npx playwright show-report e2e/playwright-report",
     "test:all": "npm test && npm run test:e2e",
     "bench": "jest --testMatch='**/__benchmarks__/**/*.test.js' --testPathIgnorePatterns='[]'",
-    "prepublishOnly": "npm run build",
     "prepare": "husky"
   },
   "keywords": [

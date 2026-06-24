@@ -1,11 +1,5 @@
 <!-- Plugins — from plugins.md -->
 
-<section class="hero-section">
-  <span class="badge" t="docs.plugins.hero.badge"></span>
-  <h1 class="hero-title" t="docs.plugins.hero.title"></h1>
-  <p class="hero-subtitle" t="docs.plugins.hero.subtitle"></p>
-</section>
-
 <div class="doc-content">
 
   <!-- NoJS.use() -->
@@ -409,7 +403,7 @@ app.<span class="hl-fn">global</span>(<span class="hl-str">'exec'</span>, Functi
     <h2 class="doc-title" id="plugins-official">Official Plugins</h2>
 
     <h3 class="doc-title" id="plugins-elements">NoJS Elements</h3>
-    <p class="doc-text">The <code>@erickxavier/nojs-elements</code> package provides UI-centric directives that were extracted from core in v1.13.0 for a leaner default bundle.</p>
+    <p class="doc-text">The <code>@no-js-dev/nojs-elements</code> package provides UI-centric directives that were extracted from core in v1.13.0 for a leaner default bundle.</p>
 
     <table class="doc-table">
       <thead>
@@ -438,11 +432,8 @@ app.<span class="hl-fn">global</span>(<span class="hl-str">'exec'</span>, Functi
 <span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-str">"https://cdn.no-js.dev/"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
 <span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-str">"https://cdn.no-js.dev/elements"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
 
-<span class="hl-cmt">&lt;!-- npm --&gt;</span>
+<span class="hl-cmt">&lt;!-- Plugin registration --&gt;</span>
 <span class="hl-tag">&lt;script&gt;</span>
-  <span class="hl-kw">import</span> NoJS <span class="hl-kw">from</span> <span class="hl-str">'@erickxavier/nojs'</span>;
-  <span class="hl-kw">import</span> NoJSElements <span class="hl-kw">from</span> <span class="hl-str">'@erickxavier/nojs-elements'</span>;
-
   <span class="hl-fn">NoJS</span>.<span class="hl-fn">use</span>(NoJSElements);
 <span class="hl-tag">&lt;/script&gt;</span></pre></div>
 
