@@ -11,6 +11,14 @@ import {
   _routerInstance,
   _onDispose,
   _SENSITIVE_HEADERS,
+  _addStoreWatcher,
+  _deleteStoreWatcher,
+  _addRouteWatcher,
+  _deleteRouteWatcher,
+  _watchI18n,
+  _i18nListeners,
+  _extractStoreName,
+  _currentEl,
 } from "../globals.js";
 import { createContext } from "../context.js";
 import { evaluate, _execStatement, _interpolate, _FORBIDDEN_PROPS } from "../evaluate.js";
@@ -1003,6 +1011,27 @@ for (const method of HTTP_METHODS) {
           const unwatch = ancestor.$watch(onAncestorChange);
           _onDispose(unwatch);
           ancestor = ancestor.$parent;
+        }
+
+        // Subscribe to global reactive sources ($store, $route, $i18n) so
+        // URL expressions like get="/api/{$store.auth.token}" or
+        // get="/users/{$route.params.id}" trigger re-fetch on change.
+        // Without these, only local ancestor context changes fire.
+        if (url.includes("$store")) {
+          const partition = _extractStoreName(url) || "*";
+          _addStoreWatcher(onAncestorChange, partition);
+          onAncestorChange._el = _currentEl;
+          _onDispose(() => _deleteStoreWatcher(onAncestorChange));
+        }
+        if (url.includes("$route")) {
+          _addRouteWatcher(onAncestorChange);
+          onAncestorChange._el = _currentEl;
+          _onDispose(() => _deleteRouteWatcher(onAncestorChange));
+        }
+        if (url.includes("$i18n")) {
+          _watchI18n(onAncestorChange);
+          onAncestorChange._el = _currentEl;
+          _onDispose(() => _i18nListeners.delete(onAncestorChange));
         }
       }
 
