@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/no-js-dev/nojs/compare/v1.15.5...HEAD)
+## [Unreleased](https://github.com/no-js-dev/nojs/compare/v1.15.6...HEAD)
+
+## [1.15.6](https://github.com/no-js-dev/nojs/compare/v1.15.5...v1.15.6) — 2026-06-25
+
+### Fixed
+
+- fix(router): strip trailing slashes from route paths — prevents 404 on page refresh when servers append trailing slash
+- fix(docs): improve mobile responsive layout — prevent content overflow, constrain code blocks and tables
+- fix(docs): refactor mobile sidebar toggle into glass-style pill button
+- fix(docs): add overscroll-behavior containment to mobile sidebar menu
+- fix(docs): fix mobile sidebar menu not expanding (reactive context scoping)
+- fix(docs): disable hash navigation in docs site
 
 ## [1.15.5](https://github.com/no-js-dev/nojs/compare/v1.15.4...v1.15.5) — 2026-06-24
 
