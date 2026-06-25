@@ -362,7 +362,8 @@
   <script>
     // Load playground engine on demand
     function _loadPlaygroundEngine() {
-      if (location.hash.indexOf('#/playground') === 0) {
+      var p = location.pathname.replace(/\/+$/, '') || '/';
+      if (p === '/playground') {
         if (!document.getElementById('pg-engine')) {
           var s = document.createElement('script');
           s.id = 'pg-engine';
@@ -371,7 +372,11 @@
         }
       }
     }
-    window.addEventListener('hashchange', _loadPlaygroundEngine);
+    if (window.NoJS && typeof NoJS.on === 'function') {
+      NoJS.on('plugins:ready', function() {
+        if (NoJS.router) NoJS.router.on(function() { setTimeout(_loadPlaygroundEngine, 50); });
+      });
+    }
     _loadPlaygroundEngine();
 
     // Hero live editor — init only, expand/collapse is pure CSS + NoJS
@@ -400,11 +405,11 @@
     }
 
     if (window.NoJS && typeof NoJS.on === 'function') {
-      NoJS.on('plugins:ready', _heroInitEditor);
+      NoJS.on('plugins:ready', function() {
+        _heroInitEditor();
+        if (NoJS.router) NoJS.router.on(function() { setTimeout(_heroInitEditor, 100); });
+      });
     }
-    window.addEventListener('hashchange', function() {
-      setTimeout(_heroInitEditor, 100);
-    });
 
     // Diamond animation delay shuffler (home page isometric overlay)
     (function() {
