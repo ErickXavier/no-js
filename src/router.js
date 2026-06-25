@@ -118,7 +118,8 @@ export function _createRouter() {
     const hashIdx = path.indexOf("#");
     const hash = hashIdx >= 0 ? path.slice(hashIdx + 1) : "";
     const withoutHash = hashIdx >= 0 ? path.slice(0, hashIdx) : path;
-    const [cleanPath, search = ""] = withoutHash.split("?");
+    const [rawPath, search = ""] = withoutHash.split("?");
+    const cleanPath = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath;
 
     // Hash-only change — update state and scroll, skip re-render
     if (cleanPath === current.path && hash) {
@@ -205,13 +206,14 @@ export function _createRouter() {
       }
     }
 
-    // Update URL
+    // Update URL — always use the normalized cleanPath (no trailing slash)
+    const normalizedUrl = cleanPath + (search ? "?" + search : "") + (hash ? "#" + hash : "");
     if (_config.router.useHash) {
-      const newHash = "#" + path;
+      const newHash = "#" + normalizedUrl;
       if (replace) window.location.replace(newHash);
-      else window.location.hash = path;
+      else window.location.hash = normalizedUrl;
     } else {
-      const fullPath = (_config.router.base || "/").replace(/\/$/, "") + path;
+      const fullPath = (_config.router.base || "/").replace(/\/$/, "") + normalizedUrl;
       if (replace) window.history.replaceState({}, "", fullPath);
       else window.history.pushState({}, "", fullPath);
     }
