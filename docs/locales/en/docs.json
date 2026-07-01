@@ -1361,6 +1361,7 @@
       "detection": {
         "title": "Browser Locale Detection",
         "text": "Enable automatic locale detection from the browser's navigator.language setting with detectBrowser: true. The detected locale is matched against your available locales.",
+        "supportedText": "When loading locales lazily with loadPath, list the codes you ship in supportedLocales so detection can match the browser language before any file is fetched. First-visit priority: a persisted nojs-locale, then the detected browser language, then defaultLocale.",
         "callout": "When combined with persist: true, the detected locale is saved so subsequent visits use the same language without re-detecting."
       },
       "liveDemo": {

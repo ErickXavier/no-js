@@ -33,7 +33,7 @@ No build step. No virtual DOM. No transpiler. No JSX. Just HTML.
 - **Forms & Validation** — Built-in + custom validators, per-rule errors, async support, `$form` context (via NoJS-Elements)
 - **Plugin System** — Extend with reusable packages: interceptors, globals, directives, lifecycle hooks
 - **Animations** — `animate`, `transition` with stagger support
-- **i18n** — `t` directive with pluralization, namespaces, browser detection
+- **i18n** — `t` directive with pluralization, namespaces, browser detection (`supportedLocales`)
 - **Filters** — `uppercase`, `currency`, `date`, `truncate`, 32 built-in pipes
 - **Drag & Drop** — `drag`, `drop`, `drag-list`, multi-select, keyboard DnD (via NoJS-Elements)
 - **DevTools** — Built-in inspector with context mutation, store inspection, element highlighting
@@ -61,6 +61,22 @@ NoJS.config({
 });
 </script>
 ```
+
+With lazy locale files (`loadPath`), list the locales you ship in `supportedLocales` so No.JS can adopt the visitor's browser language on their first visit:
+
+```html
+<script>
+NoJS.i18n({
+  loadPath: '/locales/{locale}.json',
+  supportedLocales: ['en', 'es', 'pt', 'it', 'fr'],
+  detectBrowser: true,
+  persist: true,
+  defaultLocale: 'en'
+});
+</script>
+```
+
+`supportedLocales` is an array of the locale codes your app ships. It is required to enable `detectBrowser` under `loadPath`, since no locale bundles are loaded yet when detection runs. First-visit priority: persisted `nojs-locale` → detected browser language → `defaultLocale`.
 
 ---
 

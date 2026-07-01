@@ -1366,6 +1366,7 @@
       "detection": {
         "title": "Rilevamento della Località del Browser",
         "text": "Abilita il rilevamento automatico della località da navigator.language del browser con detectBrowser: true. La località rilevata viene abbinata alle tue località disponibili.",
+        "supportedText": "Durante il caricamento lazy delle località con loadPath, elenca i codici che fornisci in supportedLocales in modo che il rilevamento possa abbinare la lingua del browser prima che venga recuperato qualsiasi file. Priorità alla prima visita: un nojs-locale persistito, poi la lingua del browser rilevata, poi defaultLocale.",
         "callout": "Combinato con persist: true, la località rilevata viene salvata in modo che le visite successive usino la stessa lingua senza ri-rilevamento."
       }
     },

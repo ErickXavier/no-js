@@ -169,10 +169,12 @@
     <p class="doc-text" t="docs.i18n.detection.text"></p>
     <div class="code-block"><pre highlight>NoJS.i18n({
   detectBrowser: true,
+  supportedLocales: ['en', 'es', 'fr', 'it', 'pt'],
   persist: true,
   defaultLocale: 'en',
   loadPath: '/locales/{locale}.json'
 });</pre></div>
+    <p class="doc-text" t="docs.i18n.detection.supportedText"></p>
     <div class="callout">
       <p t="docs.i18n.detection.callout"></p>
     </div>

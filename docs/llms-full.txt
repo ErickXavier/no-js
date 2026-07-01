@@ -3824,6 +3824,31 @@ Enable automatic locale detection from the browser's `navigator.language`:
 
 When `detectBrowser` is `true`, No.JS checks `navigator.language` and uses the matching locale if available. Falls back to `defaultLocale` if no match is found.
 
+#### Detection with lazy locale files (`supportedLocales`)
+
+With inline `locales`, detection matches `navigator.language` against the loaded bundle keys. But with `loadPath` (lazy JSON locales), no bundles exist yet when detection runs — so you must declare the locales you ship in `supportedLocales`. The browser language is adopted on the first visit only when it appears in that list.
+
+```html
+<script>
+  NoJS.i18n({
+    loadPath: '/locales/{locale}/{ns}.json',
+    ns: ['common'],
+    supportedLocales: ['en', 'es', 'pt', 'it', 'fr'],
+    detectBrowser: true,
+    persist: true,
+    defaultLocale: 'en'
+  });
+</script>
+```
+
+On the first load, the active locale is resolved in this priority order:
+
+1. **Persisted `nojs-locale`** — a previously chosen locale in `localStorage` (when `persist: true`) always wins.
+2. **Detected browser language** — `navigator.language` (or its base, e.g. `pt` from `pt-BR`), if it is listed in `supportedLocales`.
+3. **`defaultLocale`** — the fallback when nothing else matches.
+
+This means a returning visitor who picked a language keeps it, while a first-time visitor lands in their browser's language when you support it.
+
 ---
 
 ## Usage

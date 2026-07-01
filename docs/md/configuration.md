@@ -50,6 +50,7 @@
       defaultLocale: 'en',
       fallbackLocale: 'en',
       detectBrowser: true,
+      supportedLocales: ['en', 'es', 'pt'], // Locales to match against for detection (default: [])
       loadPath: '/locales/{locale}.json',  // Load from external JSON (default: null)
       ns: ['common'],           // Namespaces to preload (default: [])
       cache: true,              // Cache fetched locale files (default: true)
@@ -227,6 +228,30 @@ Controls whether fetched locale JSON files are stored in an in-memory `Map` afte
 
 ```js
 NoJS.i18n({ cache: false }); // Always re-fetch locale files
+```
+
+### `i18n.supportedLocales`
+
+**Type:** `string[]` | **Default:** `[]`
+
+The list of locale codes your application ships. This option is **required to enable `detectBrowser` when using `loadPath`** (lazy locale files): at the moment detection runs no bundles have been fetched yet, so No.JS needs an explicit list to match the browser language against.
+
+When inline `locales` are provided instead, detection can match against the loaded bundle keys directly and `supportedLocales` is optional.
+
+On the visitor's first load, the locale is resolved in this priority order:
+
+1. A persisted `nojs-locale` in `localStorage` (when `persist: true`)
+2. The detected browser language (`navigator.language`), if it is listed in `supportedLocales`
+3. `defaultLocale`
+
+```js
+NoJS.i18n({
+  loadPath: '/locales/{locale}.json',
+  supportedLocales: ['en', 'es', 'pt', 'it', 'fr'],
+  detectBrowser: true,
+  persist: true,
+  defaultLocale: 'en'
+});
 ```
 
 ---

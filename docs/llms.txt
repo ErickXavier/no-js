@@ -67,7 +67,7 @@ Methods and properties on the `NoJS` object (`window.NoJS` via CDN):
 
 ### Internationalization
 
-- `NoJS.i18n(opts: object): void` — Configure i18n. Options: `loadPath` (string, e.g. `/locales/{locale}.json`), `defaultLocale` (string), `fallbackLocale` (string), `persist` (boolean, saves to localStorage), `detectBrowser` (boolean), `ns` (array of namespace strings), `cache` (boolean), `locales` (object mapping locale codes to metadata).
+- `NoJS.i18n(opts: object): void` — Configure i18n. Options: `loadPath` (string, e.g. `/locales/{locale}.json`), `defaultLocale` (string), `fallbackLocale` (string), `persist` (boolean, saves to localStorage), `detectBrowser` (boolean), `supportedLocales` (array of locale codes; required to enable `detectBrowser` under `loadPath` since no bundles are loaded when detection runs — first-visit priority: persisted `nojs-locale` > browser detection > `defaultLocale`), `ns` (array of namespace strings), `cache` (boolean), `locales` (object mapping locale codes to metadata).
 - `NoJS.locale: string` — Get or set the active locale. Setting triggers re-fetch of all loaded namespaces for the new locale.
 
 ### Event Bus

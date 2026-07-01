@@ -1366,6 +1366,7 @@
       "detection": {
         "title": "Detecção de Localidade do Navegador",
         "text": "Habilite detecção automática de localidade a partir do navigator.language do navegador com detectBrowser: true. A localidade detectada é combinada com suas localidades disponíveis.",
+        "supportedText": "Ao carregar localidades de forma lazy com loadPath, liste os códigos que você fornece em supportedLocales para que a detecção possa combinar o idioma do navegador antes de qualquer arquivo ser buscado. Prioridade na primeira visita: um nojs-locale persistido, depois o idioma detectado do navegador, depois defaultLocale.",
         "callout": "Quando combinado com persist: true, a localidade detectada é salva para que visitas subsequentes usem o mesmo idioma sem re-detecção."
       }
     },
