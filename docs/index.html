@@ -185,25 +185,47 @@
           <a route="/faq" route-active="active" t="shell.header.faq" on:click="$store.nav.menuOpen = false"></a>
           <a route="/playground" route-active="active" t="shell.header.playground" on:click="$store.nav.menuOpen = false"></a>
           <div class="nav-divider section-divider"><span class="section-divider-symbol"><span class="section-divider-bracket">&lt;</span><svg class="section-divider-bolt" width="14" height="14" viewBox="0 0 150 150" fill="currentColor" aria-hidden="true"><path d="m119.5 16h-54l-26 51h18l-27 67 73-67h-18z"/></svg><span class="section-divider-bracket">&gt;</span></span></div>
-          <div class="nav-dropdown" state="{ open: false }">
-            <button class="nav-dropdown-toggle" on:click="open = !open" bind-aria-expanded="open">
+          <div class="nav-dropdown" dropdown dropdown-position="bottom" dropdown-align="end">
+            <button class="nav-dropdown-toggle" dropdown-toggle>
               <span t="shell.header.tools"></span>
               <svg class="nav-dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
-            <div class="nav-dropdown-menu" show="open">
-              <a class="nav-dropdown-link" href="https://github.com/no-js-dev/nojs-elements" target="_blank" rel="noopener noreferrer">
+            <div class="nav-dropdown-menu" dropdown-menu>
+              <a class="nav-dropdown-link" dropdown-item href="https://github.com/no-js-dev/nojs-elements" target="_blank" rel="noopener noreferrer">
                 <strong t="shell.header.toolsElements"></strong>
                 <span t="shell.header.toolsElementsDesc"></span>
               </a>
-              <a class="nav-dropdown-link" href="https://github.com/no-js-dev/nojs-lsp" target="_blank" rel="noopener noreferrer">
+              <a class="nav-dropdown-link" dropdown-item href="https://github.com/no-js-dev/nojs-lsp" target="_blank" rel="noopener noreferrer">
                 <strong t="shell.header.toolsLsp"></strong>
                 <span t="shell.header.toolsLspDesc"></span>
               </a>
-              <a class="nav-dropdown-link" href="https://github.com/no-js-dev/nojs-skill" target="_blank" rel="noopener noreferrer">
+              <a class="nav-dropdown-link" dropdown-item href="https://github.com/no-js-dev/nojs-skill" target="_blank" rel="noopener noreferrer">
                 <strong t="shell.header.toolsSkill"></strong>
                 <span t="shell.header.toolsSkillDesc"></span>
               </a>
             </div>
+          </div>
+          <!-- Language Selector (desktop) — NoJS-Elements dropdown -->
+          <div class="lang-select" dropdown dropdown-position="bottom" dropdown-align="end">
+            <button class="lang-select-toggle" dropdown-toggle aria-label="Select language">
+              <span bind="$i18n.locale.toUpperCase()">EN</span>
+              <svg class="nav-dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="lang-select-menu" dropdown-menu>
+              <button dropdown-item on:click="$i18n.locale = 'en'" class-active="$i18n.locale === 'en'">EN</button>
+              <button dropdown-item on:click="$i18n.locale = 'es'" class-active="$i18n.locale === 'es'">ES</button>
+              <button dropdown-item on:click="$i18n.locale = 'pt'" class-active="$i18n.locale === 'pt'">PT</button>
+              <button dropdown-item on:click="$i18n.locale = 'it'" class-active="$i18n.locale === 'it'">IT</button>
+              <button dropdown-item on:click="$i18n.locale = 'fr'" class-active="$i18n.locale === 'fr'">FR</button>
+            </div>
+          </div>
+          <!-- Language pills (mobile drawer only) — kept in sync with the desktop dropdown above -->
+          <div class="lang-pills" aria-label="Select language">
+            <button class="lang-pill" on:click="$i18n.locale = 'en'; $store.nav.menuOpen = false" class-active="$i18n.locale === 'en'">EN</button>
+            <button class="lang-pill" on:click="$i18n.locale = 'es'; $store.nav.menuOpen = false" class-active="$i18n.locale === 'es'">ES</button>
+            <button class="lang-pill" on:click="$i18n.locale = 'pt'; $store.nav.menuOpen = false" class-active="$i18n.locale === 'pt'">PT</button>
+            <button class="lang-pill" on:click="$i18n.locale = 'it'; $store.nav.menuOpen = false" class-active="$i18n.locale === 'it'">IT</button>
+            <button class="lang-pill" on:click="$i18n.locale = 'fr'; $store.nav.menuOpen = false" class-active="$i18n.locale === 'fr'">FR</button>
           </div>
           <div class="nav-divider section-divider"><span class="section-divider-symbol"><span class="section-divider-bracket">&lt;</span><svg class="section-divider-bolt" width="14" height="14" viewBox="0 0 150 150" fill="currentColor" aria-hidden="true"><path d="m119.5 16h-54l-26 51h18l-27 67 73-67h-18z"/></svg><span class="section-divider-bracket">&gt;</span></span></div>
           <div class="nav-social-group">
