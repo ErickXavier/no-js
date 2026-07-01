@@ -5,7 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/no-js-dev/nojs/compare/v1.15.6...HEAD)
+## [Unreleased](https://github.com/no-js-dev/nojs/compare/v1.16.0...HEAD)
+
+## [1.16.0](https://github.com/no-js-dev/nojs/compare/v1.15.6...v1.16.0) — 2026-07-01
+
+### Added
+
+- feat(i18n): `supportedLocales` config option — enables first-visit browser-language detection when using `loadPath` (lazy locales) ([a070b41](https://github.com/no-js-dev/nojs/commit/a070b41))
+- feat(docs): restored language selector on the docs site — NoJS-Elements dropdown with short locale codes, dark theme, and a mobile pill row; Tools/"More" menu converted to the Elements dropdown ([8d907d7](https://github.com/no-js-dev/nojs/commit/8d907d7), [f840562](https://github.com/no-js-dev/nojs/commit/f840562))
+- test(i18n): e2e coverage for first-visit browser-language detection ([89a72b6](https://github.com/no-js-dev/nojs/commit/89a72b6))
+
+### Fixed
+
+- fix(i18n): `detectBrowser` was a no-op under `loadPath` — the browser language is now adopted on first visit when present in `supportedLocales`; priority order is unchanged (persisted `nojs-locale` > detection > `defaultLocale`) ([0cfe25e](https://github.com/no-js-dev/nojs/commit/0cfe25e))
+
+### Changed
+
+- docs(home): update hero stat copy to the directives count ([b840e95](https://github.com/no-js-dev/nojs/commit/b840e95))
 
 ## [1.15.6](https://github.com/no-js-dev/nojs/compare/v1.15.5...v1.15.6) — 2026-06-25
 
