@@ -732,6 +732,98 @@ button:focus-visible,
   color: var(--text-secondary);
 }
 
+/* ── Language selector: dark-mode skin over the NoJS-Elements dropdown ── */
+/* The element ships a light-theme base skin on .nojs-dropdown-*; these rules
+   re-skin it to match the docs dark theme (parity with .nav-dropdown-menu). */
+.lang-select-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.lang-select-toggle:hover {
+  color: var(--text-primary);
+}
+
+.lang-select-toggle[aria-expanded="true"] .nav-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.lang-select-menu.nojs-dropdown-menu {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--rounded-lg);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 0.375rem;
+  min-width: 88px;
+}
+
+.lang-select-menu .nojs-dropdown-item {
+  border-radius: var(--rounded-md);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.lang-select-menu .nojs-dropdown-item:hover,
+.lang-select-menu .nojs-dropdown-item:focus {
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
+}
+
+.lang-select-menu .nojs-dropdown-item.active {
+  color: var(--accent-light);
+  font-weight: 600;
+}
+
+/* Mobile pill row is desktop-hidden; revealed inside the drawer at ≤600px */
+.lang-pills {
+  display: none;
+}
+
+/* ── Tools/"More" dropdown, now on the NoJS-Elements dropdown ──
+   The element emits .nojs-dropdown-* at runtime and injects a light base
+   skin later in source order; these higher-specificity rules keep the dark
+   look and the existing panel/link sizing (parity with the old .nav-dropdown).
+   Scoped to desktop so the mobile drawer's flattened layout (≤600px) is
+   untouched — on mobile the menu is display:contents and reuses .nav-dropdown-*. */
+@media (min-width: 601px) {
+  .nav-dropdown-menu.nojs-dropdown-menu {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--rounded-lg);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    padding: 0.5rem;
+    min-width: 220px;
+  }
+
+  .nav-dropdown-menu .nojs-dropdown-link.nojs-dropdown-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--rounded-md);
+    color: var(--text-secondary);
+  }
+
+  .nav-dropdown-menu .nojs-dropdown-item:hover,
+  .nav-dropdown-menu .nojs-dropdown-item:focus {
+    background: var(--glass-bg-hover);
+  }
+}
+
 /* Hamburger menu button (mobile only) */
 .nav-hamburger {
   display: none;
@@ -2656,6 +2748,38 @@ html {
 
   .nav-social-group {
     margin-top: 0.5rem;
+  }
+
+  /* Language selector: hide the desktop Elements dropdown, show the pill row */
+  .lang-select {
+    display: none;
+  }
+
+  .lang-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+  }
+
+  .lang-pill {
+    padding: 0.375rem 0.625rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--rounded-md);
+    background: none;
+    color: var(--text-secondary);
+    font: 500 0.8125rem var(--font-sans);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .lang-pill.active {
+    color: var(--accent-light);
+    border-color: var(--accent-light);
+    background: var(--glass-bg-hover);
   }
 
   .nav-dropdown {
