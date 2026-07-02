@@ -1,6 +1,8 @@
 import { defineConfig } from '@playwright/test';
 import path from 'path';
 
+const port = Number(process.env.E2E_PORT || process.env.PORT || 3000);
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -9,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: `http://localhost:${port}`,
     trace: 'on-first-retry',
     testIdAttribute: 'data-test',
   },
@@ -29,8 +31,9 @@ export default defineConfig({
   ],
   webServer: {
     command: 'node test-server.js',
-    port: 3000,
+    port,
     cwd: path.resolve(__dirname, '..'),
     reuseExistingServer: !process.env.CI,
+    env: { ...process.env, PORT: String(port) },
   },
 });
